@@ -164,7 +164,7 @@ OA = ("https://public.opendatasoft.com/api/explore/v2.1/catalog/datasets/eveneme
                                           "location_coordinates,location_name,location_postalcode,location_city,canonicalurl,originagenda_title,status",
                                 "where": "lastdate_end >= now() and location_countrycode = 'FR'"}))
 # Agendas qui ne sont pas des sorties (emploi, recrutement, formations)
-AGENDAS_EXCLUS = re.compile(r"france travail|pole emploi|semaine de l.industrie|job ?dating|recrutement|mission locale|apec\b", re.I)
+AGENDAS_EXCLUS = re.compile(r"france\W*travail|pole\W*emploi|semaine de l.industrie|job ?dating|recrutement|mission\W*locale|apec\b", re.I)
 TITRES_EXCLUS = re.compile(r"\bjob ?dating\b|\brecrute(nt)?\b|\bentretien d.embauche|\bforum (de l.)?emploi|\batelier cv\b", re.I)
 def openagenda():
     try:

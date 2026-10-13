@@ -140,6 +140,7 @@ body{background:var(--sbl-bg);color:var(--sbl-ink);margin:0}
 .sbl [hidden]{display:none!important}
 .sbl-mapbox{position:relative}
 .sbl .maplibregl-map{font-family:var(--sbl-body)}
+.sbl-mk{width:34px;height:46px}
 .sbl-pin{display:block;width:34px;height:46px;padding:0;border:0;background:none;cursor:pointer;filter:drop-shadow(0 2px 2px rgb(0 0 0 / .35));transform-origin:50% 100%;transition:transform .12s}
 .sbl-pin:hover,.sbl-pin:focus-visible{transform:scale(1.15)}
 .sbl-pin.on{transform:scale(1.25)}
@@ -821,8 +822,9 @@ function drawPins(items){
     gs.forEach((g,i)=>{g.dx=(i-(gs.length-1)/2)*17;g.dy=-Math.abs(i-(gs.length-1)/2)*3})});
   Object.values(by).sort((a,b)=>b.la-a.la).forEach(g=>{
     const n=g.ev.length,w=g.w;
-    const el=document.createElement("button");el.type="button";el.className="sbl-pin"+(st.place===w?" on":"");el.style.setProperty("--pc","var("+PINC[g.cat]+")");
-    el.innerHTML=pinSvg(n,g.cat);el.setAttribute("aria-label",w+", "+CATS[g.cat][0]+" : "+n+" sortie"+(n>1?"s":""));
+    const el=document.createElement("div");el.className="sbl-mk";
+    const pb=document.createElement("button");pb.type="button";pb.className="sbl-pin"+(st.place===w?" on":"");pb.style.setProperty("--pc","var("+PINC[g.cat]+")");
+    pb.innerHTML=pinSvg(n,g.cat);pb.setAttribute("aria-label",w+", "+CATS[g.cat][0]+" : "+n+" sortie"+(n>1?"s":""));el.append(pb);
     const first=g.ev.slice(0,4).map(e=>'<li>'+escH(e.t)+'</li>').join("");
     const pop=new maplibregl.Popup({offset:[g.dx,-44],maxWidth:"290px",focusAfterOpen:false}).setHTML('<div class="sbl-pop" style="--c:var('+PINC[g.cat]+')"><div class="k">'+icon(g.cat,15)+' '+CATS[g.cat][0]+'</div><h4>'+escH(w)+'</h4><p>'+n+' sortie'+(n>1?'s':'')+'</p><ul>'+first+(n>4?'<li>…</li>':'')+'</ul>'+
       '<button type="button" class="sbl-btn go" data-see="1">Voir '+(n>1?'les '+n+' sorties':'la sortie')+'</button>'+

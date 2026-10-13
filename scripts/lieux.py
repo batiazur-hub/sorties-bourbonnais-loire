@@ -71,6 +71,7 @@ area["ISO3166-1"="FR"][admin_level=2]->.fr;
  nwr["opening_hours"]["historic"~"^(castle|manor|monastery|fort|palace)$"](area.fr);
  nwr["opening_hours"]["leisure"~"^(park|garden|nature_reserve)$"]["name"](area.fr););
 out center tags qt;"""
+DIAG = []
 def osm_horaires():
     cache = "data/enrich/osm-horaires.json"
     for url in OVERPASS:
@@ -88,7 +89,10 @@ def osm_horaires():
                 json.dump(out, open(cache, "w"), ensure_ascii=False, separators=(",", ":"))
                 print("OpenStreetMap :", len(out), "lieux avec horaires"); return out
         except Exception as ex:
-            print("Overpass indisponible", url, ex)
+            msg = str(ex)
+            try: msg += " " + ex.read().decode("utf-8", "ignore")[:300]
+            except Exception: pass
+            DIAG.append(url + " : " + msg[:400]); print("Overpass indisponible", url, msg[:200])
     try:
         return json.load(open(cache))
     except Exception:
@@ -152,12 +156,16 @@ def main():
     res = [r for r in meta["resources"] if r["title"].strip() == "datatourisme-place.csv"][0]
     flux = io.TextIOWrapper(ouvrir(res["url"]), encoding="utf-8-sig", newline="")
     classes_vues = Counter(); classes_gardees = Counter(); ecartes = Counter(); par_type = Counter()
-    par_dep = defaultdict(list); vus = set(); echantillons = []
+    par_dep = defaultdict(list); vus = set(); echantillons = []; ech_contacts = []
     lecteur = csv.DictReader(flux)
     for r in lecteur:
         cls = [x.rsplit("#", 1)[-1].rsplit("/", 1)[-1] for x in (r.get("Categories_de_POI") or "").split("|") if x]
         classes_vues.update(cls)
         k = "office" if set(cls) & OFFICES else type_de(cls)
+        if k == "office":
+            if len(ech_contacts) < 8: ech_contacts.append((r.get("Nom_du_POI"), (r.get("Contacts_du_POI") or "")[:300]))
+            if not re.search(r"office|tourism|touristique|information|accueil|syndicat d|point i\b|\bot\b|bureau", norm(r.get("Nom_du_POI") or "")):
+                ecartes["agence ou commerce classé office"] += 1; continue
         if not k:
             ecartes["type non retenu"] += 1; continue
         if set(cls) & PAS_VISITE and not set(cls) & MAJEURS:
@@ -215,7 +223,7 @@ def main():
     json.dump({"source": res["url"], "total": sum(par_type.values()), "types": par_type, "departements": index},
               open("data/lieux/index.json", "w"), ensure_ascii=False, indent=0)
     json.dump({"retenus_par_type": par_type, "ecartes": ecartes, "avec_horaires_osm": avec_horaires,
-               "avec_periodes": sum(1 for L in par_dep.values() for x in L if x.get("p")), "colonnes": lecteur.fieldnames, "echantillons": echantillons, "classes_gardees": classes_gardees.most_common(80),
+               "avec_periodes": sum(1 for L in par_dep.values() for x in L if x.get("p")), "colonnes": lecteur.fieldnames, "echantillons": echantillons, "contacts_offices": ech_contacts, "diag_overpass": DIAG, "classes_gardees": classes_gardees.most_common(80),
                "classes_vues": classes_vues.most_common(200)}, open("data/_lieux_stats.json", "w"), ensure_ascii=False, indent=1)
     print("Lieux retenus :", dict(par_type), "écartés :", dict(ecartes))
 

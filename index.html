@@ -229,8 +229,8 @@ body{background:var(--sbl-bg);color:var(--sbl-ink);margin:0}
 .sbl-calday h3{margin:0;font:700 1.2rem var(--sbl-display)}
 .sbl-calday .x{width:36px;height:36px;border:1px solid var(--sbl-line);border-radius:var(--sbl-radius);background:var(--sbl-surface);min-height:0;padding:0;display:inline-flex;align-items:center;justify-content:center}
 .sbl-calday .none{margin:2px 0;color:var(--sbl-muted)}
-.sbl-cal .sbl-cd{display:grid;grid-template-columns:74px minmax(0,1fr);gap:10px;align-items:start;min-height:0;width:100%;text-align:left;background:var(--sbl-surface);border:1px solid var(--sbl-line);border-left:4px solid var(--c);border-radius:var(--sbl-radius);padding:8px 10px}
-.sbl-cal .sbl-cd:hover{background:var(--sbl-hover)}
+.sbl-cal .sbl-cd,#sbl-ne .sbl-cd{display:grid;grid-template-columns:74px minmax(0,1fr);gap:10px;align-items:start;min-height:0;width:100%;text-align:left;background:var(--sbl-surface);border:1px solid var(--sbl-line);border-left:4px solid var(--c);border-radius:var(--sbl-radius);padding:8px 10px}
+.sbl-cal .sbl-cd:hover,#sbl-ne .sbl-cd:hover{background:var(--sbl-hover)}
 .sbl-cd .tm{font:700 .95rem/1.3 var(--sbl-display);color:var(--c)}
 .sbl-cd b{display:block;font-weight:600;line-height:1.3}
 .sbl-cd small{display:block;color:var(--sbl-muted);font-size:.84rem}
@@ -361,7 +361,7 @@ textarea.sbl-in{min-height:100px;resize:vertical}
 .sbl-calh button{border-radius:50%}
 .sbl-cal button[aria-pressed="true"]{border-radius:0}
 .sbl-calday h3{font-family:var(--sbl-body);font-weight:600}
-.sbl-cal .sbl-cd{border-radius:14px;border-left-width:1px;border-color:var(--sbl-line)}
+.sbl-cal .sbl-cd,#sbl-ne .sbl-cd{border-radius:14px;border-left-width:1px;border-color:var(--sbl-line)}
 .sbl-btn{border-radius:999px;border-color:var(--sbl-line)}
 .sbl-btn.go{background:var(--sbl-accent);border-color:var(--sbl-accent);color:var(--sbl-accent-ink)}
 .sbl-sheet{border-radius:28px 28px 0 0;border-top:0}
@@ -417,6 +417,28 @@ textarea.sbl-in{min-height:100px;resize:vertical}
   .sbl-intro{min-height:0;padding-block:12px}
   .sbl-sbar{top:0}
 }
+
+/* Lieux à visiter : ronds neutres, distincts des épingles de sorties */
+.sbl-lvm{width:30px;height:30px;display:grid;place-items:center;z-index:0}
+.sbl-mk{z-index:1}
+#sbl-ne{display:grid;gap:6px}
+.sbl-lv{display:grid;place-items:center;width:22px;height:22px;padding:0;border-radius:50%;border:2px solid #fff;background:#4a5866;color:#fff;cursor:pointer;box-shadow:0 1px 3px rgb(0 0 0 / .35);transition:transform .12s}
+.sbl-lv.big{width:28px;height:28px;background:#2f3b47}
+.sbl-lv:hover,.sbl-lv:focus-visible{transform:scale(1.18)}
+.sbl-lv svg{stroke-width:2.2}
+.sbl-lvt{display:inline-flex;align-items:center;gap:6px;margin-left:auto;min-height:32px;padding:0 12px 0 6px;border:1px solid var(--sbl-line);border-radius:999px;background:var(--sbl-surface);color:var(--sbl-ink);font-size:.84rem;font-weight:600}
+.sbl-lvt .dot{display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:#2f3b47;color:#fff}
+.sbl-lvt[aria-pressed="false"]{color:var(--sbl-muted)}
+.sbl-lvt[aria-pressed="false"] .dot{background:var(--sbl-muted)}
+.sbl-lvn{flex-basis:100%;color:var(--sbl-muted);font-size:.82rem}
+.sbl-lvn:empty{display:none}
+.sbl-pop.lvp .k{color:#4a5866}
+.sbl-sheet dd a{overflow-wrap:anywhere}
+.sbl-pop .lb{margin:2px 0 0;font-weight:600;font-size:.85rem}
+.lvc .tx{display:grid;gap:2px;text-align:left}
+.lvc h3{margin:0;font-size:1rem;font-weight:600;line-height:1.3}
+.lvc .m{color:var(--sbl-muted);font-size:.86rem}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .sbl-lv{background:#5c6d7d}:root:not([data-theme="light"]) .sbl-lv.big{background:#465664}}
 </style>
 
 <div class="sbl" id="sbl">
@@ -717,6 +739,9 @@ const ICONS={
   culture:'<path d="M3 9.5 12 4l9 5.5M5 10v8M9.7 10v8M14.3 10v8M19 10v8M3 20.5h18"/>',
   famille:'<path d="M12 3.2c3 0 5.3 2.6 5.3 5.9 0 3.6-2.6 6.4-5.3 6.4s-5.3-2.8-5.3-6.4c0-3.3 2.3-5.9 5.3-5.9z"/><path d="m11 15.5-.8 1.8h3.6l-.8-1.8M12 17.3c0 1.6-1.6 1.9-.6 3.7"/>',
   sport:'<circle cx="12" cy="13.5" r="7.5"/><path d="M12 13.5V9.2M9.8 2.8h4.4M12 2.8V6M18.3 6.6l1.4-1.4"/>',
+  patrimoine:'<path d="M4 21V9.5l2-1V5h2.4v2h2.2V5h2.8v2h2.2V5H18v3.5l2 1V21z"/><path d="M10 21v-3.6a2 2 0 0 1 4 0V21"/>',
+  nature:'<path d="M12 21v-5.5"/><path d="M12 3c3.6 0 6.2 2.8 6.2 6.2 0 3.3-2.7 5.9-6.2 6.3-3.5-.4-6.2-3-6.2-6.3C5.8 5.8 8.4 3 12 3z"/>',
+  loisirs:'<path d="m12 3.5 2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/>',
   pal:'<circle cx="12" cy="10" r="6.8"/><path d="M12 3.2v13.6M5.2 10h13.6M7.2 5.2l9.6 9.6M16.8 5.2l-9.6 9.6M8.6 21 12 10l3.4 11M7 21h10"/>'
 };
 const icon=(cat,s)=>'<svg class="sbl-ic" viewBox="0 0 24 24" width="'+(s||18)+'" height="'+(s||18)+'" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+ICONS[cat]+'</svg>';
@@ -775,6 +800,7 @@ function list(items){
       const all=document.createElement("button");all.type="button";all.textContent="Tout voir";all.onclick=()=>setQ("ce week-end");h.append(all);
       const rail=document.createElement("div");rail.className="sbl-rail";picks.forEach(e=>rail.append(card(e)));wk.append(h,rail)}
   }
+  {const lr=lieuxRail();if(lr)wk.append(lr)}
   if(!n){box.innerHTML='<p class="sbl-none">Rien ne correspond à ces critères. Élargissez la période ou retirez un filtre.</p>';return}
   const t=today(),a0=st.day?P(st.day):t;let key=null,cnt=0,hd=null,grp=null;
   const all=items;items=items.slice(0,st.lim||150);
@@ -885,7 +911,7 @@ function pinSvg(n,cat){return '<svg viewBox="0 0 34 46" width="34" height="46" a
   '<g transform="translate(9.5 9.4) scale(.625)" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">'+ICONS[cat]+'</g>'+
   (n>1?'<circle class="nb" cx="27" cy="7" r="7"/><text x="27" y="10.2" text-anchor="middle">'+(n>9?"9+":n)+'</text>':'')+'</svg>'}
 let PIN_ITEMS=[],pinTm=null;
-function drawPins(items){PIN_ITEMS=items;if(!map)return;if(!drawPins.hooked){drawPins.hooked=1;map.on("moveend",()=>{clearTimeout(pinTm);pinTm=setTimeout(renderPins,60)})}renderPins()}
+function drawPins(items){PIN_ITEMS=items;if(!map)return;if(!drawPins.hooked){drawPins.hooked=1;map.on("moveend",()=>{clearTimeout(pinTm);pinTm=setTimeout(()=>{renderPins();renderLieux()},60)})}renderPins()}
 function renderPins(){
   if(!map)return;pins.forEach(m=>m.remove());pins=[];
   const z=map.getZoom(),cell=360/(256*Math.pow(2,z))*46,cy=cell*Math.cos(46*Math.PI/180),B=map.getBounds(),padX=(B.getEast()-B.getWest())*.15,padY=(B.getNorth()-B.getSouth())*.15;
@@ -912,7 +938,8 @@ function renderPins(){
     pins.push(new maplibregl.Marker({element:el,anchor:"bottom",offset:[g.dx,g.dy]}).setLngLat([g.lo,g.la]).setPopup(pop).addTo(map));
   });
 }
-function pinLegend(){const l=$("sbl-leg");if(!l)return;l.innerHTML=Object.entries(CATS).filter(([k])=>k!=="pal").map(([k,v])=>'<span style="--pc:var('+PINC[k]+')"><i>'+icon(k,13)+'</i>'+v[1]+'</span>').join("")}
+function pinLegend(){const l=$("sbl-leg");if(!l)return;l.innerHTML=Object.entries(CATS).filter(([k])=>k!=="pal").map(([k,v])=>'<span style="--pc:var('+PINC[k]+')"><i>'+icon(k,13)+'</i>'+v[1]+'</span>').join("");
+  l.append(lvToggle());const n=document.createElement("span");n.className="sbl-lvn";n.id="sbl-lvn";n.setAttribute("role","status");l.append(n)}
 
 /* ---------- Calendrier (un jour choisi s'ouvre sous sa semaine) ---------- */
 function dayEvents(d){return EVENTS.filter(e=>e.S<=d&&e.E>=d&&matchBase(e)).sort((a,b)=>(a.long-b.long)||((a.h||"99")<(b.h||"99")?-1:1)||a.t.localeCompare(b.t))}
@@ -997,6 +1024,78 @@ function sheet(e){
 }
 function toast(m){const t=document.createElement("div");t.className="sbl-toast";t.textContent=m;ROOT.append(t);setTimeout(()=>t.remove(),2600)}
 
+
+/* ---------- Lieux à visiter : musées, patrimoine, nature, loisirs (DATAtourisme, mis à jour chaque semaine) ---------- */
+const KIND={musee:["Musée","Musées",ICONS.culture?"culture":"musee"],patrimoine:["Patrimoine","Patrimoine","patrimoine"],nature:["Site naturel","Nature","nature"],loisirs:["Loisirs","Loisirs","loisirs"]};
+const kIcon=(k,s)=>icon(KIND[k]?KIND[k][2]:"culture",s);
+const LV=new Map();let LV_ON=true,lvMarks=[],lvTm=null;
+try{LV_ON=localStorage.getItem("sbl-lv")!=="0"}catch(_){}
+function loadLieux(c){if(!LV.has(c))LV.set(c,fetch(DATA+"lieux/"+c+".json").then(r=>r.ok?r.json():[]).catch(()=>[]).then(a=>{LV.set(c,a);renderLieux();if(st.place||st.near)list(pick());return a}));return Promise.resolve(LV.get(c))}
+function allLieux(){const out=[];LV.forEach(a=>{if(Array.isArray(a))for(const x of a)out.push(x)});return out}
+function lvToggle(){const b=document.createElement("button");b.type="button";b.className="sbl-lvt";b.id="sbl-lvt";b.setAttribute("aria-pressed",LV_ON?"true":"false");
+  b.innerHTML='<span class="dot">'+kIcon("patrimoine",12)+'</span>Lieux à visiter';
+  b.onclick=()=>{LV_ON=!LV_ON;b.setAttribute("aria-pressed",LV_ON?"true":"false");try{localStorage.setItem("sbl-lv",LV_ON?"1":"0")}catch(_){}renderLieux()};return b}
+function renderLieux(){
+  if(!map)return;lvMarks.forEach(m=>m.remove());lvMarks=[];
+  const z=map.getZoom(),note=$("sbl-lvn");
+  if(note)note.textContent=LV_ON&&z<9?"Zoomez pour voir les musées et lieux à visiter.":"";
+  if(!LV_ON||z<9)return;
+  const B=map.getBounds(),minor=z>=12,cell=360/(256*Math.pow(2,z))*30,cy=cell*Math.cos(46*Math.PI/180),seen=new Set(),pick=[];
+  for(const x of allLieux()){if(!minor&&!x.m)continue;if(x.lon<B.getWest()||x.lon>B.getEast()||x.lat<B.getSouth()||x.lat>B.getNorth())continue;
+    const ck=Math.floor(x.lon/cell)+"|"+Math.floor(x.lat/cy);if(seen.has(ck))continue;seen.add(ck);pick.push(x);if(pick.length>=300)break}
+  pick.forEach(x=>{
+    const el=document.createElement("div");el.className="sbl-lvm";
+    const b=document.createElement("button");b.type="button";b.className="sbl-lv"+(x.m?" big":"");b.innerHTML=kIcon(x.k,x.m?15:12);
+    b.setAttribute("aria-label",KIND[x.k][0]+" : "+x.t+", "+x.w);el.append(b);
+    const pop=new maplibregl.Popup({offset:[0,-16],maxWidth:"290px",focusAfterOpen:false}).setHTML('<div class="sbl-pop lvp"><div class="k">'+kIcon(x.k,15)+' '+KIND[x.k][0]+'</div><h4>'+escH(x.t)+'</h4>'+
+      (x.l?'<p class="lb">'+escH(x.l)+'</p>':'')+'<p>'+escH(x.w)+'</p><button type="button" class="sbl-btn go" data-see="1">Voir le lieu</button></div>');
+    pop.on("open",()=>{const s=pop.getElement().querySelector("[data-see]");if(s)s.onclick=()=>{pop.remove();lieuSheet(x)}});
+    lvMarks.push(new maplibregl.Marker({element:el,anchor:"center"}).setLngLat([x.lon,x.lat]).setPopup(pop).addTo(map))});
+}
+function lieuPhoto(x){
+  const k="lv|"+x.id;if(IMG.has(k))return IMG.get(k);
+  const p=(async()=>{if(k in imgCache)return imgCache[k];if(inViewer||CFG.photos===false)return null;
+    let r=null;try{const j=await fetch("https://fr.wikipedia.org/api/rest_v1/page/summary/"+encodeURIComponent(x.t.replace(/ /g,"_"))).then(r=>r.ok?r.json():null);
+      if(j&&j.type!=="disambiguation"&&j.thumbnail&&!/\.svg|blason|logo|carte|map|locator|flag|plan_/i.test(j.thumbnail.source)&&(j.extract||"").includes(x.w.split(/[- ]/)[0]))
+        r={u:j.thumbnail.source,page:(j.content_urls&&j.content_urls.desktop&&j.content_urls.desktop.page)||""}}catch(_){}
+    imgCache[k]=r;try{localStorage.setItem("sbl-img2",JSON.stringify(imgCache))}catch(_){}return r})();
+  IMG.set(k,p);return p}
+function nearEvents(x,km0){const t=today(),lim=add(t,30);return EVENTS.filter(e=>!e.long&&e.E>=t&&e.S<=lim&&km(e,{la:x.lat,lo:x.lon})<=km0).sort((a,b)=>a.S-b.S).slice(0,5)}
+function lieuSheet(x){
+  back=document.activeElement;const h=$("sbl-sheet");
+  h.innerHTML='<div class="sbl-veil" id="sbl-veil"><div class="sbl-sheet ev" role="dialog" aria-modal="true" aria-labelledby="sbl-st" style="--c:var(--sbl-ink)">'+
+  '<div class="sbl-hero" id="sbl-hero" style="--pc:#5b6b7a"><span class="fb">'+kIcon(x.k,64)+'</span><span class="ich">'+kIcon(x.k,20)+'</span><a class="cr" hidden target="_blank" rel="noopener">Photo : Wikipédia</a><button class="cl" id="sbl-x" aria-label="Fermer">✕</button></div>'+
+  '<div class="top"><div><div class="kind"></div><h2 id="sbl-st"></h2></div></div>'+
+  '<dl><dt>Où</dt><dd id="sbl-sl"></dd><dt>Site</dt><dd><a id="sbl-su" target="_blank" rel="noopener"></a></dd><dt>Source</dt><dd id="sbl-ss"></dd></dl><p id="sbl-sd"></p>'+
+  '<p class="sbl-hint">Horaires et tarifs : consultez le site du lieu avant de vous déplacer.</p>'+
+  '<div class="sbl-add"><h3>Y aller</h3><div class="sbl-btns" id="sbl-gps"></div></div><div class="sbl-add" id="sbl-ne" hidden><h3>Sorties à proximité</h3></div></div></div>';
+  $("sbl-st").textContent=x.t;h.querySelector(".kind").textContent=KIND[x.k][0]+" · "+depName(x.z);
+  if(x.l){const s=document.createElement("span");s.className="sbl-badge";s.style.setProperty("--bc","#5b6b7a");s.textContent=x.l;s.classList.add("lg");$("sbl-st").after(s)}
+  $("sbl-sl").textContent=(x.a?x.a+", ":"")+x.w;$("sbl-sd").textContent=x.d||"";$("sbl-ss").textContent=x.src||"DATAtourisme";
+  const u=$("sbl-su");if(x.u){u.href=x.u;u.textContent=x.u.replace(/^https?:\/\/(www\.)?/,"").replace(/\/$/,"").slice(0,48)}else u.closest("dd").previousSibling.remove(),u.closest("dd").remove();
+  $("sbl-gps").innerHTML=gps(x.lat,x.lon,x.t+", "+x.w);
+  const hero=$("sbl-hero");
+  lieuPhoto(x).then(r=>{if(r){const im=new Image();im.onload=()=>{hero.style.backgroundImage='url("'+im.src+'")';hero.classList.add("ph");const c=hero.querySelector(".cr");if(r.page){c.hidden=false;c.href=r.page}};im.src=big(r.u)}else paint(hero,x.w,x.z,true)});
+  const ne=nearEvents(x,3);if(ne.length){const box=$("sbl-ne");box.hidden=false;ne.forEach(e=>{const b=document.createElement("button");b.type="button";b.className="sbl-cd";b.style.setProperty("--c","var(--sbl-c-"+e.cat+")");
+    b.innerHTML='<span class="tm">'+icon(e.cat,15)+'<span></span></span><span class="tx"><b></b><small></small></span>';b.querySelector(".tm span").textContent=e.S<today()?"en cours":e.S.getDate()+" "+MO[e.S.getMonth()];
+    b.querySelector("b").textContent=e.t;b.querySelector("small").textContent=e.w;b.onclick=()=>sheet(e);box.append(b)})}
+  const close=()=>{h.textContent="";document.removeEventListener("keydown",esc);back&&back.focus()};
+  const esc=ev=>{if(ev.key==="Escape")close()};document.addEventListener("keydown",esc);
+  $("sbl-x").onclick=close;$("sbl-veil").onclick=ev=>{if(ev.target.id==="sbl-veil")close()};$("sbl-x").focus();
+}
+function lieuCard(x){const b=document.createElement("button");b.type="button";b.className="sbl-card lvc";
+  const d=document.createElement("div");d.className="sbl-th lg";d.style.setProperty("--pc","#5b6b7a");d.innerHTML='<span class="fb">'+kIcon(x.k,30)+'</span>';
+  lieuPhoto(x).then(r=>{if(r){const im=new Image();im.onload=()=>{d.style.backgroundImage='url("'+im.src+'")';d.classList.add("ph")};im.src=r.u}else paint(d,x.w,x.z)});
+  const ic=document.createElement("span");ic.className="ich";ic.innerHTML=kIcon(x.k,17);d.append(ic);
+  const tx=document.createElement("span");tx.className="tx";tx.innerHTML='<h3></h3><span class="m"></span>';tx.querySelector("h3").textContent=x.t;tx.querySelector(".m").textContent=KIND[x.k][0]+(x.l?" · "+x.l:"");
+  b.append(d,tx);b.onclick=()=>lieuSheet(x);return b}
+function lieuxRail(){
+  if(!(st.place||st.near)||st.day)return null;
+  const L=allLieux().filter(x=>st.place?x.w===st.place:km(x,st.near)<=12).sort((a,b)=>(b.m||0)-(a.m||0)||"mlpn".indexOf(a.k[0])-"mlpn".indexOf(b.k[0])).slice(0,14);
+  if(!L.length)return null;
+  const f=document.createDocumentFragment(),h=document.createElement("div");h.className="sbl-wkh";h.innerHTML='<h2></h2>';h.firstChild.textContent="À visiter "+(st.place?"à "+st.place:"autour de "+st.near.n);
+  const rail=document.createElement("div");rail.className="sbl-rail";L.forEach(x=>rail.append(lieuCard(x)));f.append(h,rail);return f}
+
 /* ---------- Données nationales : un fichier par département (DATAtourisme, mis à jour chaque nuit) ---------- */
 const DATA=CFG.dataBase||"data/";
 let DEPIDX=null,DEPNAME={},REGION=[],NATCOM=null,NATMAP=null,MANUAL=[];
@@ -1011,7 +1110,7 @@ function dansDep(c){const n=depName(c);if(DOM[n])return DOM[n];if(PLUR.has(n))re
   if((/e$/.test(n)&&!MASC_E.has(n))||FEM_X.has(n))return "dans la "+n;return "dans le "+n}
 async function loadIndex(){try{const r=await fetch(DATA+"departements.json");if(r.ok){DEPIDX=await r.json();DEPIDX.departements.forEach(d=>DEPNAME[d.code]=d.nom);PIDX=null}}catch(_){}}
 function loadDep(c){if(!DTEV.has(c))DTEV.set(c,fetch(DATA+"dep/"+c+".json").then(r=>r.ok?r.json():[]).catch(()=>[]).then(a=>{const p=prep(a);DTEV.set(c,p);return p}));return Promise.resolve(DTEV.get(c))}
-async function ensureDeps(codes){codes=[...new Set(codes.filter(Boolean))];if(codes.every(c=>Array.isArray(DTEV.get(c))))return false;await Promise.all(codes.map(loadDep));rebuild();return true}
+async function ensureDeps(codes){codes=[...new Set(codes.filter(Boolean))];codes.forEach(loadLieux);if(codes.every(c=>Array.isArray(DTEV.get(c))))return false;await Promise.all(codes.map(loadDep));rebuild();return true}
 function loadCommunes(){if(NATCOM||loadCommunes.p)return loadCommunes.p;loadCommunes.p=fetch(DATA+"communes-fr.json").then(r=>r.ok?r.json():null).then(a=>{if(a){NATCOM=a;NATMAP=new Map(a.map(c=>[norm(c[0]).replace(/[-']/g," "),c]));PIDX=null;fillCommuneList();if(st.q){applyQ(st.q);draw()}}}).catch(()=>{});return loadCommunes.p}
 function rebuild(){
   const seen=new Set(),out=[],key=e=>norm(e.t).replace(/[^a-z0-9]/g,"").slice(0,22)+"|"+norm(e.w)+"|"+e.s;
@@ -1226,7 +1325,7 @@ async function boot(){
   if(CFG.inheritFont)ROOT.style.setProperty("--sbl-body","inherit");
   initMap();pinLegend();if(CFG.theme)setTheme(CFG.theme);draw();
   fillCommuneList();
-  loadIndex().then(()=>{subtitle();return ensureDeps(REGION)}).then(()=>{fitRegion()});
+  loadIndex().then(()=>{subtitle();return ensureDeps(REGION)}).then(()=>{if(st.place||st.near||st.z)flyTo(st);else fitRegion()});
   $("sbl-q").addEventListener("focus",()=>loadCommunes(),{once:true});
   $("sbl-prop").onclick=()=>proposeForm(st.day||"");$("sbl-mod").onclick=modPanel;sourceForm();
   await initParticip();modBadge();

@@ -34,10 +34,12 @@ def resume(d, n=260):
     return d[:n].rsplit(" ", 1)[0].rstrip(",;:") + "…"
 
 def premier_lien(contacts):
-    for x in re.split(r"[#|]", contacts or ""):
+    for x in re.split(r"[#|<>\s]+", contacts or ""):
         x = x.strip()
         if x.startswith("http"):
             return x
+        if x.startswith("www."):
+            return "https://" + x
     return ""
 
 # Type de lieu d'après les classes DATAtourisme (l'exclusion passe en premier)

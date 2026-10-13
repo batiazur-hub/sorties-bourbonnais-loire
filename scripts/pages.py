@@ -164,9 +164,10 @@ P["confidentialite.html"] = ("Politique de confidentialité", "Ce que le site en
 <p>{v("nom")} (Saryn Digital), {v("adresse")}. Contact : {mail()}.</p>
 
 <h2>Ce qui est enregistré sur votre appareil</h2>
-<p>Le site utilise le stockage local du navigateur, sans cookie, pour deux choses strictement utiles au service :</p>
+<p>Le site utilise le stockage local du navigateur, sans cookie, pour trois choses strictement utiles au service :</p>
 <ul>
 <li>les départements que vous avez choisis, pour les retrouver à la prochaine visite ;</li>
+<li>l’affichage ou non des lieux à visiter sur la carte ;</li>
 <li>les adresses des photos de communes déjà trouvées, pour éviter de les rechercher à nouveau.</li>
 </ul>
 <p>Ces informations ne quittent pas votre appareil. Vous pouvez les effacer depuis les réglages de votre navigateur (données de site). Comme elles sont nécessaires au fonctionnement demandé, elles ne nécessitent pas de bandeau de consentement selon les recommandations de la CNIL.</p>
@@ -247,6 +248,7 @@ P["plan-du-site.html"] = ("Plan du site", "Toutes les pages et tous les départe
 <li><a href="index.html#q=ce%20week-end">Ce week-end</a> · <a href="index.html#q=brocante">Brocantes et vide-greniers</a> · <a href="index.html#q=march%C3%A9">Marchés</a> · <a href="index.html#q=gratuit">Sorties gratuites</a></li>
 <li><a href="index.html#proposer">Proposer une sortie</a></li>
 <li><a href="index.html#source">Signaler une source d’événements</a></li>
+<li><a href="index.html#q=Moulins">Lieux à visiter</a> : musées, patrimoine, sites naturels et parcs, affichés sur la carte et sous chaque commune recherchée</li>
 <li><a href="index.html#borne">Mode borne tactile</a></li>
 </ul>
 <h2>Informations</h2>

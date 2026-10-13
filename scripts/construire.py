@@ -81,10 +81,12 @@ def periode_suivante(txt):
     return ps[0][0], ps[0][1], len(ps) - 1
 
 def premier_lien(contacts):
-    for x in re.split(r"[#|]", contacts or ""):
+    for x in re.split(r"[#|<>\s]+", contacts or ""):
         x = x.strip()
         if x.startswith("http"):
             return x
+        if x.startswith("www."):
+            return "https://" + x
     return ""
 
 def resume(d, n=300):

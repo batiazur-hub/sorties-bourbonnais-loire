@@ -63,8 +63,8 @@ def periodes(txt):
     return out[:3]
 
 # --- Horaires d'ouverture OpenStreetMap (Overpass) ---
-OVERPASS = ["https://overpass-api.de/api/interpreter", "https://overpass.kumi.systems/api/interpreter"]
-REQ = """[out:json][timeout:240];
+OVERPASS = ["https://overpass-api.de/api/interpreter", "https://maps.mail.ru/osm/tools/overpass/api/interpreter", "https://overpass.kumi.systems/api/interpreter"]
+REQ = """[out:json][timeout:110];
 (nwr["opening_hours"]["tourism"~"^(museum|gallery|attraction|zoo|aquarium|theme_park|viewpoint)$"]({b});
  nwr["opening_hours"]["tourism"="information"]["information"="office"]({b});
  nwr["opening_hours"]["historic"~"^(castle|manor|monastery|fort|palace)$"]({b});
@@ -72,22 +72,25 @@ REQ = """[out:json][timeout:240];
 out center tags qt;"""
 # France métropolitaine découpée en carreaux (une seule requête nationale dépasse le délai des serveurs), puis l'outre-mer
 def carreaux():
-    las = [41.3, 43.3, 45.3, 47.3, 49.3, 51.2]; los = [-5.3, -1.8, 1.7, 5.2, 9.7]
-    for i in range(len(las) - 1):
-        for j in range(len(los) - 1):
-            yield (las[i], los[j], las[i + 1], los[j + 1])
+    pas = 1.0
+    la = 41.3
+    while la < 51.2:
+        lo = -5.3
+        while lo < 9.7:
+            yield (round(la, 2), round(lo, 2), round(min(la + pas, 51.2), 2), round(min(lo + pas * 1.5, 9.7), 2))
+            lo += pas * 1.5
+        la += pas
     yield from [(15.8, -61.9, 16.6, -60.9), (14.3, -61.3, 14.9, -60.7), (2.0, -54.7, 5.9, -51.5), (-21.5, 55.1, -20.8, 55.9), (-13.1, 44.9, -12.6, 45.4)]
+import time
+DEBUT = time.time(); BUDGET = 40 * 60
 def overpass(q):
     for url in OVERPASS:
-        for essai in range(2):
-            try:
-                req = urllib.request.Request(url, data=urllib.parse.urlencode({"data": q}).encode(), headers={"User-Agent": "dans-le-coin (GitHub Actions)"})
-                return json.loads(urllib.request.urlopen(req, timeout=300).read())
-            except Exception as ex:
-                msg = str(ex)
-                try: msg += " " + ex.read().decode("utf-8", "ignore")[:120]
-                except Exception: pass
-                DIAG.append(url + " : " + msg[:200]); import time; time.sleep(20)
+        if time.time() - DEBUT > BUDGET: return None
+        try:
+            req = urllib.request.Request(url, data=urllib.parse.urlencode({"data": q}).encode(), headers={"User-Agent": "dans-le-coin (GitHub Actions)"})
+            return json.loads(urllib.request.urlopen(req, timeout=130).read())
+        except Exception as ex:
+            DIAG.append(url.split("/")[2] + " : " + str(ex)[:120]); time.sleep(3)
     return None
 DIAG = []
 def osm_horaires():
@@ -105,8 +108,9 @@ def osm_horaires():
                 vus.add(k)
                 out.append({"n": t.get("name", ""), "lat": c["lat"], "lon": c["lon"], "oh": t["opening_hours"][:200],
                             "office": t.get("information") == "office", "tel": t.get("phone", t.get("contact:phone", ""))[:30], "web": t.get("website", t.get("contact:website", ""))[:200]})
-    print("OpenStreetMap :", len(out), "lieux avec horaires,", ok, "carreaux sur 25")
-    if out and ok >= 20:
+    n = sum(1 for _ in carreaux())
+    print("OpenStreetMap :", len(out), "lieux avec horaires,", ok, "carreaux sur", n)
+    if out and ok >= n * .8:
         os.makedirs("data/enrich", exist_ok=True)
         json.dump(out, open(cache, "w"), ensure_ascii=False, separators=(",", ":"))
         return out
@@ -241,7 +245,7 @@ def main():
     json.dump({"source": res["url"], "total": sum(par_type.values()), "types": par_type, "departements": index},
               open("data/lieux/index.json", "w"), ensure_ascii=False, indent=0)
     json.dump({"retenus_par_type": par_type, "ecartes": ecartes, "avec_horaires_osm": avec_horaires,
-               "avec_periodes": sum(1 for L in par_dep.values() for x in L if x.get("p")), "colonnes": lecteur.fieldnames, "echantillons": echantillons, "contacts_offices": ech_contacts, "diag_overpass": DIAG, "classes_gardees": classes_gardees.most_common(80),
+               "avec_periodes": sum(1 for L in par_dep.values() for x in L if x.get("p")), "colonnes": lecteur.fieldnames, "echantillons": echantillons, "contacts_offices": ech_contacts, "diag_overpass": DIAG[:40], "diag_nb": len(DIAG), "classes_gardees": classes_gardees.most_common(80),
                "classes_vues": classes_vues.most_common(200)}, open("data/_lieux_stats.json", "w"), ensure_ascii=False, indent=1)
     print("Lieux retenus :", dict(par_type), "écartés :", dict(ecartes))
 

@@ -147,6 +147,8 @@ body{background:var(--sbl-bg);color:var(--sbl-ink);margin:0}
 .sbl-pin.on{transform:scale(1.25)}
 .sbl-pin svg{display:block}
 .sbl-pin .b{fill:var(--pc);stroke:#fff;stroke-width:2}
+.sbl-pin .b.mx{fill:#ffffff;stroke:#151515;stroke-width:2.2}
+.sbl-pin text.mxn{fill:#151515;font:700 11px/1 var(--sbl-display)}
 .sbl-pop .k{color:var(--c);font-weight:700;font-size:.85rem}
 .sbl-leg{display:flex;flex-wrap:wrap;gap:4px 12px;padding:8px 12px;border-top:1px solid var(--sbl-line);font-size:.84rem;color:var(--sbl-ink)}
 .sbl-leg span{display:inline-flex;align-items:center;gap:5px}
@@ -439,6 +441,15 @@ textarea.sbl-in{min-height:100px;resize:vertical}
 .lvc h3{margin:0;font-size:1rem;font-weight:600;line-height:1.3}
 .lvc .m{color:var(--sbl-muted);font-size:.86rem}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .sbl-lv{background:#5c6d7d}:root:not([data-theme="light"]) .sbl-lv.big{background:#465664}}
+
+.sbl-mh{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;padding:8px 10px;border-bottom:1px solid var(--sbl-line);font-size:.86rem}
+.sbl-mh .l{font-weight:600}
+.sbl-mh .own{color:var(--sbl-muted)}
+.sbl-mh .seg{display:inline-flex;gap:2px;margin-left:auto;background:var(--sbl-soft);border-radius:999px;padding:3px}
+.sbl-mh .seg button{min-height:32px;padding:0 11px;border:0;border-radius:999px;background:none;font-size:.84rem;font-weight:600;color:var(--sbl-muted)}
+.sbl-mh .seg button[aria-pressed="true"]{background:var(--sbl-surface);color:var(--sbl-ink);box-shadow:0 1px 2px rgb(0 0 0 / .12)}
+@media (max-width:420px){.sbl-mh .seg{margin-left:0;width:100%}.sbl-mh .seg button{flex:1;padding:0 4px}}
+.sbl.kiosk .sbl-mh .seg button{min-height:48px;font-size:1rem}
 </style>
 
 <div class="sbl" id="sbl">
@@ -474,6 +485,7 @@ textarea.sbl-in{min-height:100px;resize:vertical}
       <button role="tab" data-s="cal" aria-selected="false">Calendrier</button>
     </div>
     <div class="sbl-box sbl-mapbox">
+      <div class="sbl-mh" id="sbl-mh" role="group" aria-label="Sorties affichées sur la carte"></div>
       <div id="sbl-map" aria-label="Carte des communes avec des sorties"></div>
       <div class="sbl-fonds" id="sbl-fonds" role="group" aria-label="Fond de carte"></div>
       <div class="sbl-leg" id="sbl-leg"></div>
@@ -907,18 +919,20 @@ function gps(la,lo,label){
 }
 const escH=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]);
 const PINC={brocante:"--sbl-p-brocante",fete:"--sbl-p-fete",spectacle:"--sbl-p-spectacle",culture:"--sbl-p-culture",famille:"--sbl-p-famille",sport:"--sbl-p-sport",pal:"--sbl-p-pal"};
-function pinSvg(n,cat){return '<svg viewBox="0 0 34 46" width="34" height="46" aria-hidden="true"><path class="b" d="M17 3C9.3 3 3 9.2 3 16.9c0 10.2 12.2 24.3 13.1 25.4a1.2 1.2 0 0 0 1.8 0C18.8 41.2 31 27.1 31 16.9 31 9.2 24.7 3 17 3z"/>'+
+function pinSvg(n,cat,mix){if(mix)return '<svg viewBox="0 0 34 46" width="34" height="46" aria-hidden="true"><path class="b mx" d="M17 3C9.3 3 3 9.2 3 16.9c0 10.2 12.2 24.3 13.1 25.4a1.2 1.2 0 0 0 1.8 0C18.8 41.2 31 27.1 31 16.9 31 9.2 24.7 3 17 3z"/><text class="mxn" x="17" y="21.5" text-anchor="middle">'+(n>99?"99+":n)+'</text></svg>';
+  return '<svg viewBox="0 0 34 46" width="34" height="46" aria-hidden="true"><path class="b" d="M17 3C9.3 3 3 9.2 3 16.9c0 10.2 12.2 24.3 13.1 25.4a1.2 1.2 0 0 0 1.8 0C18.8 41.2 31 27.1 31 16.9 31 9.2 24.7 3 17 3z"/>'+
   '<g transform="translate(9.5 9.4) scale(.625)" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">'+ICONS[cat]+'</g>'+
   (n>1?'<circle class="nb" cx="27" cy="7" r="7"/><text x="27" y="10.2" text-anchor="middle">'+(n>9?"9+":n)+'</text>':'')+'</svg>'}
 let PIN_ITEMS=[],pinTm=null;
 function drawPins(items){PIN_ITEMS=items;if(!map)return;if(!drawPins.hooked){drawPins.hooked=1;map.on("moveend",()=>{clearTimeout(pinTm);pinTm=setTimeout(()=>{renderPins();renderLieux()},60)})}renderPins()}
 function renderPins(){
   if(!map)return;pins.forEach(m=>m.remove());pins=[];
-  const z=map.getZoom(),cell=360/(256*Math.pow(2,z))*46,cy=cell*Math.cos(46*Math.PI/180),B=map.getBounds(),padX=(B.getEast()-B.getWest())*.15,padY=(B.getNorth()-B.getSouth())*.15;
+  const z=map.getZoom(),mix=z<10,cell=360/(256*Math.pow(2,z))*(mix?64:46),cy=cell*Math.cos(46*Math.PI/180),B=map.getBounds(),padX=(B.getEast()-B.getWest())*.15,padY=(B.getNorth()-B.getSouth())*.15;
   const by=new Map();
   PIN_ITEMS.forEach(e=>{if(e.lon<B.getWest()-padX||e.lon>B.getEast()+padX||e.lat<B.getSouth()-padY||e.lat>B.getNorth()+padY)return;
-    const ck=Math.floor(e.lon/cell)+"|"+Math.floor(e.lat/cy),k=e.cat+"|"+ck;let g=by.get(k);if(!g){g={cat:e.cat,ck,ev:[],la:0,lo:0};by.set(k,g)}g.ev.push(e);g.la+=e.lat;g.lo+=e.lon});
-  let groups=[...by.values()];groups.forEach(g=>{g.la/=g.ev.length;g.lo/=g.ev.length});
+    const ck=Math.floor(e.lon/cell)+"|"+Math.floor(e.lat/cy),k=mix?ck:e.cat+"|"+ck;let g=by.get(k);if(!g){g={cat:e.cat,ck,ev:[],la:0,lo:0};by.set(k,g)}g.ev.push(e);g.la+=e.lat;g.lo+=e.lon});
+  let groups=[...by.values()];groups.forEach(g=>{g.la/=g.ev.length;g.lo/=g.ev.length;
+    if(mix){const c={};g.ev.forEach(e=>c[e.cat]=(c[e.cat]||0)+1);const ks=Object.keys(c);g.cat=ks.sort((a,b)=>c[b]-c[a])[0];g.mix=ks.length>1}});
   groups.sort((a,b)=>b.ev.length-a.ev.length);groups=groups.slice(0,500);
   const per=new Map();groups.forEach(g=>{(per.get(g.ck)||per.set(g.ck,[]).get(g.ck)).push(g)});
   per.forEach(gs=>{gs.sort((a,b)=>Object.keys(CATS).indexOf(a.cat)-Object.keys(CATS).indexOf(b.cat));gs.forEach((g,i)=>{g.dx=(i-(gs.length-1)/2)*17;g.dy=-Math.abs(i-(gs.length-1)/2)*3})});
@@ -927,10 +941,10 @@ function renderPins(){
     const title=one?(g.ev[0].lieu&&g.ev[0].lieu!==w?g.ev[0].lieu.replace(/ \(\d+e\)$/,"")+", "+w:w):towns.size===1?w:n+" sorties dans ce secteur";
     const el=document.createElement("div");el.className="sbl-mk";
     const pb=document.createElement("button");pb.type="button";pb.className="sbl-pin"+(st.place&&towns.has(st.place)?" on":"");pb.style.setProperty("--pc","var("+PINC[g.cat]+")");
-    pb.innerHTML=pinSvg(n,g.cat);pb.setAttribute("aria-label",title+", "+CATS[g.cat][0]+" : "+n+" sortie"+(n>1?"s":""));el.append(pb);
+    pb.innerHTML=pinSvg(n,g.cat,g.mix);pb.setAttribute("aria-label",title+", "+(g.mix?"plusieurs types":CATS[g.cat][0])+" : "+n+" sortie"+(n>1?"s":""));el.append(pb);
     const first=g.ev.slice(0,4).map(e=>'<li>'+escH(e.t)+'</li>').join("");
     const action=n===1?"la sortie":towns.size===1?"les "+n+" sorties":"de plus près";
-    const pop=new maplibregl.Popup({offset:[g.dx,-44],maxWidth:"290px",focusAfterOpen:false}).setHTML('<div class="sbl-pop" style="--c:var('+PINC[g.cat]+')"><div class="k">'+icon(g.cat,15)+' '+CATS[g.cat][0]+'</div><h4>'+escH(title)+'</h4><p>'+n+' sortie'+(n>1?'s':'')+'</p><ul>'+first+(n>4?'<li>…</li>':'')+'</ul>'+
+    const pop=new maplibregl.Popup({offset:[g.dx,-44],maxWidth:"290px",focusAfterOpen:false}).setHTML('<div class="sbl-pop" style="--c:var('+PINC[g.cat]+')"><div class="k">'+(g.mix?'Sorties variées':icon(g.cat,15)+' '+CATS[g.cat][0])+'</div><h4>'+escH(title)+'</h4><p>'+n+' sortie'+(n>1?'s':'')+'</p><ul>'+first+(n>4?'<li>…</li>':'')+'</ul>'+
       '<button type="button" class="sbl-btn go" data-see="1">'+(towns.size===1||n===1?"Voir "+action:"Zoomer ici")+'</button>'+
       (one?'<div class="sbl-poph">Y aller</div><div class="sbl-btns">'+gps(g.ev[0].lat,g.ev[0].lon,title)+'</div>':'')+'</div>');
     pop.on("open",()=>{const b=pop.getElement().querySelector("[data-see]");if(b)b.onclick=()=>{pop.remove();if(n===1){sheet(g.ev[0]);return}
@@ -1306,7 +1320,21 @@ const sk=$("sbl-skins");SKINS.forEach(([n,t],i)=>{const b=btn(n,i===0,()=>{setTh
 try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",styleMap)}catch(_){}
 new MutationObserver(styleMap).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
 
-function draw(){const items=pick();filters();list(items);drawPins(items);cal()}
+/* Carte allégée : seules les sorties proches dans le temps ont une épingle (7 jours par défaut, au choix du visiteur) */
+const MH=[["1","Aujourd’hui"],["3","3 jours"],["7","7 jours"],["30","30 jours"]];
+let MAPH="7";try{const v=localStorage.getItem("sbl-mh");if(MH.some(x=>x[0]===v))MAPH=v}catch(_){}
+function mapItems(items){
+  const own=!!st.day||!!parseQ(st.q||"").w;
+  const t=today(),end=add(t,+MAPH-1);
+  const out=own?items.filter(e=>!e.long):items.filter(e=>!e.long&&e.S<=end&&e.E>=t);
+  mhBar(own,out.length);return out}
+function mhBar(own,n){const g=$("sbl-mh");if(!g)return;g.textContent="";
+  const l=document.createElement("span");l.className="l";l.textContent=n.toLocaleString("fr-FR")+" sortie"+(n>1?"s":"")+" sur la carte";g.append(l);
+  if(own){const s=document.createElement("span");s.className="own";s.textContent=st.day?"· jour choisi dans le calendrier":"· période de votre recherche";g.append(s);return}
+  const w=document.createElement("span");w.className="seg";
+  MH.forEach(([v,t])=>{const b=document.createElement("button");b.type="button";b.textContent=t;b.setAttribute("aria-pressed",v===MAPH?"true":"false");
+    b.onclick=()=>{MAPH=v;try{localStorage.setItem("sbl-mh",v)}catch(_){}drawPins(mapItems(pick()))};w.append(b)});g.append(w)}
+function draw(){const items=pick();filters();list(items);drawPins(mapItems(items));cal()}
 
 /* Mode borne : adresse terminée par #borne */
 if(location.hash==="#borne"){ROOT.classList.add("kiosk");let tm;const reset=()=>{clearTimeout(tm);tm=setTimeout(()=>{st.day="";setQ("");$("sbl-sheet").textContent="";view("list");draw();scrollTo(0,0)},90000)};["pointerdown","keydown"].forEach(t=>addEventListener(t,reset));reset()}

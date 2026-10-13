@@ -1,15 +1,15 @@
 {
  "maj": "2026-10-13",
  "par_type": {
-  "culture": 33274,
-  "fete": 28995,
-  "sport": 8591,
+  "culture": 33276,
+  "fete": 29001,
+  "sport": 8598,
   "famille": 7311,
   "brocante": 1930,
-  "spectacle": 18235,
-  "(Paris open data)": 3050,
-  "(OpenAgenda)": 18603,
-  "(sources complémentaires)": 18071
+  "spectacle": 18238,
+  "(Paris open data)": 3059,
+  "(OpenAgenda)": 18614,
+  "(sources complémentaires)": 18069
  },
  "ecartes": {
   "trop lointain": 5536,
@@ -166,11 +166,11 @@
    433
   ],
   [
-   "Cinema",
+   "MovieTheater",
    307
   ],
   [
-   "MovieTheater",
+   "Cinema",
    307
   ],
   [
@@ -246,15 +246,15 @@
    42
   ],
   [
-   "Accommodation",
-   41
-  ],
-  [
    "RentalAccommodation",
    41
   ],
   [
    "LodgingBusiness",
+   41
+  ],
+  [
+   "Accommodation",
    41
   ],
   [
@@ -290,11 +290,11 @@
    16
   ],
   [
-   "Tour",
+   "OrderedList",
    15
   ],
   [
-   "OrderedList",
+   "Tour",
    15
   ],
   [
@@ -303,10 +303,6 @@
   ],
   [
    "LeisureComplex",
-   8
-  ],
-  [
-   "Rental",
    8
   ],
   [
@@ -319,6 +315,10 @@
   ],
   [
    "EquipmentRentalShop",
+   8
+  ],
+  [
+   "Rental",
    8
   ],
   [
@@ -342,7 +342,7 @@
    2
   ]
  ],
- "total": 98336,
+ "total": 98354,
  "rotation": {
   "paris-marches": {
    "rafraichi": "2026-10-13",

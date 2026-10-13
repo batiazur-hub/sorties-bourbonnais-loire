@@ -1,15 +1,15 @@
 {
  "maj": "2026-10-13",
  "par_type": {
-  "culture": 31529,
-  "fete": 28996,
-  "sport": 10273,
-  "famille": 6569,
-  "brocante": 1734,
-  "spectacle": 16919,
+  "culture": 31907,
+  "fete": 29630,
+  "sport": 10352,
+  "famille": 6738,
+  "brocante": 1773,
+  "spectacle": 17287,
   "(Paris open data)": 3050,
   "(OpenAgenda)": 33779,
-  "(enrichissements)": 579
+  "(sources complémentaires)": 2246
  },
  "ecartes": {
   "trop lointain": 5536,
@@ -17,6 +17,7 @@
   "doublon": 473,
   "coordonnées incohérentes": 52,
   "sans commune": 8,
+  "département inconnu": 19,
   "coordonnées corrigées (centre de la commune)": 82
  },
  "classes": [
@@ -81,11 +82,11 @@
    4596
   ],
   [
-   "ExhibitionEvent",
+   "Exhibition",
    4123
   ],
   [
-   "Exhibition",
+   "ExhibitionEvent",
    4123
   ],
   [
@@ -197,11 +198,11 @@
    134
   ],
   [
-   "Landform",
+   "NaturalHeritage",
    117
   ],
   [
-   "NaturalHeritage",
+   "Landform",
    117
   ],
   [
@@ -213,11 +214,11 @@
    108
   ],
   [
-   "CircusPlace",
+   "Cirque",
    99
   ],
   [
-   "Cirque",
+   "CircusPlace",
    99
   ],
   [
@@ -305,11 +306,11 @@
    8
   ],
   [
-   "EquipmentRental",
+   "Rental",
    8
   ],
   [
-   "Rental",
+   "EquipmentRental",
    8
   ],
   [
@@ -341,5 +342,55 @@
    2
   ]
  ],
- "total": 133428
+ "total": 97687,
+ "rotation": {
+  "paris-marches": {
+   "rafraichi": "2026-10-13",
+   "n": 579,
+   "en_cache": 579,
+   "jour": "lundi"
+  },
+  "62-pas-de-calais": {
+   "rafraichi": "2026-10-13",
+   "n": 727,
+   "en_cache": 727,
+   "jour": "mardi"
+  },
+  "63-clermont": {
+   "rafraichi": "2026-10-13",
+   "n": 427,
+   "en_cache": 427,
+   "jour": "mercredi"
+  },
+  "38-isere-musees": {
+   "rafraichi": "2026-10-13",
+   "n": 11,
+   "en_cache": 11,
+   "jour": "jeudi"
+  },
+  "06-nice": {
+   "rafraichi": "2026-10-13",
+   "n": 120,
+   "en_cache": 120,
+   "jour": "vendredi"
+  },
+  "92-gpso": {
+   "rafraichi": "2026-10-13",
+   "n": 38,
+   "en_cache": 38,
+   "jour": "samedi"
+  },
+  "idf-nature": {
+   "rafraichi": "2026-10-13",
+   "n": 24,
+   "en_cache": 24,
+   "jour": "dimanche"
+  },
+  "occitanie": {
+   "rafraichi": "2026-10-13",
+   "n": 571,
+   "en_cache": 571,
+   "jour": "lundi"
+  }
+ }
 }

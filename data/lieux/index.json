@@ -1,18 +1,18 @@
 {
 "source": "https://static.data.gouv.fr/resources/datatourisme-la-plateforme-nationale-des-donnees-touristiques/20261013-025125/datatourisme-place.csv",
-"total": 56574,
+"total": 56520,
 "types": {
 "musee": 5433,
 "patrimoine": 38195,
 "nature": 7537,
 "loisirs": 2719,
-"office": 2690
+"office": 2636
 },
 "departements": {
 "01": {
-"n": 348,
-"m": 122,
-"office": 20,
+"n": 347,
+"m": 121,
+"office": 19,
 "loisirs": 7,
 "musee": 26,
 "patrimoine": 252,
@@ -37,18 +37,18 @@
 "nature": 70
 },
 "04": {
-"n": 325,
-"m": 162,
-"office": 35,
+"n": 324,
+"m": 161,
+"office": 34,
 "loisirs": 12,
 "musee": 47,
 "patrimoine": 222,
 "nature": 9
 },
 "05": {
-"n": 336,
-"m": 174,
-"office": 52,
+"n": 332,
+"m": 170,
+"office": 48,
 "loisirs": 7,
 "musee": 42,
 "patrimoine": 209,
@@ -73,9 +73,9 @@
 "nature": 9
 },
 "08": {
-"n": 646,
-"m": 168,
-"office": 8,
+"n": 645,
+"m": 167,
+"office": 7,
 "musee": 27,
 "patrimoine": 539,
 "nature": 72
@@ -126,9 +126,9 @@
 "nature": 303
 },
 "14": {
-"n": 684,
-"m": 278,
-"office": 36,
+"n": 680,
+"m": 274,
+"office": 32,
 "loisirs": 12,
 "musee": 63,
 "patrimoine": 463,
@@ -144,9 +144,9 @@
 "nature": 11
 },
 "16": {
-"n": 315,
-"m": 117,
-"office": 19,
+"n": 314,
+"m": 116,
+"office": 18,
 "loisirs": 12,
 "musee": 29,
 "patrimoine": 250,
@@ -162,9 +162,9 @@
 "nature": 104
 },
 "18": {
-"n": 236,
-"m": 165,
-"office": 19,
+"n": 235,
+"m": 164,
+"office": 18,
 "loisirs": 15,
 "musee": 78,
 "patrimoine": 94,
@@ -207,9 +207,9 @@
 "nature": 93
 },
 "24": {
-"n": 774,
-"m": 453,
-"office": 55,
+"n": 773,
+"m": 452,
+"office": 54,
 "loisirs": 68,
 "musee": 96,
 "patrimoine": 472,
@@ -391,18 +391,18 @@
 "nature": 8
 },
 "43": {
-"n": 616,
-"m": 214,
-"office": 23,
+"n": 614,
+"m": 212,
+"office": 21,
 "loisirs": 4,
 "musee": 57,
 "patrimoine": 428,
 "nature": 104
 },
 "44": {
-"n": 1223,
-"m": 581,
-"office": 43,
+"n": 1221,
+"m": 579,
+"office": 41,
 "loisirs": 122,
 "patrimoine": 710,
 "nature": 348
@@ -532,9 +532,9 @@
 "nature": 9
 },
 "59": {
-"n": 1077,
-"m": 393,
-"office": 16,
+"n": 1072,
+"m": 388,
+"office": 11,
 "loisirs": 15,
 "musee": 164,
 "patrimoine": 830,
@@ -559,18 +559,18 @@
 "nature": 75
 },
 "62": {
-"n": 970,
-"m": 311,
-"office": 50,
+"n": 959,
+"m": 300,
+"office": 39,
 "loisirs": 145,
 "musee": 46,
 "patrimoine": 582,
 "nature": 147
 },
 "63": {
-"n": 430,
-"m": 228,
-"office": 37,
+"n": 425,
+"m": 223,
+"office": 32,
 "loisirs": 18,
 "musee": 61,
 "patrimoine": 292,
@@ -594,9 +594,9 @@
 "nature": 115
 },
 "67": {
-"n": 1820,
-"m": 900,
-"office": 38,
+"n": 1817,
+"m": 897,
+"office": 35,
 "loisirs": 161,
 "musee": 103,
 "patrimoine": 1401,
@@ -647,18 +647,18 @@
 "nature": 61
 },
 "73": {
-"n": 683,
-"m": 334,
-"office": 81,
+"n": 676,
+"m": 327,
+"office": 74,
 "loisirs": 16,
 "musee": 66,
 "patrimoine": 436,
 "nature": 84
 },
 "74": {
-"n": 840,
-"m": 411,
-"office": 57,
+"n": 839,
+"m": 410,
+"office": 56,
 "loisirs": 31,
 "musee": 94,
 "patrimoine": 518,
@@ -781,9 +781,9 @@
 "nature": 94
 },
 "88": {
-"n": 851,
-"m": 524,
-"office": 41,
+"n": 847,
+"m": 520,
+"office": 37,
 "loisirs": 40,
 "musee": 6,
 "patrimoine": 481,

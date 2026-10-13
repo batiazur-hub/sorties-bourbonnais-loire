@@ -4,17 +4,17 @@
   "patrimoine": 38195,
   "nature": 7537,
   "loisirs": 2719,
-  "office": 2690
+  "office": 2636
  },
  "ecartes": {
   "type non retenu": 290548,
   "bibliothèque, salle, cinéma": 3377,
   "hébergement, restauration, commerce": 2354,
+  "agence ou commerce classé office": 1279,
   "doublon": 1142,
-  "agence ou commerce classé office": 1225,
   "sans commune ou hors zone": 118
  },
- "avec_horaires_osm": 0,
+ "avec_horaires_osm": 485,
  "avec_periodes": 0,
  "colonnes": [
   "Nom_du_POI",
@@ -68,17 +68,56 @@
   ]
  ],
  "diag_overpass": [
-  "https://overpass-api.de/api/interpreter : HTTP Error 504: Gateway Timeout <?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n    \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">\n<head>\n  <meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" lan",
-  "https://overpass.kumi.systems/api/interpreter : HTTP Error 504: Gateway Timeout <?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n    \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">\n<head>\n  <meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" lan"
+  "overpass-api.de : HTTP Error 504: Gateway Timeout",
+  "overpass-api.de : HTTP Error 504: Gateway Timeout",
+  "maps.mail.ru : HTTP Error 504: Gateway Timeout",
+  "overpass.kumi.systems : The read operation timed out",
+  "overpass-api.de : HTTP Error 504: Gateway Timeout",
+  "maps.mail.ru : HTTP Error 504: Gateway Time-out",
+  "overpass.kumi.systems : The read operation timed out",
+  "overpass-api.de : HTTP Error 504: Gateway Timeout",
+  "maps.mail.ru : HTTP Error 504: Gateway Time-out",
+  "overpass.kumi.systems : The read operation timed out",
+  "overpass-api.de : HTTP Error 504: Gateway Timeout",
+  "maps.mail.ru : HTTP Error 504: Gateway Timeout",
+  "overpass.kumi.systems : The read operation timed out",
+  "overpass-api.de : HTTP Error 504: Gateway Timeout",
+  "overpass-api.de : HTTP Error 504: Gateway Timeout",
+  "maps.mail.ru : HTTP Error 504: Gateway Time-out",
+  "overpass-api.de : HTTP Error 504: Gateway Timeout",
+  "overpass-api.de : HTTP Error 504: Gateway Timeout",
+  "maps.mail.ru : HTTP Error 504: Gateway Time-out",
+  "overpass.kumi.systems : The read operation timed out",
+  "overpass-api.de : HTTP Error 504: Gateway Timeout",
+  "maps.mail.ru : HTTP Error 504: Gateway Time-out",
+  "overpass.kumi.systems : HTTP Error 504: Gateway Timeout",
+  "overpass-api.de : HTTP Error 504: Gateway Timeout",
+  "maps.mail.ru : HTTP Error 504: Gateway Timeout",
+  "overpass.kumi.systems : The read operation timed out",
+  "overpass-api.de : HTTP Error 504: Gateway Timeout",
+  "overpass-api.de : HTTP Error 504: Gateway Timeout",
+  "overpass-api.de : HTTP Error 504: Gateway Timeout",
+  "overpass-api.de : HTTP Error 504: Gateway Timeout",
+  "overpass-api.de : HTTP Error 504: Gateway Timeout",
+  "maps.mail.ru : HTTP Error 504: Gateway Time-out",
+  "overpass.kumi.systems : HTTP Error 504: Gateway Timeout",
+  "overpass-api.de : HTTP Error 504: Gateway Timeout",
+  "maps.mail.ru : HTTP Error 504: Gateway Time-out",
+  "overpass.kumi.systems : HTTP Error 504: Gateway Timeout",
+  "overpass-api.de : HTTP Error 504: Gateway Timeout",
+  "maps.mail.ru : HTTP Error 504: Gateway Time-out",
+  "overpass.kumi.systems : The read operation timed out",
+  "overpass-api.de : HTTP Error 504: Gateway Timeout"
  ],
+ "diag_nb": 50,
  "classes_gardees": [
   [
    "PlaceOfInterest",
-   56574
+   56520
   ],
   [
    "PointOfInterest",
-   56574
+   56520
   ],
   [
    "CulturalSite",
@@ -90,7 +129,7 @@
   ],
   [
    "LocalBusiness",
-   9390
+   9363
   ],
   [
    "Museum",
@@ -110,7 +149,7 @@
   ],
   [
    "TouristInformationCenter",
-   5380
+   5272
   ],
   [
    "Church",
@@ -138,11 +177,11 @@
   ],
   [
    "LocalTouristOffice",
-   2479
+   2440
   ],
   [
    "Store",
-   2421
+   2394
   ],
   [
    "Product",

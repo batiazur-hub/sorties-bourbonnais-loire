@@ -1,15 +1,15 @@
 {
  "maj": "2026-10-13",
  "par_type": {
-  "culture": 39603,
-  "fete": 34643,
-  "sport": 11476,
-  "famille": 7394,
-  "brocante": 1931,
-  "spectacle": 18405,
+  "culture": 33274,
+  "fete": 28995,
+  "sport": 8591,
+  "famille": 7311,
+  "brocante": 1930,
+  "spectacle": 18235,
   "(Paris open data)": 3050,
-  "(OpenAgenda)": 33779,
-  "(sources complémentaires)": 18011
+  "(OpenAgenda)": 18603,
+  "(sources complémentaires)": 18071
  },
  "ecartes": {
   "trop lointain": 5536,
@@ -17,7 +17,7 @@
   "doublon": 473,
   "coordonnées incohérentes": 52,
   "sans commune": 8,
-  "département inconnu": 19,
+  "département inconnu": 3,
   "coordonnées corrigées (centre de la commune)": 82
  },
  "classes": [
@@ -82,11 +82,11 @@
    4596
   ],
   [
-   "Exhibition",
+   "ExhibitionEvent",
    4123
   ],
   [
-   "ExhibitionEvent",
+   "Exhibition",
    4123
   ],
   [
@@ -246,15 +246,15 @@
    42
   ],
   [
-   "LodgingBusiness",
-   41
-  ],
-  [
    "Accommodation",
    41
   ],
   [
    "RentalAccommodation",
+   41
+  ],
+  [
+   "LodgingBusiness",
    41
   ],
   [
@@ -290,7 +290,7 @@
    16
   ],
   [
-   "WalkingTour",
+   "Tour",
    15
   ],
   [
@@ -298,19 +298,11 @@
    15
   ],
   [
-   "Tour",
+   "WalkingTour",
    15
   ],
   [
    "LeisureComplex",
-   8
-  ],
-  [
-   "ServiceProvider",
-   8
-  ],
-  [
-   "EquipmentRentalShop",
    8
   ],
   [
@@ -319,6 +311,14 @@
   ],
   [
    "EquipmentRental",
+   8
+  ],
+  [
+   "ServiceProvider",
+   8
+  ],
+  [
+   "EquipmentRentalShop",
    8
   ],
   [
@@ -342,7 +342,7 @@
    2
   ]
  ],
- "total": 113452,
+ "total": 98336,
  "rotation": {
   "paris-marches": {
    "rafraichi": "2026-10-13",
@@ -352,8 +352,8 @@
   },
   "62-pas-de-calais": {
    "rafraichi": "2026-10-13",
-   "n": 727,
-   "en_cache": 727,
+   "n": 733,
+   "en_cache": 733,
    "jour": "mardi"
   },
   "63-clermont": {
@@ -388,8 +388,8 @@
   },
   "occitanie": {
    "rafraichi": "2026-10-13",
-   "n": 571,
-   "en_cache": 571,
+   "n": 562,
+   "en_cache": 562,
    "jour": "lundi"
   },
   "34-herault": {
@@ -400,8 +400,8 @@
   },
   "pays-de-la-loire": {
    "rafraichi": "2026-10-13",
-   "n": 14897,
-   "en_cache": 14897,
+   "n": 15007,
+   "en_cache": 15007,
    "jour": "mercredi"
   },
   "31-toulouse-culture": {

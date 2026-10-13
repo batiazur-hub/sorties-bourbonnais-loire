@@ -64,39 +64,57 @@ def periodes(txt):
 
 # --- Horaires d'ouverture OpenStreetMap (Overpass) ---
 OVERPASS = ["https://overpass-api.de/api/interpreter", "https://overpass.kumi.systems/api/interpreter"]
-REQ = """[out:json][timeout:600];
-area["ISO3166-1"="FR"][admin_level=2]->.fr;
-(nwr["opening_hours"]["tourism"~"^(museum|gallery|attraction|zoo|aquarium|theme_park|viewpoint)$"](area.fr);
- nwr["opening_hours"]["tourism"="information"]["information"="office"](area.fr);
- nwr["opening_hours"]["historic"~"^(castle|manor|monastery|fort|palace)$"](area.fr);
- nwr["opening_hours"]["leisure"~"^(park|garden|nature_reserve)$"]["name"](area.fr););
+REQ = """[out:json][timeout:240];
+(nwr["opening_hours"]["tourism"~"^(museum|gallery|attraction|zoo|aquarium|theme_park|viewpoint)$"]({b});
+ nwr["opening_hours"]["tourism"="information"]["information"="office"]({b});
+ nwr["opening_hours"]["historic"~"^(castle|manor|monastery|fort|palace)$"]({b});
+ nwr["opening_hours"]["leisure"~"^(park|garden|nature_reserve)$"]["name"]({b}););
 out center tags qt;"""
+# France métropolitaine découpée en carreaux (une seule requête nationale dépasse le délai des serveurs), puis l'outre-mer
+def carreaux():
+    las = [41.3, 43.3, 45.3, 47.3, 49.3, 51.2]; los = [-5.3, -1.8, 1.7, 5.2, 9.7]
+    for i in range(len(las) - 1):
+        for j in range(len(los) - 1):
+            yield (las[i], los[j], las[i + 1], los[j + 1])
+    yield from [(15.8, -61.9, 16.6, -60.9), (14.3, -61.3, 14.9, -60.7), (2.0, -54.7, 5.9, -51.5), (-21.5, 55.1, -20.8, 55.9), (-13.1, 44.9, -12.6, 45.4)]
+def overpass(q):
+    for url in OVERPASS:
+        for essai in range(2):
+            try:
+                req = urllib.request.Request(url, data=urllib.parse.urlencode({"data": q}).encode(), headers={"User-Agent": "dans-le-coin (GitHub Actions)"})
+                return json.loads(urllib.request.urlopen(req, timeout=300).read())
+            except Exception as ex:
+                msg = str(ex)
+                try: msg += " " + ex.read().decode("utf-8", "ignore")[:120]
+                except Exception: pass
+                DIAG.append(url + " : " + msg[:200]); import time; time.sleep(20)
+    return None
 DIAG = []
 def osm_horaires():
     cache = "data/enrich/osm-horaires.json"
-    for url in OVERPASS:
-        try:
-            req = urllib.request.Request(url, data=urllib.parse.urlencode({"data": REQ}).encode(), headers={"User-Agent": "dans-le-coin (GitHub Actions)"})
-            js = json.loads(urllib.request.urlopen(req, timeout=900).read())
-            out = []
-            for e in js.get("elements", []):
-                t = e.get("tags") or {}; c = e.get("center") or e
-                if "lat" in c and t.get("opening_hours"):
-                    out.append({"n": t.get("name", ""), "lat": c["lat"], "lon": c["lon"], "oh": t["opening_hours"][:200],
-                                "office": t.get("information") == "office", "tel": t.get("phone", "")[:30], "web": t.get("website", "")[:200]})
-            if len(out) > 1000:
-                os.makedirs("data/enrich", exist_ok=True)
-                json.dump(out, open(cache, "w"), ensure_ascii=False, separators=(",", ":"))
-                print("OpenStreetMap :", len(out), "lieux avec horaires"); return out
-        except Exception as ex:
-            msg = str(ex)
-            try: msg += " " + ex.read().decode("utf-8", "ignore")[:300]
-            except Exception: pass
-            DIAG.append(url + " : " + msg[:400]); print("Overpass indisponible", url, msg[:200])
+    out, vus, ok = [], set(), 0
+    for bb in carreaux():
+        js = overpass(REQ.replace("{b}", ",".join(map(str, bb))))
+        if js is None: continue
+        ok += 1
+        for e in js.get("elements", []):
+            t = e.get("tags") or {}; c = e.get("center") or e
+            if "lat" in c and t.get("opening_hours"):
+                k = (round(c["lat"], 5), round(c["lon"], 5), t.get("name", ""))
+                if k in vus: continue
+                vus.add(k)
+                out.append({"n": t.get("name", ""), "lat": c["lat"], "lon": c["lon"], "oh": t["opening_hours"][:200],
+                            "office": t.get("information") == "office", "tel": t.get("phone", t.get("contact:phone", ""))[:30], "web": t.get("website", t.get("contact:website", ""))[:200]})
+    print("OpenStreetMap :", len(out), "lieux avec horaires,", ok, "carreaux sur 25")
+    if out and ok >= 20:
+        os.makedirs("data/enrich", exist_ok=True)
+        json.dump(out, open(cache, "w"), ensure_ascii=False, separators=(",", ":"))
+        return out
     try:
-        return json.load(open(cache))
+        anc = json.load(open(cache))
+        return anc if len(anc) > len(out) else out
     except Exception:
-        return []
+        return out
 
 MOTS_VIDES = {"de", "du", "des", "la", "le", "les", "l", "d", "et", "a", "au", "aux", "en", "musee", "office", "tourisme", "chateau", "eglise", "parc", "jardin", "maison", "site", "centre"}
 def mots(s):
@@ -164,7 +182,7 @@ def main():
         k = "office" if set(cls) & OFFICES else type_de(cls)
         if k == "office":
             if len(ech_contacts) < 8: ech_contacts.append((r.get("Nom_du_POI"), (r.get("Contacts_du_POI") or "")[:300]))
-            if not re.search(r"office|tourism|touristique|information|accueil|syndicat d|point i\b|\bot\b|bureau", norm(r.get("Nom_du_POI") or "")):
+            if not re.search(r"office|tourism|touristique|information|syndicat d|point i\b|\bot\b", norm(r.get("Nom_du_POI") or "")):
                 ecartes["agence ou commerce classé office"] += 1; continue
         if not k:
             ecartes["type non retenu"] += 1; continue

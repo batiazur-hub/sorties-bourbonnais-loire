@@ -474,8 +474,6 @@ textarea.sbl-in{min-height:100px;resize:vertical}
 .sbl-mh .mc button i{display:inline-flex;color:var(--pc)}
 .sbl-mh .mc button[aria-pressed="true"]{border-color:var(--sbl-ink);background:var(--sbl-ink);color:var(--sbl-bg)}
 .sbl-mh .mc button[aria-pressed="true"] i{color:var(--pc);background:#fff;border-radius:50%;padding:2px;margin-left:-4px}
-.sbl-mh .mc{flex-wrap:wrap}
-@media (max-width:600px){.sbl-mh .mc{flex-wrap:nowrap}}
 .sbl.kiosk .sbl-mh .mc button{min-height:48px;font-size:1rem}
 .sbl-leg .sbl-lvt{margin-left:0}
 
@@ -489,6 +487,27 @@ textarea.sbl-in{min-height:100px;resize:vertical}
 .sbl.embed .sbl-intro h1,.sbl.embed #sbl-sub{display:none}
 .sbl.embed .sbl-intro{padding-top:8px}
 .sbl.embed .sbl-foot>div:not(.sbl-skins),.sbl.embed .sbl-fine{display:none}
+
+/* Bulles de la carte : date et heure de chaque sortie */
+.sbl-pop .when{color:var(--sbl-ink);font-weight:600;margin:4px 0 2px}
+.sbl-pop ul.evl{max-height:min(240px,34vh);overflow:auto;overscroll-behavior:contain;list-style:none;padding:0;margin:4px 0 8px;display:grid;gap:2px;font-size:.9rem}
+.sbl-pop ul.evl button{display:grid;grid-template-columns:auto;gap:0;width:100%;text-align:left;border:0;background:none;padding:5px 6px;border-radius:8px;cursor:pointer;color:var(--sbl-ink)}
+.sbl-pop ul.evl button:hover,.sbl-pop ul.evl button:focus-visible{background:var(--sbl-hover)}
+.sbl-pop ul.evl .d{font-size:.8rem;font-weight:700;color:var(--c)}
+.sbl-pop ul.evl .t{line-height:1.3}
+.sbl-pop .more{font-size:.85rem}
+/* Ordinateur : pleine largeur, carte à hauteur d'écran, en-tête plus compact */
+@media (min-width:1100px){
+  .sbl-top .in,.sbl-main,.sbl-foot{max-width:1680px;padding-inline:clamp(24px,3vw,48px)}
+  .sbl-tabs{max-width:1680px}
+  .sbl-main{grid-template-columns:minmax(400px,.9fr) minmax(0,1.1fr);gap:clamp(24px,2.5vw,44px)}
+  .sbl-intro{padding:clamp(12px,2.5vh,36px) 16px 6px}
+  .sbl-intro h1{font-size:clamp(2rem,2.4vw,2.9rem)}
+  .sbl-sbox{max-width:860px}
+  .sbl-side{top:84px}
+  #sbl-map{height:max(400px,calc(100vh - 318px));max-height:1100px}
+}
+@media (min-width:1100px) and (max-height:820px){.sbl-intro p{display:none}.sbl-intro h1{font-size:2rem}.sbl-reg{margin-top:8px}}
 </style>
 
 <div class="sbl" id="sbl">
@@ -973,7 +992,14 @@ function pinSvg(n,cat,mix){if(mix)return '<svg viewBox="0 0 34 46" width="34" he
   '<g transform="translate(9.5 9.4) scale(.625)" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">'+ICONS[cat]+'</g>'+
   (n>1?'<circle class="nb" cx="27" cy="7" r="7"/><text x="27" y="10.2" text-anchor="middle">'+(n>9?"9+":n)+'</text>':'')+'</svg>'}
 let PIN_ITEMS=[],pinTm=null;
-function drawPins(items){PIN_ITEMS=items;if(!map)return;if(!drawPins.hooked){drawPins.hooked=1;map.on("moveend",()=>{clearTimeout(pinTm);pinTm=setTimeout(()=>{renderPins();renderLieux()},60)})}renderPins()}
+/* Une bulle ouverte reste entière dans la carte : la carte glisse si besoin */
+const popOpen=()=>pins.concat(lvMarks).some(m=>{const p=m.getPopup&&m.getPopup();return p&&p.isOpen()});
+function popClosed(){clearTimeout(pinTm);pinTm=setTimeout(()=>{if(popOpen())return;renderPins();renderLieux()},80)}
+function fitPopup(pop){pop.once("close",popClosed);requestAnimationFrame(()=>{const el=pop.getElement();if(!el||!map)return;const pr=el.getBoundingClientRect(),mr=map.getContainer().getBoundingClientRect(),m=12;
+  let dx=0,dy=0;if(pr.bottom>mr.bottom-m)dy=pr.bottom-mr.bottom+m;if(pr.top-dy<mr.top+m)dy=pr.top-mr.top-m;if(pr.right>mr.right-m)dx=pr.right-mr.right+m;if(pr.left-dx<mr.left+m)dx=pr.left-mr.left-m;
+  if(dx||dy)map.panBy([dx,dy],{duration:300})})}
+function popDate(e){const t=today();if(e.S<t)return "jusqu’au "+e.E.getDate()+" "+MO[e.E.getMonth()];return JL[e.S.getDay()].slice(0,3)+". "+e.S.getDate()+" "+MO[e.S.getMonth()]+(e.h?" · "+hh(e.h):"")}
+function drawPins(items){PIN_ITEMS=items;if(!map)return;if(!drawPins.hooked){drawPins.hooked=1;map.on("moveend",()=>{clearTimeout(pinTm);pinTm=setTimeout(()=>{if(popOpen())return;renderPins();renderLieux()},60)})}renderPins()}
 function renderPins(){
   if(!map)return;pins.forEach(m=>m.remove());pins=[];
   const z=map.getZoom(),mix=z<10,cell=360/(256*Math.pow(2,z))*(mix?64:46),cy=cell*Math.cos(46*Math.PI/180),B=map.getBounds(),padX=(B.getEast()-B.getWest())*.15,padY=(B.getNorth()-B.getSouth())*.15;
@@ -991,12 +1017,15 @@ function renderPins(){
     const el=document.createElement("div");el.className="sbl-mk";
     const pb=document.createElement("button");pb.type="button";pb.className="sbl-pin"+(st.place&&towns.has(st.place)?" on":"");pb.style.setProperty("--pc","var("+PINC[g.cat]+")");
     pb.innerHTML=pinSvg(n,g.cat,g.mix);pb.setAttribute("aria-label",title+", "+(g.mix?"plusieurs types":CATS[g.cat][0])+" : "+n+" sortie"+(n>1?"s":""));el.append(pb);
-    const first=g.ev.slice(0,4).map(e=>'<li>'+escH(e.t)+'</li>').join("");
+    const evs=g.ev.slice().sort((a,b)=>(a.S-b.S)||((a.h||"99")<(b.h||"99")?-1:1)),shown=evs.slice(0,6);
+    const first=shown.map((e,i)=>'<li><button type="button" data-ev="'+i+'"><span class="d">'+escH(popDate(e))+'</span><span class="t">'+escH(e.t)+'</span></button></li>').join("");
     const action=n===1?"la sortie":towns.size===1?"les "+n+" sorties":"de plus près";
-    const pop=new maplibregl.Popup({offset:[g.dx,-44],maxWidth:"290px",focusAfterOpen:false}).setHTML('<div class="sbl-pop" style="--c:var('+PINC[g.cat]+')"><div class="k">'+(g.mix?'Sorties variées':icon(g.cat,15)+' '+CATS[g.cat][0])+'</div><h4>'+escH(title)+'</h4><p>'+n+' sortie'+(n>1?'s':'')+'</p><ul>'+first+(n>4?'<li>…</li>':'')+'</ul>'+
+    const e0=evs[0],head=n===1?'<h4>'+escH(e0.t)+'</h4><p class="when">'+escH(when(e0))+'</p><p>'+escH(title)+'</p>'
+      :'<h4>'+escH(title)+'</h4><p>'+n+' sorties</p><ul class="evl">'+first+'</ul>'+(n>shown.length?'<p class="more">et '+(n-shown.length)+' autre'+(n-shown.length>1?'s':'')+'</p>':'');
+    const pop=new maplibregl.Popup({offset:[g.dx,-44],maxWidth:"320px",focusAfterOpen:false}).setHTML('<div class="sbl-pop" style="--c:var('+PINC[g.cat]+')"><div class="k">'+(g.mix?'Sorties variées':icon(g.cat,15)+' '+CATS[g.cat][0])+'</div>'+head+
       '<button type="button" class="sbl-btn go" data-see="1">'+(towns.size===1||n===1?"Voir "+action:"Zoomer ici")+'</button>'+
-      (one?'<div class="sbl-poph">Y aller</div><div class="sbl-btns">'+gps(g.ev[0].lat,g.ev[0].lon,title)+'</div>':'')+'</div>');
-    pop.on("open",()=>{const b=pop.getElement().querySelector("[data-see]");if(b)b.onclick=()=>{pop.remove();if(n===1){sheet(g.ev[0]);return}
+      (one?'<div class="sbl-poph">Y aller</div><div class="sbl-btns">'+gps(e0.lat,e0.lon,title)+'</div>':'')+'</div>');
+    pop.on("open",()=>{fitPopup(pop);pop.getElement().querySelectorAll("[data-ev]").forEach(x=>x.onclick=()=>{pop.remove();sheet(shown[+x.dataset.ev])});const b=pop.getElement().querySelector("[data-see]");if(b)b.onclick=()=>{pop.remove();if(n===1){sheet(g.ev[0]);return}
       if(towns.size===1&&(one||z>=13)){setPlace(w);if(innerWidth<=900)view("list");return}map.flyTo({center:[g.lo,g.la],zoom:Math.min(z+2.5,16)})}});
     pins.push(new maplibregl.Marker({element:el,anchor:"bottom",offset:[g.dx,g.dy]}).setLngLat([g.lo,g.la]).setPopup(pop).addTo(map));el.removeAttribute("tabindex");el.removeAttribute("aria-label");el.removeAttribute("role");
   });
@@ -1112,7 +1141,7 @@ function renderLieux(){
     b.setAttribute("aria-label",KIND[x.k][0]+" : "+x.t+", "+x.w);el.append(b);
     const pop=new maplibregl.Popup({offset:[0,-16],maxWidth:"290px",focusAfterOpen:false}).setHTML('<div class="sbl-pop lvp"><div class="k">'+kIcon(x.k,15)+' '+KIND[x.k][0]+'</div><h4>'+escH(x.t)+'</h4>'+
       (x.l?'<p class="lb">'+escH(x.l)+'</p>':'')+'<p>'+escH(x.w)+'</p><button type="button" class="sbl-btn go" data-see="1">Voir le lieu</button></div>');
-    pop.on("open",()=>{const s=pop.getElement().querySelector("[data-see]");if(s)s.onclick=()=>{pop.remove();lieuSheet(x)}});
+    pop.on("open",()=>{fitPopup(pop);const s=pop.getElement().querySelector("[data-see]");if(s)s.onclick=()=>{pop.remove();lieuSheet(x)}});
     lvMarks.push(new maplibregl.Marker({element:el,anchor:"center"}).setLngLat([x.lon,x.lat]).setPopup(pop).addTo(map));el.removeAttribute("tabindex");el.removeAttribute("aria-label");el.removeAttribute("role")});
 }
 function lieuPhoto(x){

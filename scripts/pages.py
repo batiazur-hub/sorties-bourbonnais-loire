@@ -9,12 +9,15 @@ import json, html, datetime as dt
 SITE = "https://batiazur-hub.github.io/sorties-bourbonnais-loire/"
 MAJ = "13 octobre 2026"
 EDITEUR = {
-    "nom": "Pulsar Digital",
-    "forme": "entreprise individuelle (micro-entreprise) de Clément Monteiro",
+    "nom": "Clément Monteiro EI",
+    "forme": "entrepreneur individuel (micro-entreprise), nom commercial « Saryn Digital »",
     "responsable": "Clément Monteiro",
-    "siret": None,        # en cours d'immatriculation
-    "adresse": None,      # adresse de l'entreprise
-    "email": None,        # adresse de contact publique
+    "siren": "109 916 320",
+    "siret": "109 916 320 00012",
+    "registre": "Registre national des entreprises (RNE), immatriculation du 17 septembre 2026",
+    "ape": "6201Z (programmation informatique)",
+    "adresse": "6 rue Les Lauriers, 58300 Decize, France",
+    "email": "clemmt@icloud.com",
 }
 
 def v(cle):
@@ -78,7 +81,9 @@ P["mentions-legales.html"] = ("Mentions légales", "Qui publie ce site, qui l’
 <h2>Éditeur</h2>
 <dl class="kv">
 <dt>Nom</dt><dd>{v("nom")}, {v("forme")}</dd>
-<dt>SIRET</dt><dd>{v("siret")}</dd>
+<dt>SIREN / SIRET</dt><dd>{v("siren")} / {v("siret")}</dd>
+<dt>Immatriculation</dt><dd>{v("registre")}</dd>
+<dt>Code APE</dt><dd>{v("ape")}</dd>
 <dt>Adresse</dt><dd>{v("adresse")}</dd>
 <dt>Contact</dt><dd>{mail()}</dd>
 <dt>Directeur de la publication</dt><dd>{v("responsable")}</dd>
@@ -156,7 +161,7 @@ P["confidentialite.html"] = ("Politique de confidentialité", "Ce que le site en
 </ul>
 
 <h2>Responsable du traitement</h2>
-<p>{v("nom")}, {v("responsable")}. Contact : {mail()}.</p>
+<p>{v("nom")} (Saryn Digital), {v("adresse")}. Contact : {mail()}.</p>
 
 <h2>Ce qui est enregistré sur votre appareil</h2>
 <p>Le site utilise le stockage local du navigateur, sans cookie, pour deux choses strictement utiles au service :</p>

@@ -1,11 +1,11 @@
 {
  "maj": "2026-10-13",
  "par_type": {
-  "culture": 20999,
-  "fete": 13321,
-  "sport": 6822,
+  "culture": 20992,
+  "fete": 13293,
+  "sport": 6808,
   "famille": 5257,
-  "brocante": 1638,
+  "brocante": 1635,
   "spectacle": 13677,
   "(Paris open data)": 3050
  },
@@ -13,60 +13,62 @@
   "trop lointain": 5536,
   "passé ou sans date": 12695,
   "doublon": 473,
-  "sans commune": 8
+  "coordonnées incohérentes": 52,
+  "sans commune": 8,
+  "coordonnées corrigées (centre de la commune)": 82
  },
  "classes": [
   [
+   "PointOfInterest",
+   58612
+  ],
+  [
    "Event",
-   58664
+   58612
   ],
   [
    "EntertainmentAndEvent",
-   58664
-  ],
-  [
-   "PointOfInterest",
-   58664
+   58612
   ],
   [
    "CulturalEvent",
-   33709
+   33694
   ],
   [
    "SportsEvent",
-   11731
+   11716
   ],
   [
    "SocialEvent",
-   9266
+   9264
   ],
   [
    "SaleEvent",
-   7897
+   7866
   ],
   [
    "ShowEvent",
-   7504
+   7503
   ],
   [
    "Product",
-   6048
+   6047
   ],
   [
    "LocalAnimation",
-   5896
+   5894
   ],
   [
    "MusicEvent",
-   5687
+   5685
   ],
   [
    "Concert",
-   5644
+   5642
   ],
   [
    "Market",
-   5476
+   5448
   ],
   [
    "ChildrensEvent",
@@ -77,20 +79,20 @@
    4596
   ],
   [
-   "Exhibition",
-   4127
+   "ExhibitionEvent",
+   4123
   ],
   [
-   "ExhibitionEvent",
-   4127
+   "Exhibition",
+   4123
   ],
   [
    "Visit",
-   3574
+   3573
   ],
   [
    "TheaterEvent",
-   2975
+   2974
   ],
   [
    "Practice",
@@ -106,11 +108,11 @@
   ],
   [
    "Conference",
-   1844
+   1843
   ],
   [
    "Festival",
-   1505
+   1501
   ],
   [
    "PlaceOfInterest",
@@ -118,7 +120,7 @@
   ],
   [
    "Game",
-   1392
+   1391
   ],
   [
    "BusinessEvent",
@@ -130,7 +132,7 @@
   ],
   [
    "SportsCompetition",
-   1066
+   1063
   ],
   [
    "FairOrShow",
@@ -153,19 +155,19 @@
    474
   ],
   [
-   "BricABrac",
-   434
-  ],
-  [
    "OpenDay",
    433
   ],
   [
-   "MovieTheater",
-   307
+   "BricABrac",
+   433
   ],
   [
    "Cinema",
+   307
+  ],
+  [
+   "MovieTheater",
    307
   ],
   [
@@ -202,7 +204,7 @@
   ],
   [
    "Commemoration",
-   110
+   109
   ],
   [
    "Rally",
@@ -245,11 +247,11 @@
    41
   ],
   [
-   "Accommodation",
+   "RentalAccommodation",
    41
   ],
   [
-   "RentalAccommodation",
+   "Accommodation",
    41
   ],
   [
@@ -285,11 +287,11 @@
    16
   ],
   [
-   "WalkingTour",
+   "OrderedList",
    15
   ],
   [
-   "OrderedList",
+   "WalkingTour",
    15
   ],
   [
@@ -301,11 +303,7 @@
    8
   ],
   [
-   "Rental",
-   8
-  ],
-  [
-   "EquipmentRentalShop",
+   "ServiceProvider",
    8
   ],
   [
@@ -313,7 +311,11 @@
    8
   ],
   [
-   "ServiceProvider",
+   "EquipmentRentalShop",
+   8
+  ],
+  [
+   "Rental",
    8
   ],
   [
@@ -337,5 +339,5 @@
    2
   ]
  ],
- "total": 64764
+ "total": 64712
 }

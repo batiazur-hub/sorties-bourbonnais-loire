@@ -4,14 +4,15 @@
   "patrimoine": 38195,
   "nature": 7537,
   "loisirs": 2719,
-  "office": 3907
+  "office": 2690
  },
  "ecartes": {
   "type non retenu": 290548,
-  "bibliothèque, salle, cinéma": 3378,
+  "bibliothèque, salle, cinéma": 3377,
   "hébergement, restauration, commerce": 2354,
-  "doublon": 1148,
-  "sans commune ou hors zone": 119
+  "doublon": 1142,
+  "agence ou commerce classé office": 1225,
+  "sans commune ou hors zone": 118
  },
  "avec_horaires_osm": 0,
  "avec_periodes": 0,
@@ -32,14 +33,52 @@
   "URI_ID_du_POI"
  ],
  "echantillons": [],
+ "contacts_offices": [
+  [
+   "Destination Nancy - Office de Tourisme",
+   "#http://www.destination-nancy.com/tourisme/"
+  ],
+  [
+   "Office de Tourisme du Grand Longwy",
+   "#http://www.longwy-tourisme.com/"
+  ],
+  [
+   "Accueil de loisirs",
+   "#https://www.labresse.fr/fr/pages/18-centres-aeres"
+  ],
+  [
+   "Office de Tourisme Coeur de Bastides - bureau d’information touristique de Monflanquin / Musée des Bastides",
+   "Office de Tourisme Coeur de Bastides - bureau d’information touristique de Monflanquin / Musée des Bastides#http://www.coeurdebastides.com/<>http://www.monflanquin-museedesbastides.com/"
+  ],
+  [
+   "Office de Tourisme Coeur de Bastides",
+   "Office de Tourisme Coeur de Bastides#http://www.coeurdebastides.com/"
+  ],
+  [
+   "La Porte Verte",
+   "#http://www.fragneslaloyere.fr/tourisme"
+  ],
+  [
+   "Office de Tourisme du Migennois",
+   "#http://www.tourisme-migennois.fr/<>https://www.facebook.com/tourisme.migennois<>https://www.instagram.com/officedetourismedumigennois/|#"
+  ],
+  [
+   "Frédérique Zeidler - Accompagnatrice en Montagne",
+   "#http://www.randonnee-vosges.fr/"
+  ]
+ ],
+ "diag_overpass": [
+  "https://overpass-api.de/api/interpreter : HTTP Error 504: Gateway Timeout <?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n    \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">\n<head>\n  <meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" lan",
+  "https://overpass.kumi.systems/api/interpreter : HTTP Error 504: Gateway Timeout <?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n    \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">\n<head>\n  <meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" lan"
+ ],
  "classes_gardees": [
   [
    "PlaceOfInterest",
-   57791
+   56574
   ],
   [
    "PointOfInterest",
-   57791
+   56574
   ],
   [
    "CulturalSite",
@@ -51,15 +90,11 @@
   ],
   [
    "LocalBusiness",
-   9558
+   9390
   ],
   [
    "Museum",
    8058
-  ],
-  [
-   "TouristInformationCenter",
-   7814
   ],
   [
    "NaturalHeritage",
@@ -71,7 +106,11 @@
   ],
   [
    "SportsAndLeisurePlace",
-   6111
+   6104
+  ],
+  [
+   "TouristInformationCenter",
+   5380
   ],
   [
    "Church",
@@ -98,12 +137,12 @@
    3494
   ],
   [
-   "Store",
-   2589
+   "LocalTouristOffice",
+   2479
   ],
   [
-   "LocalTouristOffice",
-   2574
+   "Store",
+   2421
   ],
   [
    "Product",
@@ -159,7 +198,7 @@
   ],
   [
    "ActivityProvider",
-   744
+   743
   ],
   [
    "EntertainmentAndEvent",
@@ -183,15 +222,11 @@
   ],
   [
    "Transport",
-   574
+   570
   ],
   [
    "Forest",
    555
-  ],
-  [
-   "IncomingTravelAgency",
-   552
   ],
   [
    "IndustrialSite",
@@ -286,10 +321,6 @@
    278
   ],
   [
-   "TourOperatorOrTravelAgency",
-   274
-  ],
-  [
    "FortifiedCastle",
    272
   ],
@@ -352,6 +383,14 @@
   [
    "OrderedList",
    162
+  ],
+  [
+   "AdventurePark",
+   153
+  ],
+  [
+   "Cirque",
+   150
   ]
  ],
  "classes_vues": [

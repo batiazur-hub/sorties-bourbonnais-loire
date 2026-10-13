@@ -19,7 +19,8 @@
   --sbl-bg:#f7f8f6; --sbl-surface:#ffffff; --sbl-ink:#1b2b27; --sbl-muted:#5d6e69; --sbl-line:#dfe4e1; --sbl-hover:#eff3f1;
   --sbl-head:#1d3a33; --sbl-head-ink:#f1f5f3; --sbl-accent:#d29211; --sbl-accent-ink:#1d1504;
   --sbl-land:#f0f2ec; --sbl-out:#e3e7e1; --sbl-border:#93a49e; --sbl-water:#6fa9c4;
-  --sbl-c-brocante:#a85a17; --sbl-c-fete:#2c7d52; --sbl-c-spectacle:#a53463; --sbl-c-culture:#5357a4; --sbl-c-famille:#8a6200; --sbl-c-sport:#1d6f8a; --sbl-c-pal:#5e7f1b; --sbl-bad:#b3261e;
+  --sbl-c-brocante:#b85c00; --sbl-c-fete:#2c7d52; --sbl-c-spectacle:#a53463; --sbl-c-culture:#5357a4; --sbl-c-famille:#8a6200; --sbl-c-sport:#1d6f8a; --sbl-c-pal:#5e7f1b; --sbl-bad:#b3261e;
+  --sbl-p-brocante:#f07d00; --sbl-p-fete:#2b9a4a; --sbl-p-spectacle:#d6336c; --sbl-p-culture:#6741d9; --sbl-p-famille:#e5a800; --sbl-p-sport:#1c7ed6; --sbl-p-pal:#74a520;
   --sbl-display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
   --sbl-body:"Barlow","Segoe UI",Arial,sans-serif;
   --sbl-radius:3px; --sbl-tap:44px;
@@ -99,8 +100,16 @@ body{background:var(--sbl-bg);color:var(--sbl-ink);margin:0}
 .sbl [hidden]{display:none!important}
 .sbl-mapbox{position:relative}
 .sbl .maplibregl-map{font-family:var(--sbl-body)}
-.sbl-pin{display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--sbl-ink);color:var(--sbl-bg);font:700 14px/1 var(--sbl-display);border:2px solid #fff;box-shadow:0 1px 4px rgb(0 0 0 / .45);padding:0;cursor:pointer}
-.sbl-pin.on{background:var(--sbl-accent);color:var(--sbl-accent-ink)}
+.sbl-pin{display:block;width:30px;height:42px;padding:0;border:0;background:none;cursor:pointer;filter:drop-shadow(0 2px 2px rgb(0 0 0 / .35));transform-origin:50% 100%;transition:transform .12s}
+.sbl-pin:hover,.sbl-pin:focus-visible{transform:scale(1.15)}
+.sbl-pin.on{transform:scale(1.25)}
+.sbl-pin svg{display:block}
+.sbl-pin .b{fill:var(--pc);stroke:#fff;stroke-width:2}
+.sbl-pin circle{fill:#fff}
+.sbl-pin text{fill:#fff;font:700 12px/1 var(--sbl-display)}
+.sbl-pop .k{color:var(--c);font-weight:700;font-size:.85rem}
+.sbl-leg{display:flex;flex-wrap:wrap;gap:4px 12px;padding:8px 12px;border-top:1px solid var(--sbl-line);font-size:.84rem;color:var(--sbl-ink)}
+.sbl-leg span{display:inline-flex;align-items:center;gap:5px}
 .sbl-lab{display:flex;align-items:center;gap:5px;pointer-events:none;white-space:nowrap}
 .sbl-lab i{width:6px;height:6px;border-radius:50%;background:var(--sbl-muted);flex:none}
 .sbl-lab span{font:600 12px/1 var(--sbl-body);color:var(--sbl-muted);text-shadow:0 0 3px var(--sbl-land),0 0 3px var(--sbl-land)}
@@ -262,7 +271,8 @@ textarea.sbl-in{min-height:100px;resize:vertical}
     <div class="sbl-box sbl-mapbox">
       <div id="sbl-map" aria-label="Carte des communes avec des sorties"></div>
       <div class="sbl-fonds" id="sbl-fonds" role="group" aria-label="Fond de carte"></div>
-      <div class="sbl-mapnote"><span>Touchez un rond pour voir les sorties de la commune.</span><span id="sbl-attr"></span></div>
+      <div class="sbl-leg" id="sbl-leg"></div>
+      <div class="sbl-mapnote"><span>Touchez un repère pour voir les sorties.</span><span id="sbl-attr"></span></div>
     </div>
     <div class="sbl-box sbl-calbox">
       <div class="sbl-calh"><button id="sbl-pm" aria-label="Mois précédent">‹</button><h2 id="sbl-mt2"></h2><button id="sbl-nm" aria-label="Mois suivant">›</button></div>
@@ -371,7 +381,7 @@ function pick(ignorePlace){
    .sort((x,y)=>(x.long-y.long)||(Math.max(x.S,a)-Math.max(y.S,a))||((x.h||"99")<(y.h||"99")?-1:1));}
 const $=id=>document.getElementById(id);
 function btn(label,on,fn,color){const b=document.createElement("button");b.type="button";b.className="sbl-b";b.setAttribute("aria-pressed",on?"true":"false");
-  if(color){b.style.setProperty("--c","var(--sbl-c-"+color+")");b.append(document.createElement("i"))}b.append(label);b.onclick=fn;return b}
+  if(color){b.style.setProperty("--c","var(--sbl-p-"+color+")");b.append(document.createElement("i"))}b.append(label);b.onclick=fn;return b}
 function clearRow(r){r.querySelectorAll(".sbl-b").forEach(n=>n.remove())}
 function filters(){
   const w=$("sbl-when");clearRow(w);
@@ -485,21 +495,28 @@ function gps(la,lo,label){
   return L.map(([n,u,main])=>'<a class="sbl-btn'+(main?" go":"")+'" href="'+u.replace(/"/g,"&quot;")+'" target="_blank" rel="noopener">'+n+'</a>').join("");
 }
 const escH=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]);
+const PINC={brocante:"--sbl-p-brocante",fete:"--sbl-p-fete",spectacle:"--sbl-p-spectacle",culture:"--sbl-p-culture",famille:"--sbl-p-famille",sport:"--sbl-p-sport",pal:"--sbl-p-pal"};
+function pinSvg(n){return '<svg viewBox="0 0 30 42" width="30" height="42" aria-hidden="true"><path class="b" d="M15 1C7.3 1 1 7.2 1 14.9c0 10.2 12.2 24.3 13.1 25.4a1.2 1.2 0 0 0 1.8 0C16.8 39.2 29 25.1 29 14.9 29 7.2 22.7 1 15 1z"/>'+
+  (n>1?'<text x="15" y="19.5" text-anchor="middle">'+(n>99?"99+":n)+'</text>':'<circle cx="15" cy="14.5" r="5"/>')+'</svg>'}
 function drawPins(items){
   if(!map)return;pins.forEach(m=>m.remove());pins=[];
-  const by={};items.forEach(e=>{(by[e.w]=by[e.w]||{n:0,la:e.lat,lo:e.lon,ev:[]});by[e.w].n++;by[e.w].ev.push(e)});
-  Object.entries(by).sort((a,b)=>a[1].n-b[1].n).forEach(([w,o])=>{
-    const s=Math.round(Math.min(26+o.n*2.2,46));
-    const el=document.createElement("button");el.type="button";el.className="sbl-pin"+(st.place===w?" on":"");el.style.width=el.style.height=s+"px";el.textContent=o.n;
-    el.setAttribute("aria-label",w+" : "+o.n+" sortie"+(o.n>1?"s":""));
-    const first=o.ev.slice(0,3).map(e=>'<li>'+escH(e.t)+'</li>').join("");
-    const pop=new maplibregl.Popup({offset:s/2+2,maxWidth:"290px",focusAfterOpen:false}).setHTML('<div class="sbl-pop"><h4>'+escH(w)+'</h4><p>'+o.n+' sortie'+(o.n>1?'s':'')+'</p><ul>'+first+(o.n>3?'<li>…</li>':'')+'</ul>'+
-      '<button type="button" class="sbl-btn go" data-see="1">Voir '+(o.n>1?'les '+o.n+' sorties':'la sortie')+'</button>'+
-      '<div class="sbl-poph">Y aller</div><div class="sbl-btns">'+gps(o.la,o.lo,w)+'</div></div>');
-    pop.on("open",()=>{const b=pop.getElement().querySelector("[data-see]");if(b)b.onclick=()=>{pop.remove();st.place=w;if(innerWidth<=900)view("list");draw()}});
-    pins.push(new maplibregl.Marker({element:el}).setLngLat([o.lo,o.la]).setPopup(pop).addTo(map));
+  const by={};items.forEach(e=>{const k=e.w+"|"+e.cat;(by[k]=by[k]||{w:e.w,cat:e.cat,la:e.lat,lo:e.lon,ev:[]}).ev.push(e)});
+  const per={};Object.values(by).forEach(g=>{(per[g.w]=per[g.w]||[]).push(g)});
+  Object.values(per).forEach(gs=>{gs.sort((a,b)=>Object.keys(CATS).indexOf(a.cat)-Object.keys(CATS).indexOf(b.cat));
+    gs.forEach((g,i)=>{g.dx=(i-(gs.length-1)/2)*15;g.dy=-Math.abs(i-(gs.length-1)/2)*3})});
+  Object.values(by).sort((a,b)=>b.la-a.la).forEach(g=>{
+    const n=g.ev.length,w=g.w;
+    const el=document.createElement("button");el.type="button";el.className="sbl-pin"+(st.place===w?" on":"");el.style.setProperty("--pc","var("+PINC[g.cat]+")");
+    el.innerHTML=pinSvg(n);el.setAttribute("aria-label",w+", "+CATS[g.cat][0]+" : "+n+" sortie"+(n>1?"s":""));
+    const first=g.ev.slice(0,4).map(e=>'<li>'+escH(e.t)+'</li>').join("");
+    const pop=new maplibregl.Popup({offset:[g.dx,-40],maxWidth:"290px",focusAfterOpen:false}).setHTML('<div class="sbl-pop" style="--c:var('+PINC[g.cat]+')"><div class="k">'+CATS[g.cat][0]+'</div><h4>'+escH(w)+'</h4><p>'+n+' sortie'+(n>1?'s':'')+'</p><ul>'+first+(n>4?'<li>…</li>':'')+'</ul>'+
+      '<button type="button" class="sbl-btn go" data-see="1">Voir '+(n>1?'les '+n+' sorties':'la sortie')+'</button>'+
+      '<div class="sbl-poph">Y aller</div><div class="sbl-btns">'+gps(g.la,g.lo,w)+'</div></div>');
+    pop.on("open",()=>{const b=pop.getElement().querySelector("[data-see]");if(b)b.onclick=()=>{pop.remove();if(n===1){sheet(g.ev[0]);return}st.place=w;if(innerWidth<=900)view("list");draw()}});
+    pins.push(new maplibregl.Marker({element:el,anchor:"bottom",offset:[g.dx,g.dy]}).setLngLat([g.lo,g.la]).setPopup(pop).addTo(map));
   });
 }
+function pinLegend(){const l=$("sbl-leg");if(!l)return;l.innerHTML=Object.entries(CATS).filter(([k])=>k!=="pal").map(([k,v])=>'<span style="--pc:var('+PINC[k]+')"><svg viewBox="0 0 30 42" width="11" height="15" aria-hidden="true"><path fill="var(--pc)" d="M15 1C7.3 1 1 7.2 1 14.9c0 10.2 12.2 24.3 13.1 25.4a1.2 1.2 0 0 0 1.8 0C16.8 39.2 29 25.1 29 14.9 29 7.2 22.7 1 15 1z"/></svg>'+v[1]+'</span>').join("")}
 
 /* ---------- Calendrier (un jour choisi s'ouvre sous sa semaine) ---------- */
 function matchBase(e){const words=norm(st.q.trim()).split(/\s+/).filter(Boolean);return(!st.cats.size||st.cats.has(e.cat))&&(!st.z||e.z===st.z)&&(!st.place||e.w===st.place)&&words.every(w=>e.k.includes(w))}
@@ -741,7 +758,7 @@ async function boot(){
   const towns=new Set(EVENTS.map(e=>e.w)).size;
   $("sbl-sub").textContent=EVENTS.length+" rendez-vous dans "+towns+" communes, relevés le 12 octobre 2026";
   if(CFG.inheritFont)ROOT.style.setProperty("--sbl-body","inherit");
-  initMap();if(CFG.theme)setTheme(CFG.theme);draw();
+  initMap();pinLegend();if(CFG.theme)setTheme(CFG.theme);draw();
   const dl=$("sbl-cl");dl.innerHTML=COMMUNES.map(c=>'<option value="'+escH(c[0])+'"></option>').join("");
   $("sbl-prop").onclick=()=>proposeForm(st.day||"");$("sbl-mod").onclick=modPanel;sourceForm();
   await initParticip();modBadge();

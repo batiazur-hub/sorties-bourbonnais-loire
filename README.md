@@ -1,7 +1,7 @@
-# Sorties Bourbonnais-Loire
+# Dans le coin
 
-Agenda des sorties de l'Allier, du sud Nivernais et du secteur Digoin / Paray-le-Monial :
-brocantes, fêtes, concerts, expositions, sport.
+Que faire autour de chez vous ? Agenda des sorties partout en France : brocantes, fêtes, concerts, expositions, sport.
+Données DATAtourisme (offices de tourisme) mises à jour chaque nuit, complétées à la main département par département.
 
 - Liste, carte (fonds cartes.gouv.fr / Géoplateforme IGN) et calendrier jour par jour
 - Ajout à l'agenda (Google, Outlook, .ics avec rappel) et itinéraire (Waze, Google Maps, Apple Plans)
@@ -24,4 +24,5 @@ Le thème peut aussi être changé à la volée : `SortiesBL.setTheme({...})`.
 
 ## Données
 
-`data/evenements.json` : relevé du 12 octobre 2026 (offices de tourisme, JDS, Fest.fr, Brocabrac, Vide-greniers.org, France-Voyage).
+`data/dep/<code>.json` : sorties à venir par département (DATAtourisme, chaque nuit à 6 h).
+`data/evenements.json` : relevé manuel du 12 octobre 2026 (offices de tourisme, JDS, Fest.fr, Brocabrac, Vide-greniers.org, France-Voyage).

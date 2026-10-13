@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 </head>
 <body>
-<title>Sorties Bourbonnais-Loire</title>
+<title>Dans le coin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
 <style>
@@ -385,7 +385,7 @@ textarea.sbl-in{min-height:100px;resize:vertical}
 
 <div class="sbl" id="sbl">
 <header class="sbl-top"><div class="in">
-  <div class="sbl-brand"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M12 2.5c-4 0-7.3 3.2-7.3 7.2 0 5.3 6.4 11.4 6.7 11.7.3.3.9.3 1.2 0 .3-.3 6.7-6.4 6.7-11.7 0-4-3.3-7.2-7.3-7.2zm0 9.9a2.7 2.7 0 1 1 0-5.4 2.7 2.7 0 0 1 0 5.4z"/></svg><span class="mk">Sorties</span><span class="rg">Bourbonnais · Loire</span></div>
+  <div class="sbl-brand"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M12 2.5c-4 0-7.3 3.2-7.3 7.2 0 5.3 6.4 11.4 6.7 11.7.3.3.9.3 1.2 0 .3-.3 6.7-6.4 6.7-11.7 0-4-3.3-7.2-7.3-7.2zm0 9.9a2.7 2.7 0 1 1 0-5.4 2.7 2.7 0 0 1 0 5.4z"/></svg><span class="mk">Dans le coin</span></div>
   <div class="sbl-acts"><button class="sbl-hb alt" type="button" id="sbl-mod" hidden>À valider</button><button class="sbl-hb" type="button" id="sbl-prop">Proposer une sortie</button></div>
 </div></header>
 <section class="sbl-intro"><h1>Que faire autour de chez vous&nbsp;?</h1><p id="sbl-sub"></p><button type="button" class="sbl-reg" id="sbl-reg"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg><span id="sbl-regl"></span><span class="ch">Changer</span></button></section>
@@ -912,7 +912,7 @@ function gUrl(e,r){const T=span(e),p=new URLSearchParams({action:"TEMPLATE",text
 function oUrl(e,r){const T=span(e),f=d=>d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())+"T"+pad(d.getHours())+":"+pad(d.getMinutes())+":00";
   const p=new URLSearchParams({path:"/calendar/action/compose",rru:"addevent",subject:e.t,startdt:f(T.s),enddt:f(T.e),body:notes(e,r),location:e.lieu+", "+e.w});if(T.all)p.set("allday","true");return"https://outlook.live.com/calendar/0/action/compose?"+p}
 function ics(e,r){const T=span(e),x=s=>s.replace(/[\\;,]/g,m=>"\\"+m).replace(/\n/g,"\\n");
-  const L=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Sorties Bourbonnais-Loire//FR","BEGIN:VEVENT","UID:"+e.id+"@sorties-bourbonnais-loire","DTSTAMP:"+new Date().toISOString().replace(/[-:]/g,"").slice(0,15)+"Z",
+  const L=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Dans le coin//FR","BEGIN:VEVENT","UID:"+e.id+"@dans-le-coin","DTSTAMP:"+new Date().toISOString().replace(/[-:]/g,"").slice(0,15)+"Z",
    T.all?"DTSTART;VALUE=DATE:"+stamp(T.s,1):"DTSTART;TZID=Europe/Paris:"+stamp(T.s),T.all?"DTEND;VALUE=DATE:"+stamp(T.e,1):"DTEND;TZID=Europe/Paris:"+stamp(T.e),
    "SUMMARY:"+x(e.t),"LOCATION:"+x(e.lieu+", "+e.w),"DESCRIPTION:"+x(e.d+(e.u?"\n"+e.u:""))].concat(e.u?["URL:"+e.u]:[]);
   if(r)L.push("BEGIN:VALARM","ACTION:DISPLAY","DESCRIPTION:"+x(e.t),"TRIGGER:-"+r,"END:VALARM");L.push("END:VEVENT","END:VCALENDAR");return L.join("\r\n")}

@@ -1,271 +1,4169 @@
 {
- "oa_err": "'utf-8' codec can't decode byte 0x8b in position 1: invalid start byte",
- "marches_champs": [
+ "oa_champs": [
   [
-   "id_marche",
-   "int",
-   "Identifiant marché"
+   "uid",
+   "text"
   ],
   [
-   "nom_court",
-   "text",
-   "Nom court"
+   "slug",
+   "text"
   ],
   [
-   "nom_long",
-   "text",
-   "Nom complet"
+   "canonicalurl",
+   "text"
   ],
   [
-   "produit",
-   "text",
-   "Produit"
+   "title_fr",
+   "text"
   ],
   [
-   "ardt",
-   "int",
-   "Arrondissement"
+   "description_fr",
+   "text"
   ],
   [
-   "localisation",
-   "text",
-   "Localisation"
+   "longdescription_fr",
+   "text"
   ],
   [
-   "jours_tenue",
-   "text",
-   "Jours de tenue"
+   "conditions_fr",
+   "text"
   ],
   [
-   "lundi",
-   "int",
-   "LUNDI"
+   "keywords_fr",
+   "text"
   ],
   [
-   "mardi",
-   "int",
-   "MARDI"
+   "image",
+   "text"
   ],
   [
-   "mercredi",
-   "int",
-   "MERCREDI"
+   "imagecredits",
+   "text"
   ],
   [
-   "jeudi",
-   "int",
-   "JEUDI"
+   "thumbnail",
+   "text"
   ],
   [
-   "vendredi",
-   "int",
-   "VENDREDI"
+   "originalimage",
+   "text"
   ],
   [
-   "samedi",
-   "int",
-   "SAMEDI"
+   "updatedat",
+   "datetime"
   ],
   [
-   "dimanche",
-   "int",
-   "DIMANCHE"
+   "daterange_fr",
+   "text"
   ],
   [
-   "secteur",
-   "text",
-   "Secteur"
+   "firstdate_begin",
+   "datetime"
   ],
   [
-   "gestionnaire",
-   "text",
-   "Gestionnaire"
+   "firstdate_end",
+   "datetime"
   ],
   [
-   "lineaire",
-   "double",
-   "Linéaire commercial"
+   "lastdate_begin",
+   "datetime"
   ],
   [
-   "h_deb_sem_1",
-   "text",
-   "Heure début en semaine"
+   "lastdate_end",
+   "datetime"
   ],
   [
-   "h_fin_sem_1",
-   "text",
-   "Heure fin en semaine"
+   "timings",
+   "text"
   ],
   [
-   "h_deb_sam",
-   "text",
-   "Heure début le samedi"
+   "accessibility",
+   "text"
   ],
   [
-   "h_fin_sam",
-   "text",
-   "Heure fin le samedi"
+   "accessibility_label_fr",
+   "text"
   ],
   [
-   "h_deb_dim",
-   "text",
-   "Heure début le dimanche"
+   "location_uid",
+   "text"
   ],
   [
-   "h_fin_dim",
-   "text",
-   "Heure fin le dimanche"
-  ],
-  [
-   "geo_shape",
-   "geo_shape",
-   "geo_shape"
-  ],
-  [
-   "geo_point_2d",
-   "geo_point_2d",
+   "location_coordinates",
    "geo_point_2d"
+  ],
+  [
+   "location_name",
+   "text"
+  ],
+  [
+   "location_address",
+   "text"
+  ],
+  [
+   "location_district",
+   "text"
+  ],
+  [
+   "location_insee",
+   "text"
+  ],
+  [
+   "location_postalcode",
+   "text"
+  ],
+  [
+   "location_city",
+   "text"
+  ],
+  [
+   "location_department",
+   "text"
+  ],
+  [
+   "location_region",
+   "text"
+  ],
+  [
+   "location_countrycode",
+   "text"
+  ],
+  [
+   "location_image",
+   "text"
+  ],
+  [
+   "location_imagecredits",
+   "text"
+  ],
+  [
+   "location_phone",
+   "text"
+  ],
+  [
+   "location_website",
+   "text"
+  ],
+  [
+   "location_links",
+   "text"
+  ],
+  [
+   "location_tags",
+   "text"
+  ],
+  [
+   "location_description_fr",
+   "text"
+  ],
+  [
+   "location_access_fr",
+   "text"
+  ],
+  [
+   "attendancemode",
+   "text"
+  ],
+  [
+   "onlineaccesslink",
+   "text"
+  ],
+  [
+   "status",
+   "text"
+  ],
+  [
+   "age_min",
+   "int"
+  ],
+  [
+   "age_max",
+   "int"
+  ],
+  [
+   "originagenda_title",
+   "text"
+  ],
+  [
+   "originagenda_uid",
+   "text"
+  ],
+  [
+   "contributor_email",
+   "text"
+  ],
+  [
+   "contributor_contactnumber",
+   "text"
+  ],
+  [
+   "contributor_contactname",
+   "text"
+  ],
+  [
+   "contributor_contactposition",
+   "text"
+  ],
+  [
+   "contributor_organization",
+   "text"
+  ],
+  [
+   "category",
+   "text"
+  ],
+  [
+   "country_fr",
+   "text"
+  ],
+  [
+   "registration",
+   "text"
+  ],
+  [
+   "links",
+   "text"
   ]
  ],
- "marches_ex": [
+ "oa_meta": {
+  "title": "Public events - OpenAgenda",
+  "license": "Open License v1.0",
+  "modified": "2024-04-08T11:13:21+00:00",
+  "records_count": 1291200,
+  "publisher": "OpenAgenda"
+ },
+ "oa_a_venir": [
   {
-   "id_marche": "16",
-   "nom_court": "CHARONNE",
-   "nom_long": "MARCHÉ CHARONNE",
-   "produit": "Alimentaire",
-   "ardt": "11",
-   "localisation": "terre-plein du boulevard de Charonne entre le n° 131 du bd  et la rue Alexandre-Dumas",
-   "jours_tenue": "mercredi, samedi",
-   "lundi": "0",
-   "mardi": "0",
-   "mercredi": "1",
-   "jeudi": "0",
-   "vendredi": "0",
-   "samedi": "1",
-   "dimanche": "0",
-   "secteur": "A",
-   "gestionnaire": "Bensidoun",
-   "lineaire": "783.0",
-   "h_deb_sem_1": "07:00",
-   "h_fin_sem_1": "13:30",
-   "h_deb_sam": "07:00",
-   "h_fin_sam": "14:30",
-   "h_deb_dim": "None",
-   "h_fin_dim": "None",
-   "geo_shape": "{'type': 'Feature', 'geometry': {'coordinates': [[[[2.3959264903923048, 48.85436121457507], [2.3959224205982053, 48.85436088555237], [2.3959183210848884, 48.85436088644064], [2.3959142518254275, 48.85",
-   "geo_point_2d": "{'lon': 2.394470309614572, 'lat': 48.856035907753544}"
+   "n": 45983
   },
   {
-   "id_marche": "22",
-   "nom_court": "LEDRU ROLLIN",
-   "nom_long": "MARCHÉ LEDRU ROLLIN",
-   "produit": "Alimentaire",
-   "ardt": "12",
-   "localisation": "avenue Ledru-Rollin, coté pair, entre les rues de Lyon et de Bercy",
-   "jours_tenue": "jeudi, samedi",
-   "lundi": "0",
-   "mardi": "0",
-   "mercredi": "0",
-   "jeudi": "1",
-   "vendredi": "0",
-   "samedi": "1",
-   "dimanche": "0",
-   "secteur": "A",
-   "gestionnaire": "Bensidoun",
-   "lineaire": "161.0",
-   "h_deb_sem_1": "07:00",
-   "h_fin_sem_1": "13:30",
-   "h_deb_sam": "07:00",
-   "h_fin_sam": "14:30",
-   "h_deb_dim": "None",
-   "h_fin_dim": "None",
-   "geo_shape": "{'type': 'Feature', 'geometry': {'coordinates': [[[2.371270470346093, 48.847725828192], [2.371040324140128, 48.84759556623295], [2.371022643418843, 48.847585499416525], [2.370959382897022, 48.84754984",
-   "geo_point_2d": "{'lon': 2.3704187659243154, 'lat': 48.84729072928233}"
+   "n": 45983
   },
   {
-   "id_marche": "39",
-   "nom_court": "VILLEMAIN",
-   "nom_long": "MARCHÉ VILLEMAIN",
-   "produit": "Alimentaire",
-   "ardt": "14",
-   "localisation": "avenue Villemain sur le terre-plein, entre cette avenue et la rue d'Alésia",
-   "jours_tenue": "mercredi, dimanche",
-   "lundi": "0",
-   "mardi": "0",
-   "mercredi": "1",
-   "jeudi": "0",
-   "vendredi": "0",
-   "samedi": "0",
-   "dimanche": "1",
-   "secteur": "A",
-   "gestionnaire": "Bensidoun",
-   "lineaire": "259.0",
-   "h_deb_sem_1": "07:00",
-   "h_fin_sem_1": "13:30",
-   "h_deb_sam": "None",
-   "h_fin_sam": "None",
-   "h_deb_dim": "07:00",
-   "h_fin_dim": "14:30",
-   "geo_shape": "{'type': 'Feature', 'geometry': {'coordinates': [[[2.3161878062927657, 48.83145057726141], [2.3163049855284195, 48.831423979921006], [2.3168338774414328, 48.831303423533726], [2.316985163148194, 48.83",
-   "geo_point_2d": "{'lon': 2.317076032026818, 'lat': 48.831296189544595}"
+   "n": 45983
+  },
+  {
+   "n": 45983
+  },
+  {
+   "n": 45983
+  },
+  {
+   "n": 45983
+  },
+  {
+   "n": 45983
+  },
+  {
+   "n": 45983
+  },
+  {
+   "n": 45983
+  },
+  {
+   "n": 45983
   }
  ],
- "lepal": {
-  "https://www.lepal.com/decouvrir/actualites/actualites-de-la-fondation-le-pal-nature": {
-   "titre": "Toutes les news et actualités du parc d&#039;attractions et parc animalier Le PAL",
-   "texte": " Toutes les news et actualités du parc d&#039;attractions et parc animalier Le PAL Le parc est fermé mais l&#039;aventure continue en octobre, venez vivre l&#039;été indien aux Lodges du PAL ! 10 jours 10 heures 10 minutes &nbsp;&nbsp; En savoir plus Fermer à vous de jouer ! Je cherche… Ce champ est obligatoire. Menu Fermer le menu Animaux &amp; présentations Tous les animaux Représentations animalières Rencontres soigneurs Explorations animalières Attractions Toutes les attractions À sensations fortes Pour toute la famille Pour les enfants Séjours Tous les séjours Les Lodges du PAL Le PAL Savana RESERVE Découvrir Le PAL Philosophie du PAL Missions du zoo Expériences immersives Botanique Actualités Préparer sa visite Tarifs et achat des billets Pass saison Calendrier et horaires Accès et services Restauration Plan du parc S&#039;engager FONDATION Le PAL NATURE Les projets de la Fondation Parrainer un animal Actualités de la Fondation Mécénat Je suis... CSE Groupe Séminaire École Liens utiles Recrutement Presse Partenaires Objets perdus Nous contacter Préparer votre visite ! Consulter la foire aux questions ! Je télécharge l&#039;application ! Je suis... CSE Groupe Séminaire École Liens utiles Recrutement Presse Partenaires Objets perdus Nous contacter FR FR EN Billets Séjours Billets Séjours Accueil Découvrir Listes des actualités Actualités Naissances, nouveautés, nouveaux venus, bons plans, astuces, journées à thèmes... Découvrez toutes les actualités du parc Le PAL. Mardi 13 octobre Parc fermé Voir le calendrier Page Toutes les actualités Actualité du Parc Actualités de la Fondation Le PAL Nature Actualités séminaire Actualités de la Fondation Le PAL Nature Missions, actions, projets, partenaires, journées à thème... Découvrez toutes les actualités de La Fondation Le PAL Nature. Actualités de la Fondation Le PAL Nature Journée de la Fondation 2026 Rendez-vous le dimanche 4 octobre pour participer à la 15ème Journée de la Fondation. Un événement dédié à la biodiversité et à la préservation de la faune et de la flore. Publié le 30/08/2026 Actualités de la Fondation Le PAL Nature Programme des manifestations 2026 Découvrez l'ensemble du programme des manifestations organisées par la FONDATION Le PAL NATURE ! Publié le 11/06/2026 Actualités de la Fondation Le PAL Nature Journée de la Fondation 2025 Cette année, réservez votre dimanche 5 octobre pour participer à la Journée de la Fondation ; dédiée à la préservation de la faune et de la flore, c'est l’évènement à ne pas manquer ! Publié le 24/02/2026 Actualités de la Fondation Le PAL Nature Venons en aide aux Manchots du Cap ! Face à un déclin alarmant, le Manchot du Cap est statué comme espèce en danger. SANCCOB, projet soutenu par la Fondation Le PAL Nature, s'engage depuis des années pour sa protection et sa conservation. Publié le 24/02/2026 Actualités de la Fondation Le PAL Nature Petit aiglon deviendra grand En France, le pygargue à queue blanche nidifie sur un arbre solide dans un bois tranquille à l’abri des dérangements. Le nid est rechargé chaque année dès la fin de l’hiver, le mâle apportant la plupart des matériaux tandis que la femelle arrange le nid. Publié le 24/02/2026 Actualités de la Fondation Le PAL Nature Journée de la Fondation édition 2023 Retour sur cette belle journée de sensibilisation à la conservation durant laquelle tous les records ont été battus ! Découvrez les chiffres de cette journée ! Publié le 24/02/2026 Actualités de la Fondation Le PAL Nature AFDPZ – C",
-   "liens": [
-    "/decouvrir/actualites/actualites-de-la-fondation-le-pal-nature",
-    "/decouvrir/actualites/actualites-de-la-fondation-le-pal-nature/afdpz-commission-conservation",
-    "/decouvrir/actualites/actualites-de-la-fondation-le-pal-nature/journee-de-la-fondation-2025",
-    "/decouvrir/actualites/actualites-de-la-fondation-le-pal-nature/journee-de-la-fondation-2026",
-    "/decouvrir/actualites/actualites-de-la-fondation-le-pal-nature/journee-de-la-fondation-edition-2023",
-    "/decouvrir/actualites/actualites-de-la-fondation-le-pal-nature/la-soiree-des-nocturnes-2022",
-    "/decouvrir/actualites/actualites-de-la-fondation-le-pal-nature/le-pal-run-2021",
-    "/decouvrir/actualites/actualites-de-la-fondation-le-pal-nature/le-retour-du-pygargue-a-queue-blanche",
-    "/decouvrir/actualites/actualites-de-la-fondation-le-pal-nature/le-saviez-vous",
-    "/decouvrir/actualites/actualites-de-la-fondation-le-pal-nature/petit-aiglon-deviendra-grand",
-    "/decouvrir/actualites/actualites-de-la-fondation-le-pal-nature/programme-des-manifestations-2026",
-    "/decouvrir/actualites/actualites-de-la-fondation-le-pal-nature/une-journee-de-la-fondation-qui-a-du-sens",
-    "/decouvrir/actualites/actualites-de-la-fondation-le-pal-nature/venons-en-aide-aux-manchots-du-cap",
-    "/engager/page/fondation-le-pal",
-    "/engager/projets-de-la-fondation",
-    "https://www.lepal.com/decouvrir/actualites/actualites-de-la-fondation-le-pal-nature"
-   ]
+ "oa_par_dep": [
+  {
+   "location_department": "Paris",
+   "n": 2983
   },
-  "https://www.lepal.com/fondation-le-pal-nature": "HTTP Error 404: Not Found",
-  "https://www.lepal.com/decouvrir/fondation-le-pal-nature": "HTTP Error 404: Not Found",
-  "https://en.lepal.com/discover/news/news-from-the-le-pal-nature-foundation/foundation-day-2026": {
-   "titre": "Foundation Day 2026",
-   "texte": " Foundation Day 2026 The park is closed but the adventure continues in October—come experience Indian summer at Les Lodges du PAL ! 10 jours 10 heures 10 minutes &nbsp;&nbsp; More infos Fermer à vous de jouer ! Je cherche… Ce champ est obligatoire. Menu Close menu Animals &amp; shows All the animals Shows Caregiver meetings Animal explorations Attractions All attractions Thrills aplenty For the family For children Stays All stays The Lodges of PAL The PAL Savana RESERVE Discover Philosophy of PAL Zoo missions Immersive experiences Botanique News Prepare your visit Fares and ticket purchase Season pass Calendar and hours Access and services Restoration Park map To commit Le PAL Nature Foundation Foundation projects Sponsor an animal Foundation news Patronage Je suis... CSE Groupe Séminaire École Useful links Recruitment Press Partners Objets perdus Contact us Prepare your visit! Consulter la foire aux questions ! Je télécharge l&#039;application ! Useful links Recruitment Press Partners Objets perdus Contact us EN EN FR Tickets Stays Tickets Stays Home Discover News Lists 2026 Foundation Day 2026 Foundation Day Share on News from the Le PAL Nature Foundation Tuesday 13 october See the calendar Join us on October 4, 2026, for Foundation Day Save the date of October 4, 2026 to participate to the Foundation Day of the&nbsp; Le PAL NATURE&#39;S FOUNDATION ,&nbsp;a key event dedicated to the protection of flora and fauna. Foundation Day in a Nutshell&hellip; Every year during this time, the&nbsp; Le PAL NATURE&#39;S FOUNDATION &nbsp; celebrate the world&#39;s biodiversity. This event attracts many participants and aims to raise visitors&#39; awareness of the crucial importance of species conservation. Together with&nbsp; dedicated organizations &nbsp;and passionate volunteers, we&#39;ll be here to answer all your questions. Take this opportunity to discover or rediscover our Sustainable Village ! Coming up... For this 15th edition , visitors will be treated to special activities throughout the wildlife park. Stop by the Foundation&rsquo;s booth to discover a variety of eco-friendly items. All funds raised during the day will be donated to our partner organizations . Pratical Informations The park will be open from 10:00 a.m. to 5:30 p.m . (rides closed). Admission to this event is &euro;12&mdash;one price for all (for anyone 1 meter or taller, measured while wearing shoes) . You can purchase tickets online here or at the door on the day of the event.Admission is free for children under one meter tall (measured with shoes on). Vacation checks are accepted. Season Pass and&nbsp; CSE &nbsp; tickets will not be accepted on that day.&nbsp; Dining options will be available on-site at our restaurants (vacation checks accepted) Don&#39;t forget to stop by the Comptoir de l&#39;Ours to pick up some memorable souvenirs. For more information, check out our dedicated&nbsp; Facebook page ! Join us on October 4, 2026, and let&rsquo;s work together to protect our planet! BOOK NOW Fill up on new things! Our last News Births, new arrivals, new arrivals, tips, tricks, theme days ... Stay informed throughout the year of the latest news from the park. Your favorite park will no longer have any secrets for you! All the News News from the Le PAL Nature Foundation 2026 Events Programme Discover the full programme of events organised by the Le PAL NATURE FOUNDATION ! Published at 11/06/2026 News from the Le PAL Nature Foundation Published at 24/02/2026 News from the",
-   "liens": [
-    "/discover/news/actualites-de-la-fondation-le-pal-nature",
-    "https://billetterie.lepal.com/fr/tag/journee-de-la-fondation-le-pal-nature-2026?_gl=1%2a1v241uh%2a_gcl_au%2aMTUzMzA4NjgxNi4xNzg3OTA3MDU4Li0uLS4xNzg4NTM2MDU1LjEyNzQyOTE4MzEuMTc4ODUzNjA1Ni4xNzg4NTM2MDU1%2a_ga%2aMTIxMDgzNjIxNC4xNzg3OTA3MDU1%2a_ga_4YHQ1VDS9L%2aczE3ODg3ODkzMzAkbzMyJGcxJHQxNzg4NzkxNzkxJGo2MCRsMCRoNjAxNzMwOTk0",
-    "https://www.lepal.com/decouvrir/actualites/actualites-de-la-fondation-le-pal-nature/journee-de-la-fondation-2026",
-    "https://www.lepal.com/engager/projets-de-la-fondation"
-   ]
+  {
+   "location_department": "Loire-Atlantique",
+   "n": 2964
   },
-  "https://www.lepal.com/agenda": "HTTP Error 404: Not Found",
-  "https://www.lepal.com/decouvrir/actualites": {
-   "titre": "Toutes les news et actualités du parc d&#039;attractions et parc animalier Le PAL",
-   "texte": " Toutes les news et actualités du parc d&#039;attractions et parc animalier Le PAL Le parc est fermé mais l&#039;aventure continue en octobre, venez vivre l&#039;été indien aux Lodges du PAL ! 10 jours 10 heures 10 minutes &nbsp;&nbsp; En savoir plus Fermer à vous de jouer ! Je cherche… Ce champ est obligatoire. Menu Fermer le menu Animaux &amp; présentations Tous les animaux Représentations animalières Rencontres soigneurs Explorations animalières Attractions Toutes les attractions À sensations fortes Pour toute la famille Pour les enfants Séjours Tous les séjours Les Lodges du PAL Le PAL Savana RESERVE Découvrir Le PAL Philosophie du PAL Missions du zoo Expériences immersives Botanique Actualités Préparer sa visite Tarifs et achat des billets Pass saison Calendrier et horaires Accès et services Restauration Plan du parc S&#039;engager FONDATION Le PAL NATURE Les projets de la Fondation Parrainer un animal Actualités de la Fondation Mécénat Je suis... CSE Groupe Séminaire École Liens utiles Recrutement Presse Partenaires Objets perdus Nous contacter Préparer votre visite ! Consulter la foire aux questions ! Je télécharge l&#039;application ! Je suis... CSE Groupe Séminaire École Liens utiles Recrutement Presse Partenaires Objets perdus Nous contacter FR FR EN Billets Séjours Billets Séjours Accueil Découvrir Listes des actualités Actualités Naissances, nouveautés, nouveaux venus, bons plans, astuces, journées à thèmes... Découvrez toutes les actualités du parc Le PAL. Mardi 13 octobre Parc fermé Voir le calendrier Page Toutes les actualités Actualité du Parc Actualités de la Fondation Le PAL Nature Actualités séminaire Actualités Naissances, nouveautés, nouveaux venus, bons plans, astuces, journées à thèmes... Découvrez toutes les actualités du parc Le PAL. Actualités de la Fondation Le PAL Nature Journée de la Fondation 2026 Rendez-vous le dimanche 4 octobre pour participer à la 15ème Journée de la Fondation. Un événement dédié à la biodiversité et à la préservation de la faune et de la flore. Publié le 30/08/2026 Actualités de la Fondation Le PAL Nature Programme des manifestations 2026 Découvrez l'ensemble du programme des manifestations organisées par la FONDATION Le PAL NATURE ! Publié le 11/06/2026 Actualité du Parc Devenir soigneur animalier le temps d'une journée ? Au PAL c'est possible ! Depuis toujours vous êtes fan d’animaux sauvages ou vous souhaitez offrir à un proche une activité extraordinaire et originale ? Découvrez l’activité « Soigneur d’un Jour au PAL », seul ou en duo, et entrez dans la peau d’un soigneur. Publié le 24/02/2026 Actualités de la Fondation Le PAL Nature Journée de la Fondation 2025 Cette année, réservez votre dimanche 5 octobre pour participer à la Journée de la Fondation ; dédiée à la préservation de la faune et de la flore, c'est l’évènement à ne pas manquer ! Publié le 24/02/2026 Actualité du Parc La toute première course à l'intérieur du parc ! Organisée en partenariat avec Le PAL, FWI Organisation vous permet de découvrir Le PAL autrement ! Traversez Le PAL de long en large à travers les attractions et les animaux dans une course de 10km dont 7km dans le parc ou pour les plus courageux, un semi-marathon (21,1km dont 7km dans le parc). Publié le 24/02/2026 Actualité du Parc 2 nouveautés pour 2021 Découvrez les 2 nouveautés du PAL pour 2021. Une magnifique Savane et une tout nouvel hébergement donnant sur une Savane avec Girafes de Rothschild et Rhinocéros blanc. Publié le 24/02/2026 Actualité du P",
-   "liens": [
-    "/decouvrir/actualites/actualites-de-la-fondation-le-pal-nature",
-    "/decouvrir/actualites/actualites-de-la-fondation-le-pal-nature/afdpz-commission-conservation",
-    "/decouvrir/actualites/actualites-de-la-fondation-le-pal-nature/journee-de-la-fondation-2025",
-    "/decouvrir/actualites/actualites-de-la-fondation-le-pal-nature/journee-de-la-fondation-2026",
-    "/decouvrir/actualites/actualites-de-la-fondation-le-pal-nature/journee-de-la-fondation-edition-2023",
-    "/decouvrir/actualites/actualites-de-la-fondation-le-pal-nature/la-soiree-des-nocturnes-2022",
-    "/decouvrir/actualites/actualites-de-la-fondation-le-pal-nature/le-pal-run-2021",
-    "/decouvrir/actualites/actualites-de-la-fondation-le-pal-nature/le-retour-du-pygargue-a-queue-blanche",
-    "/decouvrir/actualites/actualites-de-la-fondation-le-pal-nature/le-saviez-vous",
-    "/decouvrir/actualites/actualites-de-la-fondation-le-pal-nature/petit-aiglon-deviendra-grand",
-    "/decouvrir/actualites/actualites-de-la-fondation-le-pal-nature/programme-des-manifestations-2026",
-    "/decouvrir/actualites/actualites-de-la-fondation-le-pal-nature/une-journee-de-la-fondation-qui-a-du-sens",
-    "/decouvrir/actualites/actualites-de-la-fondation-le-pal-nature/venons-en-aide-aux-manchots-du-cap",
-    "/engager/page/fondation-le-pal",
-    "/engager/projets-de-la-fondation"
-   ]
+  {
+   "location_department": "Nord",
+   "n": 2858
+  },
+  {
+   "location_department": "Gironde",
+   "n": 2728
+  },
+  {
+   "location_department": "Loiret",
+   "n": 2057
+  },
+  {
+   "location_department": "Haute-Garonne",
+   "n": 1800
+  },
+  {
+   "location_department": "Ille-et-Vilaine",
+   "n": 1671
+  },
+  {
+   "location_department": null,
+   "n": 1609
+  },
+  {
+   "location_department": "Bouches-du-Rhône",
+   "n": 1393
+  },
+  {
+   "location_department": "Pas-de-Calais",
+   "n": 965
+  },
+  {
+   "location_department": "Rhône",
+   "n": 914
+  },
+  {
+   "location_department": "Seine-Maritime",
+   "n": 904
+  },
+  {
+   "location_department": "Gard",
+   "n": 791
+  },
+  {
+   "location_department": "Yvelines",
+   "n": 780
+  },
+  {
+   "location_department": "Hérault",
+   "n": 731
+  },
+  {
+   "location_department": "Oise",
+   "n": 670
+  },
+  {
+   "location_department": "Seine-Saint-Denis",
+   "n": 642
+  },
+  {
+   "location_department": "Hauts-de-Seine",
+   "n": 636
+  },
+  {
+   "location_department": "Var",
+   "n": 560
+  },
+  {
+   "location_department": "Isère",
+   "n": 529
+  },
+  {
+   "location_department": "Finistère",
+   "n": 512
+  },
+  {
+   "location_department": "Seine-et-Marne",
+   "n": 502
+  },
+  {
+   "location_department": "Calvados",
+   "n": 482
+  },
+  {
+   "location_department": "Aisne",
+   "n": 437
+  },
+  {
+   "location_department": "Vaucluse",
+   "n": 417
+  },
+  {
+   "location_department": "Somme",
+   "n": 407
+  },
+  {
+   "location_department": "Haute-Savoie",
+   "n": 406
+  },
+  {
+   "location_department": "Loire",
+   "n": 395
+  },
+  {
+   "location_department": "Alpes-Maritimes",
+   "n": 381
+  },
+  {
+   "location_department": "Charente-Maritime",
+   "n": 376
+  },
+  {
+   "location_department": "Bas-Rhin",
+   "n": 357
+  },
+  {
+   "location_department": "Essonne",
+   "n": 357
+  },
+  {
+   "location_department": "Morbihan",
+   "n": 354
+  },
+  {
+   "location_department": "Val-d'Oise",
+   "n": 334
+  },
+  {
+   "location_department": "Savoie",
+   "n": 320
+  },
+  {
+   "location_department": "Val-de-Marne",
+   "n": 319
+  },
+  {
+   "location_department": "Meurthe-et-Moselle",
+   "n": 309
+  },
+  {
+   "location_department": "Haute-Vienne",
+   "n": 304
+  },
+  {
+   "location_department": "Vienne",
+   "n": 304
+  },
+  {
+   "location_department": "Pyrénées-Atlantiques",
+   "n": 292
+  },
+  {
+   "location_department": "Haute-Marne",
+   "n": 289
+  },
+  {
+   "location_department": "Vendée",
+   "n": 286
+  },
+  {
+   "location_department": "Eure",
+   "n": 285
+  },
+  {
+   "location_department": "Moselle",
+   "n": 277
+  },
+  {
+   "location_department": "Puy-de-Dôme",
+   "n": 272
+  },
+  {
+   "location_department": "Drôme",
+   "n": 265
+  },
+  {
+   "location_department": "Dordogne",
+   "n": 259
+  },
+  {
+   "location_department": "Ain",
+   "n": 258
+  },
+  {
+   "location_department": "Marne",
+   "n": 250
+  },
+  {
+   "location_department": "Nièvre",
+   "n": 247
+  },
+  {
+   "location_department": "Orne",
+   "n": 247
+  },
+  {
+   "location_department": "Vosges",
+   "n": 239
+  },
+  {
+   "location_department": "Côtes-d'Armor",
+   "n": 237
+  },
+  {
+   "location_department": "Haut-Rhin",
+   "n": 230
+  },
+  {
+   "location_department": "La Réunion",
+   "n": 230
+  },
+  {
+   "location_department": "Tarn",
+   "n": 214
+  },
+  {
+   "location_department": "Alpes-de-Haute-Provence",
+   "n": 208
+  },
+  {
+   "location_department": "Maine-et-Loire",
+   "n": 208
+  },
+  {
+   "location_department": "Sarthe",
+   "n": 205
+  },
+  {
+   "location_department": "Charente",
+   "n": 197
+  },
+  {
+   "location_department": "Saône-et-Loire",
+   "n": 197
+  },
+  {
+   "location_department": "Aude",
+   "n": 187
+  },
+  {
+   "location_department": "Ariège",
+   "n": 182
+  },
+  {
+   "location_department": "Pyrénées-Orientales",
+   "n": 179
+  },
+  {
+   "location_department": "Ardennes",
+   "n": 178
+  },
+  {
+   "location_department": "Doubs",
+   "n": 178
+  },
+  {
+   "location_department": "Tarn-et-Garonne",
+   "n": 177
+  },
+  {
+   "location_department": "Martinique",
+   "n": 176
+  },
+  {
+   "location_department": "Deux-Sèvres",
+   "n": 175
+  },
+  {
+   "location_department": "Cher",
+   "n": 164
+  },
+  {
+   "location_department": "Côte-d'Or",
+   "n": 154
+  },
+  {
+   "location_department": "Haute-Loire",
+   "n": 153
+  },
+  {
+   "location_department": "Corrèze",
+   "n": 149
+  },
+  {
+   "location_department": "Haute-Saône",
+   "n": 149
+  },
+  {
+   "location_department": "Aveyron",
+   "n": 148
+  },
+  {
+   "location_department": "Mayenne",
+   "n": 144
+  },
+  {
+   "location_department": "Jura",
+   "n": 138
+  },
+  {
+   "location_department": "Manche",
+   "n": 134
+  },
+  {
+   "location_department": "Indre-et-Loire",
+   "n": 133
+  },
+  {
+   "location_department": "Aube",
+   "n": 130
+  },
+  {
+   "location_department": "Ardèche",
+   "n": 123
+  },
+  {
+   "location_department": "Creuse",
+   "n": 116
+  },
+  {
+   "location_department": "Yonne",
+   "n": 115
+  },
+  {
+   "location_department": "Loir-et-Cher",
+   "n": 114
+  },
+  {
+   "location_department": "Gers",
+   "n": 107
+  },
+  {
+   "location_department": "Guadeloupe",
+   "n": 103
+  },
+  {
+   "location_department": "Eure-et-Loir",
+   "n": 101
+  },
+  {
+   "location_department": "Guyane",
+   "n": 96
+  },
+  {
+   "location_department": "Landes",
+   "n": 87
+  },
+  {
+   "location_department": "Lot-et-Garonne",
+   "n": 82
+  },
+  {
+   "location_department": "Hautes-Alpes",
+   "n": 81
+  },
+  {
+   "location_department": "Allier",
+   "n": 78
+  },
+  {
+   "location_department": "Hautes-Pyrénées",
+   "n": 77
+  },
+  {
+   "location_department": "Corse-du-Sud",
+   "n": 74
+  },
+  {
+   "location_department": "Haute-Corse",
+   "n": 71
+  },
+  {
+   "location_department": "District de Nyon",
+   "n": 70
+  },
+  {
+   "location_department": "Meuse",
+   "n": 64
+  },
+  {
+   "location_department": "Lot",
+   "n": 61
+  },
+  {
+   "location_department": "Cantal",
+   "n": 55
+  },
+  {
+   "location_department": "France métropolitaine",
+   "n": 55
+  },
+  {
+   "location_department": "Indre",
+   "n": 50
+  },
+  {
+   "location_department": "Territoire de Belfort",
+   "n": 46
+  },
+  {
+   "location_department": "Lozère",
+   "n": 31
+  },
+  {
+   "location_department": "Collectivité européenne d'Alsace",
+   "n": 23
+  },
+  {
+   "location_department": "Bruxelles-Capitale",
+   "n": 22
+  },
+  {
+   "location_department": "Veszprém",
+   "n": 21
+  },
+  {
+   "location_department": "Métropole de Lyon",
+   "n": 20
+  },
+  {
+   "location_department": "Mayotte",
+   "n": 17
+  },
+  {
+   "location_department": "Greater London",
+   "n": 9
+  },
+  {
+   "location_department": "Daïra Sidi M'Hamed",
+   "n": 8
+  },
+  {
+   "location_department": "District d'Aigle",
+   "n": 6
+  },
+  {
+   "location_department": "Territoire-de-Belfort",
+   "n": 5
+  },
+  {
+   "location_department": "District de la Sarine",
+   "n": 4
+  },
+  {
+   "location_department": "Eastern Manila District",
+   "n": 4
+  },
+  {
+   "location_department": "Regionalverband Saarbrücken",
+   "n": 4
+  },
+  {
+   "location_department": "Stockholm County",
+   "n": 4
+  },
+  {
+   "location_department": "Upper Savoy",
+   "n": 4
+  },
+  {
+   "location_department": "Barcelonès",
+   "n": 3
+  },
+  {
+   "location_department": "District de la Gruyère",
+   "n": 3
+  },
+  {
+   "location_department": "Département de Paris",
+   "n": 3
   }
+ ],
+ "oa_ex": [
+  {
+   "uid": "75099218",
+   "slug": "pilotez-avec-precision-formez-vous-au-caces-grue-auxiliaire",
+   "canonicalurl": "https://openagenda.com/francetravail/events/pilotez-avec-precision-formez-vous-au-caces-grue-auxiliaire",
+   "title_fr": "Pilotez avec précision : Formez-vous au CACES Grue Auxiliaire",
+   "description_fr": "Rejoignez notre formation CACES Grue et ouvrez les portes à de nouvelles opportunités professionnelles dans les secteurs du transport routier de marchandises, de la livraison de matériaux de construct",
+   "longdescription_fr": "<p>Rejoignez notre formation CACES Grue et ouvrez les portes à de nouvelles opportunités professionnelles dans les secteurs du transport routier de marchandises, de la livraison de matériaux de construction, de l'approvi",
+   "conditions_fr": "None",
+   "keywords_fr": "['Métiers du BTP', 'Découverte formation']",
+   "image": "https://img.openagenda.com/main/e533a289ab72424b8397aafeb947ba67.base.image.jpg",
+   "imagecredits": "None",
+   "thumbnail": "https://img.openagenda.com/main/e533a289ab72424b8397aafeb947ba67.thumb.image.jpg",
+   "originalimage": "https://img.openagenda.com/main/e533a289ab72424b8397aafeb947ba67.full.image.jpg",
+   "updatedat": "2026-09-17T07:02:16+00:00",
+   "daterange_fr": "Mardi 13 octobre, 13h30",
+   "firstdate_begin": "2026-10-13T11:30:00+00:00",
+   "firstdate_end": "2026-10-13T14:00:00+00:00",
+   "lastdate_begin": "2026-10-13T11:30:00+00:00",
+   "lastdate_end": "2026-10-13T14:00:00+00:00",
+   "timings": "[{\"end\": \"2026-10-13T16:00:00+02:00\", \"id\": \"XH6PKN\", \"begin\": \"2026-10-13T13:30:00+02:00\"}]",
+   "accessibility": "None",
+   "accessibility_label_fr": "None",
+   "location_uid": "10947549",
+   "location_coordinates": "{'lon': 3.461726, 'lat': 46.272976}",
+   "location_name": "Varennes-sur-Allier - Agence VICHY",
+   "location_address": "03150 Varennes-sur-Allier",
+   "location_district": "None",
+   "location_insee": "None",
+   "location_postalcode": "03150",
+   "location_city": "Langy",
+   "location_department": "Allier",
+   "location_region": "Auvergne-Rhône-Alpes",
+   "location_countrycode": "FR",
+   "location_image": "None",
+   "location_imagecredits": "None",
+   "location_phone": "None",
+   "location_website": "None",
+   "location_links": "None",
+   "location_tags": "None",
+   "location_description_fr": "None",
+   "location_access_fr": "None",
+   "attendancemode": "{\"id\": 1, \"label\": {\"fr\": \"Sur place\", \"en\": \"In situ\", \"it\": \"In presenza\", \"es\": \"Desconnectad\", \"de\": \"Offline\", \"br\": \"War al lec\\u2019h\", \"io\": \"crwdns14266:0crwdne14266:0\", \"oc\": \"Sus pla\\u00e7a\", \"nl\": \"Ter plaats",
+   "onlineaccesslink": "None",
+   "status": "{\"id\": 1, \"label\": {\"fr\": \"Programm\\u00e9\", \"en\": \"Scheduled\", \"io\": \"crwdns16100:0crwdne16100:0\", \"es\": \"Programado\", \"oc\": \"Programat\", \"nl\": \"Gepland\", \"br\": \"Raktreset\"}}",
+   "age_min": "None",
+   "age_max": "None",
+   "originagenda_title": "Mes événements France Travail",
+   "originagenda_uid": "38495884",
+   "contributor_email": "None",
+   "contributor_contactnumber": "None",
+   "contributor_contactname": "None",
+   "contributor_contactposition": "None",
+   "contributor_organization": "None",
+   "category": "None",
+   "country_fr": "France",
+   "registration": "[{\"type\": \"link\", \"value\": \"https://mesevenementsemploi.francetravail.fr/mes-evenements-emploi/evenement/755158\"}]",
+   "links": "None"
+  },
+  {
+   "uid": "89253602",
+   "slug": "le-ba-ba-de-la-micro-entreprise-avec-ladie-861259",
+   "canonicalurl": "https://openagenda.com/francetravail/events/le-ba-ba-de-la-micro-entreprise-avec-ladie-861259",
+   "title_fr": "Le B.A. BA de la micro entreprise avec l'ADIE",
+   "description_fr": "Vous envisagez de créer votre activité ou vous venez de vous lancer en tant que micro-entrepreneur ?",
+   "longdescription_fr": "<p>Vous envisagez de créer votre activité ou vous venez de vous lancer en tant que micro-entrepreneur ? Le statut de la micro-entreprise est simple, mais il comporte des règles essentielles à maîtriser pour éviter les er",
+   "conditions_fr": "None",
+   "keywords_fr": "[\"Création d'entreprise\"]",
+   "image": "https://img.openagenda.com/main/04bc09f0e6e94b92b0d1ca66a0e27f16.base.image.jpg",
+   "imagecredits": "None",
+   "thumbnail": "https://img.openagenda.com/main/04bc09f0e6e94b92b0d1ca66a0e27f16.thumb.image.jpg",
+   "originalimage": "https://img.openagenda.com/main/04bc09f0e6e94b92b0d1ca66a0e27f16.full.image.jpg",
+   "updatedat": "2026-09-19T07:01:26+00:00",
+   "daterange_fr": "Mardi 17 novembre, 09h00",
+   "firstdate_begin": "2026-11-17T08:00:00+00:00",
+   "firstdate_end": "2026-11-17T10:00:00+00:00",
+   "lastdate_begin": "2026-11-17T08:00:00+00:00",
+   "lastdate_end": "2026-11-17T10:00:00+00:00",
+   "timings": "[{\"end\": \"2026-11-17T11:00:00+01:00\", \"id\": \"WSS5JS\", \"begin\": \"2026-11-17T09:00:00+01:00\"}]",
+   "accessibility": "None",
+   "accessibility_label_fr": "None",
+   "location_uid": "9096000",
+   "location_coordinates": "{'lon': 3.435648, 'lat': 46.127983}",
+   "location_name": "Agence VICHY",
+   "location_address": "03200 Vichy",
+   "location_district": "None",
+   "location_insee": "None",
+   "location_postalcode": "03200",
+   "location_city": "Vichy",
+   "location_department": "Allier",
+   "location_region": "Auvergne-Rhône-Alpes",
+   "location_countrycode": "FR",
+   "location_image": "None",
+   "location_imagecredits": "None",
+   "location_phone": "None",
+   "location_website": "None",
+   "location_links": "None",
+   "location_tags": "None",
+   "location_description_fr": "None",
+   "location_access_fr": "None",
+   "attendancemode": "{\"id\": 1, \"label\": {\"fr\": \"Sur place\", \"en\": \"In situ\", \"it\": \"In presenza\", \"es\": \"Desconnectad\", \"de\": \"Offline\", \"br\": \"War al lec\\u2019h\", \"io\": \"crwdns14266:0crwdne14266:0\", \"oc\": \"Sus pla\\u00e7a\", \"nl\": \"Ter plaats",
+   "onlineaccesslink": "None",
+   "status": "{\"id\": 1, \"label\": {\"fr\": \"Programm\\u00e9\", \"en\": \"Scheduled\", \"io\": \"crwdns16100:0crwdne16100:0\", \"es\": \"Programado\", \"oc\": \"Programat\", \"nl\": \"Gepland\", \"br\": \"Raktreset\"}}",
+   "age_min": "None",
+   "age_max": "None",
+   "originagenda_title": "Mes événements France Travail",
+   "originagenda_uid": "38495884",
+   "contributor_email": "None",
+   "contributor_contactnumber": "None",
+   "contributor_contactname": "None",
+   "contributor_contactposition": "None",
+   "contributor_organization": "None",
+   "category": "None",
+   "country_fr": "France",
+   "registration": "[{\"type\": \"link\", \"value\": \"https://mesevenementsemploi.francetravail.fr/mes-evenements-emploi/evenement/759104\"}]",
+   "links": "None"
+  }
+ ],
+ "ods_catalogue": {
+  "agenda": [
+   [
+    "agenda-rss@cc-lacqorthez-data64",
+    "Agenda des animations sur le territoire",
+    null,
+    199,
+    "2024-06-03T06:00:33+00:00"
+   ],
+   [
+    "evenements-publics-openagenda0@ville-de-roubaix",
+    "Public events - OpenAgenda",
+    "OpenAgenda",
+    7363,
+    "2018-01-25T16:45:00+00:00"
+   ],
+   [
+    "agenda-21-de-corse@oddc-datacorsica",
+    "Agenda 21 de Corse",
+    "Direction régionale de l'Environnement, de l'Aménagement et du Logement de Corse",
+    6,
+    "2015-02-11T00:00:00+00:00"
+   ],
+   [
+    "circasa-deliverable-d31-strategic-research-agenda-sra-on-soil-carbon@pndb",
+    "CIRCASA DELIVERABLE D3.1: \"Strategic Research Agenda (SRA) on Soil Carbon\"",
+    "Soussana, J.-F.",
+    0,
+    "2021-05-17T15:30:53+00:00"
+   ],
+   [
+    "de-stad-magneet-roltrap-en-spons-bevolkingsontwikkelingen-in-stad-en-stadsgewest-den-haag@den-haag-opendata",
+    "DE STAD: MAGNEET, ROLTRAP EN SPONS, Bevolkingsontwikkelingen in stad en stadsgewest Den Haag",
+    null,
+    0,
+    "2026-03-19T17:55:52.971000+00:00"
+   ],
+   [
+    "environmental-commission-2022-agendas@analyzejerseycity",
+    "Environmental Commission 2022 Agendas",
+    "Office of Sustainability",
+    0,
+    "2022-03-09T15:43:20+00:00"
+   ],
+   [
+    "agenda-de-trabajo-de-altos-cargos-legislatura-x@jcyl",
+    "Agenda de trabajo de altos cargos Legislatura X - Histórico",
+    "Junta de Castilla y León",
+    27342,
+    "2026-06-11T13:28:08.334000+00:00"
+   ],
+   [
+    "agenda-journee-droits-des-femmes@datailedefrance",
+    "Événements pour la Journée internationale des droits des femmes du 8 mars",
+    "Région Île-de-France",
+    17,
+    "2024-03-04T11:43:43.919000+00:00"
+   ],
+   [
+    "historic-preservation-commission-agendas-2022@analyzejerseycity",
+    "Historic Preservation Commission Agendas 2022",
+    null,
+    0,
+    "2021-12-14T14:03:04+00:00"
+   ],
+   [
+    "marche-en-famenne-manifestations@digitalwallonia",
+    "Marche-en-Famenne / Manifestations",
+    "Ville de Marche-en-Famenne",
+    8,
+    "2025-07-10T16:35:53.284000+00:00"
+   ],
+   [
+    "agenda-de-labege@haute-garonne",
+    "L'agenda de Labège (open agenda)",
+    "Commune de Labège",
+    40,
+    "2026-10-12T20:00:44+00:00"
+   ],
+   [
+    "demarche-agenda-21-local-en-ile-de-france-siege0@datailedefrance",
+    "Démarche Agenda 21 local en Île-de-France (siège)",
+    "L'Institut Paris Region",
+    8,
+    "2021-02-16T11:07:11+00:00"
+   ],
+   [
+    "evenements-publics-a-montreuil-via-open-agenda@montreuil",
+    "Sortir à Montreuil",
+    "OpenAgenda",
+    224,
+    "2024-09-30T09:30:30.049000+00:00"
+   ],
+   [
+    "agenda-2018-du-joli-mois-de-leurope-en-occitanie@occitanie",
+    "Agenda du Joli Mois de l'Europe en Occitanie",
+    "Région Occitanie",
+    0,
+    "2026-09-28T22:01:20+00:00"
+   ],
+   [
+    "openagenda@meudon-seineouest",
+    "Agenda de la ville de Meudon",
+    "Ville de Meudon",
+    4135,
+    "2024-03-19T15:42:33+00:00"
+   ],
+   [
+    "agenda-maison-de-la-biodiversite-haute-garonne@haute-garonne",
+    "L'agenda de la Maison de la biodiversité de Haute-Garonne [open agenda]",
+    "Conseil départemental de la Haute-Garonne",
+    26,
+    "2026-10-13T05:03:13+00:00"
+   ],
+   [
+    "agenda-du-bassin-auterivain@haute-garonne",
+    "L'agenda du Bassin Auterivain, communauté de communes (open agenda)",
+    "Communauté de Communes Bassin Auterivain",
+    2530,
+    "2026-10-13T02:01:08+00:00"
+   ],
+   [
+    "planning-board-application-chapter-345-68signs-nc-neighborhood-commercial-signs-@analyzejerseycity",
+    "Planning Board Application - Chapter 345-68. Signs NC Neighborhood Commercial - July 2020",
+    "Planning Board",
+    0,
+    "2020-06-26T16:16:55+00:00"
+   ],
+   [
+    "open-agenda-evenements-publics-gps-depuis-2014@grandparissud",
+    "[Open Agenda] Evénéments publics GPS depuis 2014",
+    "Open Agenda",
+    1550,
+    "2023-10-13T07:31:58+00:00"
+   ],
+   [
+    "agenda-culturel-communautaire-2025-2026@camelunvs",
+    "Agenda culturel communautaire",
+    "CA Melun Val de Seine",
+    119,
+    "2025-03-12T13:12:30+00:00"
+   ],
+   [
+    "schools-data@nihr",
+    "NIHR Research Schools Projects Dataset",
+    "NIHR",
+    1022,
+    "2025-07-15T10:11:50+00:00"
+   ],
+   [
+    "le-aree-verdi-e-le-vie-di-bologna-dedicate-alle-donne@bologna",
+    "Le aree verdi, piazze e vie di Bologna dedicate alle donne",
+    "Comune di Bologna - Innovazione Digitale e Dati",
+    157,
+    "2026-02-19T08:39:10+00:00"
+   ],
+   [
+    "art_city_bologna_-_main_project_2019@bologna",
+    "ART CITY Bologna - Main Project 2019",
+    "Comune di Bologna - Dipartimento Cultura e Promozione della Città",
+    21,
+    "2022-04-28T09:24:54+00:00"
+   ],
+   [
+    "fr-esr-fete-de-la-science-22@mesr",
+    "Programme de la fête de la Science 2022",
+    "Ministère de l'Enseignement supérieur, de la Recherche et de l'Innovation",
+    6902,
+    "2023-06-07T15:35:34+00:00"
+   ],
+   [
+    "fr-esr-fete-de-la-science-26@mesr",
+    "Programme de la fête de la Science 2026",
+    "Ministère de l'Enseignement supérieur, de la Recherche et de l'Espace",
+    8143,
+    "2026-07-03T08:44:54+00:00"
+   ],
+   [
+    "rendez-vous-de-la-mediatheque-departementale@haute-garonne",
+    "Les rendez-vous de la Médiathèque départementale (open agenda)",
+    "Conseil départemental de la Haute-Garonne",
+    274,
+    "2023-08-16T07:32:25+00:00"
+   ],
+   [
+    "agenda-des-manifestations-culturelles-so-toulouse@toulouse-metropole",
+    "Agenda des manifestations culturelles",
+    "Toulouse Team",
+    214,
+    "2025-12-31T06:10:04+00:00"
+   ],
+   [
+    "agenda-entrepreneur-leader@datailedefrance",
+    "Agenda Entrepreneur#Leader",
+    "Région Île-de-France",
+    37,
+    "2026-10-13T05:51:02.417000+00:00"
+   ],
+   [
+    "presion-asistencial-mf-pediatria-y-enfermeria-zbs@jcyl",
+    "Pacientes diarios en consulta ordinaria",
+    "Junta de Castilla y León",
+    3211,
+    "2026-08-05T10:58:12.265000+00:00"
+   ],
+   [
+    "agenda-jardins-ouverts-2026@datailedefrance",
+    "Jardins ouverts 2026",
+    "Région Île-de-France",
+    581,
+    "2026-10-13T03:05:04.043000+00:00"
+   ],
+   [
+    "agenda-du-grand-ouest-toulousain@haute-garonne",
+    "L'agenda du Grand Ouest Toulousain (open agenda)",
+    "Communauté de communes Le Grand Ouest Toulousain",
+    27,
+    "2026-10-13T06:01:40+00:00"
+   ],
+   [
+    "fr-esr-fete-de-la-science-17@mesr",
+    "Programme de la fête de la Science 2017",
+    "Ministère de l'Enseignement supérieur, de la Recherche et de l'Innovation",
+    6042,
+    "2017-06-22T11:47:11+00:00"
+   ],
+   [
+    "reseaux-sociaux@bruxellesdata",
+    "List of social network accounts of the City of Brussels",
+    "City of Brussels/Data Management",
+    52,
+    "2026-09-03T12:28:45+00:00"
+   ],
+   [
+    "agenda-vcf@data-clermont-clermont-metropole",
+    "Agenda - Ville de Clermont-Ferrand",
+    "Clermont Auvergne Métropole ; Clermont Auvergne Volcans ; Conseil départemental du Puy de dôme",
+    560,
+    "2026-10-13T02:13:28+00:00"
+   ],
+   [
+    "244400610_sites_baignade@capatlantique-loireatlantique",
+    "Sites de baignade sur le Territoire de Cap Atlantique",
+    "Cap Atlantique",
+    41,
+    "2023-07-03T14:47:05.114000+00:00"
+   ],
+   [
+    "planning-de-mise-a-jour@acoss",
+    "Planning de mise à jour des publications, des jeux de données statistiques et des datavisualisations associées",
+    "Urssaf Caisse nationale",
+    227,
+    "2026-07-03T10:00:00+00:00"
+   ],
+   [
+    "middle-east-and-central-asia-regional-economic-outlook-mcdreo@kapsarc",
+    "Middle East and Central Asia Regional Economic Outlook (MCDREO)",
+    "International Monetary Fund",
+    17997,
+    "2026-05-07T15:19:05.382000+00:00"
+   ],
+   [
+    "fr-esr-agenda-ministre@mesr",
+    "Agenda public des ministres en charge de l'Enseignement supérieur, de la Recherche et de l'Innovation",
+    "Ministère de l'Enseignement supérieur, de la Recherche et de l'Innovation",
+    4788,
+    "2025-10-22T13:07:56+00:00"
+   ],
+   [
+    "234400034-agenda-pays-de-la-loire-energie-tour@paysdelaloire",
+    "Agenda Pays de la Loire Energie Tour [ Open Agenda ]",
+    "Région des Pays de la Loire ",
+    46,
+    "2026-10-13T06:00:08.221000+00:00"
+   ],
+   [
+    "fr-esr-fete-de-la-science-18@mesr",
+    "Programme de la fête de la Science 2018",
+    "Ministère de l'Enseignement supérieur, de la Recherche et de l'Innovation",
+    6365,
+    "2018-06-24T22:00:00+00:00"
+   ],
+   [
+    "eventi-bologna-agenda-cultura@bologna",
+    "Eventi - Bologna Agenda Cultura",
+    "Comune di Bologna",
+    31496,
+    "2026-10-13T01:15:28.753000+00:00"
+   ],
+   [
+    "origini-di-bologna-strade@bologna",
+    "Origini di Bologna - strade",
+    "Comune di Bologna",
+    1095,
+    "2020-07-16T10:47:14+00:00"
+   ],
+   [
+    "agenda-orleans-metropole@orleansmetropole",
+    "Liste des événements publics (OpenAgenda) - Orléans Métropole",
+    "Orléans Métropole",
+    24066,
+    "2026-10-13T01:09:58+00:00"
+   ],
+   [
+    "fr-esr-fete-de-la-science-21@mesr",
+    "Programme de la fête de la Science 2021",
+    "Ministère de l'Enseignement supérieur, de la Recherche et de l'Innovation",
+    5906,
+    "2021-12-08T07:35:09+00:00"
+   ],
+   [
+    "open-agenda-ma-region-virtuose@paysdelaloire",
+    "[ Open Agenda ] Ma Région Virtuose",
+    "Région des Pays de la Loire ",
+    19,
+    "2026-10-12T22:02:26.091000+00:00"
+   ],
+   [
+    "agenda-culture-de-la-region-des-pays-de-la-loire@paysdelaloire",
+    "Agenda Culture et Patrimoine de la Région des Pays de la Loire",
+    "Région des Pays de la Loire ",
+    1285,
+    "2026-10-12T23:01:40.587000+00:00"
+   ],
+   [
+    "jalr-rdp-meetings@analyzejerseycity",
+    "Community Meetings - Jersey Avenue Redevelopment Plan 2021",
+    "Jersey City Division of City Planning",
+    0,
+    "2021-04-06T13:08:07.105000+00:00"
+   ],
+   [
+    "origini-di-bologna-orti-e-prati@bologna",
+    "Origini di Bologna - orti e prati",
+    "Comune di Bologna",
+    2839,
+    "2020-07-16T10:45:48+00:00"
+   ],
+   [
+    "zb-agendas-2026@analyzejerseycity",
+    "Zoning Board Agendas 2026",
+    "Zoning Board of Adjustment",
+    0,
+    "2025-12-15T15:35:24+00:00"
+   ],
+   [
+    "agenda-de-trabajo-de-altos-cargos@jcyl",
+    "Agenda de trabajo de altos cargos",
+    "Junta de Castilla y León",
+    1239,
+    "2026-08-15T15:05:03.774000+00:00"
+   ],
+   [
+    "zoning-board-of-adjustment-action-agendas-2021@analyzejerseycity",
+    "Zoning Board of Adjustment Action Agendas 2021",
+    null,
+    0,
+    "2021-01-21T16:29:59+00:00"
+   ],
+   [
+    "historic-preservation-commission-agendas-2020@analyzejerseycity",
+    "Historic Preservation Commission Agendas 2020",
+    "Historic Preservation Commission",
+    0,
+    "2020-12-10T16:32:42.036000+00:00"
+   ],
+   [
+    "planning-board-agendas-2021@analyzejerseycity",
+    "Planning Board Agendas 2021",
+    "Planning Board",
+    0,
+    "2020-12-11T14:41:31+00:00"
+   ],
+   [
+    "pb-action-agendas-2023@analyzejerseycity",
+    "Planning Board Action Agendas 2023",
+    "Planning Board",
+    0,
+    "2023-04-13T13:47:50+00:00"
+   ],
+   [
+    "zb-agendas-2025@analyzejerseycity",
+    "Zoning Board Agendas 2025",
+    "Zoning Board of Adjustments",
+    0,
+    "2024-12-16T19:58:47+00:00"
+   ],
+   [
+    "historic-preservation-commission-agendas-2023@analyzejerseycity",
+    "Historic Preservation Commission Agendas 2023",
+    null,
+    0,
+    "2023-01-03T15:14:08+00:00"
+   ],
+   [
+    "planning-board-agendas-2026@analyzejerseycity",
+    "Planning Board Agendas 2026",
+    null,
+    0,
+    "2025-12-02T16:36:13+00:00"
+   ],
+   [
+    "planning-board-agendas-from-2024@analyzejerseycity",
+    "Planning Board Agendas from 2024",
+    null,
+    0,
+    "2026-01-21T15:08:59+00:00"
+   ],
+   [
+    "pb-action-agendas-2022@analyzejerseycity",
+    "Planning Board Action Agendas 2022",
+    "Planning Board",
+    0,
+    "2023-01-06T17:02:59.567000+00:00"
+   ],
+   [
+    "zoning-board-agenda-2023@analyzejerseycity",
+    "Zoning Board Agenda 2023",
+    null,
+    0,
+    "2023-11-29T20:12:06.674000+00:00"
+   ],
+   [
+    "pb-action-agendas-2021@analyzejerseycity",
+    "Planning Board Action Agendas 2021",
+    "Planning Board",
+    0,
+    "2021-12-08T20:31:50.306000+00:00"
+   ],
+   [
+    "historic-preservation-commission-action-agendas-2023@analyzejerseycity",
+    "Historic Preservation Commission Action Agendas 2023",
+    null,
+    0,
+    "2023-01-11T21:19:00+00:00"
+   ],
+   [
+    "planning-board-application-p21-023-236-238-academy-street-2023@analyzejerseycity",
+    "Planning Board Application - P21-023 236-238 Academy Street 2023",
+    "Planning Board",
+    0,
+    "2020-07-06T15:03:46+00:00"
+   ],
+   [
+    "planning-board-application-central-ave-block-2901-redevelopment-plan-2021@analyzejerseycity",
+    "Planning Board Application - Central Ave Block 2901 Redevelopment Plan 2021",
+    null,
+    0,
+    "2021-03-29T15:36:44+00:00"
+   ],
+   [
+    "pb-agendas-2023@analyzejerseycity",
+    "Planning Board Agendas 2023",
+    "Planning Board",
+    0,
+    "2023-12-01T19:09:43.815000+00:00"
+   ],
+   [
+    "planning-board-agendas-2020@analyzejerseycity",
+    "Planning Board Agendas 2020",
+    "Planning",
+    0,
+    "2020-12-08T18:05:38.090000+00:00"
+   ],
+   [
+    "origini-di-bologna-chiese-e-conventi@bologna",
+    "Origini di Bologna - chiese e conventi",
+    "Comune di Bologna",
+    646,
+    "2020-07-16T10:33:18+00:00"
+   ],
+   [
+    "origini-di-bologna-edifici-scomparsi@bologna",
+    "Origini di Bologna - edifici scomparsi",
+    "Comune di Bologna",
+    3876,
+    "2021-02-24T11:44:56+00:00"
+   ],
+   [
+    "hpc-agendas-2025@analyzejerseycity",
+    "Historic Preservation Comission Agendas 2025",
+    "Historic Preservation Commission",
+    0,
+    "2024-12-16T20:04:51+00:00"
+   ],
+   [
+    "historic-preservation-commission-action-agendas-2026@analyzejerseycity",
+    "HISTORIC PRESERVATION COMMISSION ACTION AGENDAS 2026",
+    null,
+    0,
+    "2026-02-05T15:29:51+00:00"
+   ],
+   [
+    "pw_agenda@digitalwallonia",
+    "Parlement de Wallonie - Agenda",
+    "Parlement de Wallonie",
+    666,
+    "2026-10-13T03:01:51.904000+00:00"
+   ],
+   [
+    "mappa_art_city_bologna_2020_-_main_project@bologna",
+    "ART CITY Bologna - Main Project 2020",
+    "Comune di Bologna - Dipartimento Cultura e Promozione della Città",
+    23,
+    "2020-01-10T12:36:21+00:00"
+   ],
+   [
+    "historic-preservation-commission-action-agendas-2024@analyzejerseycity",
+    "Historic Preservation Commission Action Agendas 2024",
+    null,
+    0,
+    "2024-02-07T16:16:41+00:00"
+   ],
+   [
+    "planning-board-application-scatter-site-redevelopment-plan-2020@analyzejerseycity",
+    "Planning Board Application - Scatter Site Redevelopment Plan 2020",
+    "Planning Board",
+    0,
+    "2020-07-17T18:49:27+00:00"
+   ],
+   [
+    "zba-agendas-2023@analyzejerseycity",
+    "Zoning Board Agendas 2023",
+    "Zoning Board of Adjustments",
+    0,
+    "2022-12-20T20:01:13.020000+00:00"
+   ],
+   [
+    "zoning-board-action-agendas-2022@analyzejerseycity",
+    "Zoning Board Action Agendas 2022",
+    null,
+    0,
+    "2022-01-20T20:34:01+00:00"
+   ],
+   [
+    "bologna-weekly-nationality@bologna",
+    "Visitatori Bologna: Nazionalità",
+    "Comune di Bologna - Settore Agenda Digitale e Tecnologie Informatiche",
+    4469,
+    "2022-12-15T23:00:37.069000+00:00"
+   ],
+   [
+    "evenements-en-wallonie@digitalwallonia",
+    "iMio - Événements en Wallonie",
+    "iMio",
+    24965,
+    "2026-10-12T22:03:18.079000+00:00"
+   ],
+   [
+    "100348@basel-stadt",
+    "Parliament: Agenda for Sessions",
+    "Parlamentsdienst des Grossen Rates",
+    10923,
+    "2026-10-02T03:01:33.790000+00:00"
+   ],
+   [
+    "origini-di-bologna-edifici-maggiori@bologna",
+    "Origini di Bologna - edifici maggiori",
+    "Comune di Bologna",
+    478,
+    "2020-07-16T10:42:54+00:00"
+   ],
+   [
+    "evenements-publics-nord@nordtourisme",
+    "Evenements Publics dans le Nord",
+    "OpenAgenda",
+    29637,
+    "2015-08-06T08:12:51+00:00"
+   ],
+   [
+    "circasa-deliverable-d23-synthesis-report-on-knowledge-demands-and-needs-of-stakeholders@pndb",
+    "CIRCASA DELIVERABLE D2.3: “Synthesis report on knowledge demands and needs of stakeholders”",
+    "Frelih-Larsen A.",
+    0,
+    "2020-06-12T08:49:08+00:00"
+   ],
+   [
+    "circasa-deliverable-d13-the-science-base-of-a-strategic-research-agenda-executive-summary@pndb",
+    "CIRCASA DELIVERABLE D1.3 “The science base of a strategic research agenda - Executive Summary”",
+    "Bray A.W.",
+    0,
+    "2021-05-17T15:19:05+00:00"
+   ],
+   [
+    "musees-departement-haute-garonne@haute-garonne",
+    "Musées du Département de la Haute-Garonne",
+    "Conseil départemental de la Haute-Garonne",
+    3,
+    "2023-08-16T07:28:41+00:00"
+   ],
+   [
+    "agenda-des-clubs-de-sport-de-haut-niveau-soutenus-par-la-communaute-urbaine-de-d@cudunkerque",
+    "Agenda à domicile des clubs de sport de haut niveau soutenus par la Communauté urbaine de Dunkerque",
+    "Communauté urbaine de Dunkerque",
+    57,
+    "2018-11-20T09:36:04+00:00"
+   ],
+   [
+    "agenda-de-trabajo-de-altos-cargos-legislatura-xi@jcyl",
+    "Agenda de trabajo de altos cargos Legislatura XI - Histórico",
+    "Junta de Castilla y León",
+    49823,
+    "2026-07-01T09:48:22.018000+00:00"
+   ],
+   [
+    "agenda-21-en-region-provence-alpes-cote-dazur-2016@pndb",
+    "Agenda 21 en région Provence-Alpes-Côte d'Azur - 2016",
+    "arbe-provence-alpes-cote-dazur",
+    0,
+    "2020-12-24T00:00:00+00:00"
+   ],
+   [
+    "calendario-eventos-ice@jcyl",
+    "Calendario de eventos del ICE",
+    "Junta de Castilla y León",
+    1194,
+    "2026-09-09T09:36:44+00:00"
+   ],
+   [
+    "evenements_flourens@toulouse-metropole",
+    "Agenda des événements - Flourens",
+    "Mairie de Flourens",
+    24,
+    "2015-11-26T09:23:44+00:00"
+   ],
+   [
+    "municipios-valencianos-en-riesgo-de-despoblacion@dipcas",
+    "Municipios valencianos en riesgo de despoblación",
+    "Diputació de Castelló",
+    178,
+    "2026-10-12T10:35:14+00:00"
+   ],
+   [
+    "68375_wittelsheim_calendrier-des-manifestations-au_04-09-17@mulhouse",
+    "Calendrier des manifestations culturelles à Wittelsheim",
+    "Ville de Wittelsheim",
+    878,
+    "2017-10-25T16:50:15+00:00"
+   ],
+   [
+    "planning-board-sunshine-announcements-2020@analyzejerseycity",
+    "Planning Board Sunshine Announcements 2020",
+    "Planning Board",
+    0,
+    "2020-08-10T14:50:52.074000+00:00"
+   ],
+   [
+    "tal_agenda_culture_2019@scnbdx",
+    "Agenda culturel 2019-2020",
+    "Ville de Talence",
+    158,
+    "2019-09-23T13:31:50+00:00"
+   ],
+   [
+    "agenda-ville-de-montreuil@montreuil",
+    "Agenda ville de Montreuil",
+    "Ville de Montreuil",
+    101,
+    "2019-07-12T15:57:36+00:00"
+   ],
+   [
+    "agenda-de-fontenilles@haute-garonne",
+    "L'agenda de Fontenilles (open agenda)",
+    "Commune de Fontenilles",
+    123,
+    "2026-10-13T03:30:21+00:00"
+   ],
+   [
+    "lagenda-des-archives-departementales@haute-garonne",
+    "L'agenda des rendez-vous des Archives départementales de Haute-Garonne (open agenda)",
+    "Conseil départemental de la Haute-Garonne",
+    613,
+    "2026-10-13T04:30:29+00:00"
+   ],
+   [
+    "agenda-de-castelnau-d-estretefonds@haute-garonne",
+    "L'agenda de Castelnau-d'Estrétefonds (open agenda)",
+    "Commune de Castelnau-d'Estrétefonds",
+    459,
+    "2026-10-12T14:02:14+00:00"
+   ],
+   [
+    "agenda-du-vernet@haute-garonne",
+    "L'agenda du Vernet (open agenda)",
+    "Commune Le Vernet",
+    374,
+    "2026-10-13T04:15:14+00:00"
+   ],
+   [
+    "agenda-evenementiel-de-la-ville-de-nimes@data-nimesmetropole-occitanie",
+    "Agenda évènementiel de la ville de Nîmes",
+    null,
+    240,
+    "2023-01-18T10:51:31+00:00"
+   ],
+   [
+    "agenda-2030-fleury-sur-orne@fleurysurorne",
+    "Agenda 2030 de la Ville de Fleury-sur-Orne",
+    "Ville de Fleury-sur-Orne",
+    35,
+    "2026-07-18T07:43:02+00:00"
+   ]
+  ],
+  "evenements": [
+   [
+    "points-d-interet-touristiques-corse-du-sud-2a-et-haute-corse-2b@datacorsica",
+    "Points d’intérêt touristiques – Corse-du-Sud (2A) et Haute-Corse (2B)",
+    "DATAtourisme",
+    22,
+    "2025-06-23T06:15:15+00:00"
+   ],
+   [
+    "declarations-des-entrepreneurs-de-spectacles-vivants-en-corse@datacorsica",
+    "Déclarations des entrepreneurs de spectacles vivants en Corse",
+    null,
+    435,
+    "2025-07-02T08:05:59+00:00"
+   ],
+   [
+    "csv-lang-fr-and-refine-location_region-3a-22corse-22-and-facet-facet-name-3d-22l@datacorsica",
+    "Evènements publics",
+    "OpenAgenda",
+    1921,
+    "2025-07-02T07:38:54+00:00"
+   ],
+   [
+    "public-events-openagenda@datacorsica",
+    "Public events - OpenAgenda - Corse",
+    "OpenAgenda",
+    2479,
+    "2024-04-08T11:13:21+00:00"
+   ],
+   [
+    "vallourec-open-data-events@vallourec",
+    "Vallourec Open Data Events",
+    "Vallourec Tubes SAS",
+    24,
+    "2019-07-25T14:04:44+00:00"
+   ],
+   [
+    "evenements-publics-openagenda0@ville-de-roubaix",
+    "Public events - OpenAgenda",
+    "OpenAgenda",
+    7363,
+    "2018-01-25T16:45:00+00:00"
+   ],
+   [
+    "covid-19-deaths@bristol",
+    "Covid-19 deaths",
+    "Bristol City Council",
+    1322,
+    "2022-03-01T17:00:39.234000+00:00"
+   ],
+   [
+    "mobiliari-informatiu-mobiliario-informativo@valencia",
+    "Mobiliari informatiu / Mobiliario informativo",
+    "Ayuntamiento de València",
+    819,
+    "2026-01-16T23:02:08+00:00"
+   ],
+   [
+    "hourly-weather-data-from-2001-to-2010-and-from-2013-to-2019-recorded-in-a-french-orchard-in-the-hauts-danjou-loire-valley@pndb",
+    "Hourly weather data from 2001 to 2010 and from 2013 to 2019 recorded in a French orchard in the Hauts d'Anjou (Loire Valley)",
+    "Delépine, Anthony",
+    0,
+    "2022-02-16T10:41:39+00:00"
+   ],
+   [
+    "mood-news-amr-dataset-hackathon-2022@pndb",
+    "MOOD - News AMR dataset - Hackathon 2022",
+    "ARINIK Nejat",
+    0,
+    "2022-11-16T10:05:43+00:00"
+   ],
+   [
+    "bathymetrie-eventail-turbiditique-du-congo-synthese-2013@pndb",
+    "d1076601-82a9-42a2-9d30-d0be8b2481a7",
+    "Ifremer",
+    0,
+    "2018-12-21T00:00:00+00:00"
+   ],
+   [
+    "mapalp-a-vegetation-map-of-the-north-western-european-alps@pndb",
+    "MAPALP: a vegetation map of the north-western European Alps",
+    "Environnements Dynamiques et Territoires de la Montagne (CNRS - UMR5204) (EDYTEM): https://ror.org/02rmwrd87",
+    0,
+    "2024-10-10T00:00:00+00:00"
+   ],
+   [
+    "bathymetrie-eventail-sous-marin-du-rhone-campagne-marion-2000@pndb",
+    "Bathymétrie - éventail sous-marin du Rhône (campagne MARION, 2000)",
+    "Ifremer",
+    0,
+    "2025-05-16T09:28:02+00:00"
+   ],
+   [
+    "coast-hf-bessete-time-series-french-research-infrastructure-ilico-long-term-and-high-frequency-core-parameter-monitoring-of-the-water-column-in-the-continental-shelf-in-front-of-sete-city-north-western-mediterranean-sea@pndb",
+    "COAST-HF-BESSète time series (French Research Infrastructure ILICO): long-term and high frequency core parameter monitoring of the water column in the continental shelf in front of Sète City, North-western Mediterranean Sea",
+    null,
+    0,
+    "2024-05-27T00:00:00+00:00"
+   ],
+   [
+    "acpr-a-as-activite-f_admin-123-_z-_z-solo-cat_06_07-cdm@banquedefrance",
+    "Frais d'administration des organismes de catégories 6 et 7 du code de la mutualité",
+    "ACPR",
+    0,
+    "2026-06-19T13:41:06+00:00"
+   ],
+   [
+    "simulated-peak-flow-for-the-may-16-2019-flood-event-in-bamako-mali@pndb",
+    null,
+    null,
+    0,
+    "2024-11-08T14:51:22+00:00"
+   ],
+   [
+    "mentions-evenements-climatiques-dans-les-archives@culture",
+    "Mentions d’événements climatiques et naturels dans les archives depuis la fin du XVIIIe siècle",
+    "Ministère de la Culture",
+    1015,
+    "2023-11-26T13:54:31+00:00"
+   ],
+   [
+    "clima-precipitazioni-estreme-giornaliere-centro-nord-italia@arpae",
+    "Clima – precipitazioni estreme giornaliere Centro-Nord Italia",
+    "Arpae Emilia-Romagna",
+    22644,
+    "2024-01-30T00:00:00+00:00"
+   ],
+   [
+    "soil-organic-carbon-mineralization-in-response-to-changes-in-soil-moisture-and-temperatures-increasing-in-two-long-term-experiments-in-france@pndb",
+    "Soil organic carbon mineralization in response to changes in soil moisture and temperatures increasing in two long-term experiments in France",
+    "Kpemoua, Tchodjowiè P.I.",
+    0,
+    "2025-05-26T12:32:03+00:00"
+   ],
+   [
+    "rainfall-dataset-of-the-may-16-2019-flood-event-in-bamako-mali@pndb",
+    null,
+    null,
+    0,
+    "2024-11-08T14:46:45+00:00"
+   ],
+   [
+    "teamtox-kickoff-meeting-minutes@pndb",
+    "TEAMTOX KickOff Meeting: minutes",
+    "Forget, Florence",
+    0,
+    "2023-04-19T16:14:55+00:00"
+   ],
+   [
+    "mo-isotope-chemostratigraphy-of-the-287-ga-red-lake-carbonate-platform-and-implications-for-incipient-oxidative-mo-cycling-during-the-archean@pndb",
+    "Mo isotope chemostratigraphy of the 2.87 Ga Red Lake Carbonate Platform and implications for incipient oxidative Mo cycling during the Archean",
+    null,
+    0,
+    "2025-03-17T00:00:00+00:00"
+   ],
+   [
+    "maize-silage-supplementation-in-grazing-dairy-cows-milk-production-pasture-intake-behaviour-and-methane-emissions@pndb",
+    "Maize silage supplementation in grazing dairy cows: milk production, pasture intake, behaviour and methane emissions",
+    "Guyard, Romain",
+    0,
+    "2023-05-31T07:50:15+00:00"
+   ],
+   [
+    "hydrological-and-hydrochemical-data-collected-from-van-uc-river-and-estuary-vietnam-10-14-august-2022@pndb",
+    "Hydrological and hydrochemical data collected from Van Uc River and estuary (Vietnam), 10-14 August 2022",
+    "Penicaud, Juliette",
+    0,
+    "2025-09-22T09:43:35+00:00"
+   ],
+   [
+    "emodnet-physics0@pndb",
+    "EMODnet Physics",
+    "Ifremer",
+    0,
+    "2025-05-16T00:14:07+00:00"
+   ],
+   [
+    "clinical-and-epidemiologic-characteristics-and-therapeutic-management-of-patients-with-vibrio-infections-bay-of-biscay-france-2001-2019@pndb",
+    "Clinical and Epidemiologic Characteristics and Therapeutic Management of Patients with Vibrio Infections, Bay of Biscay, France, 2001–2019",
+    "Hoefler, Florence",
+    0,
+    "2023-08-10T12:59:01+00:00"
+   ],
+   [
+    "can-omnivores-be-considered-keystone-species-bears-as-a-study-case@pndb",
+    "Can omnivores be considered keystone species? Bears as a study case",
+    "Pauly, Grégoire",
+    0,
+    "2026-03-11T10:21:36+00:00"
+   ],
+   [
+    "data-for-from-past-exceptional-extremes-to-frequent-future-risks-how-climate-change-shapes-the-fate-of-common-wheat-in-france@pndb",
+    "Data for \"From past exceptional extremes to frequent future risks: How climate change shapes the fate of common wheat in France\"",
+    "AUBRY, Maël",
+    0,
+    "2026-02-19T08:30:32+00:00"
+   ],
+   [
+    "pharmacokinetic-data-for-the-manuscript-population-pharmacokinetic-modeling-of-sulfamethoxazole-sulfadiazine-and-sulfadimethoxine-combined-with-trimethoprim-in-calves@pndb",
+    "Pharmacokinetic data for the manuscript \"Population pharmacokinetic modeling of sulfamethoxazole, sulfadiazine and sulfadimethoxine combined with trimethoprim in calves\"",
+    "BOULANGER, MARINE",
+    0,
+    "2026-01-06T07:55:25+00:00"
+   ],
+   [
+    "interplanetary-solar-events-catalogs@pndb",
+    "Interplanetary solar events catalogs",
+    "Nguyen, Gautier",
+    0,
+    "2025-09-22T11:51:10+00:00"
+   ],
+   [
+    "physical-events-occurring-during-the-cryopreservation-of-immortalized-human-t-cells@pndb",
+    "Physical events occurring during the cryopreservation of immortalized human T cells",
+    "Meneghel, Julie",
+    0,
+    "2020-02-26T15:51:20+00:00"
+   ],
+   [
+    "chantilly-restitution-aux-benevoles-2023@pndb",
+    "Chantilly - Restitution aux bénévoles - 2023",
+    "Saint-André, Laurent",
+    0,
+    "2024-12-18T12:35:39+00:00"
+   ],
+   [
+    "replication-database-for-future-projections-not-autobiographical-memories-predict-anxiety-symptoms-in-aging@pndb",
+    "Replication database for: Future Projections, Not Autobiographical Memories, Predict Anxiety Symptoms in Aging",
+    "Allé, Mélissa",
+    0,
+    "2025-03-11T13:27:55+00:00"
+   ],
+   [
+    "parcelles-agricoles-concernees-par-lalea-de-la-submersion-marine-pour-un-evenement-centennal-sur-le-littoral-des-hauts-de-france-avec-prise-en-compte-du-changement-climatique@pndb",
+    "Parcelles agricoles concernées par l'aléa de la submersion marine pour un évènement centennal sur le littoral des Hauts-de-France avec prise en compte du changement climatique",
+    "Réseau d'Observation du Littoral de Normandie et des Hauts-de-France",
+    0,
+    "2026-02-02T11:09:31+00:00"
+   ],
+   [
+    "marine-exploration-dataset-of-the-2015-ramoge-exploration-description-of-observations-made-during-remotely-operated-vehicle-dives-in-the-ramoge-agreement-area@pndb",
+    "Marine exploration dataset of the 2015 RAMOGE Exploration: description of observations made during Remotely Operated Vehicle Dives in the RAMOGE agreement area",
+    "Groupement d'Intérêt Scientifique (GIS) Posidonie, Observatoire des Sciences de l'Univers (OSU) Pythéas, F-13288 Marseille, France",
+    0,
+    "2024-12-11T00:00:00+00:00"
+   ],
+   [
+    "annotated-datasets-from-padi-web-for-event-based-surveillance-of-avian-influenza-african-swine-fever-and-west-nile-virus-disease@pndb",
+    "Annotated datasets from PADI-web for event-based surveillance of Avian Influenza, African Swine Fever, and West-Nile Virus Disease",
+    "Boudoua, El Bahdja",
+    0,
+    "2023-08-21T09:09:38+00:00"
+   ],
+   [
+    "corrected-version-of-the-darpa-optc-dataset@pndb",
+    "Corrected version of the DARPA OpTC dataset",
+    "MAJORCZYK, Frederic",
+    0,
+    "2026-01-28T13:07:51+00:00"
+   ],
+   [
+    "numerical-simulation-of-rainfall-and-runoff-driven-erosion-at-the-hillslope-scale-four-rainfall-events-on-the-pradel-plot@pndb",
+    "Numerical simulation of rainfall and runoff driven erosion at the hillslope scale: four rainfall events on the Pradel plot",
+    "NORD, Guillaume",
+    0,
+    "2023-04-06T07:03:21+00:00"
+   ],
+   [
+    "pharmacokinetic-data-for-the-manuscript-population-pharmacokinetic-modeling-of-sulfadimethoxine-sulfadizine-and-sulfamethoxazole-combined-to-trimethoprim-in-pigs@pndb",
+    "Pharmacokinetic data for the manuscript \"Population pharmacokinetic modeling of sulfadimethoxine, sulfadizine and sulfamethoxazole combined to trimethoprim in pigs\"",
+    "BOULANGER, MARINE",
+    0,
+    "2025-10-22T08:31:40+00:00"
+   ],
+   [
+    "simulated-overbank-flow-for-the-may-16-2019-flood-event-in-bamako-mali@pndb",
+    null,
+    null,
+    0,
+    "2024-11-08T14:41:48+00:00"
+   ],
+   [
+    "hydrological-and-hydrochemical-data-collected-from-van-uc-river-and-estuary-vietnam-02-07-march-2023@pndb",
+    "Hydrological and hydrochemical data collected from Van Uc River and estuary (Vietnam), 02-07 March 2023",
+    "Penicaud, Juliette",
+    0,
+    "2025-09-22T09:52:18+00:00"
+   ],
+   [
+    "complementarity-and-discriminatory-power-of-genotype-and-otolith-shape-in-describing-the-fine-scale-population-structure-of-an-exploited-fish-the-common-sole-of-the-eastern-english-channel@pndb",
+    "Complementarity and discriminatory power of genotype and otolith shape in describing the fine-scale population structure of an exploited fish, the common sole of the Eastern English Channel",
+    "ESE, Ecologie et Santé des Ecosystèmes, Agrocampus Ouest, INRAE, 65 rue de Saint-Brieuc, F-35042 Rennes Cedex, France Statistical and Actuarial Science Department, Simon Fraser University, 8888 University Drive, V5A2L6 Burnaby, BC, Canada",
+    0,
+    "2021-05-12T00:00:00+00:00"
+   ],
+   [
+    "long-term-temporal-dynamics-of-an-overall-annual-intensity-indicator-of-grapevine-pests-and-diseases-in-three-french-vineyards@pndb",
+    "Long-term temporal dynamics of an overall annual intensity indicator of grapevine pests and diseases in three French vineyards",
+    "Delbac, Lionel",
+    0,
+    "2025-07-31T06:46:22+00:00"
+   ],
+   [
+    "data-for-reviewing-seas-of-data-integrating-image-based-bio-logging-and-artificial-intelligence-to-enhance-marine-conservation@pndb",
+    "Data for \"Reviewing Seas of Data: Integrating Image-Based Bio-logging and Artificial Intelligence to Enhance Marine Conservation\"",
+    "CEBC UMR 7372, CNRS",
+    0,
+    "2025-07-11T14:25:37+00:00"
+   ],
+   [
+    "evolutionary-processes-and-cellular-functions-underlying-divergence-in-alexandrium-minutum@pndb",
+    "Evolutionary processes and cellular functions underlying divergence in Alexandrium minutum",
+    "Ifremer, France",
+    0,
+    "2022-11-10T00:00:00+00:00"
+   ],
+   [
+    "a-multi-tagged-sentinel-1-wave-mode-sar-image-dataset-near-barbados-multags-sarwv@pndb",
+    "A multi-tagged Sentinel-1 wave mode SAR image dataset near Barbados (MulTags-SARwv)",
+    "School of Marine Sciences, Nanjing University of Information Science & Technology, Nanjing, China",
+    0,
+    "2024-04-17T00:00:00+00:00"
+   ],
+   [
+    "conductivity-temperature-depth-data-from-van-uc-river-and-estuary-vietnam-01-05-june-2022@pndb",
+    "Conductivity - Temperature - Depth data from Van Uc River and estuary (Vietnam), 01-05 June 2022",
+    "Sentchev, Alexei",
+    0,
+    "2025-09-22T09:46:26+00:00"
+   ],
+   [
+    "ibcao-v-4-international-bathymetric-chart-of-the-arctic-ocean-version-4@pndb",
+    "IBCAO v. 4 (International Bathymetric Chart of the Arctic Ocean version 4)",
+    "Stockholm University, Department of Geological Sciences",
+    0,
+    "2019-12-13T10:52:09+00:00"
+   ],
+   [
+    "phenological-data-of-26-varietes-of-cherry-apricot-peach-and-apple-trees-since-2016-in-a-french-orchad-of-toulenne-gironde-france@pndb",
+    "Phenological data of 26 varietes of cherry, apricot, peach and apple trees since 2016 in a French orchad of Toulenne, Gironde, France",
+    "Alletru, David",
+    0,
+    "2024-11-20T16:33:55+00:00"
+   ],
+   [
+    "leaf-phenology-of-sessile-oak-quercus-petraea-and-seasonal-variations-in-the-fraction-of-light-intercepted-by-the-tree-crowns@pndb",
+    "Leaf phenology of sessile oak (Quercus petraea) and Seasonal variations in the fraction of light intercepted by the tree crowns",
+    "Guyon, Dominique",
+    0,
+    "2025-03-28T09:50:35+00:00"
+   ],
+   [
+    "dataset-for-the-manuscript-pharmacokinetic-modeling-of-sulfamethoxazole-trimethoprim-and-sulfadiazine-trimethoprim-combinations-in-broilers@pndb",
+    "Dataset for the manuscript \"Pharmacokinetic modeling of Sulfamethoxazole-Trimethoprim and Sulfadiazine-Trimethoprim combinations in broilers\"",
+    "BOULANGER, MARINE",
+    0,
+    "2024-05-22T09:06:15+00:00"
+   ],
+   [
+    "novelty-dataset-animal-health-food-security-climate-change@pndb",
+    "Novelty dataset (animal health, food security, climate change)",
+    "Menya, Edmond",
+    0,
+    "2025-05-05T08:44:57+00:00"
+   ],
+   [
+    "dataset-from-a-mesocosm-experiment-assessing-the-effects-of-a-simulated-terrestrial-runoff-on-the-plankton-food-web-in-a-mediterranean-lagoon@pndb",
+    "Dataset from a mesocosm experiment assessing the effects of a simulated terrestrial runoff on the plankton food web in a Mediterranean lagoon",
+    "MARBEC (Marine Biodiversity, Exploitation and Conservation), Univ Montpellier, CNRS, Ifremer, IRD, Montpellier, France.",
+    0,
+    "2025-06-04T00:00:00+00:00"
+   ],
+   [
+    "preparation-of-composites-based-on-polyhydroxyalcanoates-phbv-and-agro-waste@pndb",
+    "Preparation Of Composites Based On Polyhydroxyalcanoates (PHBV) And Agro-Waste",
+    "Vannini, Micaela",
+    0,
+    "2020-12-11T14:46:53+00:00"
+   ],
+   [
+    "an-annotated-avian-influenza-dataset-from-two-event-based-surveillance-systems@pndb",
+    "An annotated Avian Influenza dataset from two event-based surveillance systems",
+    "Boudoua, El Bahdja",
+    0,
+    "2023-05-10T09:18:33+00:00"
+   ],
+   [
+    "chronic-html-template-with-javascript-for-social-ecological-timelines@pndb",
+    "Chronic: HTML template with JavaScript for social-ecological timelines",
+    "CNRS / ICUBE",
+    0,
+    "2025-02-20T08:59:46+00:00"
+   ],
+   [
+    "hourly-weather-data-from-2020-recorded-in-a-french-orchard-in-hauts-danjou-loire-valley@pndb",
+    "Hourly weather data from 2020 recorded in a French orchard in Hauts d'Anjou (Loire Valley)",
+    "Delépine, Anthony",
+    0,
+    "2025-01-21T13:45:10+00:00"
+   ],
+   [
+    "4-dimensional-weekly-temperature-and-marine-heatwaves-categories-from-esacareheat-project@pndb",
+    "4-Dimensional Weekly Temperature and Marine Heatwaves Categories from ESA/CAREHeat project",
+    "CERSAT Exploitation",
+    0,
+    "2025-11-16T15:42:23+00:00"
+   ],
+   [
+    "ela-energy-line-angle-and-aupadim-area-under-the-dimensionless-profile-calculations-derived-from-the-analysis-of-french-avalanche-past-events-data@pndb",
+    "ELA (Energy Line Angle) and AUPadim (Area Under the Dimensionless Profile) calculations derived from the analysis of french avalanche past events data.",
+    "MOMBER, MARION",
+    0,
+    "2026-01-22T15:15:13+00:00"
+   ],
+   [
+    "nemo-surveys-field-observations-of-hydrodynamics-functionning-of-moindou-lagoon-new-caledonia-south-province@pndb",
+    "NEMO surveys : Field observations of hydrodynamics functionning of Moindou lagoon (New Caledonia - South Province)",
+    "IFREMER, LEAD-NC, New Caledonia",
+    0,
+    "2022-09-22T00:00:00+00:00"
+   ],
+   [
+    "vertical-complexity-index-airborne-lidar-data-of-blois-forest-imprint@pndb",
+    "Vertical Complexity Index - Airborne LiDAR data of Blois forest - IMPRINT",
+    "EDYSAN (Ecologie et Dynamique des Systèmes Anthropisés) - UMR 7058 - CNRS/UPJV",
+    0,
+    "2026-05-20T12:29:00+00:00"
+   ],
+   [
+    "environmental-changes-in-the-fleuve-manche-paleoriver-drainage-system-western-europe-directly-linked-to-the-north-atlantic-sub-millennial-climate-variability-across-hs1-a-bay-of-biscay-pollen-record@pndb",
+    "Environmental changes in the Fleuve Manche paleoriver drainage system (Western Europe) directly linked to the North Atlantic sub-millennial climate variability across HS1 : a Bay of Biscay pollen record",
+    null,
+    0,
+    "2024-10-03T00:00:00+00:00"
+   ],
+   [
+    "perception-des-indices-emotionnels-vocaux-dans-des-sons-musicaux@pndb",
+    "Perception des indices émotionnels vocaux dans des sons musicaux",
+    "Bedoya, Daniel",
+    0,
+    "2025-12-12T23:00:10+00:00"
+   ],
+   [
+    "a-large-panel-of-chicken-cells-are-invaded-in-vivo-by-salmonella-typhimurium-even-when-depleted-of-all-known-invasion-factors@pndb",
+    "A large panel of chicken cells are invaded in vivo by Salmonella Typhimurium even when depleted of all known invasion factors",
+    "Virlogeux-Payant, Isabelle",
+    0,
+    "2022-01-20T12:00:28+00:00"
+   ],
+   [
+    "aria-inventario-regionale-emissioni-inemar@arpae",
+    "Aria – inventario regionale emissioni INEMAR",
+    "Arpae Emilia-Romagna",
+    197775,
+    "2026-08-07T14:20:09.193000+00:00"
+   ],
+   [
+    "clima-indicatori-mite-siccita@arpae",
+    "Clima – indicatori MITE siccità",
+    "Arpae Emilia-Romagna",
+    48,
+    "2025-05-29T17:10:09+00:00"
+   ],
+   [
+    "territorial-nitrogen-budget-and-metabolic-typologies-of-eu-agri-food-systems-1990-2019@pndb",
+    "Territorial nitrogen budget and metabolic typologies of European agri-food systems, 1990-2019",
+    "Harter, Ludovic",
+    0,
+    "2026-01-05T15:52:10+00:00"
+   ],
+   [
+    "experimental-data-of-series-5-6-and-7-backwater-rise-related-to-large-wood-and-eventual-releases-by-overtopping@pndb",
+    "Experimental data of Series #5, #6 and #7: Backwater rise related to large wood and eventual releases by overtopping",
+    "PITON, Guillaume",
+    0,
+    "2024-02-09T13:28:27+00:00"
+   ],
+   [
+    "julio-judicious-location-for-intrusions-observations@pndb",
+    "JULIO - Judicious Location for Intrusions Observations",
+    "Aix Marseille Univ, CNRS, IRD, Université de Toulon, MIO, F-13288 Marseille, France",
+    0,
+    "2025-12-24T00:00:00+00:00"
+   ],
+   [
+    "impact-of-a-2-month-exercise-training-program-on-glycaemic-fluctuations-on-days-with-and-without-exercise-in-adults-with-type-1-diabetes@pndb",
+    "Impact of a 2-month exercise training program on glycaemic fluctuations on days with and without exercise in adults with type 1 diabetes.",
+    "Duriez, Léo",
+    0,
+    "2025-04-11T09:24:13+00:00"
+   ],
+   [
+    "dynamics-of-pure-even-aged-ash-fraxinus-excelsior-l-stands-in-view-to-modelizingsize-densitytrajectories-of-unthinned-ash-stands-with-application-in-evaluating-the-impact-of-chalara-dieback-on-ash-mortality@pndb",
+    "Dynamics of pure even-aged ash (Fraxinus excelsior L.) stands in view to modelizing“size-density”trajectories of unthinned ash stands, with application in evaluating the impact of Chalara dieback on ash mortality",
+    "Ningre, Francois",
+    0,
+    "2020-06-25T08:39:41+00:00"
+   ],
+   [
+    "mitik-dataset-of-anonymized-wifi-management-frames-from-a-parking-area@pndb",
+    "MITIK Dataset of pseudo-anonymized WiFi management frames from a parking area",
+    "Fernando Molano Ortiz",
+    0,
+    "2025-11-14T13:37:18+00:00"
+   ],
+   [
+    "bathymetrie-eventail-du-congo-pockmark-regab-campagne-wacs-2011@pndb",
+    "f70a69a5-875a-4a7c-bfd3-803d3311842a",
+    "Ifremer",
+    0,
+    "2025-05-16T09:36:39+00:00"
+   ],
+   [
+    "plastics-in-a-circular-economy-mitigating-the-ambiguity-of-widely-used-terms-from-stakeholders-consultation@pndb",
+    "Plastics in a circular economy: mitigating the ambiguity of widely-used terms from stakeholders consultation",
+    "Buche, Patrice",
+    0,
+    "2025-05-12T13:49:45+00:00"
+   ],
+   [
+    "evenements-tempetueux-et-degats-a-la-cote-en-normandie-et-en-hauts-de-france@pndb",
+    "Evènements tempétueux et dégâts à la côte en Normandie et en Hauts-de-France",
+    "Réseau d'Observation du Littoral de Normandie et des Hauts-de-France",
+    0,
+    "2026-02-02T09:45:29+00:00"
+   ],
+   [
+    "monitoring-of-common-hamsters-during-hibernation-and-reproduction-year-2021-2022-data-includes-body-temperatures-and-mass-monitoring-genetics-reproductive-outputs@pndb",
+    "Monitoring of common hamsters during hibernation and reproduction, year 2021-2022. Data includes body temperatures and mass monitoring, genetics, reproductive outputs.",
+    "Institut pluridisciplinaire Hubert Curien, DEPE, CNRS",
+    0,
+    "2025-08-18T14:33:36+00:00"
+   ],
+   [
+    "lac-de-la-muzelle-carottage-muz12-i-plant-cover-and-erosion-dynamics-impacts-of-pastoral-activities-and-climatic-changes-over-the-last-1600-years-2017-zone-atelier-alpes-igsniefra00a4@pndb",
+    "Lac de la Muzelle - Carottage Muz12-I – Plant cover and erosion dynamics : impacts of pastoral activities and climatic changes over the last 1600 years - 2017 – Zone Atelier Alpes (IGSN:IEFRA00A4)",
+    "EDYTEM",
+    0,
+    "2026-05-28T14:07:24+00:00"
+   ],
+   [
+    "physical-loss-to-seabed-in-europe-seas-jan-2020@pndb",
+    "Physical loss to seabed in Europe Seas, Jan. 2020",
+    "European Environment Agency (EEA)",
+    0,
+    "2025-10-09T10:56:35+00:00"
+   ],
+   [
+    "atlantic_ch03_specification_1-oil-platform-leak-bulletin-24h-released-after-a-dg-mare-request-received-by-email-on-the-10th-may-2016@pndb",
+    "ATLANTIC_CH03_Specification_1 / Oil Platform Leak Bulletin 24h released after a DG MARE request received by email on the 10th May 2016",
+    null,
+    0,
+    "2018-04-12T13:25:29+00:00"
+   ],
+   [
+    "bathymetrie-golfe-du-lion-eventail-sous-marin-profond-du-rhone-campagne-gmo2-carnac-2002@pndb",
+    "Bathymétrie - golfe du Lion, éventail sous-marin profond du Rhône (campagne GMO2 - CARNAC, 2002)",
+    "Ifremer",
+    0,
+    "2025-05-15T22:42:21+00:00"
+   ],
+   [
+    "mtbls752-untargeted-food-contaminant-detection-using-uhplc-hrms-combined-with-multivariate-analysis-feasibility-study-on-tea-dataset-1-development@pndb",
+    "MTBLS752: Untargeted food contaminant detection using UHPLC-HRMS combined with multivariate analysis: Feasibility study on tea (Dataset 1 - Development)",
+    "CLADIERE, MATHIEU",
+    0,
+    "2026-02-18T15:16:33+00:00"
+   ],
+   [
+    "user-centric-metadata-model@pndb",
+    "User centric metadata model",
+    "BERETTA, Valentina",
+    0,
+    "2021-09-07T12:31:52+00:00"
+   ],
+   [
+    "continuous-monitoring-of-circulating-glucose-concentrations-in-growing-pigs-days-and-nigths@pndb",
+    "Continuous monitoring of circulating glucose concentrations in growing pigs: days and nigths",
+    "Gondret, Florence",
+    0,
+    "2025-07-20T16:45:33+00:00"
+   ],
+   [
+    "dung-beetles-but-not-rodents-contribute-to-brown-bear-faeces-removal-disaggregation-and-secondary-seed-dispersal@pndb",
+    "Dung beetles, but not rodents, contribute to Brown Bear faeces removal, disaggregation and secondary seed dispersal.",
+    "Pauly, Gregoire",
+    0,
+    "2025-05-06T14:13:42+00:00"
+   ],
+   [
+    "multi-spectral-leaf-segmentation-for-cropweed-identification@pndb",
+    "Multi-Spectral Leaf Segmentation For Crop/Weed Identification",
+    "Vayssade, Jehan-Antoine",
+    0,
+    "2024-08-27T14:18:49+00:00"
+   ],
+   [
+    "centaurea-corymbosa-saving-a-rare-plant-from-extinction@pndb",
+    "Centaurea corymbosa: saving a rare plant from extinction",
+    "UMR Institut des Sciences de l'Evolution de Montpellier (ISEM)",
+    0,
+    "2025-11-26T14:47:12+00:00"
+   ],
+   [
+    "data-obtained-during-a-field-campaign-conducted-in-spring-2018-within-the-framework-of-agrimultipol-program-and-published-in-new-particle-formation-at-a-mixed-peri-urban-and-agricultural-site-httpsdoiorg101016jscitotenv2022159370@pndb",
+    "Data obtained during a field campaign conducted in spring 2018 within the framework of AgriMultiPol program, and published in  New Particle Formation at a mixed peri-urban and agricultural site (https://doi.org/10.1016/j.scitotenv.2022.159370)",
+    "KAMMER, Julien",
+    0,
+    "2023-12-01T15:30:05+00:00"
+   ],
+   [
+    "mtbls754-untargeted-food-contaminant-detection-using-uhplc-hrms-combined-with-multivariate-analysis-feasibility-study-on-tea-dataset-2-validation@pndb",
+    "MTBLS754: Untargeted food contaminant detection using UHPLC-HRMS combined with multivariate analysis: Feasibility study on tea (Dataset 2 - Validation)",
+    "Cladière, Mathieu",
+    0,
+    "2026-02-18T14:18:49+00:00"
+   ],
+   [
+    "2015-2019-subset-of-rainfall-meteorology-discharge-and-sediment-yield-data-from-draix-bleone-observatory@pndb",
+    "2015-2019 subset of rainfall, meteorology, discharge and sediment yield data from Draix-Bleone Observatory",
+    "Klotz, Sebastien",
+    0,
+    "2023-01-26T14:51:15+00:00"
+   ],
+   [
+    "hydrodynamic-dataset-from-the-upcast-and-cassised-campaigns-in-the-cassidaigne-canyon-nw-mediterranean-sea@pndb",
+    "Hydrodynamic dataset from the UPCAST and CASSISED campaigns in the Cassidaigne canyon (NW Mediterranean Sea)",
+    "Ifremer, University of Brest, UMR 6523 CNRS, IRD, Laboratoire d’Océanographie Physique et Spatiale, F29280 Plouzané, France",
+    0,
+    "2025-12-24T00:00:00+00:00"
+   ],
+   [
+    "individual-fruit-and-cone-production-pollen-and-biomass-data-for-european-beech-fagus-sylvatica-l-and-silver-fir-abies-alba-mill-from-their-geographic-range-margins-in-south-eastern-france@pndb",
+    "Individual fruit and cone production, pollen and biomass data for European beech (Fagus sylvatica L.) and silver fir (Abies alba Mill.) from their geographic range margins in south-eastern France",
+    "Jean, Frédéric",
+    0,
+    "2025-09-05T13:12:33+00:00"
+   ],
+   [
+    "hydrological-and-hydrochemical-data-collected-from-van-uc-river-and-estuary-vietnam-16-20-june-2022@pndb",
+    "Hydrological and hydrochemical data collected from Van Uc River and estuary (Vietnam), 16-20 June 2022",
+    "Penicaud, Juliette",
+    0,
+    "2025-08-29T14:20:42+00:00"
+   ],
+   [
+    "a-database-of-very-high-and-phenomenal-sea-states-from-the-esa-seastate-cci-v4-database-with-complements-from-cnes-cfosat-and-swot-nadir-altimeters-version-1-not-inter-calibrated@pndb",
+    "A database of \"very high\" and \"phenomenal\" sea states from the ESA Seastate CCI V4 database, with complements from CNES CFOSAT and SWOT nadir altimeters. Version 1 (not inter-calibrated)",
+    "Laboratoire d’Océanographie Physique et Spatiale (LOPS), Univ. Brest, CNRS, IRD, Ifremer, IUEM, Brest, 29200, France",
+    0,
+    "2025-06-04T00:00:00+00:00"
+   ],
+   [
+    "r-scripts-for-the-quantification-of-centromere-tracks-during-plant-meiosis@pndb",
+    "R scripts for the quantification of centromere tracks during plant meiosis",
+    "Lefranc, Sandrine",
+    0,
+    "2024-07-11T08:18:19+00:00"
+   ],
+   [
+    "cadhyak-surveys-field-observations-of-hydrodynamics-functioning-of-koumac-lagoon-new-caledonia-north-province@pndb",
+    "CADHYAK surveys : Field observations of hydrodynamics functioning of Koumac Lagoon (New Caledonia - North Province)",
+    "IFREMER, LEAD-NC, New Caledonia",
+    0,
+    "2022-09-22T00:00:00+00:00"
+   ],
+   [
+    "mesurho-coastal-station-time-series-2009-2021-long-time-high-frequency-monitoring-off-the-rhone-river-mouth@pndb",
+    "MESURHO coastal station time series (2009-2021) : long-time high frequency monitoring off the Rhone River mouth",
+    "Ifremer, Univ. Brest, CNRS, IRD, Laboratoire d'Océanographie Physique et Spatiale (LOPS), IUEM, F-29280 Plouzané, France",
+    0,
+    "2024-06-06T00:00:00+00:00"
+   ],
+   [
+    "verdeling_financiele_welvaart@rotterdam-opendata",
+    "Verdeling financiële welvaart",
+    null,
+    0,
+    "2026-04-07T20:12:07.522000+00:00"
+   ],
+   [
+    "localisation-des-evenements-de-pollution-en-mer-ayant-fait-lobjet-dun-rapport-de-pollution-entre-2000-et-2009-polrep-2000-2009@pndb",
+    "Localisation des événements de pollution en mer ayant fait l'objet d'un rapport de pollution entre 2000 et 2009 (POLREP 2000-2009)",
+    "Cedre",
+    0,
+    "2011-02-01T00:00:00+00:00"
+   ],
+   [
+    "dataset-from-an-in-situ-mesocosm-experiment-evaluating-the-effects-of-a-simulated-marine-heatwave-on-the-structure-and-composition-of-the-plankton-food-web-in-a-mediterranean-coastal-lagoon@pndb",
+    "Dataset from an in situ mesocosm experiment evaluating the effects of a simulated marine heatwave on the structure and composition of the plankton food web in a Mediterranean coastal lagoon",
+    "MARBEC (Marine Biodiversity, Exploitation and Conservation), Univ Montpellier, CNRS, Ifremer, IRD, Montpellier, France.",
+    0,
+    "2025-12-24T00:00:00+00:00"
+   ],
+   [
+    "fate-of-terrestrial-runoffs-on-the-coastal-zone-of-noumea-new-caledonia-moorings-and-ctd-profiles@pndb",
+    "Fate of terrestrial runoffs on the coastal zone of Noumea (New-Caledonia) : Moorings and CTD profiles",
+    "IFREMER, LEAD-NC, New Caledonia",
+    0,
+    "2022-09-22T00:00:00+00:00"
+   ]
+  ],
+  "événements": [
+   [
+    "points-d-interet-touristiques-corse-du-sud-2a-et-haute-corse-2b@datacorsica",
+    "Points d’intérêt touristiques – Corse-du-Sud (2A) et Haute-Corse (2B)",
+    "DATAtourisme",
+    22,
+    "2025-06-23T06:15:15+00:00"
+   ],
+   [
+    "declarations-des-entrepreneurs-de-spectacles-vivants-en-corse@datacorsica",
+    "Déclarations des entrepreneurs de spectacles vivants en Corse",
+    null,
+    435,
+    "2025-07-02T08:05:59+00:00"
+   ],
+   [
+    "csv-lang-fr-and-refine-location_region-3a-22corse-22-and-facet-facet-name-3d-22l@datacorsica",
+    "Evènements publics",
+    "OpenAgenda",
+    1921,
+    "2025-07-02T07:38:54+00:00"
+   ],
+   [
+    "public-events-openagenda@datacorsica",
+    "Public events - OpenAgenda - Corse",
+    "OpenAgenda",
+    2479,
+    "2024-04-08T11:13:21+00:00"
+   ],
+   [
+    "evenements-publics-openagenda0@ville-de-roubaix",
+    "Public events - OpenAgenda",
+    "OpenAgenda",
+    7363,
+    "2018-01-25T16:45:00+00:00"
+   ],
+   [
+    "liste-panneau-affichage-libre-roubaix@ville-de-roubaix",
+    "Liste des panneaux d'affichage libre à Roubaix",
+    "Ville de Roubaix",
+    28,
+    "2016-11-09T08:51:15+00:00"
+   ],
+   [
+    "games_map_events_en@paris2024",
+    "[GAMES MAP]- Evènements (EN)",
+    "Paris2024-DIG",
+    9003,
+    "2024-11-05T09:00:07+00:00"
+   ],
+   [
+    "application-spatio-temporelle-chrono-rhone-2017-2024@pndb",
+    "Application spatio-temporelle Chrono-Rhône (2017-2024)",
+    "CNRS UMR 5600 EVS - ENS de Lyon",
+    0,
+    "2025-02-07T09:58:34+00:00"
+   ],
+   [
+    "guide-daide-a-la-redaction-rapide-de-formulaires-avec-loutil-open-data-kit-odk@pndb",
+    "Guide d’aide à la rédaction rapide de formulaires avec l’outil Open Data Kit (ODK)",
+    "BALZERGUE, PIERRE",
+    0,
+    "2024-09-12T13:32:54+00:00"
+   ],
+   [
+    "demographie-des-troupeaux-camelins-au-maroc-de-2018-a-2023@pndb",
+    "Démographie des troupeaux camelins au Maroc de 2018 à 2023",
+    "Julien, Lionel",
+    0,
+    "2025-10-23T13:18:18+00:00"
+   ],
+   [
+    "mentions-evenements-climatiques-dans-les-archives@culture",
+    "Mentions d’événements climatiques et naturels dans les archives depuis la fin du XVIIIe siècle",
+    "Ministère de la Culture",
+    1015,
+    "2023-11-26T13:54:31+00:00"
+   ],
+   [
+    "panorama-des-festivals@culture",
+    "Panorama des festivals",
+    "Ministère de la Culture",
+    3136,
+    "2019-07-25T12:00:07+00:00"
+   ],
+   [
+    "festivals-global-festivals-_-pl@culture",
+    "Liste des festivals en France",
+    "Ministère de la Culture",
+    7283,
+    "2024-03-15T13:07:25+00:00"
+   ],
+   [
+    "calhyco-parametres-de-vagues-et-hauteurs-de-mer-sur-le-recif-frangeant-de-la-reunion@pndb",
+    "aa42cbc1-c0cf-413e-b93d-8d0d1cbb0e06",
+    "OSU La Réunion",
+    0,
+    "2025-07-01T14:58:10+00:00"
+   ],
+   [
+    "fiche-projet-elade-suivi-de-labondance-dalgues-dans-le-lagon-de-poe-decembre-2018-a-novembre-2019@pndb",
+    "Fiche Projet ELADE : Suivi de l’abondance d’algues dans le lagon de Poé - Décembre 2018 à Novembre 2019",
+    "LEAD-NC",
+    0,
+    "2025-12-30T13:23:20+00:00"
+   ],
+   [
+    "quelles-evolutions-des-regimes-hydrologiques-en-france-hexagonale-@pndb",
+    "Quelles évolutions des régimes hydrologiques en France hexagonale ?",
+    "Sauquet, Éric",
+    0,
+    "2025-09-21T21:03:22+00:00"
+   ],
+   [
+    "fiche-projet-elade-suivi-biogeochimique-du-lagon-de-poe-decembre-2018-a-octobre-2019@pndb",
+    "Fiche Projet ELADE : Suivi biogéochimique du lagon de Poé - Décembre 2018 à Octobre 2019",
+    "LEAD-NC",
+    0,
+    "2025-12-30T13:21:27+00:00"
+   ],
+   [
+    "images-de-cameras-automatiques-nunavik-depuis-2016@pndb",
+    "Images de caméras automatiques Nunavik depuis 2016",
+    "CNRS LETG et OHMI Nunavik",
+    0,
+    "2019-07-15T17:55:01+00:00"
+   ],
+   [
+    "evaluation-de-limpact-dun-changement-de-protocole-de-tarissement-sur-lutilisation-dantibiotiques-en-elevage-bovin-laitier-conduit-en-agriculture-biologique@pndb",
+    "Evaluation de l'impact d'un changement de protocole de tarissement sur l'utilisation d'antibiotiques en élevage bovin laitier conduit en Agriculture Biologique",
+    "Tinchant Celeste",
+    0,
+    "2025-08-21T07:59:42+00:00"
+   ],
+   [
+    "evenements-tempetueux-et-degats-a-la-cote-en-normandie-et-en-hauts-de-france@pndb",
+    "Evènements tempétueux et dégâts à la côte en Normandie et en Hauts-de-France",
+    "Réseau d'Observation du Littoral de Normandie et des Hauts-de-France",
+    0,
+    "2026-02-02T09:45:29+00:00"
+   ],
+   [
+    "localisation-des-evenements-de-pollution-en-mer-ayant-fait-lobjet-dun-rapport-de-pollution-entre-2000-et-2009-polrep-2000-2009@pndb",
+    "Localisation des événements de pollution en mer ayant fait l'objet d'un rapport de pollution entre 2000 et 2009 (POLREP 2000-2009)",
+    "Cedre",
+    0,
+    "2011-02-01T00:00:00+00:00"
+   ],
+   [
+    "ligne-de-vegetation-dans-louest-des-tuamotu-polynesie-francaise-1969-1981-1984-1995-2013@pndb",
+    "Ligne de végétation dans l'ouest des Tuamotu, Polynésie française (1969, 1981, 1984, 1995, 2013)",
+    "LIttoral ENvironnement et Sociétés (LIENSs)",
+    0,
+    "2015-04-13T00:00:00+00:00"
+   ],
+   [
+    "dcsmm2024_d1c3-evenements-de-mortalite-extreme-des-cetaces-rne@pndb",
+    "b2b46aab-8145-4d4c-ac5c-d65e457796ca",
+    "Ifremer",
+    0,
+    "2025-05-15T23:48:03+00:00"
+   ],
+   [
+    "recul-evenementiel-du-trait-de-cote@pndb",
+    "Recul événementiel du trait de côte",
+    "Cerema",
+    0,
+    "2026-04-17T17:01:17+00:00"
+   ],
+   [
+    "affiches-des-evenements@noisylegrand",
+    "Affiches des événements municipaux",
+    "Ville de Noisy-le-Grand",
+    110,
+    "2025-07-10T14:22:17.665000+00:00"
+   ],
+   [
+    "tri-saint-malo-baie-du-mont-saint-michel@saint-malo",
+    "TRI Saint-Malo Baie du Mont Saint-Michel",
+    "SAINT-MALO AGGLOMERATION",
+    26,
+    "2017-03-24T15:12:41+00:00"
+   ],
+   [
+    "canopee_stocks@digitalwallonia",
+    "canopee_stocks",
+    "Ville de Liège",
+    85,
+    "2022-03-15T10:53:17+00:00"
+   ],
+   [
+    "statsup-info-04@ares-digitalwallonia",
+    "ARES - StatSup'Info #04 - FORMATION INTIALE DES ENSEIGNANTS",
+    "Académie de recherche et d'enseignement supérieur (ARES)",
+    189354,
+    "2022-12-12T12:14:33.605000+00:00"
+   ],
+   [
+    "evenements-festival-futur-en-seine-2014@datailedefrance",
+    "Événements Festival Futur en Seine 2014",
+    "Cap Digital",
+    135,
+    "2014-06-02T15:09:24+00:00"
+   ],
+   [
+    "surcote-pour-un-cyclone-centennal-raster@nouvelle-caledonie",
+    "Surcote pour un cyclone centennal (Raster)",
+    "Gouvernement de la Nouvelle-Calédonie",
+    0,
+    "2025-07-29T02:19:31+00:00"
+   ],
+   [
+    "suivi-de-lenvol-des-scolytes-de-lepicea-post-2025@digitalwallonia",
+    "Suivi de l'envol des scolytes de l'épicéa - à partir de 2025",
+    "SPW ARNE",
+    25,
+    "2026-09-06T02:52:02.890000+00:00"
+   ],
+   [
+    "nombre-d-evenements-de-networking@digitalwallonia",
+    "Nombre d'événements de networking",
+    "BEP",
+    4,
+    "2026-07-23T07:33:57.716000+00:00"
+   ],
+   [
+    "nombre-d-evenements-de-networking@bep",
+    "Nombre d'événements de networking",
+    "BEP",
+    4,
+    "2026-09-03T12:21:44+00:00"
+   ],
+   [
+    "espace-travail-collaboratif-2016-montreuil@montreuil",
+    "Espaces de travail collaboratifs en 2016 à Montreuil",
+    "APUR",
+    8,
+    "2020-06-13T13:26:56+00:00"
+   ],
+   [
+    "evenements-biblio64@data64",
+    "Evènements Biblio64",
+    null,
+    28,
+    "2025-10-20T07:23:11+00:00"
+   ],
+   [
+    "244400404_services_temps_reel_transports_commun_naolib_nantes_metropole_sirilite@nantesmetropole",
+    "Services d'informations en temps réel des transports en commun Naolib de Nantes Métropole au format SIRI lite",
+    "Semitan",
+    2,
+    "2024-11-13T09:50:42.318000+00:00"
+   ],
+   [
+    "conservatoire-evenementiel@cannesdata",
+    "Événementiel du conservatoire",
+    "Mairie de Cannes",
+    639,
+    "2023-03-21T15:54:10+00:00"
+   ],
+   [
+    "marche-en-famenne-manifestations@digitalwallonia",
+    "Marche-en-Famenne / Manifestations",
+    "Ville de Marche-en-Famenne",
+    8,
+    "2025-07-10T16:35:53.284000+00:00"
+   ],
+   [
+    "dashboard-digital-wallonia@digitalwallonia",
+    "Dashboard-digital-wallonia",
+    "Agence du Numérique",
+    450,
+    "2025-05-27T08:57:54.381000+00:00"
+   ],
+   [
+    "salles-communales-a-louer-dans-le-centre-centropole@digitalwallonia",
+    "Salles communales à louer dans le Centre (Centropôle)",
+    "Centropôle ASBL",
+    75,
+    "2025-04-03T09:53:17.503000+00:00"
+   ],
+   [
+    "salles-a-louer-pour-des-evenements@fleurysurorne",
+    "Salles à louer pour des événements",
+    "Ville de Fleury-sur-Orne",
+    2,
+    "2018-06-10T09:42:24+00:00"
+   ],
+   [
+    "evenements-publics-a-montreuil-via-open-agenda@montreuil",
+    "Sortir à Montreuil",
+    "OpenAgenda",
+    224,
+    "2024-09-30T09:30:30.049000+00:00"
+   ],
+   [
+    "affiches-des-evenements-culturels@hauts-de-seine",
+    "Affiches des événements culturels",
+    "Département des Hauts-de-Seine",
+    167,
+    "2018-04-04T22:00:00+00:00"
+   ],
+   [
+    "observatoire-des-mobilites-evenements-exceptionnels-indicateurs-de-mobilites@parisdata",
+    "Observatoire Parisien des Mobilités - Evénements exceptionnels - indicateurs de mobilités",
+    "Direction de la Voirie et des Déplacements - Ville de Paris",
+    147,
+    "2026-07-06T08:24:54+00:00"
+   ],
+   [
+    "marathon-2013-points-kilometriques@toulouse-metropole",
+    "Marathon 2013 - Points kilométriques",
+    "Toulouse Métropole",
+    42,
+    "2024-11-18T15:38:07+00:00"
+   ],
+   [
+    "open-agenda-evenements-publics-gps-depuis-2014@grandparissud",
+    "[Open Agenda] Evénéments publics GPS depuis 2014",
+    "Open Agenda",
+    1550,
+    "2023-10-13T07:31:58+00:00"
+   ],
+   [
+    "evenements-publics-openagenda@sicoval-haute-garonne",
+    "Evénements publics du Sicoval",
+    "OpenAgenda",
+    6437,
+    "2024-04-08T11:13:21+00:00"
+   ],
+   [
+    "namur-odp-evenements@namur",
+    "Namur - Evénements sur les voiries publiques (ODP)",
+    "Ville de Namur",
+    51,
+    "2026-10-13T05:03:32+00:00"
+   ],
+   [
+    "fr-esr-fete-de-la-science-22@mesr",
+    "Programme de la fête de la Science 2022",
+    "Ministère de l'Enseignement supérieur, de la Recherche et de l'Innovation",
+    6902,
+    "2023-06-07T15:35:34+00:00"
+   ],
+   [
+    "fr-esr-fete-de-la-science-26@mesr",
+    "Programme de la fête de la Science 2026",
+    "Ministère de l'Enseignement supérieur, de la Recherche et de l'Espace",
+    8143,
+    "2026-07-03T08:44:54+00:00"
+   ],
+   [
+    "bdmc25@nouvelle-caledonie",
+    "Étude \"Bien dans mes Claquettes 2025\"",
+    "Agence Sanitaire et Sociale de la Nouvelle-Calédonie",
+    2411,
+    "2026-07-10T00:06:14+00:00"
+   ],
+   [
+    "nombre-de-participants-aux-evenements-de-networking@bep",
+    "Nombre de participants aux événements de networking",
+    "BEP",
+    4,
+    "2026-09-03T12:21:46+00:00"
+   ],
+   [
+    "actualite_evenement@nouvelle-caledonie",
+    "Les actualités et événements de data.gouv.nc",
+    "Gouvernement de la Nouvelle-Calédonie",
+    76,
+    "2026-10-13T03:01:12+00:00"
+   ],
+   [
+    "points-verts-de-ladeps@spi-digitalwallonia",
+    "Marches \"Points verts\" de l'ADEPS",
+    "Fédération Wallonie-Bruxelles",
+    6969,
+    "2026-10-12T10:07:38.077000+00:00"
+   ],
+   [
+    "evenements-annuels-commune-fernelmont@digitalwallonia",
+    "Evènements annuels commune Fernelmont",
+    "Commune de Fernelmont",
+    16,
+    "2021-02-23T15:22:25.772000+00:00"
+   ],
+   [
+    "evenements-publics-cibul@datailedefrance",
+    "Événements publics en Île-de-France (via Open Agenda)",
+    "OpenAgenda",
+    215265,
+    "2024-02-14T11:49:06.833000+00:00"
+   ],
+   [
+    "fr-esr-fete-de-la-science-17@mesr",
+    "Programme de la fête de la Science 2017",
+    "Ministère de l'Enseignement supérieur, de la Recherche et de l'Innovation",
+    6042,
+    "2017-06-22T11:47:11+00:00"
+   ],
+   [
+    "points-dinteret-associations-famille-evenements-ref-orleans-metropole@orleansmetropole",
+    "Points d'intérêt - Associations Famille - Evénements REF - Orléans Métropole",
+    "Orléans Métropole",
+    3,
+    "2026-10-13T02:14:17+00:00"
+   ],
+   [
+    "points-dinteret-associations-solidarite-internationale-evenements-ref-orleans-metropole@orleansmetropole",
+    "Points d'intérêt - Associations Solidarité Internationale- Evénements REF - Orléans Métropole",
+    "Orléans Métropole",
+    4,
+    "2026-10-13T02:02:34+00:00"
+   ],
+   [
+    "points-dinteret-associations-securite-evenements-ref-orleans-metropole@orleansmetropole",
+    "Points d'intérêt - Associations Sécurité - Evénements REF - Orléans Métropole",
+    "Orléans Métropole",
+    4,
+    "2026-10-13T02:05:24+00:00"
+   ],
+   [
+    "points-dinteret-associations-solidarite-evenements-ref-orleans-metropole@orleansmetropole",
+    "Points d'intérêt - Associations Solidarité- Evénements REF - Orléans Métropole",
+    "Orléans Métropole",
+    38,
+    "2026-10-11T02:02:32+00:00"
+   ],
+   [
+    "points-dinteret-associations-handicap-evenements-ref-orleans-metropole@orleansmetropole",
+    "Points d'intérêt - Associations Handicap - Evénements REF - Orléans Métropole",
+    "Orléans Métropole",
+    2,
+    "2026-10-13T02:14:17+00:00"
+   ],
+   [
+    "points-dinteret-scenes-evenements-ref-orleans-metropole@orleansmetropole",
+    "Points d'intérêt - Scènes - Evénements REF - Orléans Métropole",
+    null,
+    5,
+    "2026-07-08T12:00:33+00:00"
+   ],
+   [
+    "points-dinteret-wc-evenements-ref-orleans-metropole@orleansmetropole",
+    "Points d'intérêt - WC - Evénements REF - Orléans Métropole",
+    null,
+    3,
+    "2026-07-08T12:00:33+00:00"
+   ],
+   [
+    "points-dinteret-buvettes-evenements-ref-orleans-metropole-copie@orleansmetropole",
+    "Points d'intérêt - Buvettes - Evénements REF - Orléans Métropole",
+    null,
+    1,
+    "2026-07-08T12:00:33+00:00"
+   ],
+   [
+    "points-d-interet-blocages-evenements-ref-orleans-metropole@orleansmetropole",
+    "Points d'intérêt - Blocages - Evénements REF - Orléans Métropole",
+    null,
+    2,
+    "2026-08-04T12:49:21+00:00"
+   ],
+   [
+    "points-dinteret-associations-formation-enseignement-evenements-ref-orleans-metropole@orleansmetropole",
+    "Points d'intérêt - Associations Formation Enseignement - Evénements REF - Orléans Métropole",
+    "Orléans Métropole",
+    5,
+    "2026-10-13T02:14:17+00:00"
+   ],
+   [
+    "points-dinteret-coordonnees-evenements-ref-orleans-metropole@orleansmetropole",
+    "Points d'intérêt - Coordonnees - Evénements REF - Orléans Métropole",
+    null,
+    623,
+    "2026-07-21T14:13:45+00:00"
+   ],
+   [
+    "fr-esr-agenda-ministre@mesr",
+    "Agenda public des ministres en charge de l'Enseignement supérieur, de la Recherche et de l'Innovation",
+    "Ministère de l'Enseignement supérieur, de la Recherche et de l'Innovation",
+    4788,
+    "2025-10-22T13:07:56+00:00"
+   ],
+   [
+    "evenements-tours-metropole-val-de-loire@toursmetropole",
+    "Événements - Tours Métropole Val de Loire",
+    "Ville de Tours",
+    5357,
+    "2019-03-19T10:55:33+00:00"
+   ],
+   [
+    "points-dinteret-associations-loisir-evenements-ref-orleans-metropole@orleansmetropole",
+    "Points d'intérêt - Associations Loisir- Evénements REF - Orléans Métropole",
+    "Orléans Métropole",
+    8,
+    "2026-10-13T02:14:22+00:00"
+   ],
+   [
+    "244400404_agenda-evenements-nantes-metropole_v2@nantesmetropole",
+    "Agenda des événements de Nantes Métropole",
+    "Nantes Métropole",
+    5600,
+    "2026-10-13T06:02:58.320000+00:00"
+   ],
+   [
+    "points-dinteret-associations-nature-environnement-evenements-ref-orleans-metropole@orleansmetropole",
+    "Points d'intérêt - Associations Nature Environnement- Evénements REF - Orléans Métropole",
+    "Orléans Métropole",
+    3,
+    "2026-10-13T02:14:23+00:00"
+   ],
+   [
+    "fr-esr-fete-de-la-science-18@mesr",
+    "Programme de la fête de la Science 2018",
+    "Ministère de l'Enseignement supérieur, de la Recherche et de l'Innovation",
+    6365,
+    "2018-06-24T22:00:00+00:00"
+   ],
+   [
+    "points-dinteret-associations-histoire-patrimoine-evenements-ref-orleans-metropole@orleansmetropole",
+    "Points d'intérêt - Associations Histoire Patrimoine - Evénements REF - Orléans Métropole",
+    "Orléans Métropole",
+    5,
+    "2026-10-13T02:14:17+00:00"
+   ],
+   [
+    "points-verts-de-ladeps@digitalwallonia",
+    "Points verts de l'ADEPS",
+    "Fédération Wallonie-Bruxelles",
+    6969,
+    "2026-10-13T05:45:33.566000+00:00"
+   ],
+   [
+    "fr-esr-fete-de-la-science-21@mesr",
+    "Programme de la fête de la Science 2021",
+    "Ministère de l'Enseignement supérieur, de la Recherche et de l'Innovation",
+    5906,
+    "2021-12-08T07:35:09+00:00"
+   ],
+   [
+    "points-dinteret-associations-societe-evenements-ref-orleans-metropole@orleansmetropole",
+    "Points d'intérêt - Associations Société - Evénements REF - Orléans Métropole",
+    "Orléans Métropole",
+    6,
+    "2026-10-13T02:04:50+00:00"
+   ],
+   [
+    "evenements-de-pointe-offres-disponibles@hydroquebec",
+    "Peak demand events – Winter ",
+    "Hydro-Québec",
+    75,
+    "2025-11-27T14:07:08+00:00"
+   ],
+   [
+    "points-dinteret-associations-memoire-evenements-ref-orleans-metropole@orleansmetropole",
+    "Points d'intérêt - Associations Mémoire - Evénements REF - Orléans Métropole",
+    "Orléans Métropole",
+    7,
+    "2026-10-12T02:04:01+00:00"
+   ],
+   [
+    "points-dinteret-associations-enfance-evenements-ref-orleans-metropole@orleansmetropole",
+    "Points d'intérêt - Associations Enfance - Evénements REF - Orléans Métropole",
+    "Orléans Métropole",
+    8,
+    "2026-10-13T02:14:10+00:00"
+   ],
+   [
+    "evenements-en-wallonie@digitalwallonia",
+    "iMio - Événements en Wallonie",
+    "iMio",
+    24965,
+    "2026-10-12T22:03:18.079000+00:00"
+   ],
+   [
+    "panorama-des-festivals-en-corse@datacorsica",
+    "Panorama des festivals en Corse",
+    null,
+    24,
+    "2025-07-02T07:35:08+00:00"
+   ],
+   [
+    "actualites-ambizione-digitale@datacorsica",
+    "CDC-Actualites Ambizione Digitale",
+    "Collectivité de Corse",
+    10,
+    "2025-04-02T13:45:45+00:00"
+   ],
+   [
+    "liste-et-activites-des-cinemas-en-corse@datacorsica",
+    "Liste et activités des cinémas en Corse",
+    null,
+    19,
+    "2025-07-02T07:10:55+00:00"
+   ],
+   [
+    "liste-des-festivals-en-corse@datacorsica",
+    "Liste des festivals en Corse",
+    null,
+    69,
+    "2025-04-23T06:53:39+00:00"
+   ],
+   [
+    "paris-2024-evenements-olympiade-culturelle@paris2024",
+    "Paris 2024 - Événements Olympiade Culturelle",
+    "Paris 2024",
+    4316,
+    "2024-09-15T19:15:27+00:00"
+   ],
+   [
+    "games_map_events_fr@paris2024",
+    "[GAMES MAP] - Evènements (FR)",
+    "Paris2024-DIG",
+    678,
+    "2024-11-05T09:00:10+00:00"
+   ],
+   [
+    "evenements-publics-nord@nordtourisme",
+    "Evenements Publics dans le Nord",
+    "OpenAgenda",
+    29637,
+    "2015-08-06T08:12:51+00:00"
+   ],
+   [
+    "journees-europeennes-du-patrimoine@culture",
+    "Journées européennes du patrimoine 2023",
+    "Ministère de la Culture",
+    28395,
+    "2023-07-24T14:44:55+00:00"
+   ],
+   [
+    "nuit-des-musees-2022@culture",
+    "Nuit européenne des musées 2022",
+    "Ministère de la Culture",
+    1577,
+    "2022-04-25T13:44:27+00:00"
+   ],
+   [
+    "pointes-hivernales-dev@dev-hydroquebec",
+    "Événements de pointe – Saison hivernale (pour développement)",
+    "Hydro-Québec",
+    407,
+    "2026-05-21T15:16:11+00:00"
+   ],
+   [
+    "localisation-des-evenements-de-pollutions-majeurs-ayant-fait-lobjet-darrivage-de-produits-sur-le-littoral@pndb",
+    "Localisation des événements de pollutions majeurs ayant fait l'objet d'arrivage de produits sur le littoral",
+    "Cedre",
+    0,
+    "2011-02-01T00:00:00+00:00"
+   ],
+   [
+    "atlas-des-zones-inondables-azi-par-region-du-littoral@pndb",
+    "Atlas des Zones Inondables (AZI) par région du littoral",
+    "Sextant",
+    0,
+    "2025-05-15T21:28:14+00:00"
+   ],
+   [
+    "localisation-des-evenements-de-pollution-en-mer-ayant-fait-lobjet-dun-rapport-de-pollution-en-2010-polrep-2010@pndb",
+    "Localisation des événements de pollution en mer ayant fait l'objet d'un rapport de pollution en 2010 (POLREP 2010)",
+    "Cedre",
+    0,
+    "2011-02-01T00:00:00+00:00"
+   ],
+   [
+    "ligne-de-vegetation-dans-louest-des-tuamotu-polynesie-francaise-1961-1969-1981-1984-1993-1995-2013-2015@pndb",
+    "Ligne de végétation dans l'ouest des Tuamotu, Polynésie française (1961, 1969, 1981, 1984, 1993, 1995, 2013, 2015)",
+    "LIttoral ENvironnement et Sociétés (LIENSs)",
+    0,
+    "2025-12-03T20:47:21+00:00"
+   ],
+   [
+    "biodiversite-et-fonctionnement-du-lac-dziani-dzaha-mayotte@pndb",
+    "Biodiversité et fonctionnement du lac Dziani Dzaha, Mayotte",
+    "UMR MCAM, Muséum national d'Histoire naturelle - CNRS",
+    0,
+    "2026-03-30T08:45:40+00:00"
+   ],
+   [
+    "arrete-prefectoral-ndeg-2994-du-13091994@pndb",
+    "Arrêté préfectoral n° 29/94 du 13/09/1994",
+    "Terra Maris (SARL)",
+    0,
+    "2025-05-15T23:14:39+00:00"
+   ],
+   [
+    "fiches-de-synthese-des-inondations-issues-de-la-base-de-donnees-bdhi@pndb",
+    "Fiches de synthèse des inondations issues de la base de données BDHI",
+    "Lang, Michel",
+    0,
+    "2025-06-06T13:53:07+00:00"
+   ],
+   [
+    "localisation-des-stations-de-lir-ilico-infrastructure-de-recherche-littorale-et-cotiere@pndb",
+    "Localisation des stations de l'IR-ILICO - Infrastructure de recherche littorale et côtière",
+    "Sextant",
+    0,
+    "2026-04-03T09:01:16+00:00"
+   ]
+  ],
+  "manifestations": [
+   [
+    "public-events-openagenda@datacorsica",
+    "Public events - OpenAgenda - Corse",
+    "OpenAgenda",
+    2479,
+    "2024-04-08T11:13:21+00:00"
+   ],
+   [
+    "evenements-publics-openagenda0@ville-de-roubaix",
+    "Public events - OpenAgenda",
+    "OpenAgenda",
+    7363,
+    "2018-01-25T16:45:00+00:00"
+   ],
+   [
+    "recensement-des-equipements-sportifs@saintmande",
+    "Recensement des équipements sportifs dans le Val-de-Marne",
+    "Ministère de la ville, de la jeunesse et des sports",
+    75,
+    "2021-10-26T15:35:18+00:00"
+   ],
+   [
+    "panorama-des-festivals@culture",
+    "Panorama des festivals",
+    "Ministère de la Culture",
+    3136,
+    "2019-07-25T12:00:07+00:00"
+   ],
+   [
+    "zones-de-pratiques-des-manifestations-nautiques-encadrees-en-rade-de-brest-2009@pndb",
+    "Zones de pratiques des manifestations nautiques encadrées en rade de Brest (2009)",
+    "équipe Indigeo",
+    0,
+    "2026-02-04T18:24:36+00:00"
+   ],
+   [
+    "gridded-bathymetry-from-multibeam-echosounder-em12s-data-of-the-cruise-ttr62-1996@pndb",
+    "Gridded bathymetry from multibeam echosounder EM12S data of the cruise TTR6/2 (1996)",
+    "MARUM",
+    0,
+    "2015-07-06T00:00:00+00:00"
+   ],
+   [
+    "liste-des-manifestations-2016@aix-en-provence",
+    "Liste des manifestations 2016",
+    null,
+    620,
+    "2019-09-18T07:40:15+00:00"
+   ],
+   [
+    "liste-des-manifestations-2020@aix-en-provence",
+    "Liste des manifestations 2020",
+    null,
+    998,
+    "2019-09-18T07:42:20+00:00"
+   ],
+   [
+    "figulines-ceramiques-de-bernard-palissy-et-postpalisseennes-xvie-et-xviie-s-technique-de-moulage-et-identification-naturaliste@pndb",
+    "Figulines - Céramiques de Bernard Palissy et postpalisséennes (XVIe et XVIIe s.) : technique de moulage et identification naturaliste",
+    "UMR BioArch, Muséum national d'Histoire naturelle, CNRS",
+    0,
+    "2026-02-16T09:42:06+00:00"
+   ],
+   [
+    "clima-indicatori-mite-siccita@arpae",
+    "Clima – indicatori MITE siccità",
+    "Arpae Emilia-Romagna",
+    48,
+    "2025-05-29T17:10:09+00:00"
+   ],
+   [
+    "replication-data-for-incidence-of-loiasis-clinical-manifestations-in-a-rural-area-of-the-republic-of-congo-results-from-a-longitudinal-prospective-study-the-morlo-project@pndb",
+    "Replication data for - Incidence of loiasis clinical manifestations in a rural area of the Republic of Congo: results from a longitudinal prospective study (the MorLo project)",
+    "Campillo, Jérémy",
+    0,
+    "2025-01-30T08:46:04+00:00"
+   ],
+   [
+    "liste-des-manifestations-2019@aix-en-provence",
+    "Liste des manifestations 2019",
+    null,
+    1451,
+    "2019-09-18T07:42:20+00:00"
+   ],
+   [
+    "liste-des-manifestations-2013@aix-en-provence",
+    "Liste des manifestations 2013",
+    null,
+    662,
+    "2019-09-18T07:38:07+00:00"
+   ],
+   [
+    "manifestations-litteraires@datailedefrance",
+    "Aide aux manifestations littéraires 2010 - 2014",
+    "Région Île-de-France",
+    148,
+    "2015-03-19T12:48:45+00:00"
+   ],
+   [
+    "frequentation-du-mach36-par-manifestation-de-2007-a-2018@chateaurouxmetropole",
+    "Fréquentation du MACH36 par manifestation de 2007 à 2018",
+    "CHATEAUROUX METROPOLE",
+    313,
+    "2019-04-01T10:27:18+00:00"
+   ],
+   [
+    "manifestations-sportives-melun@camelunvs",
+    "Manifestations sportives à Melun",
+    "Commune de Melun",
+    55,
+    "2026-02-09T16:58:38.401000+00:00"
+   ],
+   [
+    "zones-dinitiatives-privees-et-publiques-herault@data-herault-occitanie",
+    "Très Haut Débit - Zones d’initiatives privées et publiques",
+    "Conseil Départemental de l'Hérault",
+    343,
+    "2020-07-06T13:27:44+00:00"
+   ],
+   [
+    "collectie-circus-huis-van-alijn-gent@gent",
+    "Collectie circus Huis van Alijn - Gent",
+    "Musea Gent",
+    2194,
+    "2026-10-13T01:01:23.174000+00:00"
+   ],
+   [
+    "recensement-des-equipements-sportifs-seine-saint-denis@cd93seinesaintdenis",
+    "Recensement des équipements sportifs - Seine-Saint-Denis",
+    "Ministère des Sports",
+    2690,
+    "2025-06-25T14:43:50+00:00"
+   ],
+   [
+    "liste-des-manifestations-2014@aix-en-provence",
+    "Liste des manifestations 2014",
+    null,
+    607,
+    "2019-09-18T07:38:48+00:00"
+   ],
+   [
+    "participation-citoyenne-consultations-embellir-votre-quartier-phase-3@parisdata",
+    "Participation citoyenne - Consultations Embellir votre Quartier phases 3 & 4",
+    "DDCT - Direction de la Démocratie, des Citoyen.ne.s et des Territoires",
+    0,
+    "2024-10-24T13:01:50+00:00"
+   ],
+   [
+    "mozonesbolt@digitalwallonia",
+    "Namur - Mobilité - Le libre-partage à Namur",
+    "Ville de Namur",
+    201,
+    "2024-05-16T14:46:55+00:00"
+   ],
+   [
+    "bretagne-fetes-et-manifestations@breizh",
+    "Bretagne – Fêtes et Manifestations",
+    "Région Bretagne / CRT",
+    3050,
+    "2021-11-22T15:53:51+00:00"
+   ],
+   [
+    "aides-aux-manifestations-culturelles-2006-2013@datailedefrance",
+    "Aides aux manifestations culturelles 2006-2014",
+    "Région Île-de-France",
+    728,
+    "2015-05-15T15:20:11+00:00"
+   ],
+   [
+    "marche-en-famenne-manifestations@digitalwallonia",
+    "Marche-en-Famenne / Manifestations",
+    "Ville de Marche-en-Famenne",
+    8,
+    "2025-07-10T16:35:53.284000+00:00"
+   ],
+   [
+    "sugerencias-y-quejas-de-los-ciudadanos@jcyl",
+    "Sugerencias y quejas de los ciudadanos",
+    "Junta de Castilla y León",
+    8216,
+    "2026-07-31T08:19:33.140000+00:00"
+   ],
+   [
+    "225300011_offre-touristique-fetes-et-manifestations-en-mayenne@opendata-lamayenne-fr-paysdelaloire",
+    "Offre touristique : Fêtes et manifestations en Mayenne",
+    "e-SPRIT",
+    605,
+    "2024-02-29T13:37:06.883000+00:00"
+   ],
+   [
+    "om-environnement-transitionecologique-manifeste-actions@orleansmetropole",
+    "Idées fortes de la feuille de route transition écologique et énergétique - 2022 - Orléans Métropole",
+    "Orléans Métropole",
+    110,
+    "2022-04-12T10:51:14+00:00"
+   ],
+   [
+    "314549262_salles-de-spectacles-en-loire-atlantique@loireatlantique",
+    "Salles de spectacles en Loire-Atlantique",
+    "Musique et Danse en Loire-Atlantique",
+    91,
+    "2012-12-04T00:00:00+00:00"
+   ],
+   [
+    "793866443_fetes-et-manifestations-en-loire-atlantique@loireatlantique",
+    "Fêtes et manifestations en Loire-Atlantique",
+    "e-SPRIT",
+    1893,
+    "2024-01-25T13:36:49.300000+00:00"
+   ],
+   [
+    "liste-de-deliberations-du-conseil-municipal-de-toulouse@toulouse-metropole",
+    "Liste de délibérations du conseil municipal de 1909 à 1969 - Toulouse",
+    "Mairie de Toulouse",
+    17655,
+    "2021-04-06T13:22:08+00:00"
+   ],
+   [
+    "om-environnement-transitionecologique-topics@orleansmetropole",
+    "Ensemble des sujets relatifs à la feuille de route transition écologique - Orléans Métropole",
+    "Orléans Métropole",
+    573,
+    "2022-07-01T12:12:01+00:00"
+   ],
+   [
+    "cdt62_manifestations@tourisme62",
+    "Manifestations (Français)",
+    "Comité départemental de tourisme du Pas-de-Calais",
+    6603,
+    "2017-06-16T11:06:34+00:00"
+   ],
+   [
+    "agenda-des-manifestations-culturelles-so-toulouse@toulouse-metropole",
+    "Agenda des manifestations culturelles",
+    "Toulouse Team",
+    214,
+    "2025-12-31T06:10:04+00:00"
+   ],
+   [
+    "collectie-wintercircus-huis-van-alijn-gent@gent",
+    "Collectie Wintercircus Huis van Alijn - Gent",
+    "Musea Gent",
+    95,
+    "2024-10-25T12:11:03+00:00"
+   ],
+   [
+    "projets-ami-gh-2024@reseaux-energies-rte",
+    "Projets de production de biométhane, gaz bas-carbone et gaz de récupération par Gazéification Hydrothermale en France",
+    "NaTran",
+    24,
+    "2025-03-13T16:44:17+00:00"
+   ],
+   [
+    "fetes-et-manifestations@data-herault-occitanie",
+    "Fêtes et manifestations",
+    "Hérault Tourisme / Offices de Tourisme de l'Hérault",
+    15492,
+    "2026-10-13T00:06:43+00:00"
+   ],
+   [
+    "issep_airquality_last30d_camions@digitalwallonia",
+    "Qualité de l'air en Province de Namur (capteurs mobiles) - Indice BELAQI estimé - situation récente (30 deniers jours)",
+    "BEP et ISSEP",
+    2970,
+    "2026-07-10T02:00:23.571000+00:00"
+   ],
+   [
+    "833200@digitalwallonia",
+    "Majeurs ayant été admis à la procédure en règlement collectif de dettes (RCD) de WalStat",
+    "IWEPS WalStat",
+    289,
+    "2026-10-12T10:01:21.593000+00:00"
+   ],
+   [
+    "panorama-des-festivals-en-corse@datacorsica",
+    "Panorama des festivals en Corse",
+    null,
+    24,
+    "2025-07-02T07:35:08+00:00"
+   ],
+   [
+    "zones-du-cadre-reglementaire-des-reseaux-ftth-pyrenees-atlantiques@lafibre64-data64",
+    "Zones du cadre réglementaire des réseaux FTTH - Pyrénées Atlantiques",
+    "La Fibre 64",
+    3,
+    "2020-03-06T23:28:53+00:00"
+   ],
+   [
+    "evenements-publics-nord@nordtourisme",
+    "Evenements Publics dans le Nord",
+    "OpenAgenda",
+    29637,
+    "2015-08-06T08:12:51+00:00"
+   ],
+   [
+    "nuit-des-musees-2022@culture",
+    "Nuit européenne des musées 2022",
+    "Ministère de la Culture",
+    1577,
+    "2022-04-25T13:44:27+00:00"
+   ],
+   [
+    "ami-hydrolien-zones-propices-a-limplantation-des-fermes-pilotes0@pndb",
+    "AMI hydrolien : zones propices à l'implantation des fermes pilotes",
+    "Cerema",
+    0,
+    "2026-04-17T17:01:23+00:00"
+   ],
+   [
+    "liste-des-manifestations-2018@aix-en-provence",
+    "Liste des manifestations 2018",
+    null,
+    1306,
+    "2019-09-18T07:42:20+00:00"
+   ],
+   [
+    "lsite-des-manifestations-2015@aix-en-provence",
+    "Liste des manifestations 2015",
+    null,
+    603,
+    "2019-09-18T07:39:37+00:00"
+   ],
+   [
+    "liste-des-manifestations-2017@aix-en-provence",
+    "Liste des manifestations 2017",
+    null,
+    1110,
+    "2019-09-18T07:41:33+00:00"
+   ],
+   [
+    "liste-des-manifestations-2012@aix-en-provence",
+    "Liste des manifestations 2012",
+    null,
+    621,
+    "2019-09-18T07:36:14+00:00"
+   ],
+   [
+    "68375_wittelsheim_calendrier-des-manifestations-au_04-09-17@mulhouse",
+    "Calendrier des manifestations culturelles à Wittelsheim",
+    "Ville de Wittelsheim",
+    878,
+    "2017-10-25T16:50:15+00:00"
+   ],
+   [
+    "statistiques-au-sujet-des-manifestations-locales@bep",
+    "Statistiques au sujet des manifestations locales",
+    "BEP",
+    8,
+    "2026-09-03T12:22:29+00:00"
+   ],
+   [
+    "statistiques-au-sujet-des-manifestations-locales@digitalwallonia",
+    "Statistiques au sujet des manifestations locales",
+    "BEP",
+    8,
+    "2026-07-10T02:00:28.380000+00:00"
+   ],
+   [
+    "participation-citoyenne-consultations-embellir-votre-quartier-phases-1-et-2@parisdata",
+    "Participation citoyenne - Consultations Embellir votre Quartier - phases 1 et 2",
+    "DDCT - Direction de la Démocratie, des Citoyen.ne.s et des Territoires",
+    0,
+    "2024-04-17T13:51:37+00:00"
+   ],
+   [
+    "statistiques-a-propos-des-manifestations@digitalwallonia",
+    "Statistiques à propos des manifestations",
+    "BEP",
+    2,
+    "2026-07-10T02:00:27.852000+00:00"
+   ],
+   [
+    "statistiques-a-propos-des-manifestations@bep",
+    "Statistiques à propos des manifestations",
+    "BEP",
+    2,
+    "2025-11-25T13:51:57+00:00"
+   ],
+   [
+    "calendrier-des-manifestations-le-mee-sur-seine@camelunvs",
+    "Calendrier des manifestations à Le Mée-sur-Seine",
+    "Commune de Le Mée sur Seine",
+    744,
+    "2025-03-31T12:55:48+00:00"
+   ],
+   [
+    "om-environnement-transitionecologique-repertoiresolutions@orleansmetropole",
+    "Répertoire des actions/solutions de la feuille de route Transition écologique et énergétique - Orléans Métropole",
+    "Orléans Métropole",
+    308,
+    "2022-04-12T15:19:21+00:00"
+   ],
+   [
+    "pnrun_unesco_contribvue_vii@lareunion",
+    "UNESCO - Contributions à la Valeur Universelle Exceptionnelle (VUE) du critère vii",
+    "Parc national de La Réunion",
+    58,
+    "2025-01-06T09:48:36+00:00"
+   ],
+   [
+    "fr-esr-journees-des-arts-et-de-la-culture-dans-lenseignement-superieur@mesr",
+    "Journées des Arts et de la Culture dans l'Enseignement Supérieur",
+    "Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la Recherche",
+    0,
+    "2016-04-04T08:42:51+00:00"
+   ],
+   [
+    "micromobilite-zones-de-restriction-et-limitations@digitalwallonia",
+    "Micromobilité - Zones de restriction et limitations",
+    "Ville de Liège",
+    284,
+    "2021-03-18T13:45:10+00:00"
+   ],
+   [
+    "registo-de-testamentos-vitais@spms",
+    "Registo de Testamentos Vitais",
+    "SPMS",
+    10691,
+    "2026-10-01T09:23:25.151000+00:00"
+   ],
+   [
+    "evenements-publics-openagenda@public",
+    "Public events - OpenAgenda",
+    "OpenAgenda",
+    1291200,
+    "2024-04-08T11:13:21+00:00"
+   ],
+   [
+    "cdt62_manifestations_nl@tourisme62",
+    "Manifestations (Néerlandais)",
+    "Comité départemental de tourisme du Pas-de-Calais",
+    6603,
+    "2017-06-16T11:15:35+00:00"
+   ],
+   [
+    "cdt62_manifestations_en@tourisme62",
+    "Manifestations (Anglais)",
+    "Comité départemental de tourisme du Pas-de-Calais",
+    6603,
+    "2017-06-16T11:05:51+00:00"
+   ],
+   [
+    "227200029_fetes-et-manifestations-en-sarthe@sarthe",
+    "Les fêtes et manifestations en Sarthe",
+    "Sarthe Développement",
+    1041,
+    "2017-02-24T14:08:55+00:00"
+   ],
+   [
+    "om-environnement-transitionecologique-manifeste-themes@orleansmetropole",
+    "Thèmes de la feuille de route transition écologique et énergétique - 2022 - Orléans Métropole",
+    "Orléans Métropole",
+    10,
+    "2022-04-12T10:48:29+00:00"
+   ],
+   [
+    "ep-787-rail-service-data@stb",
+    "EP 787 Rail Service Data",
+    null,
+    742,
+    "2026-10-05T16:22:12+00:00"
+   ],
+   [
+    "inname-openbaar-domein-evenementen-gent@gent",
+    "Inname openbaar domein (evenementen) Gent",
+    "Dienst Wegen Bruggen en Waterlopen Gent",
+    50,
+    "2025-12-12T13:55:04.306000+00:00"
+   ],
+   [
+    "appel-a-manifestation-d-interets-recensement-de-l-offre-en-cybersecurite@opendatamef",
+    "Recensement de l'offre en cybersécurité",
+    null,
+    224,
+    "2026-01-14T11:11:04.727000+00:00"
+   ],
+   [
+    "reclamaciones-ambito-sanitario@jcyl",
+    "Reclamaciones en el ámbito sanitario",
+    "Junta de Castilla y León",
+    11177,
+    "2026-10-08T14:11:07.516000+00:00"
+   ],
+   [
+    "istanze-manifestazioni@bologna",
+    "Istanze manifestazioni",
+    "Comune di Bologna",
+    8304,
+    "2025-12-31T11:59:18+00:00"
+   ]
+  ],
+  "sorties": [
+   [
+    "bibliotheques-palmares-par-site-2021@cc-lacqorthez-data64",
+    "Bibliothèques - Palmarès par site (2021)",
+    "CC Lacq-Orthez",
+    72,
+    "2022-02-25T09:12:58+00:00"
+   ],
+   [
+    "icv-du-porcde-loeuf-et-de-la-volaille-de-chair-sous-cahier-des-charges-bleu-blanc-coeur-dans-agribalyser@pndb",
+    "ICV du porc,de l'oeuf et de la volaille de chair sous cahier des charges Bleu Blanc Coeur dans AGRIBALYSE®",
+    "Bleu Blanc Coeur",
+    0,
+    "2024-12-05T09:37:55+00:00"
+   ],
+   [
+    "distribution-spatiale-des-localisations-de-la-fregate-du-pacifique-fregata-minor-suivis-par-balise-argos-depuis-europa-taaf-projet-feder-megafaune@pndb",
+    "Distribution spatiale des localisations de la Frégate du Pacifique (Fregata minor) suivis par balise Argos depuis Europa (TAAF) - Projet FEDER Mégafaune",
+    "UMR ENTROPIE",
+    0,
+    "2025-05-16T09:27:31+00:00"
+   ],
+   [
+    "distribution-spatiale-des-localisations-du-paille-en-queue-a-brins-blancs-phaethon-lepturus-suivis-par-gls-depuis-cousin-seychelles-projet-feder-megafaune@pndb",
+    "Distribution spatiale des localisations du Paille-en-Queue à brins blancs (Phaethon lepturus) suivis par GLS depuis Cousin (Seychelles) - Projet FEDER Mégafaune",
+    "UMR ENTROPIE",
+    0,
+    "2025-05-16T00:01:45+00:00"
+   ],
+   [
+    "circulation-des-archives-suivi-demandes-sortie-hors-territoire-communautaire@culture",
+    "La circulation des archives en Europe et hors Europe : suivi des demandes de sortie hors du territoire communautaire",
+    "Ministère de la Culture",
+    480,
+    "2024-03-07T14:09:12+00:00"
+   ],
+   [
+    "dd5d496a-8b55-4eac-b989-f50b44bfc4ab@pndb",
+    "dd5d496a-8b55-4eac-b989-f50b44bfc4ab",
+    "CNRS",
+    0,
+    "2026-02-20T08:51:51+00:00"
+   ],
+   [
+    "distribution-spatiale-des-localisations-de-la-tortue-verte-chelonia-mydas-suivis-par-balise-argos-depuis-moheli-comores-projet-feder-megafaune@pndb",
+    "Distribution spatiale des localisations de la Tortue Verte (Chelonia mydas) suivis par balise Argos depuis Mohéli (Comores) - Projet FEDER Mégafaune",
+    "Ifremer - Délégation Océan Indien",
+    0,
+    "2025-05-15T22:17:12+00:00"
+   ],
+   [
+    "observations-des-grands-dauphins-tursiops-aduncus-dans-louest-de-la-reunion-dans-le-cadre-du-programme-quietude@pndb",
+    "Observations des Grands dauphins (Tursiops aduncus) dans l'Ouest de La Réunion dans le cadre du programme Quiétude",
+    "CEDTM",
+    0,
+    "2026-01-15T22:51:06+00:00"
+   ],
+   [
+    "distribution-spatiale-des-localisations-de-la-baleine-a-bosse-megaptera-novaeangliae-suivis-par-balise-argos-depuis-la-reunion-projet-feder-megafaune@pndb",
+    "Distribution spatiale des localisations de la Baleine à Bosse (Megaptera novaeangliae) suivis par balise Argos depuis La Réunion - Projet FEDER Mégafaune",
+    "GLOBICE",
+    0,
+    "2025-05-15T21:53:45+00:00"
+   ],
+   [
+    "distribution-spatiale-des-localisations-de-la-fregate-ariel-fregata-ariel-suivis-par-balise-argos-depuis-europa-taaf-projet-feder-megafaune@pndb",
+    "Distribution spatiale des localisations de la Frégate Ariel (Fregata ariel) suivis par balise Argos depuis Europa (TAAF) - Projet FEDER Mégafaune",
+    "UMR ENTROPIE",
+    0,
+    "2025-05-15T23:26:00+00:00"
+   ],
+   [
+    "distribution-spatiale-des-localisations-du-noddi-brun-anous-stolidus-suivis-par-gls-depuis-lile-bird-seychelles-projet-feder-megafaune@pndb",
+    "Distribution spatiale des localisations du Noddi Brun (Anous stolidus) suivis par GLS depuis l'île Bird (Seychelles) - Projet FEDER Mégafaune",
+    "UMR ENTROPIE",
+    0,
+    "2025-05-15T21:50:40+00:00"
+   ],
+   [
+    "etude-4pour1000-procedure-dextrapolation-et-agregation-des-sorties-de-stics-et-pasim@pndb",
+    "Etude 4pour1000 : Procédure d'extrapolation et agrégation des sorties de STICS et PaSim",
+    "Bamière, Laure",
+    0,
+    "2022-02-04T17:46:20+00:00"
+   ],
+   [
+    "dce-bassin-artois-picardie-etat-ecologique-etat-physico-chimique-salinite@pndb",
+    "DCE – Bassin Artois-Picardie - Etat écologique - Etat physico-chimique - Salinité",
+    "Ifremer",
+    0,
+    "2025-05-15T21:29:02+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-5b-s121-s121-fc-fo-rt1-rt-f41a-tm3c-eur-x1-n-n-all@banquedefrance",
+    "Engagements de financement irrévocables avec la BRI, maturité résiduelle 3 à 12 mois [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:05:16+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-9b-s121-s1-fc-fo-rt1-rt-f41a-tm13-eur-x1-n-n-all@banquedefrance",
+    "Engagements de financement irrévocables avec les organisations internationales (hors BRI et FMI), maturité résiduelle 1 à 3 mois [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:06:46+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-1c-s121-s121-fc-fo-rt1-rt-f41a-tm3c-eur-x1-n-n-all@banquedefrance",
+    "Engagements de financement irrévocables avec le FMI, maturité résiduelle 3 à 12 mois [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:02:58+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-5b-s121-s121-fc-fo-rt1-rt-f41a-ts-eur-x1-n-n-all@banquedefrance",
+    "Engagements de financement irrévocables avec la BRI, maturité résiduelle <= 1 an [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:05:32+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-9b-s121-s1-fc-fo-rt1-rt-f41a-tm_1-eur-x1-n-n-all@banquedefrance",
+    "Engagements de financement irrévocables avec les organisations internationales (hors BRI et FMI), maturité résiduelle <= 1 mois [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:07:03+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-1c-s121-s121-fc-fo-rt1-rt-f41a-tm13-eur-x1-n-n-all@banquedefrance",
+    "Engagements de financement irrévocables avec le FMI, maturité résiduelle 1 à 3 mois [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:02:27+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-1c-s121-s121-fc-fo-rt1-rt-f41a-tm_1-eur-x1-n-n-all@banquedefrance",
+    "Engagements de financement irrévocables avec le FMI, maturité résiduelle <= 1 mois [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:02:41+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fc-fo-rt5-rt-f711-tm13-eur-x1-n-n-all@banquedefrance",
+    "Positions sur options  devises vis-à-vis de l'euro , options dans la monnaie, maturité résiduelle 1 à 3 mois [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:38:39+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fc-fo-rt5e-rt-f711-tm3c-eur-x1-n-n-all@banquedefrance",
+    "Positions sur options  devises vis-à-vis de l'euro , autre, maturité résiduelle 3 à 12 mois [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:38:17+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fc-fo-rt5-rt-f711-ts-eur-x1-n-n-all@banquedefrance",
+    "Positions sur options  devises vis-à-vis de l'euro , options dans la monnaie, maturité résiduelle <= 1 an [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:39:19+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fc-fo-rt5-rt-f711-tm_1-eur-x1-n-n-all@banquedefrance",
+    "Positions sur options  devises vis-à-vis de l'euro , options dans la monnaie, maturité résiduelle <= 1 mois [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:38:50+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s12b-fc-fo-rt1-rt-f41a-tm_1-eur-x1-n-n-all@banquedefrance",
+    "Engagements de financement irrévocables vis-à-vis des IF hors zone euro, maturité résiduelle <= 1 mois [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:11:56+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s12b-fc-fo-rt1-rt-f41a-tm13-eur-x1-n-n-all@banquedefrance",
+    "Engagements de financement irrévocables vis-à-vis des IF hors zone euro, maturité résiduelle 1 à 3 mois [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:11:42+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s12a-fc-fo-rt1-rt-f41a-tm_1-eur-x1-n-n-all@banquedefrance",
+    "Engagements de financement irrévocables vis-à-vis des IF de la zone euro, maturité résiduelle <= 1 mois [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:09:58+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s12a-fc-fo-rt1-rt-f41a-tm3c-eur-x1-n-n-all@banquedefrance",
+    "Engagements de financement irrévocables vis-à-vis des IF de la zone euro, maturité résiduelle 3 à 12 mois [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:10:18+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s12a-fc-fo-rt1-rt-f41a-ts-eur-x1-n-n-all@banquedefrance",
+    "Engagements de financement irrévocables vis-à-vis des IF de la zone euro, maturité résiduelle <= 1 an [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:10:32+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fc-fo-rt1-rt-f41a-tm13-eur-x1-n-n-all@banquedefrance",
+    "Engagements de financement irrévocables de la BdF, maturité résiduelle 1 à 3 mois [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:27:37+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fc-fo-rt1-rt-f41a-tm3c-eur-x1-n-n-all@banquedefrance",
+    "Engagements de financement irrévocables de la BdF, maturité résiduelle 3 à 12 mois [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:28:01+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fc-fo-rt1-rt-f41a-ts-eur-x1-n-n-all@banquedefrance",
+    "Engagements de financement irrévocables de la BdF, maturité résiduelle <= 1 an [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:28:16+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fc-fo-rt1-rt-f-tm_1-eur-x1-n-n-all@banquedefrance",
+    "Instruments financiers libellés en monnaies étrangères, maturité résiduelle <= 1 mois [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:28:40+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fc-fo-rt1-rt-f-tm3c-eur-x1-n-n-all@banquedefrance",
+    "Instruments financiers libellés en monnaies étrangères, maturité résiduelle 3 à 12 mois [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:28:53+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fc-fo-rt2c-rt-f711-tm3c-eur-x1-n-n-all@banquedefrance",
+    "Positions sur call options  devises vis-à-vis de l'euro , maturité résiduelle 3 à 12 mois [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:29:40+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fc-fo-rt2p-rt-f711-tm3c-eur-x1-n-n-all@banquedefrance",
+    "Positions sur put options  devises vis-à-vis de l'euro , maturité résiduelle 3 à 12 mois [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:30:49+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fc-fo-rt2p-rt-f711-ts-eur-x1-n-n-all@banquedefrance",
+    "Positions sur put options  devises vis-à-vis de l'euro , maturité résiduelle <= 1 an [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:31:08+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fc-fo-rt2c-rt-f711-ts-eur-x1-n-n-all@banquedefrance",
+    "Positions sur call options  devises vis-à-vis de l'euro , maturité résiduelle <= 1 an [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:29:52+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fc-fo-rt3-rt-fl-tm13-eur-x1-n-n-all@banquedefrance",
+    "Engagements de garantie sur dettes, maturité résiduelle 1 à 3 mois [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:32:25+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fc-fo-rt2-rt-f711-tm_1-eur-x1-n-n-all@banquedefrance",
+    "Positions sur options  devises vis-à-vis de l'euro , maturité résiduelle <= 1 mois [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:31:37+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fc-fo-rt2-rt-f711-tm3c-eur-x1-n-n-all@banquedefrance",
+    "Positions sur options  devises vis-à-vis de l'euro , maturité résiduelle 3 à 12 mois [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:31:56+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fc-fo-rt3-rt-fl-ts-eur-x1-n-n-all@banquedefrance",
+    "Engagements de garantie sur dettes, maturité résiduelle <= 1 an [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:33:09+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fc-fo-rt5a-rt-f711-tm_1-eur-x1-n-n-all@banquedefrance",
+    "Positions sur options  devises vis-à-vis de l'euro , dépréciation de 5 %, maturité résiduelle <= 1 mois [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:34:33+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fc-fo-rt4-rt-f-tm_1-eur-x1-n-n-all@banquedefrance",
+    "Autres dettes potentielles, maturité résiduelle <= 1 mois [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:33:42+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fc-fo-rt5a-rt-f711-ts-eur-x1-n-n-all@banquedefrance",
+    "Positions sur options  devises vis-à-vis de l'euro , dépréciation de 5 %, maturité résiduelle <= 1 an [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:34:57+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fc-fo-rt5b-rt-f711-tm3c-eur-x1-n-n-all@banquedefrance",
+    "Positions sur options  devises vis-à-vis de l'euro , appréciation de 5 %, maturité résiduelle 3 à 12 mois [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:35:41+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fc-fo-rt5b-rt-f711-tm_1-eur-x1-n-n-all@banquedefrance",
+    "Positions sur options  devises vis-à-vis de l'euro , appréciation de 5 %, maturité résiduelle <= 1 mois [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:35:29+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fc-fo-rt5b-rt-f711-ts-eur-x1-n-n-all@banquedefrance",
+    "Positions sur options  devises vis-à-vis de l'euro , appréciation de 5 %, maturité résiduelle <= 1 an [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:35:57+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fc-fo-rt5c-rt-f711-tm3c-eur-x1-n-n-all@banquedefrance",
+    "Positions sur options  devises vis-à-vis de l'euro , dépréciation de 10 %, maturité résiduelle 3 à 12 mois [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:36:39+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fc-fo-rt5c-rt-f711-ts-eur-x1-n-n-all@banquedefrance",
+    "Positions sur options  devises vis-à-vis de l'euro , dépréciation de 10 %, maturité résiduelle <= 1 an [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:36:51+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fc-fo-rt5c-rt-f711-tm13-eur-x1-n-n-all@banquedefrance",
+    "Positions sur options  devises vis-à-vis de l'euro , dépréciation de 10 %, maturité résiduelle 1 à 3 mois [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:36:13+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fc-fo-rt5c-rt-f711-tm_1-eur-x1-n-n-all@banquedefrance",
+    "Positions sur options  devises vis-à-vis de l'euro , dépréciation de 10 %, maturité résiduelle <= 1 mois [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:36:27+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fc-fo-rt5d-rt-f711-tm13-eur-x1-n-n-all@banquedefrance",
+    "Positions sur options  devises vis-à-vis de l'euro , appréciation de 10 %, maturité résiduelle 1 à 3 mois [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:37:05+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fm-fo-rt2-rt-f71ff-tl-eur-x1-n-n-all@banquedefrance",
+    "Actifs financiers dérivés, forward et futures [sorties]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:44:01+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fp-fo-rt11-rt-fr6-tm13-eur-x1-n-n-all@banquedefrance",
+    "Sorties nettes de devises liées aux prêts en monnaies étrangères, titres et dépôts, maturité résiduelle 1 à 3 mois [principal]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:55:49+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fp-fo-rt11-rt-fr6-tm3c-eur-x1-n-n-all@banquedefrance",
+    "Sorties nettes de devises liées aux prêts en monnaies étrangères, titres et dépôts, maturité résiduelle 3 à 12 mois [principal]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:56:32+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fp-fo-rt12-rt-fr6-tm3c-eur-x1-n-n-all@banquedefrance",
+    "Sorties nettes de devises liées aux prêts en monnaies étrangères, titres et dépôts, maturité résiduelle 3 à 12 mois [intérêts]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:57:30+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fp-fo-rt12-rt-fr6-tm_1-eur-x1-n-n-all@banquedefrance",
+    "Sorties nettes de devises liées aux prêts en monnaies étrangères, titres et dépôts, maturité résiduelle <= 1 mois [intérêts]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:57:13+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fp-fo-rt11-rt-fr6-tm_1-eur-x1-n-n-all@banquedefrance",
+    "Sorties nettes de devises liées aux prêts en monnaies étrangères, titres et dépôts, maturité résiduelle <= 1 mois [principal]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:56:15+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fp-fo-rt1-rt-f29c-tm13-eur-x1-n-n-all@banquedefrance",
+    "Mises en pensions, maturité résiduelle 1 à 3 mois [sorties]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:57:54+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fp-fo-rt1-rt-f81a-tm13-eur-x1-n-n-all@banquedefrance",
+    "Crédits commerciaux, maturité résiduelle 1 à 3 mois [sorties]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:58:53+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fp-fo-rt1-rt-f29c-ts-eur-x1-n-n-all@banquedefrance",
+    "Mises en pensions, maturité résiduelle <= 1 an [sorties]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:58:38+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fp-fo-rt1-rt-fr6-tm_1-eur-x1-n-n-all@banquedefrance",
+    "Flux de devises liés aux prêts en monnaies étrangères, titres et dépôts, maturité résiduelle 1 à 3 mois [sorties]",
+    "Banque de France",
+    0,
+    "2026-06-26T10:03:27+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fp-fo-rt1-rt-f89-ts-eur-x1-n-n-all@banquedefrance",
+    "Autres charges à payer, maturité résiduelle <= 1 an [sorties]",
+    "Banque de France",
+    0,
+    "2026-06-26T10:02:48+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fp-fo-rt2-rt-f71ff-tm3c-eur-x1-n-n-all@banquedefrance",
+    "Positions de contrats à terme  devises vis-à-vis de l'euro , maturité résiduelle 3 à 12 mois [sorties]",
+    "Banque de France",
+    0,
+    "2026-06-26T10:04:40+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fp-fo-rt2-rt-f71ff-tm_1-eur-x1-n-n-all@banquedefrance",
+    "Positions de contrats à terme  devises vis-à-vis de l'euro , maturité résiduelle <= 1 mois [sorties]",
+    "Banque de France",
+    0,
+    "2026-06-26T10:04:28+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fp-fo-rt1-rt-fr6-tm13-eur-x1-n-n-all@banquedefrance",
+    "Flux de devises liés aux prêts en monnaies étrangères, titres et dépôts, maturité résiduelle 3 à 12 mois [sorties]",
+    "Banque de France",
+    0,
+    "2026-06-26T10:03:10+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fp-fo-rt1-rt-f89-tm_1-eur-x1-n-n-all@banquedefrance",
+    "Autres charges à payer, maturité résiduelle <= 1 mois [sorties]",
+    "Banque de France",
+    0,
+    "2026-06-26T10:01:07+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fp-fo-rt1-rt-f89-tm3c-eur-x1-n-n-all@banquedefrance",
+    "Autres charges à payer, maturité résiduelle 3 à 12 mois [sorties]",
+    "Banque de France",
+    0,
+    "2026-06-26T10:02:29+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w1-s121-s1x-fc-fo-rt1-rt-f41a-tm13-eur-x1-n-n-all@banquedefrance",
+    "Engagements de financement irrévocables vis-à-vis des autres BCN, maturité résiduelle 1 à 3 mois [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T10:16:00+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w1-s121-s1x-fc-fo-rt1-rt-f41a-tm3c-eur-x1-n-n-all@banquedefrance",
+    "Engagements de financement irrévocables vis-à-vis des autres BCN, maturité résiduelle 3 à 12 mois [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T10:16:28+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w1-s121-s1xa-fc-fo-rt1-rt-f41a-tm3c-eur-x1-n-n-all@banquedefrance",
+    "Engagements de financement irrévocables vis-à-vis des autres BCN et OI, maturité résiduelle 3 à 12 mois [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T10:14:21+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w1-s121-s1x-fc-fo-rt1-rt-f41a-tm_1-eur-x1-n-n-all@banquedefrance",
+    "Engagements de financement irrévocables vis-à-vis des autres BCN, maturité résiduelle <= 1 mois [sorties potentielles]",
+    "Banque de France",
+    0,
+    "2026-06-26T10:16:15+00:00"
+   ],
+   [
+    "distribution-spatiale-des-localisations-de-la-sterne-fuligineuse-onychoprion-fuscatus-suivis-par-gls-depuis-juan-de-nova-taaf-projet-feder-megafaune@pndb",
+    "Distribution spatiale des localisations de la Sterne Fuligineuse (Onychoprion fuscatus) suivis par GLS depuis Juan de Nova (TAAF) - Projet FEDER Mégafaune",
+    "UMR ENTROPIE",
+    0,
+    "2025-05-15T23:29:16+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fm-fo-rt2c-rt-f711a-tl-eur-x1-n-n-all@banquedefrance",
+    "Actifs financiers dérivés, options d'achats achetées [entrées]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:43:18+00:00"
+   ],
+   [
+    "distribution-spatiale-des-localisations-du-paille-en-queue-a-brins-blancs-phaethon-lepturus-suivis-par-gls-depuis-mayotte-projet-feder-megafaune@pndb",
+    "Distribution spatiale des localisations du Paille-en-Queue à brins blancs (Phaethon lepturus) suivis par GLS depuis Mayotte - Projet FEDER Mégafaune",
+    "UMR ENTROPIE",
+    0,
+    "2025-05-15T22:01:07+00:00"
+   ],
+   [
+    "campagnes-oceanographiques-magnetisme-brute@pndb",
+    "62b849d2-df2d-4beb-9213-093de51f7f44",
+    "Ifremer",
+    0,
+    "2026-01-16T11:53:25+00:00"
+   ],
+   [
+    "chronique-de-qualite-dans-un-reseau-eaux-unitaires-a-la-sortie-dune-station-de-relevement-la-doua-site-othu-2004-2008@pndb",
+    "chronique de qualité dans un réseau eaux unitaires à la sortie d'une station de relèvement. La Doua - Site OTHU (2004-2008)",
+    null,
+    0,
+    "2016-11-24T18:32:17+00:00"
+   ],
+   [
+    "r-script-to-generate-climate-indicators-to-support-adaptation-of-vegetable-farms@pndb",
+    "R script to generate climate indicators to support adaptation of vegetable farms",
+    "Morel, Kevin",
+    0,
+    "2023-02-13T14:37:42+00:00"
+   ],
+   [
+    "points-et-supports-de-simulation-des-projections-hydrologiques@pndb",
+    "Points et supports de simulation des projections hydrologiques",
+    "Sauquet, Éric",
+    0,
+    "2024-06-28T09:07:58+00:00"
+   ],
+   [
+    "mouve-mouvement-des-masses-deau-du-complexe-recifal-de-lhermitage-la-saline@pndb",
+    "MOUVE - MOUVement des masses d'Eau du complexe récifal de l'Hermitage / La Saline",
+    "BESTRUN",
+    0,
+    "2026-01-15T21:18:50+00:00"
+   ],
+   [
+    "bathymetrie-zone-de-fracture-de-clarion-clipperton-campagne-eden-2024-resolution-100-m@pndb",
+    "70674794-30e5-4901-8d8d-8480b3b954cd",
+    "Ifremer",
+    0,
+    "2025-08-29T10:04:16+00:00"
+   ],
+   [
+    "distribution-spatiale-des-localisations-du-puffin-du-pacifique-puffinus-pacificus-suivis-par-gls-depuis-cousin-seychelles-projet-feder-megafaune@pndb",
+    "Distribution spatiale des localisations du Puffin du Pacifique (Puffinus pacificus) suivis par GLS depuis Cousin (Seychelles) - Projet FEDER Mégafaune",
+    "UMR ENTROPIE",
+    0,
+    "2025-05-15T22:47:47+00:00"
+   ],
+   [
+    "distribution-spatiale-des-localisations-du-fou-masque-sula-dactylatra-suivis-par-balise-argos-depuis-tromelin-taaf-projet-feder-megafaune@pndb",
+    "Distribution spatiale des localisations du Fou Masqué (Sula dactylatra) suivis par balise Argos depuis Tromelin (TAAF) - Projet FEDER Mégafaune",
+    "UMR ENTROPIE",
+    0,
+    "2025-05-15T23:42:44+00:00"
+   ],
+   [
+    "observations-des-baleines-a-bosse-megaptera-novaeangliae-dans-louest-de-la-reunion-dans-le-cadre-du-programme-quietude@pndb",
+    "Observations des Baleines à bosse (Megaptera novaeangliae) dans l'Ouest de La Réunion dans le cadre du programme Quiétude",
+    "CEDTM",
+    0,
+    "2026-01-15T22:49:02+00:00"
+   ],
+   [
+    "distribution-spatiale-des-localisations-de-la-tortue-verte-chelonia-mydas-suivis-par-balise-argos-depuis-juan-de-nova-taaf-projet-feder-megafaune@pndb",
+    "Distribution spatiale des localisations de la Tortue Verte (Chelonia mydas) suivis par balise Argos depuis Juan de Nova (TAAF) - Projet FEDER Mégafaune",
+    "Ifremer - Délégation Océan Indien",
+    0,
+    "2025-05-15T23:55:02+00:00"
+   ],
+   [
+    "distribution-spatiale-des-localisations-du-paille-en-queue-a-brins-rouges-phaethon-rubricauda-suivis-par-gls-depuis-lile-ronde-maurice-projet-feder-megafaune@pndb",
+    "Distribution spatiale des localisations du Paille-en-Queue à brins rouges (Phaethon rubricauda) suivis par GLS depuis l'île Ronde (Maurice) - Projet FEDER Mégafaune",
+    "UMR ENTROPIE",
+    0,
+    "2025-05-16T00:02:01+00:00"
+   ],
+   [
+    "donnees-dobservation-biologique-des-ventes-en-criee-obsvente-2012-2016@pndb",
+    "Données d'observation biologique des ventes en criée (OBSVENTE) - 2012-2016",
+    "Sextant",
+    0,
+    "2025-05-15T21:18:55+00:00"
+   ],
+   [
+    "projet-acv-bio@pndb",
+    "Projet ACV Bio",
+    "Nitschelm L.",
+    0,
+    "2025-01-23T16:05:59+00:00"
+   ],
+   [
+    "couts-inherents-aux-sorties-de-flotte@pndb",
+    "Coûts inhérents aux sorties de flotte",
+    "Ifremer",
+    0,
+    "2025-05-16T09:25:54+00:00"
+   ],
+   [
+    "bd-carthage-metropole-zones-hydrographiques@pndb",
+    "BD Carthage Métropole / Zones hydrographiques",
+    "Office International de l'eau",
+    0,
+    "2011-08-24T02:00:00+00:00"
+   ],
+   [
+    "observations-des-dauphins-long-bec-stenella-longirostris-dans-louest-de-la-reunion-dans-le-cadre-du-programme-quietude@pndb",
+    "Observations des Dauphins long bec (Stenella longirostris) dans l'Ouest de La Réunion dans le cadre du programme Quiétude",
+    "CEDTM",
+    0,
+    "2026-01-15T22:49:48+00:00"
+   ],
+   [
+    "distribution-spatiale-des-localisations-de-la-sterne-fuligineuse-onychoprion-fuscatus-suivis-par-gls-depuis-lile-bird-seychelles-projet-feder-megafaune@pndb",
+    "Distribution spatiale des localisations de la Sterne fuligineuse (Onychoprion fuscatus) suivis par GLS depuis l'île Bird (Seychelles) - Projet FEDER Mégafaune",
+    "UMR ENTROPIE",
+    0,
+    "2025-05-15T21:27:35+00:00"
+   ],
+   [
+    "distribution-spatiale-des-localisations-de-la-tortue-verte-chelonia-mydas-suivis-par-balise-argos-depuis-europa-taaf-projet-feder-megafaune@pndb",
+    "Distribution spatiale des localisations de la Tortue Verte (Chelonia mydas) suivis par balise Argos depuis Europa (TAAF) - Projet FEDER Mégafaune",
+    "Ifremer - Délégation Océan Indien",
+    0,
+    "2025-05-15T22:35:26+00:00"
+   ],
+   [
+    "distribution-spatiale-des-localisations-du-puffin-du-pacifique-puffinus-pacificus-suivis-par-gls-depuis-lile-ronde-maurice-projet-feder-megafaune@pndb",
+    "Distribution spatiale des localisations du Puffin du Pacifique (Puffinus pacificus) suivis par GLS depuis l'île Ronde (Maurice) - Projet FEDER Mégafaune",
+    "UMR ENTROPIE",
+    0,
+    "2025-05-16T00:12:18+00:00"
+   ],
+   [
+    "distribution-spatiale-des-localisations-du-puffin-du-pacifique-puffinus-pacificus-suivis-par-gls-depuis-darros-seychelles-projet-feder-megafaune@pndb",
+    "Distribution spatiale des localisations du Puffin du Pacifique (Puffinus pacificus) suivis par GLS depuis D'Arros (Seychelles) - Projet FEDER Mégafaune",
+    "UMR ENTROPIE",
+    0,
+    "2025-05-15T22:03:50+00:00"
+   ],
+   [
+    "ra_t-m-n-fr-w0-s121-s1-fm-fi-rt2c-rt-f711a-tl-eur-x1-n-n-all@banquedefrance",
+    "Actifs financiers dérivés, options d'achats vendues [sorties]",
+    "Banque de France",
+    0,
+    "2026-06-26T09:41:01+00:00"
+   ],
+   [
+    "distribution-spatiale-des-localisations-de-la-tortue-verte-chelonia-mydas-suivis-par-balise-argos-depuis-mayotte-projet-feder-megafaune@pndb",
+    "Distribution spatiale des localisations de la Tortue Verte (Chelonia mydas) suivis par balise Argos depuis Mayotte - Projet FEDER Mégafaune",
+    "Ifremer - Délégation Océan Indien",
+    0,
+    "2025-05-15T22:06:28+00:00"
+   ],
+   [
+    "etude-4pour1000-donnees-modele-banco@pndb",
+    "Etude 4pour1000 : Données modèle BANCO",
+    "Bamière, Laure",
+    0,
+    "2022-02-06T21:48:10+00:00"
+   ],
+   [
+    "bsi-m-es-n-a-a22t-a-i-u6-2250-z01-a@banquedefrance",
+    "Prêts à l'habitat (incluant les encours titrisés et sortis du bilan) accordés aux ménages et ISBLSM résidents par les IFM espagnoles (hors Eurosystème) - taux de croissance annuel brut",
+    "BCE",
+    0,
+    "2026-06-23T09:59:12+00:00"
+   ]
+  ]
  }
 }

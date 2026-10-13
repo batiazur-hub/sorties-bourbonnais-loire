@@ -657,6 +657,8 @@ def main():
         vus.add(cle); stats[ev["cat"]] += 1; stats["(OpenAgenda)"] += 1
         par_dep[ev["z"]].append(ev)
     for ev in lepal_nature() + enrichir():
+        if AGENDAS_EXCLUS.search(norm(ev.get("src", ""))) or TITRES_EXCLUS.search(norm(ev["t"])):
+            continue
         cle = (norm(ev["t"]), norm(ev["w"]), dt.date.fromisoformat(ev["s"]))
         if cle in vus:
             continue

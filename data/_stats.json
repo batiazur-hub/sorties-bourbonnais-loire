@@ -22,15 +22,15 @@
  },
  "classes": [
   [
-   "Event",
-   58612
-  ],
-  [
    "PointOfInterest",
    58612
   ],
   [
    "EntertainmentAndEvent",
+   58612
+  ],
+  [
+   "Event",
    58612
   ],
   [
@@ -82,11 +82,11 @@
    4596
   ],
   [
-   "ExhibitionEvent",
+   "Exhibition",
    4123
   ],
   [
-   "Exhibition",
+   "ExhibitionEvent",
    4123
   ],
   [
@@ -166,11 +166,11 @@
    433
   ],
   [
-   "MovieTheater",
+   "Cinema",
    307
   ],
   [
-   "Cinema",
+   "MovieTheater",
    307
   ],
   [
@@ -246,7 +246,7 @@
    42
   ],
   [
-   "RentalAccommodation",
+   "LodgingBusiness",
    41
   ],
   [
@@ -254,7 +254,7 @@
    41
   ],
   [
-   "LodgingBusiness",
+   "RentalAccommodation",
    41
   ],
   [
@@ -290,11 +290,11 @@
    16
   ],
   [
-   "OrderedList",
+   "WalkingTour",
    15
   ],
   [
-   "WalkingTour",
+   "OrderedList",
    15
   ],
   [
@@ -310,15 +310,15 @@
    8
   ],
   [
-   "EquipmentRental",
-   8
-  ],
-  [
    "EquipmentRentalShop",
    8
   ],
   [
    "Rental",
+   8
+  ],
+  [
+   "EquipmentRental",
    8
   ],
   [

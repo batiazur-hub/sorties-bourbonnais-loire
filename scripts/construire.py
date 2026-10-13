@@ -675,6 +675,9 @@ def main():
     index = []
     for dep in [d for d in par_dep if d not in noms]:
         ecartes["département inconnu"] += len(par_dep.pop(dep))
+    for f in os.listdir("data/dep"):  # départements sans sortie ou codes obsolètes
+        if f.endswith(".json") and f[:-5] not in par_dep:
+            os.remove(f"data/dep/{f}")
     for dep, evs in sorted(par_dep.items()):
         evs.sort(key=lambda e: (e["s"], e["t"]))
         json.dump(evs, open(f"data/dep/{dep}.json", "w"), ensure_ascii=False, separators=(",", ":"))

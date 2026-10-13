@@ -1,0 +1,18 @@
+name: Sonde 4
+on:
+  push:
+    paths: ["scripts/sonde4.py", ".github/workflows/sonde4.yml"]
+permissions:
+  contents: write
+jobs:
+  sonde:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: python scripts/sonde4.py
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898299+github-actions[bot]@users.noreply.github.com"
+          git add data/_sonde4.json && git commit -m "Sonde 4" && git pull --rebase -q && git push

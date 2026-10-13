@@ -511,6 +511,15 @@ textarea.sbl-in{min-height:100px;resize:vertical}
   #sbl-map{height:max(400px,calc(100vh - 318px));max-height:1100px}
 }
 @media (min-width:1100px) and (max-height:820px){.sbl-intro p{display:none}.sbl-intro h1{font-size:2rem}.sbl-reg{margin-top:8px}}
+
+.sbl-lv.of{background:#1c64b8}
+.sbl-lvt.ot .dot{background:#1c64b8}
+.sbl-lvt.ot[aria-pressed="false"] .dot{background:var(--sbl-muted)}
+.sbl-pop .when.ok,.sbl-st.ok{color:#1d7a3a}
+.sbl-pop .when.ko,.sbl-st.ko{color:var(--sbl-bad)}
+.sbl-st{display:block;font-weight:700}
+.sbl-ohd{display:block;white-space:pre-line;color:var(--sbl-ink)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .sbl-pop .when.ok,:root:not([data-theme="light"]) .sbl-st.ok{color:#5fc98a}}
 </style>
 
 <div class="sbl" id="sbl">
@@ -662,7 +671,7 @@ const CAT_KW={brocante:["brocante","brocantes","vide-grenier","vide-greniers","v
 const KW2CAT=new Map();Object.entries(CAT_KW).forEach(([c,a])=>a.forEach(w=>KW2CAT.set(w,c)));
 const LVW={musee:"musee",musees:"musee",chateau:"patrimoine",chateaux:"patrimoine",eglise:"patrimoine",eglises:"patrimoine",abbaye:"patrimoine",abbayes:"patrimoine",cathedrale:"patrimoine",
   monument:"patrimoine",monuments:"patrimoine",patrimoine:"patrimoine",jardin:"nature",jardins:"nature",lac:"nature",lacs:"nature",plage:"nature",plages:"nature",cascade:"nature",cascades:"nature",
-  zoo:"loisirs",zoos:"loisirs",aquarium:"loisirs",visiter:"*",lieux:"*",sites:"*",tourisme:"*",touristique:"*",touristiques:"*"};
+  zoo:"loisirs",zoos:"loisirs",aquarium:"loisirs",office:"office",offices:"office",ot:"office",visiter:"*",lieux:"*",sites:"*",tourisme:"*",touristique:"*",touristiques:"*"};
 const LVN=new Set(["chateau","chateaux","eglise","eglises","abbaye","abbayes","cathedrale","jardin","jardins","lac","lacs","plage","plages","cascade","cascades","zoo","zoos","aquarium"]);
 const LVL={chateau:"Châteaux",eglise:"Églises",abbaye:"Abbayes",cathedrale:"Cathédrales",jardin:"Jardins",lac:"Lacs",plage:"Plages",cascade:"Cascades",zoo:"Zoos",aquarium:"Aquariums"};
 const LVGEN=new Set(["visiter","lieux","sites","monument","monuments","tourisme","touristique","touristiques"]);
@@ -825,6 +834,7 @@ const ICONS={
   patrimoine:'<path d="M4 21V9.5l2-1V5h2.4v2h2.2V5h2.8v2h2.2V5H18v3.5l2 1V21z"/><path d="M10 21v-3.6a2 2 0 0 1 4 0V21"/>',
   nature:'<path d="M12 21v-5.5"/><path d="M12 3c3.6 0 6.2 2.8 6.2 6.2 0 3.3-2.7 5.9-6.2 6.3-3.5-.4-6.2-3-6.2-6.3C5.8 5.8 8.4 3 12 3z"/>',
   loisirs:'<path d="m12 3.5 2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/>',
+  office:'<circle cx="12" cy="12" r="8.6"/><path d="M12 11v5.6M12 7.6v.2"/>',
   pal:'<circle cx="12" cy="10" r="6.8"/><path d="M12 3.2v13.6M5.2 10h13.6M7.2 5.2l9.6 9.6M16.8 5.2l-9.6 9.6M8.6 21 12 10l3.4 11M7 21h10"/>'
 };
 const icon=(cat,s)=>'<svg class="sbl-ic" viewBox="0 0 24 24" width="'+(s||18)+'" height="'+(s||18)+'" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+ICONS[cat]+'</svg>';
@@ -1127,30 +1137,74 @@ function sheet(e){
 function toast(m){const t=document.createElement("div");t.className="sbl-toast";t.textContent=m;ROOT.append(t);setTimeout(()=>t.remove(),2600)}
 
 
+
+/* ---------- Horaires d'ouverture (format OpenStreetMap) : lecture, mise en français, « ouvert maintenant » ---------- */
+const OHD=["Mo","Tu","We","Th","Fr","Sa","Su"],OHJ=["lun.","mar.","mer.","jeu.","ven.","sam.","dim."],OHM=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const MOISL=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+function ohParse(src){
+  if(!src)return null;const raw=src.trim();if(raw==="24/7")return[{m:null,d:null,t:[[0,1440]]}];
+  const rules=[];
+  for(let part of raw.split(/\s*;\s*|\s*\|\|\s*/)){if(!part)continue;part=part.replace(/"[^"]*"/g,"").trim();
+    const r={m:null,d:null,t:null,off:false};
+    let mm=part.match(/^((?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)(?:\s*\d{1,2})?(?:\s*-\s*(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)(?:\s*\d{1,2})?)?)(?::)?\s+/);
+    if(mm){const a=mm[1].match(/(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)/g);r.m=[OHM.indexOf(a[0]),OHM.indexOf(a[a.length-1])];part=part.slice(mm[0].length)}
+    const dm=part.match(/^((?:Mo|Tu|We|Th|Fr|Sa|Su|PH|SH)(?:\[[^\]]*\])?(?:\s*-\s*(?:Mo|Tu|We|Th|Fr|Sa|Su))?(?:\s*,\s*(?:Mo|Tu|We|Th|Fr|Sa|Su|PH|SH)(?:\s*-\s*(?:Mo|Tu|We|Th|Fr|Sa|Su))?)*)\s*/);
+    if(dm){const set=new Set();let ph=false;dm[1].replace(/\[[^\]]*\]/g,"").split(/\s*,\s*/).forEach(seg=>{const ab=seg.split(/\s*-\s*/);
+        if(ab[0]==="PH"||ab[0]==="SH"){ph=true;return}const i=OHD.indexOf(ab[0]),j=ab[1]?OHD.indexOf(ab[1]):i;if(i<0||j<0)return;for(let k=i;;k=(k+1)%7){set.add(k);if(k===j)break}});
+      if(!set.size&&ph)continue;r.d=set;part=part.slice(dm[0].length)}
+    part=part.trim();
+    if(/^(off|closed)$/i.test(part)){r.off=true;rules.push(r);continue}
+    if(!part){if(r.d||r.m){r.t=[[0,1440]];rules.push(r)}continue}
+    const ts=[];let ok=true;part.split(/\s*,\s*/).forEach(seg=>{const t=seg.match(/^(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})\+?$/);if(!t){ok=false;return}
+      let a=+t[1]*60+ +t[2],b=+t[3]*60+ +t[4];if(b<=a)b+=1440;ts.push([a,b])});
+    if(!ok||!ts.length)return null;r.t=ts;rules.push(r)}
+  return rules.length?rules:null}
+function ohRuleFor(rules,d){let hit=null;const wd=(d.getDay()+6)%7,mo=d.getMonth();
+  rules.forEach(r=>{if(r.m){const[a,b]=r.m;const inM=a<=b?mo>=a&&mo<=b:mo>=a||mo<=b;if(!inM)return}if(r.d&&!r.d.has(wd))return;hit=r});return hit}
+function ohNow(rules,now){now=now||new Date();const r=ohRuleFor(rules,now);const min=now.getHours()*60+now.getMinutes();
+  if(r&&!r.off)for(const[a,b]of r.t)if(min>=a&&min<b)return{open:true,until:b>=1440?null:b};
+  if(r&&!r.off)for(const[a]of r.t)if(a>min)return{open:false,next:a};return{open:false}}
+const hm=m=>{const h=Math.floor(m/60),mi=m%60;return h+"h"+(mi?String(mi).padStart(2,"0"):"")};
+function ohText(rules){return rules.map(r=>{let days=r.d?[...r.d].sort((a,b)=>a-b):null,dt="";
+    if(days){const runs=[];days.forEach(d=>{const l=runs[runs.length-1];if(l&&l[1]===d-1)l[1]=d;else runs.push([d,d])});dt=runs.map(([a,b])=>a===b?OHJ[a]:(b===a+1?OHJ[a]+", "+OHJ[b]:OHJ[a]+" au "+OHJ[b])).join(", ")}
+    const mt=r.m?(r.m[0]===r.m[1]?"en "+MOISL[r.m[0]]:"d’"+(/^[aeiou]/.test(MOISL[r.m[0]])?"":"")+MOISL[r.m[0]]+" à "+MOISL[r.m[1]]).replace("d’j","de j").replace(/^d’([^aeiou])/,"de $1"):"";
+    const tt=r.off?"fermé":r.t.map(([a,b])=>a===0&&b===1440?"toute la journée":hm(a)+"–"+hm(b%1440||1440)).join(", ");
+    return[mt&&mt[0].toUpperCase()+mt.slice(1),dt||(r.m?"":"tous les jours")].filter(Boolean).join(", ")+" : "+tt}).join("\n")}
+function lieuStatut(x){
+  const rules=ohParse(x.oh);
+  if(rules){const n=ohNow(rules);return{txt:n.open?"Ouvert maintenant"+(n.until?" · ferme à "+hm(n.until):""):"Fermé maintenant"+(n.next!=null?" · ouvre à "+hm(n.next):""),open:n.open,detail:ohText(rules)}}
+  if(x.oh)return{txt:"",open:null,detail:x.oh};
+  if(x.p&&x.p.length){const t=iso(today()),cur=x.p.find(([a,b])=>a<=t&&t<=b),nx=x.p.find(([a])=>a>t),f=s=>{const d=P(s);return d.getDate()+" "+MO[d.getMonth()]};
+    if(cur)return{txt:"Ouvert en saison",open:true,detail:"Période d’ouverture : du "+f(cur[0])+" au "+f(cur[1])};
+    if(nx)return{txt:"Fermé en ce moment",open:false,detail:"Réouverture le "+f(nx[0])+" (jusqu’au "+f(nx[1])+")"}}
+  return null}
 /* ---------- Lieux à visiter : musées, patrimoine, nature, loisirs (DATAtourisme, mis à jour chaque semaine) ---------- */
-const KIND={musee:["Musée","Musées",ICONS.culture?"culture":"musee"],patrimoine:["Patrimoine","Patrimoine","patrimoine"],nature:["Site naturel","Nature","nature"],loisirs:["Loisirs","Loisirs","loisirs"]};
+const KIND={office:["Office de tourisme","Offices de tourisme","office"],musee:["Musée","Musées",ICONS.culture?"culture":"musee"],patrimoine:["Patrimoine","Patrimoine","patrimoine"],nature:["Site naturel","Nature","nature"],loisirs:["Loisirs","Loisirs","loisirs"]};
 const kIcon=(k,s)=>icon(KIND[k]?KIND[k][2]:"culture",s);
-const LV=new Map();let LV_ON=true,lvMarks=[],lvTm=null;
-try{LV_ON=localStorage.getItem("sbl-lv")!=="0"}catch(_){}
+const LV=new Map();let LV_ON=true,OT_ON=true,lvMarks=[],lvTm=null;
+try{LV_ON=localStorage.getItem("sbl-lv")!=="0";OT_ON=localStorage.getItem("sbl-ot")!=="0"}catch(_){}
 function loadLieux(c){if(!LV.has(c))LV.set(c,fetch(DATA+"lieux/"+c+".json").then(r=>r.ok?r.json():[]).catch(()=>[]).then(a=>{LV.set(c,a);renderLieux();if(st.place||st.near)list(pick());return a}));return Promise.resolve(LV.get(c))}
 function allLieux(){const out=[];LV.forEach(a=>{if(Array.isArray(a))for(const x of a)out.push(x)});return out}
-function lvToggle(){const b=document.createElement("button");b.type="button";b.className="sbl-lvt";b.id="sbl-lvt";b.setAttribute("aria-pressed",LV_ON?"true":"false");
-  b.innerHTML='<span class="dot">'+kIcon("patrimoine",12)+'</span>Lieux à visiter';
-  b.onclick=()=>{LV_ON=!LV_ON;b.setAttribute("aria-pressed",LV_ON?"true":"false");try{localStorage.setItem("sbl-lv",LV_ON?"1":"0")}catch(_){}renderLieux()};return b}
+function lvToggle(){const f=document.createDocumentFragment();
+  const mk=(id,label,ico,cls,get,set,key)=>{const b=document.createElement("button");b.type="button";b.className="sbl-lvt "+cls;b.id=id;b.setAttribute("aria-pressed",get()?"true":"false");
+    b.innerHTML='<span class="dot">'+kIcon(ico,12)+'</span>'+label;b.onclick=()=>{set(!get());b.setAttribute("aria-pressed",get()?"true":"false");try{localStorage.setItem(key,get()?"1":"0")}catch(_){}renderLieux()};return b};
+  f.append(mk("sbl-lvt","Lieux à visiter","patrimoine","",()=>LV_ON,v=>LV_ON=v,"sbl-lv"),mk("sbl-ott","Offices de tourisme","office","ot",()=>OT_ON,v=>OT_ON=v,"sbl-ot"));return f}
 function renderLieux(){
   if(!map)return;lvMarks.forEach(m=>m.remove());lvMarks=[];
   const z=map.getZoom(),note=$("sbl-lvn");
-  if(note)note.textContent=LV_ON&&z<9?"Zoomez pour voir les musées et lieux à visiter.":"";
-  if(!LV_ON||z<9)return;
+  if(note)note.textContent=(LV_ON||OT_ON)&&z<8?"Zoomez pour voir les offices de tourisme, musées et lieux à visiter.":"";
+  if((!LV_ON&&!OT_ON)||z<8)return;
   const B=map.getBounds(),minor=z>=12,cell=360/(256*Math.pow(2,z))*30,cy=cell*Math.cos(46*Math.PI/180),seen=new Set(),pick=[];
-  for(const x of allLieux()){if(!minor&&!x.m)continue;if(x.lon<B.getWest()||x.lon>B.getEast()||x.lat<B.getSouth()||x.lat>B.getNorth())continue;
+  const all=allLieux().filter(x=>x.k==="office"?OT_ON:LV_ON&&z>=9).sort((a,b)=>(b.k==="office")-(a.k==="office"));
+  for(const x of all){if(!minor&&!x.m)continue;if(x.lon<B.getWest()||x.lon>B.getEast()||x.lat<B.getSouth()||x.lat>B.getNorth())continue;
     const ck=Math.floor(x.lon/cell)+"|"+Math.floor(x.lat/cy);if(seen.has(ck))continue;seen.add(ck);pick.push(x);if(pick.length>=300)break}
   pick.forEach(x=>{
     const el=document.createElement("div");el.className="sbl-lvm";
-    const b=document.createElement("button");b.type="button";b.className="sbl-lv"+(x.m?" big":"");b.innerHTML=kIcon(x.k,x.m?15:12);
+    const b=document.createElement("button");b.type="button";b.className="sbl-lv"+(x.m?" big":"")+(x.k==="office"?" of":"");b.innerHTML=kIcon(x.k,x.m?15:12);
     b.setAttribute("aria-label",KIND[x.k][0]+" : "+x.t+", "+x.w);el.append(b);
     const pop=new maplibregl.Popup({offset:[0,-16],maxWidth:"290px",focusAfterOpen:false}).setHTML('<div class="sbl-pop lvp"><div class="k">'+kIcon(x.k,15)+' '+KIND[x.k][0]+'</div><h4>'+escH(x.t)+'</h4>'+
-      (x.l?'<p class="lb">'+escH(x.l)+'</p>':'')+'<p>'+escH(x.w)+'</p><button type="button" class="sbl-btn go" data-see="1">Voir le lieu</button></div>');
+      (x.l?'<p class="lb">'+escH(x.l)+'</p>':'')+'<p>'+escH(x.w)+'</p>'+(()=>{const st=lieuStatut(x);return st&&st.txt?'<p class="when '+(st.open?"ok":"ko")+'">'+escH(st.txt)+'</p>':''})()+
+      (x.tel?'<p><a href="tel:'+x.tel.replace(/\s/g,"")+'">'+escH(x.tel)+'</a></p>':'')+'<button type="button" class="sbl-btn go" data-see="1">Voir '+(x.k==="office"?"l’office":"le lieu")+'</button></div>');
     pop.on("open",()=>{fitPopup(pop);const s=pop.getElement().querySelector("[data-see]");if(s)s.onclick=()=>{pop.remove();lieuSheet(x)}});
     lvMarks.push(new maplibregl.Marker({element:el,anchor:"center"}).setLngLat([x.lon,x.lat]).setPopup(pop).addTo(map));el.removeAttribute("tabindex");el.removeAttribute("aria-label");el.removeAttribute("role")});
 }
@@ -1174,12 +1228,17 @@ function lieuSheet(x){
   h.innerHTML='<div class="sbl-veil" id="sbl-veil"><div class="sbl-sheet ev" role="dialog" aria-modal="true" aria-labelledby="sbl-st" style="--c:var(--sbl-ink)">'+
   '<div class="sbl-hero" id="sbl-hero" style="--pc:#5b6b7a"><span class="fb">'+kIcon(x.k,64)+'</span><span class="ich">'+kIcon(x.k,20)+'</span><a class="cr" hidden target="_blank" rel="noopener">Photo : Wikimedia</a><button class="cl" id="sbl-x" aria-label="Fermer">✕</button></div>'+
   '<div class="top"><div><div class="kind"></div><h2 id="sbl-st"></h2></div></div>'+
-  '<dl><dt>Où</dt><dd id="sbl-sl"></dd><dt>Site</dt><dd><a id="sbl-su" target="_blank" rel="noopener"></a></dd><dt>Source</dt><dd id="sbl-ss"></dd></dl><p id="sbl-sd"></p>'+
-  '<p class="sbl-hint">Horaires et tarifs : consultez le site du lieu avant de vous déplacer.</p>'+
+  '<dl><dt>Horaires</dt><dd id="sbl-oh"></dd><dt>Où</dt><dd id="sbl-sl"></dd><dt>Téléphone</dt><dd id="sbl-tel"></dd><dt>Site</dt><dd><a id="sbl-su" target="_blank" rel="noopener"></a></dd><dt>Source</dt><dd id="sbl-ss"></dd></dl><p id="sbl-sd"></p>'+
+  '<p class="sbl-hint" id="sbl-ohh"></p>'+
   '<div class="sbl-add"><h3>Y aller</h3><div class="sbl-btns" id="sbl-gps"></div></div><div class="sbl-add" id="sbl-ne" hidden><h3>Sorties à proximité</h3></div></div></div>';
   $("sbl-st").textContent=x.t;h.querySelector(".kind").textContent=KIND[x.k][0]+" · "+depName(x.z);
   if(x.l){const s=document.createElement("span");s.className="sbl-badge";s.style.setProperty("--bc","#5b6b7a");s.textContent=x.l;s.classList.add("lg");$("sbl-st").after(s)}
-  $("sbl-sl").textContent=(x.a?x.a+", ":"")+x.w;$("sbl-sd").textContent=x.d||"";$("sbl-ss").textContent=x.src||"DATAtourisme";
+  $("sbl-sl").textContent=(x.a?x.a+", ":"")+x.w;$("sbl-sd").textContent=x.d||"";$("sbl-ss").textContent=(x.src||"DATAtourisme")+(x.oh?" · horaires © contributeurs OpenStreetMap":"");
+  {const st=lieuStatut(x),o=$("sbl-oh");if(st){if(st.txt){const b=document.createElement("b");b.className="sbl-st "+(st.open?"ok":"ko");b.textContent=st.txt;o.append(b)}
+      if(st.detail){const d=document.createElement("span");d.className="sbl-ohd";d.textContent=st.detail;o.append(d)}
+      $("sbl-ohh").textContent="Horaires indicatifs : jours fériés et fermetures exceptionnelles non pris en compte, vérifiez auprès du lieu."}
+    else{o.textContent="Non communiqués";$("sbl-ohh").textContent="Horaires et tarifs : consultez le site du lieu avant de vous déplacer."}}
+  {const t=$("sbl-tel");if(x.tel){const a=document.createElement("a");a.href="tel:"+x.tel.replace(/\s/g,"");a.textContent=x.tel;t.append(a)}else{t.previousSibling.remove();t.remove()}}
   const u=$("sbl-su");if(x.u){u.href=x.u;u.textContent=x.u.replace(/^https?:\/\/(www\.)?/,"").replace(/\/$/,"").slice(0,48)}else u.closest("dd").previousSibling.remove(),u.closest("dd").remove();
   $("sbl-gps").innerHTML=gps(x.lat,x.lon,x.t+", "+x.w);
   if(KIOSK)kioskQR($("sbl-gps"),"https://www.google.com/maps/dir/?api=1&destination="+x.lat+","+x.lon,"Scannez avec votre téléphone pour l’itinéraire");
@@ -1204,10 +1263,10 @@ function lieuxRail(){
   const lv=st.lv||{k:null,n:[]};
   let L=allLieux().filter(x=>inArea(x)&&(!lv.k||x.k===lv.k)&&lv.n.every(n=>norm(x.t).includes(n)));
   const tot=L.length;
-  L=L.sort((a,b)=>(b.m||0)-(a.m||0)||"mlpn".indexOf(a.k[0])-"mlpn".indexOf(b.k[0])||a.t.localeCompare(b.t)).slice(0,st.lv?30:14);
+  L=L.sort((a,b)=>(b.m||0)-(a.m||0)||"omlpn".indexOf(a.k[0])-"omlpn".indexOf(b.k[0])||a.t.localeCompare(b.t)).slice(0,st.lv?30:14);
   if(!L.length){if(!st.lv)return null;const p=document.createElement("p");p.className="sbl-hint";p.textContent="Aucun lieu à visiter ne correspond dans cette zone pour l’instant.";return p}
   const where=st.place?"à "+st.place:st.near?"autour de "+st.near.n:st.z?dansDep(st.z):"dans le coin";
-  const what=lv.k==="musee"?"Musées":lv.n.length?(LVL[lv.n[0]]||cap(lv.n[0])):lv.k==="nature"?"Sites naturels":lv.k==="loisirs"?"Loisirs":lv.k==="patrimoine"?"Patrimoine":"À visiter";
+  const what=lv.k==="office"?"Offices de tourisme":lv.k==="musee"?"Musées":lv.n.length?(LVL[lv.n[0]]||cap(lv.n[0])):lv.k==="nature"?"Sites naturels":lv.k==="loisirs"?"Loisirs":lv.k==="patrimoine"?"Patrimoine":"À visiter";
   const f=document.createDocumentFragment(),h=document.createElement("div");h.className="sbl-wkh";h.innerHTML='<h2></h2><span class="n"></span>';
   h.firstChild.textContent=what+" "+where;h.lastChild.textContent=tot>L.length?L.length+" sur "+tot:"";
   const rail=document.createElement("div");rail.className="sbl-rail";L.forEach(x=>rail.append(lieuCard(x)));f.append(h,rail);return f}

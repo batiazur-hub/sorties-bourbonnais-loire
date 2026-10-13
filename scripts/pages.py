@@ -72,6 +72,7 @@ SOURCES = [
     ("Agenda culturel et marchés", "https://data.toulouse-metropole.fr/", "Toulouse Métropole", "Licence Ouverte"),
     ("Agendas locaux", "https://www.data.gouv.fr/", "Nice Côte d’Azur, Grand Paris Seine Ouest, Île-de-France Nature, musées de l’Isère", "licence indiquée par chaque producteur"),
     ("Programme des manifestations", "https://www.lepal.com/", "Fondation Le PAL Nature", "reproduit à titre d’information"),
+    ("Horaires d’ouverture des lieux et offices de tourisme", "https://www.openstreetmap.org/copyright", "© les contributeurs d’OpenStreetMap", "ODbL"),
     ("Découpage administratif et centres des communes", "https://geo.api.gouv.fr/", "API Géo (État)", "Licence Ouverte"),
 ]
 

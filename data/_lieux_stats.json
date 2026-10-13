@@ -1,29 +1,49 @@
 {
  "retenus_par_type": {
   "musee": 5433,
-  "patrimoine": 38196,
+  "patrimoine": 38195,
   "nature": 7537,
-  "loisirs": 2719
+  "loisirs": 2719,
+  "office": 3907
  },
  "ecartes": {
-  "type non retenu": 294496,
-  "bibliothèque, salle, cinéma": 3372,
+  "type non retenu": 290548,
+  "bibliothèque, salle, cinéma": 3378,
   "hébergement, restauration, commerce": 2354,
-  "doublon": 1123,
-  "sans commune ou hors zone": 108
+  "doublon": 1148,
+  "sans commune ou hors zone": 119
  },
+ "avec_horaires_osm": 0,
+ "avec_periodes": 0,
+ "colonnes": [
+  "Nom_du_POI",
+  "Categories_de_POI",
+  "Latitude",
+  "Longitude",
+  "Adresse_postale",
+  "Code_postal_et_commune",
+  "Covid19_mesures_specifiques",
+  "Createur_de_la_donnee",
+  "SIT_diffuseur",
+  "Date_de_mise_a_jour",
+  "Contacts_du_POI",
+  "Classements_du_POI",
+  "Description",
+  "URI_ID_du_POI"
+ ],
+ "echantillons": [],
  "classes_gardees": [
   [
    "PlaceOfInterest",
-   53885
+   57791
   ],
   [
    "PointOfInterest",
-   53885
+   57791
   ],
   [
    "CulturalSite",
-   42232
+   42231
   ],
   [
    "ReligiousSite",
@@ -31,11 +51,15 @@
   ],
   [
    "LocalBusiness",
-   8395
+   9558
   ],
   [
    "Museum",
    8058
+  ],
+  [
+   "TouristInformationCenter",
+   7814
   ],
   [
    "NaturalHeritage",
@@ -47,7 +71,7 @@
   ],
   [
    "SportsAndLeisurePlace",
-   6104
+   6111
   ],
   [
    "Church",
@@ -74,16 +98,20 @@
    3494
   ],
   [
+   "Store",
+   2589
+  ],
+  [
+   "LocalTouristOffice",
+   2574
+  ],
+  [
    "Product",
    2026
   ],
   [
    "Castle",
    1808
-  ],
-  [
-   "Store",
-   1425
   ],
   [
    "ArtGalleryOrExhibitionGallery",
@@ -130,6 +158,10 @@
    897
   ],
   [
+   "ActivityProvider",
+   744
+  ],
+  [
    "EntertainmentAndEvent",
    740
   ],
@@ -138,28 +170,28 @@
    740
   ],
   [
-   "ActivityProvider",
-   723
-  ],
-  [
    "InterpretationCentre",
-   692
+   691
   ],
   [
    "TeachingFarm",
    609
   ],
   [
-   "Transport",
-   569
+   "LeisureSportActivityProvider",
+   579
   ],
   [
-   "LeisureSportActivityProvider",
-   567
+   "Transport",
+   574
   ],
   [
    "Forest",
    555
+  ],
+  [
+   "IncomingTravelAgency",
+   552
   ],
   [
    "IndustrialSite",
@@ -254,6 +286,10 @@
    278
   ],
   [
+   "TourOperatorOrTravelAgency",
+   274
+  ],
+  [
    "FortifiedCastle",
    272
   ],
@@ -294,6 +330,10 @@
    213
   ],
   [
+   "CulturalActivityProvider",
+   175
+  ],
+  [
    "Waterfall",
    172
   ],
@@ -312,26 +352,6 @@
   [
    "OrderedList",
    162
-  ],
-  [
-   "CulturalActivityProvider",
-   156
-  ],
-  [
-   "AdventurePark",
-   153
-  ],
-  [
-   "Cirque",
-   150
-  ],
-  [
-   "Farmer",
-   150
-  ],
-  [
-   "ConvenientService",
-   143
   ]
  ],
  "classes_vues": [

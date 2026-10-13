@@ -1,14 +1,14 @@
 {
  "maj": "2026-10-13",
  "par_type": {
-  "culture": 33276,
-  "fete": 29001,
-  "sport": 8598,
+  "culture": 33273,
+  "fete": 28994,
+  "sport": 8591,
   "famille": 7311,
   "brocante": 1930,
-  "spectacle": 18238,
-  "(Paris open data)": 3059,
-  "(OpenAgenda)": 18614,
+  "spectacle": 18235,
+  "(Paris open data)": 3050,
+  "(OpenAgenda)": 18603,
   "(sources complémentaires)": 18069
  },
  "ecartes": {
@@ -22,15 +22,15 @@
  },
  "classes": [
   [
-   "PointOfInterest",
-   58612
-  ],
-  [
    "EntertainmentAndEvent",
    58612
   ],
   [
    "Event",
+   58612
+  ],
+  [
+   "PointOfInterest",
    58612
   ],
   [
@@ -82,11 +82,11 @@
    4596
   ],
   [
-   "ExhibitionEvent",
+   "Exhibition",
    4123
   ],
   [
-   "Exhibition",
+   "ExhibitionEvent",
    4123
   ],
   [
@@ -166,11 +166,11 @@
    433
   ],
   [
-   "MovieTheater",
+   "Cinema",
    307
   ],
   [
-   "Cinema",
+   "MovieTheater",
    307
   ],
   [
@@ -214,11 +214,11 @@
    108
   ],
   [
-   "Cirque",
+   "CircusPlace",
    99
   ],
   [
-   "CircusPlace",
+   "Cirque",
    99
   ],
   [
@@ -246,15 +246,15 @@
    42
   ],
   [
+   "Accommodation",
+   41
+  ],
+  [
    "RentalAccommodation",
    41
   ],
   [
    "LodgingBusiness",
-   41
-  ],
-  [
-   "Accommodation",
    41
   ],
   [
@@ -290,10 +290,6 @@
    16
   ],
   [
-   "OrderedList",
-   15
-  ],
-  [
    "Tour",
    15
   ],
@@ -302,7 +298,19 @@
    15
   ],
   [
+   "OrderedList",
+   15
+  ],
+  [
    "LeisureComplex",
+   8
+  ],
+  [
+   "Rental",
+   8
+  ],
+  [
+   "EquipmentRentalShop",
    8
   ],
   [
@@ -311,14 +319,6 @@
   ],
   [
    "ServiceProvider",
-   8
-  ],
-  [
-   "EquipmentRentalShop",
-   8
-  ],
-  [
-   "Rental",
    8
   ],
   [
@@ -342,7 +342,7 @@
    2
   ]
  ],
- "total": 98354,
+ "total": 98334,
  "rotation": {
   "paris-marches": {
    "rafraichi": "2026-10-13",

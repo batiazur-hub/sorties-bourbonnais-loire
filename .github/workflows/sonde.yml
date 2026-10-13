@@ -1,0 +1,21 @@
+name: Sonde DATAtourisme
+on:
+  workflow_dispatch:
+  push:
+    paths: ["scripts/sonde.py", ".github/workflows/sonde.yml"]
+permissions:
+  contents: write
+jobs:
+  sonde:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: python scripts/sonde.py
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898299+github-actions[bot]@users.noreply.github.com"
+          git add data/_structure_fma.json
+          git commit -m "Structure de l'export DATAtourisme" || echo "rien à commiter"
+          git push

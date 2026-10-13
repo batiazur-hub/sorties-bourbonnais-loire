@@ -1,15 +1,15 @@
 {
  "maj": "2026-10-13",
  "par_type": {
-  "culture": 31907,
-  "fete": 29630,
-  "sport": 10352,
-  "famille": 6738,
-  "brocante": 1773,
-  "spectacle": 17287,
+  "culture": 34314,
+  "fete": 30832,
+  "sport": 10603,
+  "famille": 6955,
+  "brocante": 1879,
+  "spectacle": 17673,
   "(Paris open data)": 3050,
   "(OpenAgenda)": 33779,
-  "(sources complémentaires)": 2246
+  "(sources complémentaires)": 6815
  },
  "ecartes": {
   "trop lointain": 5536,
@@ -22,11 +22,11 @@
  },
  "classes": [
   [
-   "Event",
+   "PointOfInterest",
    58612
   ],
   [
-   "PointOfInterest",
+   "Event",
    58612
   ],
   [
@@ -82,11 +82,11 @@
    4596
   ],
   [
-   "Exhibition",
+   "ExhibitionEvent",
    4123
   ],
   [
-   "ExhibitionEvent",
+   "Exhibition",
    4123
   ],
   [
@@ -198,11 +198,11 @@
    134
   ],
   [
-   "NaturalHeritage",
+   "Landform",
    117
   ],
   [
-   "Landform",
+   "NaturalHeritage",
    117
   ],
   [
@@ -310,15 +310,15 @@
    8
   ],
   [
-   "EquipmentRental",
-   8
-  ],
-  [
    "EquipmentRentalShop",
    8
   ],
   [
    "ServiceProvider",
+   8
+  ],
+  [
+   "EquipmentRental",
    8
   ],
   [
@@ -342,7 +342,7 @@
    2
   ]
  ],
- "total": 97687,
+ "total": 102256,
  "rotation": {
   "paris-marches": {
    "rafraichi": "2026-10-13",
@@ -391,6 +391,25 @@
    "n": 571,
    "en_cache": 571,
    "jour": "lundi"
+  },
+  "34-herault": {
+   "rafraichi": "2026-10-13",
+   "n": 6738,
+   "en_cache": 6738,
+   "jour": "mardi"
+  },
+  "pays-de-la-loire": {
+   "rafraichi": "2026-10-13",
+   "n": 0,
+   "en_cache": 0,
+   "jour": "mercredi"
+  },
+  "31-toulouse-culture": {
+   "rafraichi": "2026-10-13",
+   "n": 1,
+   "en_cache": 1,
+   "jour": "jeudi"
   }
- }
+ },
+ "alertes": []
 }

@@ -2,12 +2,12 @@
  "maj": "2026-10-13",
  "par_type": {
   "culture": 33273,
-  "fete": 28994,
-  "sport": 8591,
+  "fete": 28995,
+  "sport": 8598,
   "famille": 7311,
   "brocante": 1930,
-  "spectacle": 18235,
-  "(Paris open data)": 3050,
+  "spectacle": 18236,
+  "(Paris open data)": 3059,
   "(OpenAgenda)": 18603,
   "(sources complémentaires)": 18069
  },
@@ -26,11 +26,11 @@
    58612
   ],
   [
-   "Event",
+   "PointOfInterest",
    58612
   ],
   [
-   "PointOfInterest",
+   "Event",
    58612
   ],
   [
@@ -82,11 +82,11 @@
    4596
   ],
   [
-   "Exhibition",
+   "ExhibitionEvent",
    4123
   ],
   [
-   "ExhibitionEvent",
+   "Exhibition",
    4123
   ],
   [
@@ -166,11 +166,11 @@
    433
   ],
   [
-   "Cinema",
+   "MovieTheater",
    307
   ],
   [
-   "MovieTheater",
+   "Cinema",
    307
   ],
   [
@@ -198,11 +198,11 @@
    134
   ],
   [
-   "Landform",
+   "NaturalHeritage",
    117
   ],
   [
-   "NaturalHeritage",
+   "Landform",
    117
   ],
   [
@@ -246,15 +246,15 @@
    42
   ],
   [
+   "LodgingBusiness",
+   41
+  ],
+  [
    "Accommodation",
    41
   ],
   [
    "RentalAccommodation",
-   41
-  ],
-  [
-   "LodgingBusiness",
    41
   ],
   [
@@ -306,7 +306,7 @@
    8
   ],
   [
-   "Rental",
+   "EquipmentRental",
    8
   ],
   [
@@ -314,7 +314,7 @@
    8
   ],
   [
-   "EquipmentRental",
+   "Rental",
    8
   ],
   [
@@ -342,7 +342,7 @@
    2
   ]
  ],
- "total": 98334,
+ "total": 98343,
  "rotation": {
   "paris-marches": {
    "rafraichi": "2026-10-13",

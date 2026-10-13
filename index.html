@@ -568,6 +568,7 @@ function parseQ(text){
   take(/ (ce mois-ci|ce mois ci|ce mois|30 jours) /,()=>o.w="30");
   take(new RegExp(" (en |d |au mois de )?("+MONTHS.join("|")+") "),m=>o.w="m"+MONTHS.indexOf(m[2]));
   take(/ (toutes les dates|a venir|bientot) /,()=>o.w="all");
+  take(/ (gratuit|gratuite|gratuits|gratuites|sans payer) /,()=>o.free=1);
   let arr=[];s.trim().split(/\s+/).filter(Boolean).forEach(w=>{if(KW2CAT.has(w))arr.push(w);else w.split("-").forEach(x=>x&&arr.push(x))});
   const f=findPlace(arr);
   if(f){if(f.type==="z")o.z=f.code;else if(f.type==="near")o.near={n:f.c[0],la:f.c[2],lo:f.c[3],z:f.c[1]};else{o.place=f.c[0];o.pz=f.c[1]}arr.splice(Math.max(0,f.i),f.len)}
@@ -575,7 +576,7 @@ function parseQ(text){
   return o;
 }
 const km=(a,b)=>{const dx=(a.lon-b.lo)*Math.cos(a.lat*Math.PI/180)*111.3,dy=(a.lat-b.la)*111.2;return Math.hypot(dx,dy)};
-const matchO=(e,o)=>(o.place||o.near||o.z||!REGION.length||REGION.includes(e.z))&&(!o.cats.size||o.cats.has(e.cat))&&(!o.z||e.z===o.z)&&(!o.place||e.w===o.place)&&(!o.near||km(e,o.near)<=25)&&o.words.every(w=>e.k.includes(w));
+const matchO=(e,o)=>(!o.free||e.g)&&(o.place||o.near||o.z||!REGION.length||REGION.includes(e.z))&&(!o.cats.size||o.cats.has(e.cat))&&(!o.z||e.z===o.z)&&(!o.place||e.w===o.place)&&(!o.near||km(e,o.near)<=25)&&o.words.every(w=>e.k.includes(w));
 function matchBase(e){return matchO(e,st)}
 function pickO(o,w,day){const[a,b]=day?[P(day),P(day)]:range(w);
   return EVENTS.filter(e=>!(e.E<a||e.S>b)&&matchO(e,o)).sort((x,y)=>(x.long-y.long)||(Math.max(x.S,a)-Math.max(y.S,a))||((x.h||"99")<(y.h||"99")?-1:1));}
@@ -583,7 +584,7 @@ function pick(){return pickO(st,st.w,st.day)}
 const wOf=(o,text)=>o.w||((text||"").trim()?"all":"30");
 const countQ=text=>{const o=parseQ(text);return pickO(o,wOf(o,text),"").length};
 function applyQ(text){st.q=text;st.lim=150;const o=parseQ(text);const prev=(st.place||"")+(st.near?st.near.n:"")+st.z;
-  Object.assign(st,{w:wOf(o,text),cats:o.cats,z:o.z,place:o.place,pz:o.pz,near:o.near,words:o.words});$("sbl-qx").hidden=!text;
+  Object.assign(st,{free:o.free,w:wOf(o,text),cats:o.cats,z:o.z,place:o.place,pz:o.pz,near:o.near,words:o.words});$("sbl-qx").hidden=!text;
   const cur=(o.place||"")+(o.near?o.near.n:"")+o.z;
   if(cur&&cur!==prev)needFor(o).then(ds=>ensureDeps(ds)).then(ch=>{if(ch)draw();flyTo(o)});}
 function flyTo(o){if(!map)return;let p=null;if(o.near)p=[o.near.lo,o.near.la];else if(o.place){const e=EVENTS.find(x=>x.w===o.place);if(e)p=[e.lon,e.lat];else{const c=placeIndex().m.get(PKEY(o.place));if(c)p=[c[3],c[2]]}}
@@ -595,7 +596,7 @@ const CATP={brocante:"brocantes et vide-greniers",fete:"fêtes et marchés",spec
 const whenTxt=w=>/^m\d+$/.test(w)?"en "+MONTHL[+w.slice(1)]:WHENQ[w]||"";
 function whereTxt(o){return o.place?"à "+o.place:o.near?"autour de "+o.near.n:o.z?dansDep(o.z):""}
 function buildQ(o){const parts=[];if(o.cats.size===1)parts.push(CATQ[[...o.cats][0]]);else if(o.cats.size)parts.push([...o.cats].map(c=>CATQ[c]).join(" et "));
-  if(o.words.length)parts.push(o.words.join(" "));const wt=whenTxt(o.w);if(wt)parts.push(wt);const wh=whereTxt(o);if(wh)parts.push(wh);return parts.join(" ").trim()}
+  if(o.words.length)parts.push(o.words.join(" "));if(o.free)parts.push("gratuit");const wt=whenTxt(o.w);if(wt)parts.push(wt);const wh=whereTxt(o);if(wh)parts.push(wh);return parts.join(" ").trim()}
 function setQ(text,keepOpen){$("sbl-q").value=text;applyQ(text);draw();if(!keepOpen)closeSug();else openSug()}
 function setPlace(w){const o=parseQ(st.q);o.place=w;o.near=null;o.z="";o.w=o.w||"";setQ(buildQ(o).replace(/^ /,""))}
 
@@ -667,7 +668,7 @@ function initSearch(){
 function summary(n){
   const o=st,c1=o.cats.size===1?[...o.cats][0]:"",what=c1?(n<2?CAT1[c1]:CATP[c1]):(n<2?"sortie":"sorties"),
     raw=(st.q||"").split(/\s+/).filter(x=>o.words.includes(norm(x).replace(/[^a-z0-9-]/g,""))).join(" ")||o.words.join(" "),wt=st.day?"le "+P(st.day).getDate()+" "+ML[P(st.day).getMonth()]:(st.w==="30"&&!st.q?"dans les 30 prochains jours":st.w==="all"?"à venir":whenTxt(st.w)),wh=whereTxt(o);
-  return "<b>"+n+"</b> "+what+(o.words.length?" « "+escH(raw)+" »":"")+" "+wt+(wh?" "+escH(wh):"");
+  return "<b>"+n+"</b> "+what+(o.free?(n>1?" gratuites":" gratuite"):"")+(o.words.length?" « "+escH(raw)+" »":"")+" "+wt+(wh?" "+escH(wh):"");
 }
 const $=id=>document.getElementById(id);
 function btn(label,on,fn,color){const b=document.createElement("button");b.type="button";b.className="sbl-b";b.setAttribute("aria-pressed",on?"true":"false");
@@ -750,7 +751,7 @@ function list(items){
   });
   if(all.length>items.length){const m=document.createElement("button");m.type="button";m.className="sbl-btn sbl-moreall";m.textContent="Afficher plus de sorties ("+(all.length-items.length).toLocaleString("fr-FR")+" restantes)";m.onclick=()=>{st.lim=(st.lim||150)+150;list(pick())};box.append(m)}
 }
-function meta(e){const bits=[];if(e.h)bits.push(hh(e.h));bits.push(e.w);if(!e.long&&+e.S!==+e.E)bits.push("jusqu’au "+e.E.getDate()+" "+MO[e.E.getMonth()]);if(e.long)bits.push("jusqu’au "+e.E.getDate()+" "+MO[e.E.getMonth()]);return bits.join(" · ")}
+function meta(e){const bits=[];if(e.g)bits.push("Gratuit");if(e.h)bits.push(hh(e.h));bits.push(e.w);if(!e.long&&+e.S!==+e.E)bits.push("jusqu’au "+e.E.getDate()+" "+MO[e.E.getMonth()]);if(e.long)bits.push("jusqu’au "+e.E.getDate()+" "+MO[e.E.getMonth()]);return bits.join(" · ")}
 function row(e,ref){
   const b=document.createElement("button");b.type="button";b.className="sbl-ev";b.style.setProperty("--c","var(--sbl-c-"+e.cat+")");b.style.setProperty("--pc","var(--sbl-p-"+e.cat+")");
   const th=thumb(e);const d=e.long?e.E:ref;
@@ -842,22 +843,31 @@ const PINC={brocante:"--sbl-p-brocante",fete:"--sbl-p-fete",spectacle:"--sbl-p-s
 function pinSvg(n,cat){return '<svg viewBox="0 0 34 46" width="34" height="46" aria-hidden="true"><path class="b" d="M17 3C9.3 3 3 9.2 3 16.9c0 10.2 12.2 24.3 13.1 25.4a1.2 1.2 0 0 0 1.8 0C18.8 41.2 31 27.1 31 16.9 31 9.2 24.7 3 17 3z"/>'+
   '<g transform="translate(9.5 9.4) scale(.625)" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">'+ICONS[cat]+'</g>'+
   (n>1?'<circle class="nb" cx="27" cy="7" r="7"/><text x="27" y="10.2" text-anchor="middle">'+(n>9?"9+":n)+'</text>':'')+'</svg>'}
-function drawPins(items){
+let PIN_ITEMS=[],pinTm=null;
+function drawPins(items){PIN_ITEMS=items;if(!map)return;if(!drawPins.hooked){drawPins.hooked=1;map.on("moveend",()=>{clearTimeout(pinTm);pinTm=setTimeout(renderPins,60)})}renderPins()}
+function renderPins(){
   if(!map)return;pins.forEach(m=>m.remove());pins=[];
-  const by={};items.forEach(e=>{const k=e.w+"|"+e.cat;(by[k]=by[k]||{w:e.w,cat:e.cat,la:e.lat,lo:e.lon,ev:[]}).ev.push(e)});
-  const per={};Object.values(by).forEach(g=>{(per[g.w]=per[g.w]||[]).push(g)});
-  Object.values(per).forEach(gs=>{gs.sort((a,b)=>Object.keys(CATS).indexOf(a.cat)-Object.keys(CATS).indexOf(b.cat));
-    gs.forEach((g,i)=>{g.dx=(i-(gs.length-1)/2)*17;g.dy=-Math.abs(i-(gs.length-1)/2)*3})});
-  Object.values(by).sort((a,b)=>b.la-a.la).forEach(g=>{
-    const n=g.ev.length,w=g.w;
+  const z=map.getZoom(),cell=360/(256*Math.pow(2,z))*46,cy=cell*Math.cos(46*Math.PI/180),B=map.getBounds(),padX=(B.getEast()-B.getWest())*.15,padY=(B.getNorth()-B.getSouth())*.15;
+  const by=new Map();
+  PIN_ITEMS.forEach(e=>{if(e.lon<B.getWest()-padX||e.lon>B.getEast()+padX||e.lat<B.getSouth()-padY||e.lat>B.getNorth()+padY)return;
+    const ck=Math.floor(e.lon/cell)+"|"+Math.floor(e.lat/cy),k=e.cat+"|"+ck;let g=by.get(k);if(!g){g={cat:e.cat,ck,ev:[],la:0,lo:0};by.set(k,g)}g.ev.push(e);g.la+=e.lat;g.lo+=e.lon});
+  let groups=[...by.values()];groups.forEach(g=>{g.la/=g.ev.length;g.lo/=g.ev.length});
+  groups.sort((a,b)=>b.ev.length-a.ev.length);groups=groups.slice(0,500);
+  const per=new Map();groups.forEach(g=>{(per.get(g.ck)||per.set(g.ck,[]).get(g.ck)).push(g)});
+  per.forEach(gs=>{gs.sort((a,b)=>Object.keys(CATS).indexOf(a.cat)-Object.keys(CATS).indexOf(b.cat));gs.forEach((g,i)=>{g.dx=(i-(gs.length-1)/2)*17;g.dy=-Math.abs(i-(gs.length-1)/2)*3})});
+  groups.sort((a,b)=>b.la-a.la).forEach(g=>{
+    const n=g.ev.length,lieux=new Set(g.ev.map(e=>e.lieu+"|"+e.w)),towns=new Set(g.ev.map(e=>e.w)),one=lieux.size===1,w=g.ev[0].w;
+    const title=one?(g.ev[0].lieu&&g.ev[0].lieu!==w?g.ev[0].lieu.replace(/ \(\d+e\)$/,"")+", "+w:w):towns.size===1?w:n+" sorties dans ce secteur";
     const el=document.createElement("div");el.className="sbl-mk";
-    const pb=document.createElement("button");pb.type="button";pb.className="sbl-pin"+(st.place===w?" on":"");pb.style.setProperty("--pc","var("+PINC[g.cat]+")");
-    pb.innerHTML=pinSvg(n,g.cat);pb.setAttribute("aria-label",w+", "+CATS[g.cat][0]+" : "+n+" sortie"+(n>1?"s":""));el.append(pb);
+    const pb=document.createElement("button");pb.type="button";pb.className="sbl-pin"+(st.place&&towns.has(st.place)?" on":"");pb.style.setProperty("--pc","var("+PINC[g.cat]+")");
+    pb.innerHTML=pinSvg(n,g.cat);pb.setAttribute("aria-label",title+", "+CATS[g.cat][0]+" : "+n+" sortie"+(n>1?"s":""));el.append(pb);
     const first=g.ev.slice(0,4).map(e=>'<li>'+escH(e.t)+'</li>').join("");
-    const pop=new maplibregl.Popup({offset:[g.dx,-44],maxWidth:"290px",focusAfterOpen:false}).setHTML('<div class="sbl-pop" style="--c:var('+PINC[g.cat]+')"><div class="k">'+icon(g.cat,15)+' '+CATS[g.cat][0]+'</div><h4>'+escH(w)+'</h4><p>'+n+' sortie'+(n>1?'s':'')+'</p><ul>'+first+(n>4?'<li>…</li>':'')+'</ul>'+
-      '<button type="button" class="sbl-btn go" data-see="1">Voir '+(n>1?'les '+n+' sorties':'la sortie')+'</button>'+
-      '<div class="sbl-poph">Y aller</div><div class="sbl-btns">'+gps(g.la,g.lo,w)+'</div></div>');
-    pop.on("open",()=>{const b=pop.getElement().querySelector("[data-see]");if(b)b.onclick=()=>{pop.remove();if(n===1){sheet(g.ev[0]);return}setPlace(w);if(innerWidth<=900)view("list")}});
+    const action=n===1?"la sortie":towns.size===1?"les "+n+" sorties":"de plus près";
+    const pop=new maplibregl.Popup({offset:[g.dx,-44],maxWidth:"290px",focusAfterOpen:false}).setHTML('<div class="sbl-pop" style="--c:var('+PINC[g.cat]+')"><div class="k">'+icon(g.cat,15)+' '+CATS[g.cat][0]+'</div><h4>'+escH(title)+'</h4><p>'+n+' sortie'+(n>1?'s':'')+'</p><ul>'+first+(n>4?'<li>…</li>':'')+'</ul>'+
+      '<button type="button" class="sbl-btn go" data-see="1">'+(towns.size===1||n===1?"Voir "+action:"Zoomer ici")+'</button>'+
+      (one?'<div class="sbl-poph">Y aller</div><div class="sbl-btns">'+gps(g.ev[0].lat,g.ev[0].lon,title)+'</div>':'')+'</div>');
+    pop.on("open",()=>{const b=pop.getElement().querySelector("[data-see]");if(b)b.onclick=()=>{pop.remove();if(n===1){sheet(g.ev[0]);return}
+      if(towns.size===1&&(one||z>=13)){setPlace(w);if(innerWidth<=900)view("list");return}map.flyTo({center:[g.lo,g.la],zoom:Math.min(z+2.5,16)})}});
     pins.push(new maplibregl.Marker({element:el,anchor:"bottom",offset:[g.dx,g.dy]}).setLngLat([g.lo,g.la]).setPopup(pop).addTo(map));
   });
 }
@@ -931,7 +941,7 @@ function sheet(e){
   if(e.img){const im=new Image();im.onload=()=>{hero.classList.add("ph","poster");hero.style.setProperty("--img",'url("'+im.src+'")');const p=document.createElement("img");p.className="pst";p.src=im.src;p.alt="Affiche : "+e.t;hero.prepend(p);
       const c=hero.querySelector(".cr");c.hidden=false;c.textContent="Image : "+e.src;if(e.u)c.href=e.u;else c.removeAttribute("href")};im.onerror=()=>paint(hero,e.w,e.z,true);im.src=e.img}
   else paint(hero,e.w,e.z,true);
-  $("sbl-sw").textContent=when(e);$("sbl-sl").textContent=e.lieu+(e.lieu!==e.w?", "+e.w:"");$("sbl-sd").textContent=e.d;
+  $("sbl-sw").textContent=when(e)+(e.n?" (et "+e.n+" autre"+(e.n>1?"s":"")+" date"+(e.n>1?"s":"")+")":"")+(e.g?" · Gratuit":"");$("sbl-sl").textContent=e.lieu+(e.lieu!==e.w?", "+e.w:"");$("sbl-sd").textContent=e.d;
   const u=$("sbl-su");if(e.u)u.href=e.u;else u.removeAttribute("href");u.textContent=e.src;
   if(e.p&&PX.admin){const r=document.createElement("button");r.type="button";r.className="sbl-btn";r.textContent="Retirer de l’agenda";r.onclick=()=>unpublish(e,close);h.querySelector(".sbl-sheet").append(r)}
   $("sbl-gps").innerHTML=gps(e.lat,e.lon,(e.lieu&&e.lieu!==e.w?e.lieu+", ":"")+e.w);
@@ -972,7 +982,8 @@ function subtitle(extra){
   $("sbl-sub").textContent=(DEPIDX?tot.toLocaleString("fr-FR")+" sorties partout en France, mises à jour chaque nuit avec les offices de tourisme":EVENTS.length+" sorties repérées")+(extra?". Dont "+extra+(extra>1?" proposées":" proposée")+" par des habitants.":"");
   const r=$("sbl-regl");if(r)r.textContent=REGION.map(depName).join(", ");
 }
-function fitRegion(){if(!map)return;const ev=EVENTS.filter(e=>REGION.includes(e.z));if(!ev.length)return;
+function fitRegion(){if(!map)return;let ev=EVENTS.filter(e=>REGION.includes(e.z));if(!ev.length)return;
+  const med=k=>{const v=ev.map(e=>e[k]).sort((x,y)=>x-y);return v[v.length>>1]},mla=med("lat"),mlo=med("lon");ev=ev.filter(e=>Math.abs(e.lat-mla)<2.5&&Math.abs(e.lon-mlo)<3.5);if(!ev.length)return;
   let a=90,b=180,c=-90,d=-180;ev.forEach(e=>{a=Math.min(a,e.lat);c=Math.max(c,e.lat);b=Math.min(b,e.lon);d=Math.max(d,e.lon)});
   map.fitBounds([[b,a],[d,c]],{padding:30,maxZoom:10,duration:600})}
 async function setRegion(codes){REGION=codes;try{localStorage.setItem("sbl-deps",JSON.stringify(codes))}catch(_){}subtitle();PIDX=null;await ensureDeps(codes);draw();fitRegion();fillCommuneList()}

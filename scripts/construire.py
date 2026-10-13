@@ -154,6 +154,15 @@ def paris():
     return out
 
 def main():
+    com = json.loads(get("https://geo.api.gouv.fr/communes?fields=nom,codeDepartement,centre&format=json&geometry=centre"))
+    centres = {}
+    for c in com:
+        try:
+            lo, la = c["centre"]["coordinates"]
+        except (KeyError, TypeError):
+            continue
+        centres.setdefault((norm(c["nom"]), c["codeDepartement"]), (la, lo))
+    corriges = 0
     meta = json.loads(get(API))
     res = [r for r in meta["resources"] if r["title"].strip() == "datatourisme-fma.csv"][0]
     brut = get(res["url"]).decode("utf-8-sig")
@@ -179,6 +188,11 @@ def main():
         arr = re.match(r"^(Paris|Lyon|Marseille) (\d+)(?:er|e|ème) Arrondissement$", commune)
         if arr:
             commune = arr.group(1)
+        ce = centres.get((norm(commune), dep))
+        if ce and (abs(ce[0] - lat) > 0.45 or abs(ce[1] - lon) > 0.65):
+            lat, lon = round(ce[0], 5), round(ce[1], 5); corriges += 1
+        elif not ce and not (-22 < lat < 52 and -64 < lon < 56):
+            ecartes["coordonnées incohérentes"] += 1; continue
         titre = re.sub(r"\s+", " ", r.get("Nom_du_POI", "")).strip()
         if not titre:
             continue
@@ -216,7 +230,6 @@ def main():
         index.append({"code": dep, "nom": noms.get(dep, dep), "n": len(evs), "lat": round(la, 3), "lon": round(lo, 3)})
     json.dump({"maj": AUJ.isoformat(), "source": res["url"], "departements": index}, open("data/departements.json", "w"), ensure_ascii=False, indent=0)
 
-    com = json.loads(get("https://geo.api.gouv.fr/communes?fields=nom,codeDepartement,centre&format=json&geometry=centre"))
     out = []
     for c in com:
         try:
@@ -226,6 +239,7 @@ def main():
         out.append([c["nom"], c["codeDepartement"], round(la, 4), round(lo, 4)])
     json.dump(out, open("data/communes-fr.json", "w"), ensure_ascii=False, separators=(",", ":"))
 
+    ecartes["coordonnées corrigées (centre de la commune)"] = corriges
     json.dump({"maj": AUJ.isoformat(), "par_type": stats, "ecartes": ecartes, "classes": classes_vues.most_common(80),
                "total": sum(stats.values())}, open("data/_stats.json", "w"), ensure_ascii=False, indent=1)
     print("événements retenus :", sum(stats.values()), dict(stats), "écartés :", dict(ecartes))

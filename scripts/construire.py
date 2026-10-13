@@ -163,6 +163,9 @@ OA = ("https://public.opendatasoft.com/api/explore/v2.1/catalog/datasets/eveneme
       + urllib.parse.urlencode({"select": "uid,title_fr,description_fr,conditions_fr,keywords_fr,image,thumbnail,timings,firstdate_begin,lastdate_end,"
                                           "location_coordinates,location_name,location_postalcode,location_city,canonicalurl,originagenda_title,status",
                                 "where": "lastdate_end >= now() and location_countrycode = 'FR'"}))
+# Agendas qui ne sont pas des sorties (emploi, recrutement, formations)
+AGENDAS_EXCLUS = re.compile(r"france travail|pole emploi|semaine de l.industrie|job ?dating|recrutement|mission locale|apec\b", re.I)
+TITRES_EXCLUS = re.compile(r"\bjob ?dating\b|\brecrute(nt)?\b|\bentretien d.embauche|\bforum (de l.)?emploi|\batelier cv\b", re.I)
 def openagenda():
     try:
         rows = json.loads(get(OA))
@@ -174,6 +177,8 @@ def openagenda():
         if "Annul" in st or "Report" in st:
             continue
         titre = re.sub(r"\s+", " ", r.get("title_fr") or "").strip()
+        if AGENDAS_EXCLUS.search(norm(r.get("originagenda_title") or "")) or TITRES_EXCLUS.search(norm(titre)):
+            continue
         ll = r.get("location_coordinates") or {}
         cp = (r.get("location_postalcode") or "").strip()
         ville = (r.get("location_city") or "").strip()

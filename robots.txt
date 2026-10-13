@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Disallow: /data/enrich/
+Sitemap: https://batiazur-hub.github.io/sorties-bourbonnais-loire/sitemap.xml

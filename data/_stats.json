@@ -1,35 +1,35 @@
 {
  "maj": "2026-10-13",
  "par_type": {
-  "culture": 17739,
-  "famille": 5064,
-  "fete": 14166,
-  "sport": 7343,
-  "brocante": 1694,
-  "spectacle": 12661
+  "culture": 20024,
+  "fete": 13225,
+  "sport": 6533,
+  "famille": 4688,
+  "brocante": 1628,
+  "spectacle": 12566
  },
  "ecartes": {
   "trop lointain": 5536,
   "passé ou sans date": 12695,
-  "doublon": 470,
+  "doublon": 473,
   "sans commune": 8
  },
  "classes": [
   [
    "EntertainmentAndEvent",
-   58667
-  ],
-  [
-   "PointOfInterest",
-   58667
+   58664
   ],
   [
    "Event",
-   58667
+   58664
+  ],
+  [
+   "PointOfInterest",
+   58664
   ],
   [
    "CulturalEvent",
-   33712
+   33709
   ],
   [
    "SportsEvent",
@@ -45,7 +45,7 @@
   ],
   [
    "ShowEvent",
-   7507
+   7504
   ],
   [
    "Product",
@@ -89,7 +89,7 @@
   ],
   [
    "TheaterEvent",
-   2978
+   2975
   ],
   [
    "Practice",
@@ -208,11 +208,11 @@
    108
   ],
   [
-   "Cirque",
+   "CircusPlace",
    99
   ],
   [
-   "CircusPlace",
+   "Cirque",
    99
   ],
   [
@@ -240,15 +240,15 @@
    42
   ],
   [
-   "LodgingBusiness",
-   41
-  ],
-  [
    "RentalAccommodation",
    41
   ],
   [
    "Accommodation",
+   41
+  ],
+  [
+   "LodgingBusiness",
    41
   ],
   [
@@ -284,11 +284,11 @@
    16
   ],
   [
-   "Tour",
+   "WalkingTour",
    15
   ],
   [
-   "WalkingTour",
+   "Tour",
    15
   ],
   [
@@ -336,5 +336,5 @@
    2
   ]
  ],
- "total": 58667
+ "total": 58664
 }

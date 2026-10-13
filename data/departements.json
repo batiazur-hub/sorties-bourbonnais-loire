@@ -1,0 +1,685 @@
+{
+"maj": "2026-10-13",
+"source": "https://static.data.gouv.fr/resources/datatourisme-la-plateforme-nationale-des-donnees-touristiques/20261013-024926/datatourisme-fma.csv",
+"departements": [
+{
+"code": "01",
+"nom": "Ain",
+"n": 348,
+"lat": 46.193,
+"lon": 5.393
+},
+{
+"code": "02",
+"nom": "Aisne",
+"n": 164,
+"lat": 49.559,
+"lon": 3.461
+},
+{
+"code": "03",
+"nom": "Allier",
+"n": 880,
+"lat": 46.3,
+"lon": 3.152
+},
+{
+"code": "04",
+"nom": "Alpes-de-Haute-Provence",
+"n": 94,
+"lat": 43.969,
+"lon": 5.985
+},
+{
+"code": "05",
+"nom": "Hautes-Alpes",
+"n": 31,
+"lat": 44.608,
+"lon": 6.203
+},
+{
+"code": "06",
+"nom": "Alpes-Maritimes",
+"n": 170,
+"lat": 43.731,
+"lon": 7.178
+},
+{
+"code": "07",
+"nom": "Ardèche",
+"n": 15,
+"lat": 45.209,
+"lon": 4.793
+},
+{
+"code": "08",
+"nom": "Ardennes",
+"n": 227,
+"lat": 49.715,
+"lon": 4.705
+},
+{
+"code": "09",
+"nom": "Ariège",
+"n": 42,
+"lat": 42.999,
+"lon": 1.509
+},
+{
+"code": "10",
+"nom": "Aube",
+"n": 379,
+"lat": 48.288,
+"lon": 4.139
+},
+{
+"code": "11",
+"nom": "Aude",
+"n": 191,
+"lat": 43.166,
+"lon": 2.506
+},
+{
+"code": "12",
+"nom": "Aveyron",
+"n": 827,
+"lat": 44.334,
+"lon": 2.576
+},
+{
+"code": "13",
+"nom": "Bouches-du-Rhône",
+"n": 2038,
+"lat": 43.455,
+"lon": 5.215
+},
+{
+"code": "14",
+"nom": "Calvados",
+"n": 1236,
+"lat": 49.225,
+"lon": -0.25
+},
+{
+"code": "15",
+"nom": "Cantal",
+"n": 47,
+"lat": 45.054,
+"lon": 2.617
+},
+{
+"code": "16",
+"nom": "Charente",
+"n": 750,
+"lat": 45.681,
+"lon": 0.077
+},
+{
+"code": "17",
+"nom": "Charente-Maritime",
+"n": 1862,
+"lat": 45.817,
+"lon": -0.919
+},
+{
+"code": "18",
+"nom": "Cher",
+"n": 492,
+"lat": 47.076,
+"lon": 2.432
+},
+{
+"code": "19",
+"nom": "Corrèze",
+"n": 610,
+"lat": 45.318,
+"lon": 1.77
+},
+{
+"code": "21",
+"nom": "Côte-d'Or",
+"n": 576,
+"lat": 46.17,
+"lon": 7.66
+},
+{
+"code": "22",
+"nom": "Côtes-d'Armor",
+"n": 1968,
+"lat": 48.543,
+"lon": -2.953
+},
+{
+"code": "23",
+"nom": "Creuse",
+"n": 448,
+"lat": 46.16,
+"lon": 1.78
+},
+{
+"code": "24",
+"nom": "Dordogne",
+"n": 1362,
+"lat": 45.077,
+"lon": 0.688
+},
+{
+"code": "25",
+"nom": "Doubs",
+"n": 721,
+"lat": 47.167,
+"lon": 6.33
+},
+{
+"code": "26",
+"nom": "Drôme",
+"n": 1489,
+"lat": 44.795,
+"lon": 4.978
+},
+{
+"code": "27",
+"nom": "Eure",
+"n": 405,
+"lat": 49.156,
+"lon": 1.278
+},
+{
+"code": "28",
+"nom": "Eure-et-Loir",
+"n": 341,
+"lat": 48.34,
+"lon": 1.278
+},
+{
+"code": "29",
+"nom": "Finistère",
+"n": 2338,
+"lat": 48.237,
+"lon": -4.131
+},
+{
+"code": "2A",
+"nom": "Corse-du-Sud",
+"n": 2,
+"lat": 41.616,
+"lon": 9.233
+},
+{
+"code": "2B",
+"nom": "Haute-Corse",
+"n": 21,
+"lat": 42.58,
+"lon": 8.933
+},
+{
+"code": "30",
+"nom": "Gard",
+"n": 133,
+"lat": 43.934,
+"lon": 4.352
+},
+{
+"code": "31",
+"nom": "Haute-Garonne",
+"n": 1009,
+"lat": 43.451,
+"lon": 1.135
+},
+{
+"code": "32",
+"nom": "Gers",
+"n": 131,
+"lat": 43.661,
+"lon": 0.447
+},
+{
+"code": "33",
+"nom": "Gironde",
+"n": 1147,
+"lat": 44.782,
+"lon": -0.699
+},
+{
+"code": "34",
+"nom": "Hérault",
+"n": 2379,
+"lat": 43.51,
+"lon": 3.45
+},
+{
+"code": "35",
+"nom": "Ille-et-Vilaine",
+"n": 718,
+"lat": 48.277,
+"lon": -1.824
+},
+{
+"code": "36",
+"nom": "Indre",
+"n": 603,
+"lat": 46.777,
+"lon": 1.509
+},
+{
+"code": "37",
+"nom": "Indre-et-Loire",
+"n": 603,
+"lat": 47.256,
+"lon": 0.714
+},
+{
+"code": "38",
+"nom": "Isère",
+"n": 296,
+"lat": 45.323,
+"lon": 5.486
+},
+{
+"code": "39",
+"nom": "Jura",
+"n": 578,
+"lat": 46.699,
+"lon": 5.746
+},
+{
+"code": "40",
+"nom": "Landes",
+"n": 1515,
+"lat": 43.794,
+"lon": -0.949
+},
+{
+"code": "41",
+"nom": "Loir-et-Cher",
+"n": 167,
+"lat": 47.623,
+"lon": 1.304
+},
+{
+"code": "42",
+"nom": "Loire",
+"n": 166,
+"lat": 45.658,
+"lon": 4.226
+},
+{
+"code": "43",
+"nom": "Haute-Loire",
+"n": 923,
+"lat": 45.16,
+"lon": 4.004
+},
+{
+"code": "44",
+"nom": "Loire-Atlantique",
+"n": 1570,
+"lat": 47.294,
+"lon": -1.961
+},
+{
+"code": "45",
+"nom": "Loiret",
+"n": 608,
+"lat": 47.902,
+"lon": 2.492
+},
+{
+"code": "46",
+"nom": "Lot",
+"n": 672,
+"lat": 44.633,
+"lon": 1.6
+},
+{
+"code": "47",
+"nom": "Lot-et-Garonne",
+"n": 672,
+"lat": 44.446,
+"lon": 0.477
+},
+{
+"code": "48",
+"nom": "Lozère",
+"n": 506,
+"lat": 44.463,
+"lon": 3.432
+},
+{
+"code": "49",
+"nom": "Maine-et-Loire",
+"n": 937,
+"lat": 47.323,
+"lon": -0.603
+},
+{
+"code": "50",
+"nom": "Manche",
+"n": 1165,
+"lat": 49.062,
+"lon": -1.427
+},
+{
+"code": "51",
+"nom": "Marne",
+"n": 490,
+"lat": 49.074,
+"lon": 4.138
+},
+{
+"code": "52",
+"nom": "Haute-Marne",
+"n": 288,
+"lat": 48.139,
+"lon": 5.2
+},
+{
+"code": "53",
+"nom": "Mayenne",
+"n": 483,
+"lat": 48.139,
+"lon": -0.667
+},
+{
+"code": "54",
+"nom": "Meurthe-et-Moselle",
+"n": 448,
+"lat": 48.736,
+"lon": 6.165
+},
+{
+"code": "55",
+"nom": "Meuse",
+"n": 229,
+"lat": 48.857,
+"lon": 5.307
+},
+{
+"code": "56",
+"nom": "Morbihan",
+"n": 785,
+"lat": 47.798,
+"lon": -3.087
+},
+{
+"code": "57",
+"nom": "Moselle",
+"n": 807,
+"lat": 49.134,
+"lon": 6.454
+},
+{
+"code": "58",
+"nom": "Nièvre",
+"n": 406,
+"lat": 47.106,
+"lon": 2.645
+},
+{
+"code": "59",
+"nom": "Nord",
+"n": 238,
+"lat": 50.585,
+"lon": 3.235
+},
+{
+"code": "60",
+"nom": "Oise",
+"n": 203,
+"lat": 49.349,
+"lon": 2.519
+},
+{
+"code": "61",
+"nom": "Orne",
+"n": 576,
+"lat": 48.509,
+"lon": 0.288
+},
+{
+"code": "62",
+"nom": "Pas-de-Calais",
+"n": 161,
+"lat": 50.595,
+"lon": 1.819
+},
+{
+"code": "63",
+"nom": "Puy-de-Dôme",
+"n": 251,
+"lat": 45.781,
+"lon": 3.106
+},
+{
+"code": "64",
+"nom": "Pyrénées-Atlantiques",
+"n": 3087,
+"lat": 43.343,
+"lon": -1.067
+},
+{
+"code": "65",
+"nom": "Hautes-Pyrénées",
+"n": 726,
+"lat": 43.072,
+"lon": 0.163
+},
+{
+"code": "66",
+"nom": "Pyrénées-Orientales",
+"n": 571,
+"lat": 42.624,
+"lon": 2.643
+},
+{
+"code": "67",
+"nom": "Bas-Rhin",
+"n": 1477,
+"lat": 48.602,
+"lon": 7.584
+},
+{
+"code": "68",
+"nom": "Haut-Rhin",
+"n": 1293,
+"lat": 47.918,
+"lon": 7.267
+},
+{
+"code": "69",
+"nom": "Rhône",
+"n": 352,
+"lat": 45.787,
+"lon": 4.778
+},
+{
+"code": "70",
+"nom": "Haute-Saône",
+"n": 268,
+"lat": 47.582,
+"lon": 5.789
+},
+{
+"code": "71",
+"nom": "Saône-et-Loire",
+"n": 970,
+"lat": 46.541,
+"lon": 4.647
+},
+{
+"code": "72",
+"nom": "Sarthe",
+"n": 687,
+"lat": 47.931,
+"lon": 0.308
+},
+{
+"code": "73",
+"nom": "Savoie",
+"n": 121,
+"lat": 45.483,
+"lon": 6.327
+},
+{
+"code": "74",
+"nom": "Haute-Savoie",
+"n": 224,
+"lat": 45.996,
+"lon": 6.568
+},
+{
+"code": "75",
+"nom": "Paris",
+"n": 45,
+"lat": 48.86,
+"lon": 2.327
+},
+{
+"code": "76",
+"nom": "Seine-Maritime",
+"n": 1511,
+"lat": 49.643,
+"lon": 0.688
+},
+{
+"code": "77",
+"nom": "Seine-et-Marne",
+"n": 54,
+"lat": 48.461,
+"lon": 2.837
+},
+{
+"code": "78",
+"nom": "Yvelines",
+"n": 40,
+"lat": 48.849,
+"lon": 2.056
+},
+{
+"code": "79",
+"nom": "Deux-Sèvres",
+"n": 760,
+"lat": 46.623,
+"lon": -0.319
+},
+{
+"code": "80",
+"nom": "Somme",
+"n": 353,
+"lat": 50.048,
+"lon": 1.916
+},
+{
+"code": "81",
+"nom": "Tarn",
+"n": 132,
+"lat": 43.662,
+"lon": 2.094
+},
+{
+"code": "82",
+"nom": "Tarn-et-Garonne",
+"n": 71,
+"lat": 44.107,
+"lon": 1.251
+},
+{
+"code": "83",
+"nom": "Var",
+"n": 326,
+"lat": 43.312,
+"lon": 6.296
+},
+{
+"code": "84",
+"nom": "Vaucluse",
+"n": 209,
+"lat": 43.998,
+"lon": 5.154
+},
+{
+"code": "85",
+"nom": "Vendée",
+"n": 755,
+"lat": 46.563,
+"lon": -1.204
+},
+{
+"code": "86",
+"nom": "Vienne",
+"n": 489,
+"lat": 46.648,
+"lon": 0.464
+},
+{
+"code": "87",
+"nom": "Haute-Vienne",
+"n": 1036,
+"lat": 45.807,
+"lon": 1.218
+},
+{
+"code": "88",
+"nom": "Vosges",
+"n": 369,
+"lat": 48.169,
+"lon": 6.512
+},
+{
+"code": "89",
+"nom": "Yonne",
+"n": 422,
+"lat": 46.206,
+"lon": 5.804
+},
+{
+"code": "90",
+"nom": "Territoire de Belfort",
+"n": 124,
+"lat": 47.641,
+"lon": 6.861
+},
+{
+"code": "91",
+"nom": "Essonne",
+"n": 68,
+"lat": 48.655,
+"lon": 2.288
+},
+{
+"code": "92",
+"nom": "Hauts-de-Seine",
+"n": 12,
+"lat": 48.841,
+"lon": 2.233
+},
+{
+"code": "93",
+"nom": "Seine-Saint-Denis",
+"n": 44,
+"lat": 48.91,
+"lon": 2.441
+},
+{
+"code": "94",
+"nom": "Val-de-Marne",
+"n": 60,
+"lat": 48.801,
+"lon": 2.449
+},
+{
+"code": "95",
+"nom": "Val-d'Oise",
+"n": 22,
+"lat": 49.051,
+"lon": 2.035
+},
+{
+"code": "98",
+"nom": "98",
+"n": 52,
+"lat": -21.629,
+"lon": 165.799
+}
+]
+}

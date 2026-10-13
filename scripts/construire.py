@@ -256,26 +256,180 @@ def marches_paris():
             out.append(ev)
     print("Marchés parisiens :", len(out), "dates")
     return out
-ENRICHISSEURS = {"75": [marches_paris]}
-def enrichir(codes):
-    """Chaque département est rafraîchi un jour fixe de la semaine (rang du département modulo 7)."""
+
+def _d(s):
+    """Date ISO ou JJ/MM/AAAA -> date."""
+    s = (s or "").strip()
+    m = re.match(r"(\d{4})-(\d{2})-(\d{2})", s)
+    if m: return dt.date(int(m[1]), int(m[2]), int(m[3]))
+    m = re.match(r"(\d{2})/(\d{2})/(\d{4})", s)
+    if m: return dt.date(int(m[3]), int(m[2]), int(m[1]))
+    return None
+def _ev(src, sid, titre, a, b, dep, ville, lieu, lat, lon, desc="", url="", img="", heure="", txtcat="", gratuit=False, origine="src"):
+    """Construit un événement normalisé ou None s'il est passé, trop lointain ou incomplet."""
+    titre = re.sub(r"\s+", " ", titre or "").strip()
+    if not titre or not a or lat in (None, "") or lon in (None, "") or not dep:
+        return None
+    b = b or a
+    if b < AUJ or a > HORIZON:
+        return None
+    if a < AUJ and (b - a).days <= 14:
+        a = AUJ
+    ev = {"id": sid, "t": titre, "cat": categorie(titre + " " + (txtcat or ""), set()), "z": dep, "w": (ville or "").strip(),
+          "lieu": (lieu or "").strip() or (ville or "").strip(), "s": a.isoformat(), "d": resume(re.sub("<[^>]+>", " ", desc or "")),
+          "u": url or "", "src": src, "lat": round(float(lat), 5), "lon": round(float(lon), 5), "o": origine}
+    if b != a: ev["e"] = b.isoformat()
+    if heure and re.match(r"\d{2}:\d{2}", heure) and heure[:5] != "00:00": ev["h"] = heure[:5]
+    if img and str(img).startswith("http"): ev["img"] = str(img).split("|")[0].strip()
+    if gratuit: ev["g"] = 1
+    return ev if ev["w"] else None
+
+def pas_de_calais():
+    txt = get("https://www.data.gouv.fr/api/1/datasets/r/51c8060e-994c-401b-acd8-515a8128df1e").decode("utf-8-sig", "replace")
+    out = []
+    for r in csv.DictReader(io.StringIO(txt), delimiter=";"):
+        pers = []
+        for i in range(1, 10):
+            a = _d(r.get(f"periode_date_debut_{i}")); b = _d(r.get(f"periode_date_fin_{i}"))
+            if a: pers.append((a, b or a))
+        pers = sorted(p for p in pers if p[1] >= AUJ)
+        if not pers: continue
+        try:
+            la, lo = [float(x) for x in (r.get("geo_point_2d") or "").split(",")]
+        except ValueError:
+            continue
+        ev = _ev("Pas-de-Calais Tourisme", "pc-" + r.get("id", ""), r.get("titre"), pers[0][0], pers[0][1], dep_de(r.get("code_postal_etab", "")),
+                 r.get("commune_etab"), r.get("raison_sociale_etab") or r.get("adr_etab"), la, lo,
+                 r.get("description_introduction") or r.get("description_presentation"), r.get("site_web"), r.get("multimedia_url_photo"),
+                 txtcat=(r.get("type") or "") + " " + (r.get("themes") or ""), gratuit="gratuit" in norm(" ".join(v or "" for k, v in r.items() if k.startswith("tarif"))))
+        if ev:
+            if len(pers) > 1: ev["n"] = len(pers) - 1
+            out.append(ev)
+    return out
+
+def clermont():
+    rows = json.loads(get("https://opendata.clermontmetropole.eu/api/explore/v2.1/catalog/datasets/agenda-vcf/exports/json"))
+    out = []
+    for r in rows:
+        gp = r.get("geo_point_2d") or {}
+        img = r.get("illustrations_item_traductionfichiers_item_url")
+        if isinstance(img, list): img = img[0] if img else ""
+        site = r.get("informations_moyenscommunication_siteweb")
+        if isinstance(site, list): site = site[0] if site else ""
+        typ = r.get("informationsfeteetmanifestation_typesmanifestation_item_libellefr") or ""
+        if isinstance(typ, list): typ = " ".join(typ)
+        ho = r.get("ouverture_horaireouverture")
+        if isinstance(ho, list): ho = ho[0] if ho else ""
+        ev = _ev("Clermont Auvergne Volcans (office de tourisme)", "cf-" + str(r.get("id")), r.get("nom"), _d(r.get("ouverture_datedebut")), _d(r.get("ouverture_datefin")),
+                 dep_de(str(r.get("localisation_adresse_codepostal") or "")) or "63", r.get("localisation_adresse_commune_nom"), r.get("localisation_adresse_nomdulieu"),
+                 gp.get("lat"), gp.get("lon"), r.get("presentation"), site, img, str(ho or ""), typ,
+                 "gratuit" in norm(str(r.get("descriptiontarif_indicationtarif") or "")))
+        if ev: out.append(ev)
+    return out
+
+def isere_musees():
+    rows = json.loads(get("https://www.data.gouv.fr/api/1/datasets/r/e7f4042b-2762-49e8-ad20-5fab9b548ce7"))
+    out = []
+    for r in rows:
+        txt = " ".join(str(r.get(k) or "") for k in ("horaires_ouverture", "descriptif_court"))
+        ds = [_d(x) for x in re.findall(r"\d{2}/\d{2}/\d{4}|\d{4}-\d{2}-\d{2}", txt)]
+        ds = [x for x in ds if x]
+        if not ds: continue
+        ev = _ev("Musées départementaux de l'Isère", "is-" + str(r.get("id")), r.get("nom"), min(ds), max(ds), dep_de(str(r.get("adresse_code_postal") or "")) or "38",
+                 r.get("adresse_nom_commune"), r.get("adresse_nom_du_lieu") or r.get("structure_gestion"), r.get("coordonnees_y_wgs84"), r.get("coordonnees_x_wgs84"),
+                 r.get("descriptif_court"), r.get("contact_site_web"), "", "", "expo musee " + str(r.get("type") or ""), "gratuit" in norm(str(r.get("tarif") or "")))
+        if ev: out.append(ev)
+    return out
+
+def nice_otm():
+    j = json.loads(get("https://www.data.gouv.fr/api/1/datasets/r/4d57cbed-521f-44be-a2e4-da313cddd089"))
+    out = []
+    for o in j.get("objetsTouristiques", []):
+        loc = o.get("localisation") or {}; adr = loc.get("adresse") or {}; com = adr.get("commune") or {}
+        geo = ((loc.get("geolocalisation") or {}).get("geoJson") or {}).get("coordinates") or [None, None]
+        pers = []
+        for p in (o.get("ouverture") or {}).get("periodesOuvertures") or []:
+            a = _d(p.get("dateDebut")); b = _d(p.get("dateFin"))
+            if a: pers.append((a, b or a, p.get("horaireOuverture") or ""))
+        pers = sorted(p for p in pers if p[1] >= AUJ)
+        if not pers: continue
+        img = ""
+        for il in o.get("illustrations") or []:
+            for f in il.get("traductionFichiers") or []:
+                img = img or f.get("url", "")
+        site = ""
+        for m in (o.get("informations") or {}).get("moyensCommunication") or []:
+            if (m.get("type") or {}).get("id") == 205: site = (m.get("coordonnees") or {}).get("fr", "")
+        pres = o.get("presentation") or {}
+        desc = ((pres.get("descriptifCourt") or {}).get("libelleFr")) or ""
+        ev = _ev("Office de tourisme Nice Côte d'Azur", "nc-" + str(o.get("id")), (o.get("nom") or {}).get("libelleFr"), pers[0][0], pers[0][1],
+                 dep_de(str(adr.get("codePostal") or "")) or "06", com.get("nom"), adr.get("nomDuLieu") or adr.get("adresse1"), geo[1], geo[0], desc, site, img, pers[0][2])
+        if ev:
+            if len(pers) > 1: ev["n"] = len(pers) - 1
+            out.append(ev)
+    return out
+
+def _oa_like(rows, src, prefix):
+    out = []
+    for r in rows:
+        tm = r.get("timings") or r.get("nexttiming") or []
+        if isinstance(tm, str):
+            try: tm = json.loads(tm)
+            except ValueError: tm = []
+        if isinstance(tm, dict): tm = [tm]
+        occ = []
+        for x in tm:
+            b = x.get("begin") or x.get("start") or ""; e = x.get("end") or b
+            a1, b1 = _d(b), _d(e)
+            if a1: occ.append((a1, b[11:16], b1 or a1))
+        occ = sorted(x for x in occ if x[2] >= AUJ)
+        if not occ: continue
+        ll = r.get("location_coordinates") or r.get("geo") or {}
+        if isinstance(ll, list) and len(ll) == 2: ll = {"lat": ll[0], "lon": ll[1]}
+        img = r.get("image_full_url") or r.get("image") or r.get("thumbnail") or ""
+        if isinstance(img, dict): img = img.get("url", "")
+        ev = _ev(src, prefix + str(r.get("uid")), r.get("title_fr") or r.get("title"), occ[0][0], occ[-1][2] if (occ[-1][0] - occ[0][0]).days <= 31 else occ[0][2],
+                 dep_de(str(r.get("location_postalcode") or "")), r.get("location_city"), r.get("location_name"), (ll or {}).get("lat"), (ll or {}).get("lon"),
+                 r.get("description_fr") or r.get("description"), r.get("canonicalurl") or "", img, occ[0][1],
+                 " ".join(r.get("keywords_fr") or r.get("keywords") or []) + " " + str(r.get("thematiques_label") or ""), "gratuit" in norm(str(r.get("conditions_fr") or r.get("conditions") or "")))
+        if ev: out.append(ev)
+    return out
+def gpso():
+    return _oa_like(json.loads(get("https://www.data.gouv.fr/api/1/datasets/r/f3e3c20e-4f57-4647-8185-83ade400b490")), "Grand Paris Seine Ouest (OpenAgenda)", "oa-")
+def idf_nature():
+    return _oa_like(json.loads(get("https://www.data.gouv.fr/api/1/datasets/r/2ad8eb37-e7cc-4b7e-9a46-70a6a83120c1")), "Île-de-France Nature", "idfn-")
+def occitanie():
+    out = []
+    for r in json.loads(get("https://www.data.gouv.fr/api/1/datasets/r/a83bc1c2-d259-4aa3-bd8f-17fa4c9cb137")):
+        gp = r.get("geo_point_2d") or {}
+        ins = str(r.get("code_insee") or "")
+        dep = ("2A" if ins.startswith("2A") else "2B" if ins.startswith("2B") else ins[:3] if ins.startswith("97") else ins[:2]) if ins else None
+        ev = _ev("Région Occitanie", "oc-" + str(abs(hash((r.get("titre"), r.get("date_debut"), ins))) % 10**10), r.get("titre"), _d(r.get("date_debut")), _d(r.get("date_fin")),
+                 dep, r.get("commune"), (r.get("adresse") or "").split(",")[0], gp.get("lat"), gp.get("lon"), r.get("description"), r.get("url"), "", "", str(r.get("thematique") or ""))
+        if ev: out.append(ev)
+    return out
+
+# Sources complémentaires : chacune est rafraîchie un jour fixe de la semaine (rang modulo 7)
+SOURCES_ROT = [("paris-marches", marches_paris), ("62-pas-de-calais", pas_de_calais), ("63-clermont", clermont), ("38-isere-musees", isere_musees),
+               ("06-nice", nice_otm), ("92-gpso", gpso), ("idf-nature", idf_nature), ("occitanie", occitanie)]
+RAPPORT_ROT = {}
+def enrichir():
     os.makedirs("data/enrich", exist_ok=True)
-    jour = AUJ.weekday(); res = {}
-    force = os.environ.get("TOUT_ENRICHIR") == "1"
-    for i, dep in enumerate(sorted(codes)):
-        fichier = f"data/enrich/{dep}.json"
-        if dep in ENRICHISSEURS and (force or i % 7 == jour or not os.path.exists(fichier)):
-            evs = []
-            for f in ENRICHISSEURS[dep]:
-                try:
-                    evs += f()
-                except Exception as e:
-                    print("Enrichissement", dep, f.__name__, "en échec :", e)
-            if evs:
+    jour = AUJ.weekday(); force = os.environ.get("TOUT_ENRICHIR") == "1"; tous = []
+    for i, (nom, f) in enumerate(SOURCES_ROT):
+        fichier = f"data/enrich/{nom}.json"
+        if force or i % 7 == jour or not os.path.exists(fichier):
+            try:
+                evs = f()
                 json.dump(evs, open(fichier, "w"), ensure_ascii=False, separators=(",", ":"))
+                RAPPORT_ROT[nom] = {"rafraichi": AUJ.isoformat(), "n": len(evs)}
+            except Exception as e:
+                RAPPORT_ROT[nom] = {"erreur": str(e)[:200]}
         if os.path.exists(fichier):
-            res[dep] = [e for e in json.load(open(fichier)) if (e.get("e") or e["s"]) >= AUJ.isoformat()]
-    return res
+            evs = [e for e in json.load(open(fichier)) if (e.get("e") or e["s"]) >= AUJ.isoformat()]
+            RAPPORT_ROT.setdefault(nom, {})["en_cache"] = len(evs); RAPPORT_ROT[nom]["jour"] = JOURS_FR[i % 7]
+            tous += evs
+    return tous
 
 PALN = re.compile(r"fondation le pal|le pal nature|pal nature")
 def badges(ev):
@@ -358,13 +512,12 @@ def main():
             continue
         vus.add(cle); stats[ev["cat"]] += 1; stats["(OpenAgenda)"] += 1
         par_dep[ev["z"]].append(ev)
-    for dep, evs in enrichir(set(par_dep) | set(ENRICHISSEURS)).items():
-        for ev in evs:
-            cle = (norm(ev["t"]), norm(ev["w"]), dt.date.fromisoformat(ev["s"]))
-            if cle in vus:
-                continue
-            vus.add(cle); stats[ev["cat"]] += 1; stats["(enrichissements)"] += 1
-            par_dep[dep].append(ev)
+    for ev in enrichir():
+        cle = (norm(ev["t"]), norm(ev["w"]), dt.date.fromisoformat(ev["s"]))
+        if cle in vus:
+            continue
+        vus.add(cle); stats[ev["cat"]] += 1; stats["(sources complémentaires)"] += 1
+        par_dep[ev["z"]].append(ev)
     for evs in par_dep.values():
         for ev in evs:
             badges(ev)
@@ -374,6 +527,8 @@ def main():
     for c in json.loads(get("https://geo.api.gouv.fr/communes?fields=codeDepartement,population&format=json")):
         pop[c.get("codeDepartement")] += c.get("population") or 0
     index = []
+    for dep in [d for d in par_dep if d not in noms]:
+        ecartes["département inconnu"] += len(par_dep.pop(dep))
     for dep, evs in sorted(par_dep.items()):
         evs.sort(key=lambda e: (e["s"], e["t"]))
         json.dump(evs, open(f"data/dep/{dep}.json", "w"), ensure_ascii=False, separators=(",", ":"))
@@ -394,7 +549,7 @@ def main():
 
     ecartes["coordonnées corrigées (centre de la commune)"] = corriges
     json.dump({"maj": AUJ.isoformat(), "par_type": stats, "ecartes": ecartes, "classes": classes_vues.most_common(80),
-               "total": sum(stats.values())}, open("data/_stats.json", "w"), ensure_ascii=False, indent=1)
+               "total": sum(v for k, v in stats.items() if not k.startswith("(")), "rotation": RAPPORT_ROT}, open("data/_stats.json", "w"), ensure_ascii=False, indent=1)
     print("événements retenus :", sum(stats.values()), dict(stats), "écartés :", dict(ecartes))
 
 if __name__ == "__main__":

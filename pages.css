@@ -43,3 +43,16 @@ code{background:var(--soft);padding:1px 6px;border-radius:6px;font-size:.92em}
 .foot nav{display:flex;flex-wrap:wrap;gap:4px 18px}
 .foot a{color:var(--muted);min-height:36px;display:inline-flex;align-items:center}
 .foot a[aria-current]{color:var(--ink);font-weight:600}
+.gen{display:grid;gap:14px;margin:1.2em 0;padding:16px 18px;border:1px solid var(--line);border-radius:16px}
+.gen .row{display:grid;gap:6px;border:0;padding:0;margin:0}
+.gen legend{font-weight:600;padding:0;margin-bottom:4px}
+.gen label{font-weight:600}
+.gen .ck{font-weight:400;display:flex;gap:8px;align-items:center;min-height:32px}
+.gen input[type=text],.gen input:not([type]),.gen #g-dep{font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);max-width:320px}
+.gen input[type=color]{width:64px;height:40px;border:1px solid var(--line);border-radius:10px;background:none;padding:2px}
+textarea.code{width:100%;font:13px/1.5 ui-monospace,Menlo,Consolas,monospace;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--soft);color:var(--ink);resize:vertical}
+.btn{font:inherit;font-weight:600;min-height:44px;padding:0 18px;border:0;border-radius:999px;background:var(--ink);color:var(--bg);cursor:pointer}
+#g-link{overflow-wrap:anywhere}
+.prev{border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.prev iframe{display:block;width:100%;height:900px;border:0}
+main:has(.gen){max-width:900px}

@@ -17,7 +17,7 @@ EDITEUR = {
     "registre": "Registre national des entreprises (RNE), immatriculation du 17 septembre 2026",
     "ape": "6201Z (programmation informatique)",
     "adresse": "6 rue Les Lauriers, 58300 Decize, France",
-    "email": "clemmt@icloud.com",
+    "email": "clementer@gmail.com",
 }
 
 def v(cle):
@@ -30,7 +30,7 @@ def mail():
 
 NAV = [("index.html", "Accueil"), ("plan-du-site.html", "Plan du site"), ("mentions-legales.html", "Mentions légales"),
        ("cgu.html", "Conditions d’utilisation"), ("confidentialite.html", "Confidentialité"),
-       ("intelligence-artificielle.html", "Intelligence artificielle"), ("accessibilite.html", "Accessibilité")]
+       ("intelligence-artificielle.html", "Intelligence artificielle"), ("accessibilite.html", "Accessibilité"), ("integrer.html", "Intégrer l’agenda")]
 
 def page(fichier, titre, intro, corps):
     nav = "".join(f'<a href="{h}"' + (' aria-current="page"' if h == fichier else "") + f">{t}</a>" for h, t in NAV[1:])
@@ -87,6 +87,7 @@ P["mentions-legales.html"] = ("Mentions légales", "Qui publie ce site, qui l’
 <dt>Adresse</dt><dd>{v("adresse")}</dd>
 <dt>Contact</dt><dd>{mail()}</dd>
 <dt>Directeur de la publication</dt><dd>{v("responsable")}</dd>
+<dt>Conception et développement</dt><dd>Saryn Digital</dd>
 </dl>
 
 <h2>Hébergement</h2>
@@ -259,10 +260,56 @@ P["plan-du-site.html"] = ("Plan du site", "Toutes les pages et tous les départe
 <ul class="cols">{deps_li}</ul>
 """)
 
+P["integrer.html"] = ("Intégrer l’agenda", "Ajoutez « Dans le coin » à votre site, votre application ou une borne tactile, aux couleurs de votre charte.", """
+<p>L’agenda s’intègre gratuitement. Choisissez vos réglages : le code à copier et l’aperçu se mettent à jour.</p>
+<form class="gen" id="gen" onsubmit="return false">
+<div class="row"><label for="g-dep">Départements (codes séparés par des virgules)</label><input id="g-dep" value="03,58,71" inputmode="text" autocomplete="off"></div>
+<div class="row"><label for="g-col">Couleur des boutons</label><input id="g-col" type="color" value="#151515"></div>
+<fieldset class="row"><legend>Usage</legend>
+<label class="ck"><input type="radio" name="g-m" value="site" checked> Sur un site ou une application</label>
+<label class="ck"><input type="radio" name="g-m" value="borne"> Sur une borne tactile (gros boutons, QR code, retour à l’accueil après 90 s)</label></fieldset>
+<fieldset class="row"><legend>Apparence</legend>
+<label class="ck"><input type="radio" name="g-t" value="" checked> Suivre le réglage de l’appareil</label>
+<label class="ck"><input type="radio" name="g-t" value="clair"> Toujours clair</label>
+<label class="ck"><input type="radio" name="g-t" value="sombre"> Toujours sombre</label></fieldset>
+</form>
+<h2>Code à copier</h2>
+<p>À coller dans votre page, à l’endroit où l’agenda doit apparaître. Sa hauteur s’ajuste toute seule.</p>
+<textarea id="g-code" class="code" readonly rows="8" aria-label="Code d’intégration"></textarea>
+<p><button type="button" class="btn" id="g-copy">Copier le code</button> <span id="g-ok" role="status"></span></p>
+<h2>Lien direct (borne, QR code, réseaux sociaux)</h2>
+<p><a id="g-link" href="index.html" target="_blank" rel="noopener"></a></p>
+<h2>Aperçu</h2>
+<div class="prev"><iframe id="g-prev" title="Aperçu de l’agenda intégré" loading="lazy"></iframe></div>
+<h2>Bon à savoir</h2>
+<ul>
+<li>Les données sont mises à jour chaque nuit, sans rien faire de votre côté.</li>
+<li>Les visiteurs peuvent proposer des sorties depuis l’agenda intégré ; elles sont relues avant publication.</li>
+<li>Pour une charte plus poussée (police, arrondis, couleurs de fond), écrivez-nous : voir les <a href="mentions-legales.html">mentions légales</a>.</li>
+</ul>
+<script>
+(function(){
+  const base=new URL("index.html",location.href).href,$=id=>document.getElementById(id);
+  function maj(){
+    const deps=$("g-dep").value.toUpperCase().split(/[^0-9AB]+/).filter(x=>/^(\\d{2,3}|2A|2B)$/.test(x));
+    const m=document.querySelector("[name=g-m]:checked").value,t=document.querySelector("[name=g-t]:checked").value,c=$("g-col").value.slice(1);
+    const h=["integre"];if(deps.length)h.push("dep="+deps.join(","));if(m==="borne")h.push("borne");if(t)h.push(t);if(c&&c!=="151515")h.push("couleur="+c);
+    const url=base+"#"+h.join("&"),direct=base+"#"+h.filter(x=>x!=="integre").join("&");
+    $("g-code").value='<iframe src="'+url+'" title="Agenda des sorties" style="width:100%;height:900px;border:0" loading="lazy" allow="geolocation"></iframe>\\n'+
+      '<script>addEventListener("message",function(e){if(e.data&&e.data.dansLeCoin==="hauteur")document.querySelectorAll("iframe").forEach(function(f){if(f.contentWindow===e.source)f.style.height=e.data.h+"px"})});<\\/script>';
+    $("g-link").href=direct;$("g-link").textContent=direct;$("g-prev").src=url;
+  }
+  addEventListener("message",e=>{if(e.data&&e.data.dansLeCoin==="hauteur"&&e.source===$("g-prev").contentWindow)$("g-prev").style.height=Math.min(e.data.h,1400)+"px"});
+  $("gen").addEventListener("input",maj);$("gen").addEventListener("change",maj);maj();
+  $("g-copy").onclick=async()=>{try{await navigator.clipboard.writeText($("g-code").value);$("g-ok").textContent="Copié."}catch(_){$("g-code").select();$("g-ok").textContent="Sélectionné : copiez avec Ctrl+C."}};
+})();
+</script>
+""")
+
 for f, (t, intro, corps) in P.items():
     open(f, "w").write(page(f, t, intro, corps))
 
-urls = ["", "plan-du-site.html", "mentions-legales.html", "cgu.html", "confidentialite.html", "intelligence-artificielle.html", "accessibilite.html"]
+urls = ["", "plan-du-site.html", "mentions-legales.html", "cgu.html", "confidentialite.html", "intelligence-artificielle.html", "accessibilite.html", "integrer.html"]
 jour = dt.date.today().isoformat()
 open("sitemap.xml", "w").write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
     "".join(f"  <url><loc>{SITE}{u}</loc><lastmod>{jour}</lastmod><changefreq>{'daily' if not u else 'monthly'}</changefreq></url>\n" for u in urls) + "</urlset>\n")

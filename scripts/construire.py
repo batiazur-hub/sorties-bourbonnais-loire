@@ -680,6 +680,12 @@ def main():
     for f in os.listdir("data/dep"):  # départements sans sortie ou codes obsolètes
         if f.endswith(".json") and f[:-5] not in par_dep:
             os.remove(f"data/dep/{f}")
+    for dep in list(par_dep):  # sorties annulées ou reportées
+        avant = len(par_dep[dep])
+        par_dep[dep] = [e for e in par_dep[dep] if not re.match(r"^\W*(annule|reporte)", norm(e["t"]))]
+        ecartes["annulée ou reportée"] += avant - len(par_dep[dep])
+        if not par_dep[dep]:
+            del par_dep[dep]
     for dep, evs in sorted(par_dep.items()):
         evs.sort(key=lambda e: (e["s"], e["t"]))
         json.dump(evs, open(f"data/dep/{dep}.json", "w"), ensure_ascii=False, separators=(",", ":"))

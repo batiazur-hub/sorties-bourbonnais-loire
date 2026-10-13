@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Intégrer l’agenda · Dans le coin</title>
+<meta name="description" content="Ajoutez « Dans le coin » à votre site, votre application ou une borne tactile, aux couleurs de votre charte.">
+<link rel="stylesheet" href="fonts/figtree.css">
+<link rel="stylesheet" href="pages.css">
+</head>
+<body>
+<a class="skip" href="#contenu">Aller au contenu</a>
+<header class="top"><a class="brand" href="index.html"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M12 2.5c-4 0-7.3 3.2-7.3 7.2 0 5.3 6.4 11.4 6.7 11.7.3.3.9.3 1.2 0 .3-.3 6.7-6.4 6.7-11.7 0-4-3.3-7.2-7.3-7.2zm0 9.9a2.7 2.7 0 1 1 0-5.4 2.7 2.7 0 0 1 0 5.4z"/></svg>Dans le coin</a>
+<a class="back" href="index.html">Retour aux sorties</a></header>
+<main id="contenu">
+<h1>Intégrer l’agenda</h1>
+<p class="lead">Ajoutez « Dans le coin » à votre site, votre application ou une borne tactile, aux couleurs de votre charte.</p>
+<p class="maj">Mise à jour : 13 octobre 2026</p>
+
+<p>L’agenda s’intègre gratuitement. Choisissez vos réglages : le code à copier et l’aperçu se mettent à jour.</p>
+<form class="gen" id="gen" onsubmit="return false">
+<div class="row"><label for="g-dep">Départements (codes séparés par des virgules)</label><input id="g-dep" value="03,58,71" inputmode="text" autocomplete="off"></div>
+<div class="row"><label for="g-col">Couleur des boutons</label><input id="g-col" type="color" value="#151515"></div>
+<fieldset class="row"><legend>Usage</legend>
+<label class="ck"><input type="radio" name="g-m" value="site" checked> Sur un site ou une application</label>
+<label class="ck"><input type="radio" name="g-m" value="borne"> Sur une borne tactile (gros boutons, QR code, retour à l’accueil après 90 s)</label></fieldset>
+<fieldset class="row"><legend>Apparence</legend>
+<label class="ck"><input type="radio" name="g-t" value="" checked> Suivre le réglage de l’appareil</label>
+<label class="ck"><input type="radio" name="g-t" value="clair"> Toujours clair</label>
+<label class="ck"><input type="radio" name="g-t" value="sombre"> Toujours sombre</label></fieldset>
+</form>
+<h2>Code à copier</h2>
+<p>À coller dans votre page, à l’endroit où l’agenda doit apparaître. Sa hauteur s’ajuste toute seule.</p>
+<textarea id="g-code" class="code" readonly rows="8" aria-label="Code d’intégration"></textarea>
+<p><button type="button" class="btn" id="g-copy">Copier le code</button> <span id="g-ok" role="status"></span></p>
+<h2>Lien direct (borne, QR code, réseaux sociaux)</h2>
+<p><a id="g-link" href="index.html" target="_blank" rel="noopener"></a></p>
+<h2>Aperçu</h2>
+<div class="prev"><iframe id="g-prev" title="Aperçu de l’agenda intégré" loading="lazy"></iframe></div>
+<h2>Bon à savoir</h2>
+<ul>
+<li>Les données sont mises à jour chaque nuit, sans rien faire de votre côté.</li>
+<li>Les visiteurs peuvent proposer des sorties depuis l’agenda intégré ; elles sont relues avant publication.</li>
+<li>Pour une charte plus poussée (police, arrondis, couleurs de fond), écrivez-nous : voir les <a href="mentions-legales.html">mentions légales</a>.</li>
+</ul>
+<script>
+(function(){
+  const base=new URL("index.html",location.href).href,$=id=>document.getElementById(id);
+  function maj(){
+    const deps=$("g-dep").value.toUpperCase().split(/[^0-9AB]+/).filter(x=>/^(\d{2,3}|2A|2B)$/.test(x));
+    const m=document.querySelector("[name=g-m]:checked").value,t=document.querySelector("[name=g-t]:checked").value,c=$("g-col").value.slice(1);
+    const h=["integre"];if(deps.length)h.push("dep="+deps.join(","));if(m==="borne")h.push("borne");if(t)h.push(t);if(c&&c!=="151515")h.push("couleur="+c);
+    const url=base+"#"+h.join("&"),direct=base+"#"+h.filter(x=>x!=="integre").join("&");
+    $("g-code").value='<iframe src="'+url+'" title="Agenda des sorties" style="width:100%;height:900px;border:0" loading="lazy" allow="geolocation"></iframe>\n'+
+      '<script>addEventListener("message",function(e){if(e.data&&e.data.dansLeCoin==="hauteur")document.querySelectorAll("iframe").forEach(function(f){if(f.contentWindow===e.source)f.style.height=e.data.h+"px"})});<\/script>';
+    $("g-link").href=direct;$("g-link").textContent=direct;$("g-prev").src=url;
+  }
+  addEventListener("message",e=>{if(e.data&&e.data.dansLeCoin==="hauteur"&&e.source===$("g-prev").contentWindow)$("g-prev").style.height=Math.min(e.data.h,1400)+"px"});
+  $("gen").addEventListener("input",maj);$("gen").addEventListener("change",maj);maj();
+  $("g-copy").onclick=async()=>{try{await navigator.clipboard.writeText($("g-code").value);$("g-ok").textContent="Copié."}catch(_){$("g-code").select();$("g-ok").textContent="Sélectionné : copiez avec Ctrl+C."}};
+})();
+</script>
+
+</main>
+<footer class="foot"><nav aria-label="Informations légales"><a href="plan-du-site.html">Plan du site</a><a href="mentions-legales.html">Mentions légales</a><a href="cgu.html">Conditions d’utilisation</a><a href="confidentialite.html">Confidentialité</a><a href="intelligence-artificielle.html">Intelligence artificielle</a><a href="accessibilite.html">Accessibilité</a><a href="integrer.html" aria-current="page">Intégrer l’agenda</a></nav></footer>
+</body>
+</html>

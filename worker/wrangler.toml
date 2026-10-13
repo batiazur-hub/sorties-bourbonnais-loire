@@ -1,0 +1,12 @@
+name = "dans-le-coin"
+main = "worker.js"
+compatibility_date = "2026-09-01"
+
+# Créer l'espace de stockage : npx wrangler kv namespace create DLC, puis recopier l'id ci-dessous
+[[kv_namespaces]]
+binding = "DLC"
+id = "A_REMPLACER"
+
+[vars]
+ORIGINS = "https://batiazur-hub.github.io"
+# Secret à créer une fois : npx wrangler secret put ADMIN_TOKEN

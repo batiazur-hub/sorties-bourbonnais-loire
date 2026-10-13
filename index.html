@@ -423,6 +423,7 @@ textarea.sbl-in{min-height:100px;resize:vertical}
 /* Lieux à visiter : ronds neutres, distincts des épingles de sorties */
 .sbl-lvm{width:30px;height:30px;display:grid;place-items:center;z-index:0}
 .sbl-mk{z-index:1}
+.sbl .maplibregl-popup{z-index:20}
 #sbl-ne{display:grid;gap:6px}
 .sbl-lv{display:grid;place-items:center;width:22px;height:22px;padding:0;border-radius:50%;border:2px solid #fff;background:#4a5866;color:#fff;cursor:pointer;box-shadow:0 1px 3px rgb(0 0 0 / .35);transition:transform .12s}
 .sbl-lv.big{width:28px;height:28px;background:#2f3b47}
@@ -960,7 +961,7 @@ function renderPins(){
       (one?'<div class="sbl-poph">Y aller</div><div class="sbl-btns">'+gps(g.ev[0].lat,g.ev[0].lon,title)+'</div>':'')+'</div>');
     pop.on("open",()=>{const b=pop.getElement().querySelector("[data-see]");if(b)b.onclick=()=>{pop.remove();if(n===1){sheet(g.ev[0]);return}
       if(towns.size===1&&(one||z>=13)){setPlace(w);if(innerWidth<=900)view("list");return}map.flyTo({center:[g.lo,g.la],zoom:Math.min(z+2.5,16)})}});
-    pins.push(new maplibregl.Marker({element:el,anchor:"bottom",offset:[g.dx,g.dy]}).setLngLat([g.lo,g.la]).setPopup(pop).addTo(map));
+    pins.push(new maplibregl.Marker({element:el,anchor:"bottom",offset:[g.dx,g.dy]}).setLngLat([g.lo,g.la]).setPopup(pop).addTo(map));el.removeAttribute("tabindex");el.removeAttribute("aria-label");el.removeAttribute("role");
   });
 }
 function pinLegend(){const l=$("sbl-leg");if(!l)return;l.innerHTML="";l.append(lvToggle());const n=document.createElement("span");n.className="sbl-lvn";n.id="sbl-lvn";n.setAttribute("role","status");l.append(n)}
@@ -1074,7 +1075,7 @@ function renderLieux(){
     const pop=new maplibregl.Popup({offset:[0,-16],maxWidth:"290px",focusAfterOpen:false}).setHTML('<div class="sbl-pop lvp"><div class="k">'+kIcon(x.k,15)+' '+KIND[x.k][0]+'</div><h4>'+escH(x.t)+'</h4>'+
       (x.l?'<p class="lb">'+escH(x.l)+'</p>':'')+'<p>'+escH(x.w)+'</p><button type="button" class="sbl-btn go" data-see="1">Voir le lieu</button></div>');
     pop.on("open",()=>{const s=pop.getElement().querySelector("[data-see]");if(s)s.onclick=()=>{pop.remove();lieuSheet(x)}});
-    lvMarks.push(new maplibregl.Marker({element:el,anchor:"center"}).setLngLat([x.lon,x.lat]).setPopup(pop).addTo(map))});
+    lvMarks.push(new maplibregl.Marker({element:el,anchor:"center"}).setLngLat([x.lon,x.lat]).setPopup(pop).addTo(map));el.removeAttribute("tabindex");el.removeAttribute("aria-label");el.removeAttribute("role")});
 }
 function lieuPhoto(x){
   const k="lv|"+x.id;if(IMG.has(k))return IMG.get(k);

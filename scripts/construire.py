@@ -15,8 +15,12 @@ HORIZON = AUJ + dt.timedelta(days=130)
 API = "https://www.data.gouv.fr/api/1/datasets/5b598be088ee387c0c353714/"
 
 def get(url):
-    req = urllib.request.Request(url, headers={"User-Agent": "sorties-bourbonnais-loire (GitHub Actions)"})
-    return urllib.request.urlopen(req, timeout=300).read()
+    req = urllib.request.Request(url, headers={"User-Agent": "dans-le-coin (GitHub Actions)", "Accept-Encoding": "identity"})
+    data = urllib.request.urlopen(req, timeout=600).read()
+    if data[:2] == b"\x1f\x8b":
+        import gzip
+        data = gzip.decompress(data)
+    return data
 
 def norm(s):
     return unicodedata.normalize("NFD", s.lower()).encode("ascii", "ignore").decode()
@@ -153,6 +157,134 @@ def paris():
     print("Que faire à Paris :", len(out), "sorties")
     return out
 
+
+# --- OpenAgenda : événements publics de France (mairies, médiathèques, associations) ---
+OA = ("https://public.opendatasoft.com/api/explore/v2.1/catalog/datasets/evenements-publics-openagenda/exports/json?"
+      + urllib.parse.urlencode({"select": "uid,title_fr,description_fr,conditions_fr,keywords_fr,image,thumbnail,timings,firstdate_begin,lastdate_end,"
+                                          "location_coordinates,location_name,location_postalcode,location_city,canonicalurl,originagenda_title,status",
+                                "where": "lastdate_end >= now() and location_countrycode = 'FR'"}))
+def openagenda():
+    try:
+        rows = json.loads(get(OA))
+    except Exception as e:
+        print("OpenAgenda indisponible :", e); return []
+    out = []
+    for r in rows:
+        st = r.get("status") or ""
+        if "Annul" in st or "Report" in st:
+            continue
+        titre = re.sub(r"\s+", " ", r.get("title_fr") or "").strip()
+        ll = r.get("location_coordinates") or {}
+        cp = (r.get("location_postalcode") or "").strip()
+        ville = (r.get("location_city") or "").strip()
+        dep = dep_de(cp)
+        if not titre or not ll or not dep or not ville:
+            continue
+        occ = []
+        try:
+            for o in json.loads(r.get("timings") or "[]"):
+                b, e = o.get("begin", ""), o.get("end", "")
+                occ.append((dt.date.fromisoformat(b[:10]), b[11:16], dt.date.fromisoformat((e or b)[:10])))
+        except (ValueError, TypeError):
+            occ = []
+        occ = sorted(x for x in occ if x[2] >= AUJ)
+        if not occ:
+            continue
+        a, heure, b = occ[0]
+        if a > HORIZON:
+            continue
+        # plusieurs séances consécutives = un seul événement sur la période
+        fin = b
+        if len(occ) > 1 and (occ[-1][0] - a).days <= 31 and len(occ) <= 31:
+            fin = occ[-1][2]; autres = 0
+        else:
+            autres = len(occ) - 1
+        arr = re.match(r"^(Paris|Lyon|Marseille)\b", ville)
+        if arr:
+            ville = arr.group(1)
+        kw = r.get("keywords_fr") or ""
+        if isinstance(kw, list):
+            kw = " ".join(kw)
+        cat = categorie(titre + " " + kw, set())
+        ev = {"id": "oa-" + str(r.get("uid")), "t": titre, "cat": cat, "z": dep, "w": ville,
+              "lieu": (r.get("location_name") or "").strip() or ville, "s": a.isoformat(),
+              "d": resume(r.get("description_fr")), "u": r.get("canonicalurl") or "",
+              "src": ((r.get("originagenda_title") or "").strip() or "OpenAgenda") + " (OpenAgenda)",
+              "lat": round(float(ll["lat"]), 5), "lon": round(float(ll["lon"]), 5), "o": "oa"}
+        if fin != a: ev["e"] = fin.isoformat()
+        if heure and heure != "00:00": ev["h"] = heure
+        if autres: ev["n"] = autres
+        img = r.get("image") or r.get("thumbnail")
+        if isinstance(img, dict):
+            img = img.get("url") or img.get("filename")
+        if isinstance(img, str) and img.startswith("http"): ev["img"] = img
+        if "gratuit" in norm(r.get("conditions_fr") or ""): ev["g"] = 1
+        out.append(ev)
+    print("OpenAgenda :", len(out), "sorties")
+    return out
+
+# --- Enrichissements par département, répartis sur les 7 jours de la semaine ---
+JOURS_FR = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"]
+def marches_paris():
+    url = "https://opendata.paris.fr/api/explore/v2.1/catalog/datasets/marches-decouverts/exports/json?select=" + urllib.parse.quote(
+        "id_marche,nom_long,produit,ardt,localisation,jours_tenue,lundi,mardi,mercredi,jeudi,vendredi,samedi,dimanche,h_deb_sem_1,h_fin_sem_1,h_deb_sam,h_fin_sam,h_deb_dim,h_fin_dim,geo_point_2d")
+    rows = json.loads(get(url)); out = []
+    for r in rows:
+        gp = r.get("geo_point_2d") or {}
+        if not gp:
+            continue
+        nom = (r.get("nom_long") or "").strip().lower().capitalize()
+        nom = re.sub(r"\bmarche\b|\bmarché\b", "Marché", nom, count=1)
+        nom = " ".join(w if w.isupper() else (w.capitalize() if i and w not in ("de", "du", "des", "la", "le", "les", "d'", "et", "aux", "au") else w) for i, w in enumerate(nom.split()))
+        produit = (r.get("produit") or "Alimentaire").strip()
+        jours = [j for j in JOURS_FR if r.get(j) == 1]
+        if not jours:
+            continue
+        ardt = r.get("ardt")
+        cat = "brocante" if re.search(r"puce|brocante|livre|timbre", norm(produit + nom)) else "fete"
+        for k in range(22):
+            d = AUJ + dt.timedelta(days=k); j = JOURS_FR[d.weekday()]
+            if j not in jours:
+                continue
+            h0, h1 = (r.get("h_deb_sam"), r.get("h_fin_sam")) if j == "samedi" else (r.get("h_deb_dim"), r.get("h_fin_dim")) if j == "dimanche" else (r.get("h_deb_sem_1"), r.get("h_fin_sem_1"))
+            ev = {"id": f"mp-{r.get('id_marche')}-{d.isoformat()}", "t": nom[:1].upper() + nom[1:], "cat": cat, "z": "75", "w": "Paris",
+                  "lieu": (r.get("localisation") or "Paris").strip()[:120] + (f" ({ardt}e)" if ardt else ""), "s": d.isoformat(),
+                  "d": f"Marché {produit.lower()} en plein air, " + (", ".join(jours[:-1]) + " et " + jours[-1] if len(jours) > 1 else jours[0]) + (f", de {h0.replace(':', 'h')} à {h1.replace(':', 'h')}." if h0 and h1 else "."),
+                  "u": "https://www.paris.fr/pages/les-marches-parisiens-2428", "src": "Marchés découverts (Ville de Paris)",
+                  "lat": round(float(gp["lat"]), 5), "lon": round(float(gp["lon"]), 5), "o": "marche", "g": 1}
+            if h0: ev["h"] = h0
+            out.append(ev)
+    print("Marchés parisiens :", len(out), "dates")
+    return out
+ENRICHISSEURS = {"75": [marches_paris]}
+def enrichir(codes):
+    """Chaque département est rafraîchi un jour fixe de la semaine (rang du département modulo 7)."""
+    os.makedirs("data/enrich", exist_ok=True)
+    jour = AUJ.weekday(); res = {}
+    force = os.environ.get("TOUT_ENRICHIR") == "1"
+    for i, dep in enumerate(sorted(codes)):
+        fichier = f"data/enrich/{dep}.json"
+        if dep in ENRICHISSEURS and (force or i % 7 == jour or not os.path.exists(fichier)):
+            evs = []
+            for f in ENRICHISSEURS[dep]:
+                try:
+                    evs += f()
+                except Exception as e:
+                    print("Enrichissement", dep, f.__name__, "en échec :", e)
+            if evs:
+                json.dump(evs, open(fichier, "w"), ensure_ascii=False, separators=(",", ":"))
+        if os.path.exists(fichier):
+            res[dep] = [e for e in json.load(open(fichier)) if (e.get("e") or e["s"]) >= AUJ.isoformat()]
+    return res
+
+PALN = re.compile(r"fondation le pal|le pal nature|pal nature")
+def badges(ev):
+    txt = norm(ev["t"] + " " + ev.get("d", "") + " " + ev.get("src", ""))
+    if PALN.search(txt):
+        ev["b"] = "palnature"
+    if re.search(r"\ble pal\b", norm(ev["t"])) and norm(ev["w"]) in ("dompierre-sur-besbre", "saint-pourcain-sur-besbre"):
+        ev["cat"] = "pal"
+
 def main():
     com = json.loads(get("https://geo.api.gouv.fr/communes?fields=nom,codeDepartement,centre&format=json&geometry=centre"))
     centres = {}
@@ -220,14 +352,35 @@ def main():
             continue
         vus.add(cle); stats[ev["cat"]] += 1; stats["(Paris open data)"] += 1
         par_dep[ev["z"]].append(ev)
+    for ev in openagenda():
+        cle = (norm(ev["t"]), norm(ev["w"]), dt.date.fromisoformat(ev["s"]))
+        if cle in vus:
+            continue
+        vus.add(cle); stats[ev["cat"]] += 1; stats["(OpenAgenda)"] += 1
+        par_dep[ev["z"]].append(ev)
+    for dep, evs in enrichir(set(par_dep) | set(ENRICHISSEURS)).items():
+        for ev in evs:
+            cle = (norm(ev["t"]), norm(ev["w"]), dt.date.fromisoformat(ev["s"]))
+            if cle in vus:
+                continue
+            vus.add(cle); stats[ev["cat"]] += 1; stats["(enrichissements)"] += 1
+            par_dep[dep].append(ev)
+    for evs in par_dep.values():
+        for ev in evs:
+            badges(ev)
     os.makedirs("data/dep", exist_ok=True)
     noms = {d["code"]: d["nom"] for d in json.loads(get("https://geo.api.gouv.fr/departements?fields=nom,code"))}
+    pop = Counter()
+    for c in json.loads(get("https://geo.api.gouv.fr/communes?fields=codeDepartement,population&format=json")):
+        pop[c.get("codeDepartement")] += c.get("population") or 0
     index = []
     for dep, evs in sorted(par_dep.items()):
         evs.sort(key=lambda e: (e["s"], e["t"]))
         json.dump(evs, open(f"data/dep/{dep}.json", "w"), ensure_ascii=False, separators=(",", ":"))
         la = sum(e["lat"] for e in evs) / len(evs); lo = sum(e["lon"] for e in evs) / len(evs)
-        index.append({"code": dep, "nom": noms.get(dep, dep), "n": len(evs), "lat": round(la, 3), "lon": round(lo, 3)})
+        index.append({"code": dep, "nom": noms.get(dep, dep), "n": len(evs), "lat": round(la, 3), "lon": round(lo, 3),
+                      "pop": pop.get(dep, 0), "par10k": round(len(evs) * 10000 / pop[dep], 1) if pop.get(dep) else None,
+                      "sources": dict(Counter(e.get("o", "?") for e in evs))})
     json.dump({"maj": AUJ.isoformat(), "source": res["url"], "departements": index}, open("data/departements.json", "w"), ensure_ascii=False, indent=0)
 
     out = []

@@ -1,6 +1,8 @@
 import json, urllib.request, urllib.parse, re
+import gzip
 def raw(u):
-    return urllib.request.urlopen(urllib.request.Request(u, headers={"User-Agent": "Mozilla/5.0 dans-le-coin"}), timeout=120).read()
+    b = urllib.request.urlopen(urllib.request.Request(u, headers={"User-Agent": "Mozilla/5.0 dans-le-coin", "Accept-Encoding": "identity"}), timeout=180).read()
+    return gzip.decompress(b) if b[:2] == b"\x1f\x8b" else b
 def get(u): return json.loads(raw(u))
 out = {}
 P = "https://public.opendatasoft.com/api/explore/v2.1/catalog/datasets/evenements-publics-openagenda"
@@ -14,24 +16,13 @@ try:
     out["oa_ex"] = [{k: str(v)[:220] for k, v in x.items()} for x in get(P + "/records?limit=2&where=" + w + urllib.parse.quote(' and location_department="Allier"'))["results"]]
 except Exception as e:
     out["oa_err"] = str(e)[:300]
-M = "https://opendata.paris.fr/api/explore/v2.1/catalog/datasets/marches-decouverts"
-try:
-    out["marches_champs"] = [(f["name"], f.get("type"), f.get("label")) for f in get(M).get("fields", [])]
-    out["marches_ex"] = [{k: str(v)[:200] for k, v in x.items()} for x in get(M + "/records?limit=3")["results"]]
-except Exception as e:
-    out["marches_err"] = str(e)[:300]
-pal = {}
-for u in ["https://www.lepal.com/decouvrir/actualites/actualites-de-la-fondation-le-pal-nature",
-          "https://www.lepal.com/fondation-le-pal-nature", "https://www.lepal.com/decouvrir/fondation-le-pal-nature",
-          "https://en.lepal.com/discover/news/news-from-the-le-pal-nature-foundation/foundation-day-2026",
-          "https://www.lepal.com/agenda", "https://www.lepal.com/decouvrir/actualites"]:
+
+cat = {}
+for q in ["agenda", "evenements", "événements", "manifestations", "sorties"]:
     try:
-        h = raw(u).decode("utf-8", "ignore")
-        txt = re.sub(r"<script.*?</script>|<style.*?</style>", " ", h, flags=re.S)
-        links = sorted(set(re.findall(r'href="([^"]*fondation[^"]*)"', h)))[:60]
-        pal[u] = {"titre": (re.findall(r"<title>(.*?)</title>", h, re.S) or [""])[0].strip()[:150],
-                  "texte": re.sub(r"\s+", " ", re.sub("<[^>]+>", " ", txt))[:3500], "liens": links}
+        r = get("https://data.opendatasoft.com/api/explore/v2.1/catalog/datasets?limit=100&where=" + urllib.parse.quote(f'search("{q}")'))
+        cat[q] = [(x["dataset_id"], x["metas"]["default"].get("title"), x["metas"]["default"].get("publisher"), x["metas"]["default"].get("records_count"), x["metas"]["default"].get("modified")) for x in r["results"]]
     except Exception as e:
-        pal[u] = str(e)[:150]
-out["lepal"] = pal
+        cat[q] = str(e)[:200]
+out["ods_catalogue"] = cat
 json.dump(out, open("data/_sonde2.json", "w"), ensure_ascii=False, indent=1)

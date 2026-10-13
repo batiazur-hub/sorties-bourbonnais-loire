@@ -1,28 +1,29 @@
 {
  "retenus_par_type": {
-  "musee": 5432,
-  "patrimoine": 41481,
-  "nature": 7565,
-  "loisirs": 3487
+  "musee": 5433,
+  "patrimoine": 38196,
+  "nature": 7537,
+  "loisirs": 2719
  },
  "ecartes": {
-  "type non retenu": 293730,
-  "hébergement, restauration, commerce": 2361,
-  "doublon": 1164,
-  "sans commune ou hors zone": 118
+  "type non retenu": 294496,
+  "bibliothèque, salle, cinéma": 3372,
+  "hébergement, restauration, commerce": 2354,
+  "doublon": 1123,
+  "sans commune ou hors zone": 108
  },
  "classes_gardees": [
   [
    "PlaceOfInterest",
-   57965
+   53885
   ],
   [
    "PointOfInterest",
-   57965
+   53885
   ],
   [
    "CulturalSite",
-   45520
+   42232
   ],
   [
    "ReligiousSite",
@@ -30,27 +31,23 @@
   ],
   [
    "LocalBusiness",
-   8776
-  ],
-  [
-   "SportsAndLeisurePlace",
-   8452
+   8395
   ],
   [
    "Museum",
-   8056
+   8058
   ],
   [
    "NaturalHeritage",
-   7830
+   7795
   ],
   [
    "Landform",
-   7830
+   7795
   ],
   [
-   "Library",
-   6520
+   "SportsAndLeisurePlace",
+   6104
   ],
   [
    "Church",
@@ -58,15 +55,15 @@
   ],
   [
    "RemarkableBuilding",
-   4918
+   4919
   ],
   [
    "TechnicalHeritage",
-   4465
+   4464
   ],
   [
    "CityHeritage",
-   4195
+   4196
   ],
   [
    "ParkAndGarden",
@@ -78,7 +75,7 @@
   ],
   [
    "Product",
-   2084
+   2026
   ],
   [
    "Castle",
@@ -86,7 +83,7 @@
   ],
   [
    "Store",
-   1452
+   1425
   ],
   [
    "ArtGalleryOrExhibitionGallery",
@@ -129,52 +126,36 @@
    923
   ],
   [
-   "TastingProvider",
-   913
-  ],
-  [
    "RemarkableHouse",
    897
   ],
   [
-   "FoodEstablishment",
-   824
-  ],
-  [
-   "ActivityProvider",
-   795
-  ],
-  [
-   "Restaurant",
-   780
-  ],
-  [
    "EntertainmentAndEvent",
-   753
+   740
   ],
   [
    "Event",
-   753
+   740
+  ],
+  [
+   "ActivityProvider",
+   723
   ],
   [
    "InterpretationCentre",
    692
   ],
   [
-   "Producer",
-   662
-  ],
-  [
    "TeachingFarm",
-   607
-  ],
-  [
-   "LeisureSportActivityProvider",
-   602
+   609
   ],
   [
    "Transport",
-   572
+   569
+  ],
+  [
+   "LeisureSportActivityProvider",
+   567
   ],
   [
    "Forest",
@@ -185,12 +166,12 @@
    551
   ],
   [
-   "Ruins",
-   527
+   "TastingProvider",
+   542
   ],
   [
-   "Farmer",
-   521
+   "Ruins",
+   527
   ],
   [
    "Calvary",
@@ -198,11 +179,11 @@
   ],
   [
    "RiverPort",
-   498
+   495
   ],
   [
    "Farm",
-   487
+   486
   ],
   [
    "Fountain",
@@ -210,31 +191,27 @@
   ],
   [
    "CulturalEvent",
-   441
+   428
   ],
   [
    "WashHouse",
    425
   ],
   [
-   "CivicStructure",
-   413
-  ],
-  [
    "Lake",
    407
   ],
   [
-   "PlayArea",
-   400
-  ],
-  [
-   "FarmhouseInn",
-   390
+   "CivicStructure",
+   384
   ],
   [
    "MilitaryCemetery",
    378
+  ],
+  [
+   "PlayArea",
+   371
   ],
   [
    "Bridge",
@@ -253,12 +230,12 @@
    340
   ],
   [
-   "Practice",
-   330
+   "Producer",
+   334
   ],
   [
-   "ShowEvent",
-   295
+   "Practice",
+   302
   ],
   [
    "Abbey",
@@ -266,11 +243,15 @@
   ],
   [
    "Marina",
-   287
+   286
+  ],
+  [
+   "ShowEvent",
+   284
   ],
   [
    "Visit",
-   282
+   278
   ],
   [
    "FortifiedCastle",
@@ -313,16 +294,8 @@
    213
   ],
   [
-   "CulturalActivityProvider",
-   195
-  ],
-  [
    "Waterfall",
    172
-  ],
-  [
-   "ConvenientService",
-   169
   ],
   [
    "Mountain",
@@ -331,6 +304,34 @@
   [
    "PigeonLoft",
    164
+  ],
+  [
+   "Tour",
+   162
+  ],
+  [
+   "OrderedList",
+   162
+  ],
+  [
+   "CulturalActivityProvider",
+   156
+  ],
+  [
+   "AdventurePark",
+   153
+  ],
+  [
+   "Cirque",
+   150
+  ],
+  [
+   "Farmer",
+   150
+  ],
+  [
+   "ConvenientService",
+   143
   ]
  ],
  "classes_vues": [

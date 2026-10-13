@@ -1,15 +1,15 @@
 {
  "maj": "2026-10-13",
  "par_type": {
-  "culture": 34314,
-  "fete": 30832,
-  "sport": 10603,
-  "famille": 6955,
-  "brocante": 1879,
-  "spectacle": 17673,
+  "culture": 39603,
+  "fete": 34643,
+  "sport": 11476,
+  "famille": 7394,
+  "brocante": 1931,
+  "spectacle": 18405,
   "(Paris open data)": 3050,
   "(OpenAgenda)": 33779,
-  "(sources complémentaires)": 6815
+  "(sources complémentaires)": 18011
  },
  "ecartes": {
   "trop lointain": 5536,
@@ -22,11 +22,11 @@
  },
  "classes": [
   [
-   "PointOfInterest",
+   "Event",
    58612
   ],
   [
-   "Event",
+   "PointOfInterest",
    58612
   ],
   [
@@ -166,11 +166,11 @@
    433
   ],
   [
-   "Cinema",
+   "MovieTheater",
    307
   ],
   [
-   "MovieTheater",
+   "Cinema",
    307
   ],
   [
@@ -246,15 +246,15 @@
    42
   ],
   [
+   "RentalAccommodation",
+   41
+  ],
+  [
    "Accommodation",
    41
   ],
   [
    "LodgingBusiness",
-   41
-  ],
-  [
-   "RentalAccommodation",
    41
   ],
   [
@@ -290,7 +290,7 @@
    16
   ],
   [
-   "Tour",
+   "OrderedList",
    15
   ],
   [
@@ -298,19 +298,11 @@
    15
   ],
   [
-   "OrderedList",
+   "Tour",
    15
   ],
   [
    "LeisureComplex",
-   8
-  ],
-  [
-   "Rental",
-   8
-  ],
-  [
-   "EquipmentRentalShop",
    8
   ],
   [
@@ -319,6 +311,14 @@
   ],
   [
    "EquipmentRental",
+   8
+  ],
+  [
+   "EquipmentRentalShop",
+   8
+  ],
+  [
+   "Rental",
    8
   ],
   [
@@ -338,11 +338,11 @@
    3
   ],
   [
-   "BoutiqueOrLocalShop",
+   "ConvenientService",
    2
   ]
  ],
- "total": 102256,
+ "total": 113452,
  "rotation": {
   "paris-marches": {
    "rafraichi": "2026-10-13",
@@ -400,8 +400,8 @@
   },
   "pays-de-la-loire": {
    "rafraichi": "2026-10-13",
-   "n": 0,
-   "en_cache": 0,
+   "n": 14897,
+   "en_cache": 14897,
    "jour": "mercredi"
   },
   "31-toulouse-culture": {
@@ -409,6 +409,12 @@
    "n": 1,
    "en_cache": 1,
    "jour": "jeudi"
+  },
+  "31-toulouse-marches": {
+   "rafraichi": "2026-10-13",
+   "n": 306,
+   "en_cache": 306,
+   "jour": "vendredi"
   }
  },
  "alertes": []

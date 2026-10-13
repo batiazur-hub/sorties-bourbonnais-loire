@@ -4,10 +4,10 @@
   "culture": 33274,
   "fete": 28995,
   "sport": 8598,
-  "famille": 7311,
+  "famille": 7312,
   "brocante": 1930,
   "spectacle": 18238,
-  "(Paris open data)": 3059,
+  "(Paris open data)": 3060,
   "(OpenAgenda)": 18603,
   "(sources complémentaires)": 18072
  },
@@ -18,19 +18,20 @@
   "coordonnées incohérentes": 52,
   "sans commune": 8,
   "département inconnu": 3,
+  "annulée ou reportée": 37,
   "coordonnées corrigées (centre de la commune)": 82
  },
  "classes": [
+  [
+   "Event",
+   58612
+  ],
   [
    "PointOfInterest",
    58612
   ],
   [
    "EntertainmentAndEvent",
-   58612
-  ],
-  [
-   "Event",
    58612
   ],
   [
@@ -82,11 +83,11 @@
    4596
   ],
   [
-   "Exhibition",
+   "ExhibitionEvent",
    4123
   ],
   [
-   "ExhibitionEvent",
+   "Exhibition",
    4123
   ],
   [
@@ -198,11 +199,11 @@
    134
   ],
   [
-   "NaturalHeritage",
+   "Landform",
    117
   ],
   [
-   "Landform",
+   "NaturalHeritage",
    117
   ],
   [
@@ -246,15 +247,15 @@
    42
   ],
   [
-   "RentalAccommodation",
-   41
-  ],
-  [
    "LodgingBusiness",
    41
   ],
   [
    "Accommodation",
+   41
+  ],
+  [
+   "RentalAccommodation",
    41
   ],
   [
@@ -294,11 +295,11 @@
    15
   ],
   [
-   "WalkingTour",
+   "OrderedList",
    15
   ],
   [
-   "OrderedList",
+   "WalkingTour",
    15
   ],
   [
@@ -306,11 +307,11 @@
    8
   ],
   [
-   "EquipmentRentalShop",
+   "Rental",
    8
   ],
   [
-   "ServiceProvider",
+   "EquipmentRentalShop",
    8
   ],
   [
@@ -318,7 +319,7 @@
    8
   ],
   [
-   "Rental",
+   "ServiceProvider",
    8
   ],
   [
@@ -338,11 +339,11 @@
    3
   ],
   [
-   "BoutiqueOrLocalShop",
+   "ConvenientService",
    2
   ]
  ],
- "total": 98346,
+ "total": 98347,
  "rotation": {
   "paris-marches": {
    "rafraichi": "2026-10-13",

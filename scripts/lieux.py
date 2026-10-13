@@ -45,12 +45,16 @@ EXCLU = re.compile(r"accommodation|foodestablishment|restaurant|store|shop|hotel
                    r"sportsandleisureplace$|healthcare|education|practice|course|tour$|trail", re.I)
 TYPES = [
     ("musee", re.compile(r"museum|interpretationcent|artgallery|exhibitionhall|ecomuseum", re.I)),
-    ("loisirs", re.compile(r"themepark|amusement|zoo|aquarium|animalpark|leisurecomplex|waterpark|adventurepark|farm", re.I)),
+    ("loisirs", re.compile(r"themepark|amusement|zoo|aquarium|animalpark|leisurecomplex|waterpark|adventurepark|teachingfarm", re.I)),
     ("nature", re.compile(r"naturalheritage|parkandgarden|garden|cave|viewpoint|natural|beach|lake|forest|waterfall|gorge|summit|river", re.I)),
     ("patrimoine", re.compile(r"castle|culturalsite|religious|church|cathedral|abbey|chapel|remarkablebuilding|archeolog|monument|"
                               r"heritage|memorial|fort|mill|bridge|lighthouse|city|village|historic", re.I)),
 ]
 FORT_EXCLU = re.compile(r"accommodation|foodestablishment|restaurant|hotel|camp|store|shop|rental", re.I)
+PAS_VISITE = {"Library", "MovieTheater", "Cinema", "Theater", "ConventionCentre", "TouristInformationCenter", "LocalTouristOffice", "CivicStructure", "StadiumOrArena"}
+MAJEURS = {"Museum", "InterpretationCentre", "ArtGalleryOrExhibitionGallery", "Castle", "RemarkableBuilding", "RemarkableHouse", "ArcheologicalSite",
+           "DefenceSite", "Ruins", "ThemePark", "AmusementPark", "Zoo", "ZooAnimalPark", "Aquarium", "ParkAndGarden", "PointOfView", "Beach",
+           "Lake", "Cave", "IndustrialSite", "Forest", "TeachingFarm", "LeisureComplex"}
 LABELS = re.compile(r"mus[ée]e de france|monument historique|jardin remarquable|maisons? des illustres|plus beaux villages|grand site|"
                     r"patrimoine mondial|unesco|villes? et pays d.art|petites cit[ée]s de caract[èe]re|qualit[ée] tourisme", re.I)
 
@@ -74,6 +78,8 @@ def main():
         k = type_de(cls)
         if not k:
             ecartes["type non retenu"] += 1; continue
+        if set(cls) & PAS_VISITE and not set(cls) & MAJEURS:
+            ecartes["bibliothèque, salle, cinéma"] += 1; continue
         if k not in ("musee", "loisirs") and any(FORT_EXCLU.search(c) for c in cls):
             ecartes["hébergement, restauration, commerce"] += 1; continue
         cp, _, commune = (r.get("Code_postal_et_commune") or "").partition("#")
@@ -103,6 +109,7 @@ def main():
         if u: lieu["u"] = u
         lab = LABELS.search(r.get("Classements_du_POI") or "")
         if lab: lieu["l"] = lab.group(0)[:1].upper() + lab.group(0)[1:]
+        if set(cls) & MAJEURS or (lab and "qualit" not in norm(lab.group(0))): lieu["m"] = 1
         src = (r.get("Createur_de_la_donnee") or "").strip()
         if src: lieu["src"] = src
         par_dep[dep].append(lieu); par_type[k] += 1
@@ -114,7 +121,7 @@ def main():
     for dep, L in sorted(par_dep.items()):
         L.sort(key=lambda x: ("lmpn".index(x["k"][0]) if x["k"][0] in "lmpn" else 9, x["t"]))
         json.dump(L, open(f"data/lieux/{dep}.json", "w"), ensure_ascii=False, separators=(",", ":"))
-        index[dep] = {"n": len(L), **Counter(x["k"] for x in L)}
+        index[dep] = {"n": len(L), "m": sum(1 for x in L if x.get("m")), **Counter(x["k"] for x in L)}
     json.dump({"source": res["url"], "total": sum(par_type.values()), "types": par_type, "departements": index},
               open("data/lieux/index.json", "w"), ensure_ascii=False, indent=0)
     json.dump({"retenus_par_type": par_type, "ecartes": ecartes, "classes_gardees": classes_gardees.most_common(80),

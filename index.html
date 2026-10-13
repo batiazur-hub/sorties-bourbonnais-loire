@@ -450,6 +450,17 @@ textarea.sbl-in{min-height:100px;resize:vertical}
 .sbl-mh .seg button[aria-pressed="true"]{background:var(--sbl-surface);color:var(--sbl-ink);box-shadow:0 1px 2px rgb(0 0 0 / .12)}
 @media (max-width:420px){.sbl-mh .seg{margin-left:0;width:100%}.sbl-mh .seg button{flex:1;padding:0 4px}}
 .sbl.kiosk .sbl-mh .seg button{min-height:48px;font-size:1rem}
+
+.sbl-mh .mc{display:flex;gap:6px;flex-basis:100%;overflow-x:auto;scrollbar-width:none;padding:2px 0}
+.sbl-mh .mc::-webkit-scrollbar{display:none}
+.sbl-mh .mc button{flex:none;display:inline-flex;align-items:center;gap:5px;min-height:34px;padding:0 12px;border:1px solid var(--sbl-line);border-radius:999px;background:var(--sbl-surface);color:var(--sbl-ink);font-size:.84rem;font-weight:600}
+.sbl-mh .mc button i{display:inline-flex;color:var(--pc)}
+.sbl-mh .mc button[aria-pressed="true"]{border-color:var(--sbl-ink);background:var(--sbl-ink);color:var(--sbl-bg)}
+.sbl-mh .mc button[aria-pressed="true"] i{color:var(--pc);background:#fff;border-radius:50%;padding:2px;margin-left:-4px}
+.sbl-mh .mc{flex-wrap:wrap}
+@media (max-width:600px){.sbl-mh .mc{flex-wrap:nowrap}}
+.sbl.kiosk .sbl-mh .mc button{min-height:48px;font-size:1rem}
+.sbl-leg .sbl-lvt{margin-left:0}
 </style>
 
 <div class="sbl" id="sbl">
@@ -952,8 +963,7 @@ function renderPins(){
     pins.push(new maplibregl.Marker({element:el,anchor:"bottom",offset:[g.dx,g.dy]}).setLngLat([g.lo,g.la]).setPopup(pop).addTo(map));
   });
 }
-function pinLegend(){const l=$("sbl-leg");if(!l)return;l.innerHTML=Object.entries(CATS).filter(([k])=>k!=="pal").map(([k,v])=>'<span style="--pc:var('+PINC[k]+')"><i>'+icon(k,13)+'</i>'+v[1]+'</span>').join("");
-  l.append(lvToggle());const n=document.createElement("span");n.className="sbl-lvn";n.id="sbl-lvn";n.setAttribute("role","status");l.append(n)}
+function pinLegend(){const l=$("sbl-leg");if(!l)return;l.innerHTML="";l.append(lvToggle());const n=document.createElement("span");n.className="sbl-lvn";n.id="sbl-lvn";n.setAttribute("role","status");l.append(n)}
 
 /* ---------- Calendrier (un jour choisi s'ouvre sous sa semaine) ---------- */
 function dayEvents(d){return EVENTS.filter(e=>e.S<=d&&e.E>=d&&matchBase(e)).sort((a,b)=>(a.long-b.long)||((a.h||"99")<(b.h||"99")?-1:1)||a.t.localeCompare(b.t))}
@@ -1323,17 +1333,26 @@ new MutationObserver(styleMap).observe(document.documentElement,{attributes:true
 /* Carte allégée : seules les sorties proches dans le temps ont une épingle (7 jours par défaut, au choix du visiteur) */
 const MH=[["1","Aujourd’hui"],["3","3 jours"],["7","7 jours"],["30","30 jours"]];
 let MAPH="7";try{const v=localStorage.getItem("sbl-mh");if(MH.some(x=>x[0]===v))MAPH=v}catch(_){}
+let MAPC=new Set();try{(JSON.parse(localStorage.getItem("sbl-mc")||"[]")||[]).forEach(c=>{if(CATS[c])MAPC.add(c)})}catch(_){}
 function mapItems(items){
   const own=!!st.day||!!parseQ(st.q||"").w;
   const t=today(),end=add(t,+MAPH-1);
-  const out=own?items.filter(e=>!e.long):items.filter(e=>!e.long&&e.S<=end&&e.E>=t);
+  const out=(own?items.filter(e=>!e.long):items.filter(e=>!e.long&&e.S<=end&&e.E>=t)).filter(e=>!MAPC.size||MAPC.has(e.cat));
   mhBar(own,out.length);return out}
+const MCL={brocante:"Brocantes",fete:"Fêtes, marchés",spectacle:"Concerts, spectacles",culture:"Expos, visites",famille:"En famille",sport:"Sport, rando"};
+function mcRow(){const r=document.createElement("div");r.className="mc";r.setAttribute("role","group");r.setAttribute("aria-label","Types de sorties sur la carte");
+  const set=()=>{try{localStorage.setItem("sbl-mc",JSON.stringify([...MAPC]))}catch(_){}drawPins(mapItems(pick()))};
+  const all=document.createElement("button");all.type="button";all.textContent="Tout";all.setAttribute("aria-pressed",MAPC.size?"false":"true");all.onclick=()=>{MAPC.clear();set()};r.append(all);
+  Object.entries(CATS).filter(([k])=>k!=="pal").forEach(([k,v])=>{const b=document.createElement("button");b.type="button";b.style.setProperty("--pc","var("+PINC[k]+")");
+    b.setAttribute("aria-pressed",MAPC.has(k)?"true":"false");b.innerHTML='<i>'+icon(k,14)+'</i><span></span>';b.lastChild.textContent=MCL[k]||v[1];
+    b.onclick=()=>{if(MAPC.has(k))MAPC.delete(k);else MAPC.add(k);if(MAPC.size===Object.keys(CATS).length-1)MAPC.clear();set()};r.append(b)});
+  return r}
 function mhBar(own,n){const g=$("sbl-mh");if(!g)return;g.textContent="";
   const l=document.createElement("span");l.className="l";l.textContent=n.toLocaleString("fr-FR")+" sortie"+(n>1?"s":"")+" sur la carte";g.append(l);
-  if(own){const s=document.createElement("span");s.className="own";s.textContent=st.day?"· jour choisi dans le calendrier":"· période de votre recherche";g.append(s);return}
+  if(own){const s=document.createElement("span");s.className="own";s.textContent=st.day?"· jour choisi dans le calendrier":"· période de votre recherche";g.append(s,mcRow());return}
   const w=document.createElement("span");w.className="seg";
   MH.forEach(([v,t])=>{const b=document.createElement("button");b.type="button";b.textContent=t;b.setAttribute("aria-pressed",v===MAPH?"true":"false");
-    b.onclick=()=>{MAPH=v;try{localStorage.setItem("sbl-mh",v)}catch(_){}drawPins(mapItems(pick()))};w.append(b)});g.append(w)}
+    b.onclick=()=>{MAPH=v;try{localStorage.setItem("sbl-mh",v)}catch(_){}drawPins(mapItems(pick()))};w.append(b)});g.append(w,mcRow())}
 function draw(){const items=pick();filters();list(items);drawPins(mapItems(items));cal()}
 
 /* Mode borne : adresse terminée par #borne */

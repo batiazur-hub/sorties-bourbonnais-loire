@@ -167,7 +167,7 @@ P["confidentialite.html"] = ("Politique de confidentialité", "Ce que le site en
 <p>Le site utilise le stockage local du navigateur, sans cookie, pour quelques réglages strictement utiles au service :</p>
 <ul>
 <li>les départements que vous avez choisis, pour les retrouver à la prochaine visite ;</li>
-<li>l’affichage ou non des lieux à visiter sur la carte, et la période des sorties montrées sur la carte ;</li>
+<li>l’affichage ou non des lieux à visiter sur la carte, la période et les types de sorties montrés sur la carte ;</li>
 <li>les adresses des photos de communes déjà trouvées, pour éviter de les rechercher à nouveau.</li>
 </ul>
 <p>Ces informations ne quittent pas votre appareil. Vous pouvez les effacer depuis les réglages de votre navigateur (données de site). Comme elles sont nécessaires au fonctionnement demandé, elles ne nécessitent pas de bandeau de consentement selon les recommandations de la CNIL.</p>

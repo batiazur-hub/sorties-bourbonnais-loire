@@ -1,13 +1,15 @@
 {
  "maj": "2026-10-13",
  "par_type": {
-  "culture": 20992,
-  "fete": 13293,
-  "sport": 6808,
-  "famille": 5257,
-  "brocante": 1635,
-  "spectacle": 13677,
-  "(Paris open data)": 3050
+  "culture": 31529,
+  "fete": 28996,
+  "sport": 10273,
+  "famille": 6569,
+  "brocante": 1734,
+  "spectacle": 16919,
+  "(Paris open data)": 3050,
+  "(OpenAgenda)": 33779,
+  "(enrichissements)": 579
  },
  "ecartes": {
   "trop lointain": 5536,
@@ -19,11 +21,11 @@
  },
  "classes": [
   [
-   "PointOfInterest",
+   "Event",
    58612
   ],
   [
-   "Event",
+   "PointOfInterest",
    58612
   ],
   [
@@ -243,15 +245,15 @@
    42
   ],
   [
+   "Accommodation",
+   41
+  ],
+  [
    "LodgingBusiness",
    41
   ],
   [
    "RentalAccommodation",
-   41
-  ],
-  [
-   "Accommodation",
    41
   ],
   [
@@ -287,7 +289,7 @@
    16
   ],
   [
-   "OrderedList",
+   "Tour",
    15
   ],
   [
@@ -295,7 +297,7 @@
    15
   ],
   [
-   "Tour",
+   "OrderedList",
    15
   ],
   [
@@ -303,11 +305,11 @@
    8
   ],
   [
-   "ServiceProvider",
+   "EquipmentRental",
    8
   ],
   [
-   "EquipmentRental",
+   "Rental",
    8
   ],
   [
@@ -315,7 +317,7 @@
    8
   ],
   [
-   "Rental",
+   "ServiceProvider",
    8
   ],
   [
@@ -335,9 +337,9 @@
    3
   ],
   [
-   "ConvenientService",
+   "BoutiqueOrLocalShop",
    2
   ]
  ],
- "total": 64712
+ "total": 133428
 }

@@ -1,0 +1,27 @@
+name: Horaires d'ouverture (OpenStreetMap)
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "23 */3 * * *"
+  push:
+    paths: ["scripts/horaires.py", ".github/workflows/horaires.yml"]
+permissions:
+  contents: write
+concurrency: { group: donnees, cancel-in-progress: false }
+jobs:
+  horaires:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: python scripts/horaires.py
+        env:
+          CARREAUX: ${{ github.event_name != 'schedule' && '53' || '18' }}
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898299+github-actions[bot]@users.noreply.github.com"
+          git add data/
+          git commit -m "Horaires d'ouverture : mise à jour du $(date +%F)" || echo "rien de neuf"
+          git pull --rebase -q && git push

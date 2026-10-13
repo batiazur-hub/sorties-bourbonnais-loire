@@ -24,16 +24,17 @@ def norm(s):
 # --- Types de sortie : mots du titre d'abord, classes DATAtourisme ensuite ---
 MOTS = [
     ("brocante", r"brocante|vide[- ]?grenier|vide[- ]?maison|vide[- ]?dressing|puces|bourse (aux|multi|de|des)|braderie|troc|antiquit|bric[- ]?a[- ]?brac"),
-    ("sport", r"\bcourse\b|trail|randonn|\brando\b|marche (nordique|populaire|gourmande|du|de la|des)|cyclo|\bvtt\b|velo|tournoi|championnat|match|regate|triathlon|marathon|foulee|golf|peche|petanque"),
+    ("sport", r"\bcourse\b|trail|randonn|\brando\b|marche (nordique|populaire|gourmande|du|de la|des)|cyclo|\bvtt\b|velo|tournoi|championnat|match|regate|triathlon|marathon|foulee|golf|peche|petanque|balade|promenade|sortie nature|canoe|escalade"),
     ("spectacle", r"concert|spectacle|theatre|cirque|humour|danse|opera|chorale|recital|one man|cabaret|comedie|orchestre|jazz|festival de musique|musique"),
     ("famille", r"enfant|famille|jeune public|halloween|chasse aux (oeufs|bonbons|tresors)|kids|pere noel|conte"),
-    ("culture", r"expo|musee|visite|conference|patrimoine|vernissage|atelier|lecture|cinema|projection|salon du livre|rencontre"),
+    ("culture", r"expo|musee|visite|conference|patrimoine|vernissage|atelier|lecture|cinema|projection|salon du livre|rencontre|cours |initiation|stage|escape|decouverte|degustation"),
     ("fete", r"march|foire|fete|festiv|carnaval|loto|\bbal\b|repas|soiree|salon|noel|feu d.artifice|kermesse|comice"),
 ]
 MOTS = [(c, re.compile(r)) for c, r in MOTS]
 CLASSES = [
     ("brocante", ("SaleEvent", "BricABrac", "GarageSale", "FleaMarket")),
-    ("sport", ("SportsEvent", "SportsCompetition", "SportsDisplay")),
+    ("culture", ("Practice", "Traineeship", "Game", "OpenDay")),
+    ("sport", ("SportsEvent", "SportsCompetition", "SportsDisplay", "Rambling")),
     ("spectacle", ("ShowEvent", "Concert", "TheaterEvent", "DanceEvent", "Opera", "CircusEvent")),
     ("famille", ("ChildrensEvent",)),
     ("culture", ("Exhibition", "Visit", "Conference", "CulturalEvent", "ScreeningEvent", "Reading")),
@@ -111,6 +112,10 @@ def main():
             ecartes["sans coordonnées"] += 1; continue
         if not dep or not commune:
             ecartes["sans commune"] += 1; continue
+        commune = commune.strip()
+        arr = re.match(r"^(Paris|Lyon|Marseille) (\d+)(?:er|e|ème) Arrondissement$", commune)
+        if arr:
+            commune = arr.group(1)
         titre = re.sub(r"\s+", " ", r.get("Nom_du_POI", "")).strip()
         if not titre:
             continue
@@ -123,7 +128,7 @@ def main():
         cat = categorie(titre, cls)
         stats[cat] += 1
         ev = {"id": "dt-" + r["URI_ID_du_POI"].rsplit("/", 1)[-1][:13], "t": titre, "cat": cat, "z": dep,
-              "w": commune.strip(), "lieu": (r.get("Adresse_postale") or "").strip() or commune.strip(),
+              "w": commune, "lieu": ((r.get("Adresse_postale") or "").strip() or commune) + (f" ({arr.group(2)}e)" if arr else ""),
               "s": a.isoformat(), "d": resume(r.get("Description")), "u": premier_lien(r.get("Contacts_du_POI")),
               "src": (r.get("Createur_de_la_donnee") or "DATAtourisme").strip(), "lat": lat, "lon": lon, "o": "dt"}
         if b != a:

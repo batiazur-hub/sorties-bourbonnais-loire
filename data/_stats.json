@@ -1,15 +1,15 @@
 {
  "maj": "2026-10-13",
  "par_type": {
-  "culture": 33273,
+  "culture": 33274,
   "fete": 28995,
   "sport": 8598,
   "famille": 7311,
   "brocante": 1930,
-  "spectacle": 18236,
+  "spectacle": 18238,
   "(Paris open data)": 3059,
   "(OpenAgenda)": 18603,
-  "(sources complémentaires)": 18069
+  "(sources complémentaires)": 18072
  },
  "ecartes": {
   "trop lointain": 5536,
@@ -22,11 +22,11 @@
  },
  "classes": [
   [
-   "EntertainmentAndEvent",
+   "PointOfInterest",
    58612
   ],
   [
-   "PointOfInterest",
+   "EntertainmentAndEvent",
    58612
   ],
   [
@@ -82,11 +82,11 @@
    4596
   ],
   [
-   "ExhibitionEvent",
+   "Exhibition",
    4123
   ],
   [
-   "Exhibition",
+   "ExhibitionEvent",
    4123
   ],
   [
@@ -214,11 +214,11 @@
    108
   ],
   [
-   "CircusPlace",
+   "Cirque",
    99
   ],
   [
-   "Cirque",
+   "CircusPlace",
    99
   ],
   [
@@ -246,15 +246,15 @@
    42
   ],
   [
+   "RentalAccommodation",
+   41
+  ],
+  [
    "LodgingBusiness",
    41
   ],
   [
    "Accommodation",
-   41
-  ],
-  [
-   "RentalAccommodation",
    41
   ],
   [
@@ -306,19 +306,19 @@
    8
   ],
   [
-   "EquipmentRental",
-   8
-  ],
-  [
    "EquipmentRentalShop",
    8
   ],
   [
-   "Rental",
+   "ServiceProvider",
    8
   ],
   [
-   "ServiceProvider",
+   "EquipmentRental",
+   8
+  ],
+  [
+   "Rental",
    8
   ],
   [
@@ -338,11 +338,11 @@
    3
   ],
   [
-   "ConvenientService",
+   "BoutiqueOrLocalShop",
    2
   ]
  ],
- "total": 98343,
+ "total": 98346,
  "rotation": {
   "paris-marches": {
    "rafraichi": "2026-10-13",
@@ -352,8 +352,8 @@
   },
   "62-pas-de-calais": {
    "rafraichi": "2026-10-13",
-   "n": 733,
-   "en_cache": 733,
+   "n": 736,
+   "en_cache": 736,
    "jour": "mardi"
   },
   "63-clermont": {

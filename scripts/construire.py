@@ -461,12 +461,70 @@ def herault():
     w = urllib.parse.quote(f"datefin >= '{AUJ.isoformat()}'")
     return ods_generique("https://data.opendatasoft.com/api/explore/v2.1/catalog/datasets/fetes-et-manifestations@data-herault-occitanie/exports/json?where=" + w,
                          "Hérault Tourisme", "he-", "34")
+def _ville(v):
+    v = str(v or "").strip()
+    if v.isupper():
+        v = "-".join(w.capitalize() if w not in ("SUR", "LES", "LE", "LA", "DE", "DU", "DES", "EN", "SOUS", "AUX", "ET") else w.lower() for w in v.replace(" ", "-").split("-"))
+    return v
 def pays_de_la_loire():
-    return ods_generique("https://data.paysdelaloire.fr/api/explore/v2.1/catalog/datasets/234400034_070-002_offre-touristique-fetes_et_manifestations-rpdl/exports/json",
-                         "Région des Pays de la Loire (offre touristique)", "pdl-")
+    """Offre touristique régionale : les dates sont dans ouverturegranule, « JJ/MM/AAAA||JJ/MM/AAAA||HH:MM||HH:MM||||, … »."""
+    rows = json.loads(get("https://data.paysdelaloire.fr/api/explore/v2.1/catalog/datasets/234400034_070-002_offre-touristique-fetes_et_manifestations-rpdl/exports/json"))
+    out = []
+    for i, r in enumerate(rows):
+        ville = _ville(r.get("commune")); cp = str(r.get("codepostal") or "")
+        lieu = r.get("adresse1") or r.get("adresse2") or ville
+        for j, per in enumerate(str(r.get("ouverturegranule") or "").split(",")):
+            p = per.split("||")
+            a = _d(p[0]) if p else None
+            if not a: continue
+            b = _d(p[1]) if len(p) > 1 else a
+            ev = _ev("Région des Pays de la Loire (offre touristique)", f"pdl-{r.get('codeinseecommune')}-{i}-{a.isoformat()}", _joli(r.get("nomoffre"), ville), a, b,
+                     dep_de(cp), ville, str(lieu)[:120], r.get("latitude"), r.get("longitude"), "", r.get("commweb") or "", "",
+                     p[2] if len(p) > 2 else "", str(r.get("categorie") or ""), str(r.get("tarifgratuit") or "").lower() == "oui")
+            if ev:
+                if r.get("categorie"): ev["d"] = ev["d"] or str(r["categorie"]) + (f" à {ville}." if ville else ".")
+                out.append(ev)
+    return out
 def toulouse_culture():
-    return ods_generique("https://data.toulouse-metropole.fr/api/explore/v2.1/catalog/datasets/agenda-des-manifestations-culturelles-so-toulouse/exports/json",
-                         "So Toulouse (office de tourisme)", "tl-", "31")
+    w = urllib.parse.quote(f"date_fin >= '{AUJ.isoformat()}'")
+    rows = json.loads(get("https://data.toulouse-metropole.fr/api/explore/v2.1/catalog/datasets/agenda-des-manifestations-culturelles-so-toulouse/exports/json?where=" + w))
+    out = []
+    for r in rows:
+        ville = _ville(r.get("commune"))
+        lien = r.get("reservation_site_internet") or ""
+        if lien and not lien.startswith("http"): lien = "https://" + lien
+        ev = _ev("So Toulouse (office de tourisme)", "tl-" + str(r.get("identifiant")), _joli(r.get("nom_de_la_manifestation"), ville), _d(r.get("date_debut")), _d(r.get("date_fin")),
+                 dep_de(str(r.get("code_postal") or "")) or "31", ville, _joli(r.get("lieu_nom") or "", ville)[:120], r.get("googlemap_latitude"), r.get("googlemap_longitude"),
+                 r.get("descriptif_court") or r.get("descriptif_long") or "", lien, "", "",
+                 " ".join(str(r.get(k) or "") for k in ("type_de_manifestation", "categorie_de_la_manifestation", "theme_de_la_manifestation")),
+                 str(r.get("manifestation_gratuite") or "").lower() in ("oui", "true", "1"))
+        if ev: out.append(ev)
+    return out
+def toulouse_marches():
+    rows = json.loads(get("https://data.toulouse-metropole.fr/api/explore/v2.1/catalog/datasets/marches-couverts-et-de-plein-vent/exports/json"))
+    out = []
+    for r in rows:
+        gp = r.get("geo_point_2d") or {}
+        if not gp: continue
+        heures = {j: r.get(j) for j in JOURS_FR if r.get(j) not in (None, "", "None")}
+        if not heures: continue
+        nom = _joli(str(r.get("nom") or "Marché"), "Toulouse")
+        if not norm(nom).startswith("marche"): nom = "Marché " + nom
+        typ = str(r.get("type") or "").strip()
+        cat = "brocante" if re.search(r"puce|brocante|livre|antiquit|vide", norm(typ + nom)) else "fete"
+        js = list(heures)
+        for k in range(22):
+            d = AUJ + dt.timedelta(days=k); j = JOURS_FR[d.weekday()]
+            if j not in heures: continue
+            h = str(heures[j]); m = re.match(r"(\d{1,2})h(\d{2})?", h)
+            ev = {"id": f"tm-{norm(nom)[:30]}-{d.isoformat()}", "t": nom, "cat": cat, "z": "31", "w": "Toulouse", "lieu": str(r.get("adresse") or "Toulouse").strip()[:120],
+                  "s": d.isoformat(), "d": (f"Marché {typ.lower()}, " if typ else "Marché, ") + (", ".join(js[:-1]) + " et " + js[-1] if len(js) > 1 else js[0]) + f" ({h}).",
+                  "u": "https://metropole.toulouse.fr/annuaire/marches", "src": "Marchés de Toulouse (Toulouse Métropole)",
+                  "lat": round(float(gp["lat"]), 5), "lon": round(float(gp["lon"]), 5), "o": "marche", "g": 1}
+            if m: ev["h"] = f"{int(m[1]):02d}:{m[2] or '00'}"
+            out.append(ev)
+    print("Marchés toulousains :", len(out), "dates")
+    return out
 
 # --- Fondation Le PAL Nature : programme saisi à la main + veille de la publication du suivant ---
 ALERTES = []
@@ -491,7 +549,7 @@ def lepal_nature():
 # Sources complémentaires : chacune est rafraîchie un jour fixe de la semaine (rang modulo 7)
 SOURCES_ROT = [("paris-marches", marches_paris), ("62-pas-de-calais", pas_de_calais), ("63-clermont", clermont), ("38-isere-musees", isere_musees),
                ("06-nice", nice_otm), ("92-gpso", gpso), ("idf-nature", idf_nature), ("occitanie", occitanie),
-               ("34-herault", herault), ("pays-de-la-loire", pays_de_la_loire), ("31-toulouse-culture", toulouse_culture)]
+               ("34-herault", herault), ("pays-de-la-loire", pays_de_la_loire), ("31-toulouse-culture", toulouse_culture), ("31-toulouse-marches", toulouse_marches)]
 RAPPORT_ROT = {}
 def enrichir():
     os.makedirs("data/enrich", exist_ok=True)

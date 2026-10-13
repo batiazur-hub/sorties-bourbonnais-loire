@@ -7,7 +7,7 @@ Sorties :
   data/communes-fr.json     communes de France (nom, département, lat, lon) pour la recherche
   data/_stats.json          contrôle : répartition par type, classes rencontrées
 """
-import csv, io, json, os, re, sys, unicodedata, urllib.request, datetime as dt
+import csv, io, json, os, re, sys, unicodedata, urllib.parse, urllib.request, datetime as dt
 from collections import Counter, defaultdict
 
 AUJ = dt.date.today()
@@ -90,6 +90,69 @@ def resume(d, n=300):
     cut = d[:n].rsplit(" ", 1)[0]
     return cut.rstrip(",;:") + "…"
 
+
+# --- Paris : « Que faire à Paris ? » (open data de la Ville de Paris, mis à jour chaque jour) ---
+QFAP = "https://opendata.paris.fr/api/explore/v2.1/catalog/datasets/que-faire-a-paris-/exports/json?where=" + urllib.parse.quote("date_end >= now()")
+TAGS = [("famille", ("Enfants",)), ("sport", ("Sport", "Balade", "Nature")),
+        ("spectacle", ("Concert", "Spectacle musical", "Théâtre", "Danse", "Humour", "Cirque", "Opéra", "Festival", "Spectacle")),
+        ("culture", ("Expo", "Art contemporain", "Conférence", "Littérature", "Histoire", "Ecrans", "Atelier", "Visite", "Musée", "Photo", "Sciences", "Peinture"))]
+def paris():
+    try:
+        rows = json.loads(get(QFAP))
+    except Exception as e:
+        print("Que faire à Paris indisponible :", e); return []
+    out = []
+    for r in rows:
+        titre = re.sub(r"\s+", " ", r.get("title") or "").strip()
+        ll = r.get("lat_lon") or {}
+        if not titre or not ll:
+            continue
+        occ = []
+        for o in (r.get("occurrences") or "").split(";"):
+            m = re.match(r"(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2})[^_]*_(\d{4}-\d{2}-\d{2})", o.strip())
+            if m:
+                occ.append((dt.date.fromisoformat(m.group(1)), m.group(2), dt.date.fromisoformat(m.group(3))))
+        occ = sorted(x for x in occ if x[2] >= AUJ)
+        if occ:
+            a, heure, b = occ[0]; autres = len(occ) - 1
+        else:
+            try:
+                a = dt.date.fromisoformat((r.get("date_start") or "")[:10]); b = dt.date.fromisoformat((r.get("date_end") or "")[:10])
+            except ValueError:
+                continue
+            heure = None; autres = 0
+            if b < AUJ:
+                continue
+        if a > HORIZON:
+            continue
+        tags = set((r.get("qfap_tags") or "").split(";"))
+        cat = None
+        if MOTS[0][1].search(norm(titre)):
+            cat = "brocante"
+        for c, noms in TAGS:
+            if not cat and tags & set(noms):
+                cat = c
+        cat = cat or categorie(titre, set())
+        cp = (r.get("address_zipcode") or "").strip()
+        dep = dep_de(cp) or "75"
+        ville = (r.get("address_city") or "Paris").strip() or "Paris"
+        if ville.lower().startswith("paris"):
+            ville = "Paris"
+        arr = f" ({int(cp[3:])}e)" if dep == "75" and cp[3:].isdigit() and int(cp[3:]) > 0 else ""
+        ev = {"id": "qp-" + str(r.get("id")), "t": titre, "cat": cat, "z": dep, "w": ville,
+              "lieu": ((r.get("address_name") or "").strip() or ville) + arr,
+              "s": a.isoformat(), "d": resume(r.get("lead_text") or re.sub("<[^>]+>", " ", r.get("description") or "")),
+              "u": r.get("url") or "", "src": "Que faire à Paris (Ville de Paris)",
+              "lat": round(float(ll["lat"]), 5), "lon": round(float(ll["lon"]), 5), "o": "qfap"}
+        if b != a: ev["e"] = b.isoformat()
+        if heure and heure != "00:00": ev["h"] = heure
+        if autres: ev["n"] = autres
+        if r.get("cover_url"): ev["img"] = r["cover_url"]
+        if (r.get("price_type") or "").startswith("gratuit"): ev["g"] = 1
+        out.append(ev)
+    print("Que faire à Paris :", len(out), "sorties")
+    return out
+
 def main():
     meta = json.loads(get(API))
     res = [r for r in meta["resources"] if r["title"].strip() == "datatourisme-fma.csv"][0]
@@ -137,6 +200,12 @@ def main():
             ev["n"] = autres
         par_dep[dep].append(ev)
 
+    for ev in paris():
+        cle = (norm(ev["t"]), norm(ev["w"]), dt.date.fromisoformat(ev["s"]))
+        if cle in vus:
+            continue
+        vus.add(cle); stats[ev["cat"]] += 1; stats["(Paris open data)"] += 1
+        par_dep[ev["z"]].append(ev)
     os.makedirs("data/dep", exist_ok=True)
     noms = {d["code"]: d["nom"] for d in json.loads(get("https://geo.api.gouv.fr/departements?fields=nom,code"))}
     index = []

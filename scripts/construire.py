@@ -510,6 +510,7 @@ def toulouse_marches():
         if not heures: continue
         nom = _joli(str(r.get("nom") or "Marché"), "Toulouse")
         if not norm(nom).startswith("marche"): nom = "Marché " + nom
+        nom = " ".join(w if i == 0 or w in ("de", "du", "des", "la", "le", "les", "et", "aux", "au", "d'", "l'") else w[:1].upper() + w[1:] for i, w in enumerate(nom.split()))
         typ = str(r.get("type") or "").strip()
         cat = "brocante" if re.search(r"puce|brocante|livre|antiquit|vide", norm(typ + nom)) else "fete"
         js = list(heures)

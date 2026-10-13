@@ -920,13 +920,12 @@ function card(e){
 }
 
 /* ---------- Carte : fonds cartes.gouv.fr (Géoplateforme de l'IGN) affichés avec MapLibre ---------- */
-let map,G,pins=[],labels=[],fallback=false,fond="standard";
+let map,G,pins=[],labels=[],fallback=false,fond="standard";try{if(localStorage.getItem("sbl-fond")==="photo")fond="photo"}catch(_){}
 const css=v=>getComputedStyle(ROOT).getPropertyValue(v).trim();
 const GPF="https://data.geopf.fr";
 const FONDS={
   standard:["Plan IGN",GPF+"/annexes/ressources/vectorTiles/styles/PLAN.IGN/standard.json"],
-  gris:["Plan gris",GPF+"/annexes/ressources/vectorTiles/styles/PLAN.IGN/gris.json"],
-  photo:["Photos aériennes",null]
+  photo:["Satellite",null]
 };
 const TOWNS=[["Moulins",46.566,3.333,1],["Vichy",46.127,3.426,1],["Montluçon",46.340,2.603,1],["Nevers",46.990,3.159,1],["Decize",46.828,3.461,1],["Digoin",46.481,3.981,1],["Paray-le-Monial",46.451,4.119,1],
  ["Bourbon-Lancy",46.622,3.770,0],["Lapalisse",46.248,3.637,0],["Gannat",46.100,3.198,0],["Saint-Pourçain-sur-Sioule",46.308,3.289,0],["Commentry",46.289,2.740,0],["Cosne-d'Allier",46.474,2.833,0],
@@ -943,7 +942,7 @@ function initMap(){
   if(!window.maplibregl){$("sbl-map").innerHTML='<p class="sbl-none" style="padding:20px;color:var(--sbl-ink)">La carte n’a pas pu se charger. La liste et le calendrier restent disponibles.</p>';$("sbl-fonds").hidden=true;return}
   G=JSON.parse($("sbl-geo").textContent);
   const tryIGN=CFG.tiles!=="none"&&!inViewer;
-  map=new maplibregl.Map({container:"sbl-map",style:tryIGN?FONDS.standard[1]:drawnStyle(),bounds:[[2.45,45.98],[4.32,47.0]],fitBoundsOptions:{padding:8},
+  map=new maplibregl.Map({container:"sbl-map",style:tryIGN?(fond==="photo"?photoStyle():FONDS.standard[1]):drawnStyle(),bounds:[[2.45,45.98],[4.32,47.0]],fitBoundsOptions:{padding:8},
     minZoom:6.5,maxZoom:18,attributionControl:false,dragRotate:false,pitchWithRotate:false,touchPitch:false});
   map.touchZoomRotate.disableRotation();
   map.addControl(new maplibregl.NavigationControl({showCompass:false}),"top-right");
@@ -951,14 +950,15 @@ function initMap(){
   map.on("zoom",()=>$("sbl-map").classList.toggle("z-lo",map.getZoom()<8.5));$("sbl-map").classList.add("z-lo");
   if(!tryIGN)goDrawn(true);
   else{
-    $("sbl-attr").textContent="Plan IGN © IGN – cartes.gouv.fr";
-    map.on("error",()=>{if(!fallback&&!map.isStyleLoaded())goDrawn()});
-    setTimeout(()=>{if(!fallback&&!map.isStyleLoaded())goDrawn()},9000);
+    $("sbl-attr").textContent=(fond==="photo"?"Photographies aériennes":"Plan IGN")+" © IGN – cartes.gouv.fr";
+    let baseOk=false;map.once("load",()=>{baseOk=true});
+    map.on("error",()=>{if(!baseOk&&!fallback&&!map.isStyleLoaded())goDrawn()});
+    setTimeout(()=>{if(!baseOk&&!fallback&&!map.isStyleLoaded())goDrawn()},9000);
   }
   const f=$("sbl-fonds");
   Object.entries(FONDS).forEach(([k,[n]])=>{const b=document.createElement("button");b.type="button";b.textContent=n;b.dataset.f=k;b.setAttribute("aria-pressed",k===fond?"true":"false");
     b.onclick=()=>{if(fallback)return;fond=k;f.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b?"true":"false"));
-      map.setStyle(k==="photo"?photoStyle():FONDS[k][1]);$("sbl-attr").textContent=(k==="photo"?"Photographies aériennes":"Plan IGN")+" © IGN – cartes.gouv.fr"};f.append(b)});
+      map.setStyle(k==="photo"?photoStyle():FONDS[k][1]);$("sbl-attr").textContent=(k==="photo"?"Photographies aériennes":"Plan IGN")+" © IGN – cartes.gouv.fr";try{localStorage.setItem("sbl-fond",k)}catch(_){}};f.append(b)});
 }
 function overlay(){
   if(fallback||map.getSource("sbl-z"))return;

@@ -1,0 +1,22 @@
+{
+ "nom": "Fondation Le PAL Nature",
+ "page": "https://www.lepal.com/decouvrir/actualites/actualites-de-la-fondation-le-pal-nature/programme-des-manifestations-2026",
+ "commune": "Saint-Pourçain-sur-Besbre",
+ "lat": 46.5132, "lon": 3.6333,
+ "programme_connu": 2026,
+ "evenements": [
+  {"t": "Fête de la Nature avec la Fondation Le PAL Nature", "s": "2026-05-23", "e": "2026-05-24", "cat": "famille", "lieu": "Parc Le PAL, Maison de la Fondation", "d": "Stands de sensibilisation, objets de la Fondation et tombola avec ses partenaires."},
+  {"t": "Nuit au Zoo", "s": "2026-06-02", "h": "18:00", "cat": "famille", "lieu": "Parc Le PAL (parc fermé)", "d": "Visite en soirée du parc fermé pour découvrir le travail des soigneurs et la vie des animaux, suivie d'un moment gourmand. 10 à 20 €, places limitées, sur inscription."},
+  {"t": "Week-end Girafe", "s": "2026-06-20", "e": "2026-06-21", "cat": "famille", "lieu": "Parc Le PAL, enclos des girafes", "d": "Journées consacrées aux girafes menacées, avec bénévoles et associations de conservation."},
+  {"t": "Journée Soigneurs", "s": "2026-06-27", "cat": "famille", "lieu": "Parc Le PAL, zone des mammifères marins", "d": "Les soigneurs expliquent les soins, la conservation sur le terrain et l'enrichissement des animaux, avec animations et jeux."},
+  {"t": "Week-end mondial sans sac plastique", "s": "2026-07-04", "e": "2026-07-05", "cat": "culture", "lieu": "Parc Le PAL, Maison de la Fondation", "d": "Sensibilisation aux déchets plastiques, objets de la Fondation et tombola."},
+  {"t": "Week-end Conserv'Action", "s": "2026-07-11", "e": "2026-07-14", "cat": "culture", "lieu": "Parc Le PAL, Ferme des enfants", "d": "Rencontre avec des associations qui agissent sur le terrain, en France et à l'étranger, et comment les soutenir."},
+  {"t": "Journée des Tigres", "s": "2026-07-29", "cat": "famille", "lieu": "Parc Le PAL, enclos des tigres", "d": "Journée consacrée aux tigres menacés, avec bénévoles et associations."},
+  {"t": "Journée des Éléphants", "s": "2026-08-12", "cat": "famille", "lieu": "Parc Le PAL, enclos des éléphants", "d": "Journée consacrée aux éléphants menacés, avec bénévoles et associations."},
+  {"t": "Week-end Conserv'Action", "s": "2026-08-15", "e": "2026-08-16", "cat": "culture", "lieu": "Parc Le PAL, Ferme des enfants", "d": "Stands d'associations de conservation, objets de la Fondation et tombola."},
+  {"t": "Journée Soigneurs", "s": "2026-08-29", "cat": "famille", "lieu": "Parc Le PAL, zone des mammifères marins", "d": "Les soigneurs présentent leur métier et la conservation des espèces, avec de nouveaux thèmes."},
+  {"t": "Week-end Conserv'Action", "s": "2026-09-05", "e": "2026-09-06", "cat": "culture", "lieu": "Parc Le PAL, Ferme des enfants", "d": "Stands d'associations de conservation, objets de la Fondation et tombola."},
+  {"t": "Nuit au Zoo", "s": "2026-09-11", "h": "18:00", "cat": "famille", "lieu": "Parc Le PAL (parc fermé)", "d": "Deuxième soirée dans le parc fermé, même formule qu'en juin. Sur inscription."},
+  {"t": "Journée de la Fondation Le PAL Nature", "s": "2026-10-04", "cat": "famille", "lieu": "Parc Le PAL", "d": "15e édition du grand rendez-vous de la Fondation pour découvrir et soutenir la protection des espèces menacées."}
+ ]
+}

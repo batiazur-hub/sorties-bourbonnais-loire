@@ -99,6 +99,8 @@ body{background:var(--sbl-bg);color:var(--sbl-ink);margin:0}
 .sbl-ev h3{margin:0;font:600 1.03rem/1.28 var(--sbl-body)}
 .sbl-ev .m{color:var(--sbl-muted);font-size:.87rem}
 .sbl-ic{flex:none;display:block}
+.sbl-badge{display:inline-flex;align-items:center;gap:5px;justify-self:start;width:max-content;max-width:100%;padding:2px 9px 2px 7px;border-radius:999px;background:color-mix(in srgb,var(--bc) 14%,var(--sbl-surface));color:var(--bc);font-size:.76rem;font-weight:700;line-height:1.5}
+.sbl-badge.lg{font-size:.85rem;margin:-4px 0 12px}
 .sbl-b .bi{color:var(--c);display:inline-flex}
 .sbl-b[aria-pressed="true"] .bi{color:inherit}
 .sbl-wk{margin-top:6px}
@@ -509,7 +511,7 @@ const today=()=>{const t=new Date();t.setHours(0,0,0,0);return t};
 const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
 const norm=s=>s.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu,"");
 const hh=h=>h.replace(":","h").replace("h00","h");
-function prep(list){list.forEach(e=>{e.S=P(e.s);e.E=P(e.e||e.s);e.long=(e.E-e.S)/864e5>14;e.k=norm(e.t+" "+e.w+" "+e.lieu+" "+e.d+" "+CATS[e.cat][0])});return list}
+function prep(list){list.forEach(e=>{if(!CATS[e.cat])e.cat="fete";e.S=P(e.s);e.E=P(e.e||e.s);e.long=(e.E-e.S)/864e5>14;e.k=norm(e.t+" "+e.w+" "+e.lieu+" "+e.d+" "+CATS[e.cat][0]+" "+(e.b&&BADGES[e.b]?BADGES[e.b].l:""))});return list}
 function when(e){const a=e.S,b=e.E;
   if(+a===+b)return cap(JL[a.getDay()])+" "+a.getDate()+" "+ML[a.getMonth()]+(e.h?", "+hh(e.h):"");
   if(e.long)return "Jusqu’au "+b.getDate()+" "+ML[b.getMonth()]+" "+b.getFullYear();
@@ -718,6 +720,11 @@ function thumb(e,cls){const d=document.createElement("div");d.className="sbl-th 
   if(e.img){const im=new Image();im.onload=()=>{d.style.backgroundImage='url("'+im.src+'")';d.classList.add("ph","own")};im.onerror=()=>{if(lazy)lazy.observe(d);else paint(d,e.w,e.z)};im.src=e.img}
   else if(lazy)lazy.observe(d);else paint(d,e.w,e.z);return d}
 
+/* ---------- Badges partenaires ---------- */
+const BADGES={palnature:{l:"Fondation Le PAL Nature",c:"#2f7d3b"}};
+const leafIco='<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19c0-8 5-13 14-14-1 9-6 14-14 14z"/><path d="M5 19l7-7"/></svg>';
+function badge(e){const b=BADGES[e.b];if(!b)return null;const s=document.createElement("span");s.className="sbl-badge";s.style.setProperty("--bc",b.c);s.innerHTML=leafIco+"<span></span>";s.lastChild.textContent=b.l;return s}
+
 /* ---------- Liste ---------- */
 function weekendPicks(){
   const t=today(),d=t.getDay(),sat=d===0?add(t,-1):add(t,(6-d)%7),sun=add(sat,1),from=d===0||d===6?t:add(sat,-1);
@@ -758,6 +765,7 @@ function row(e,ref){
   const chip=document.createElement("span");chip.className="dch";chip.innerHTML='<small></small><b></b>';chip.firstChild.textContent=e.long?"au":JL[d.getDay()].slice(0,3)+".";chip.lastChild.textContent=d.getDate()+" "+MO[d.getMonth()];th.append(chip);
   const tx=document.createElement("span");tx.className="tx";tx.innerHTML='<span class="c">'+icon(e.cat,15)+'<span></span></span><h3></h3><span class="m"></span>';
   tx.querySelector(".c span").textContent=CATS[e.cat][1];tx.querySelector("h3").textContent=e.t;tx.querySelector(".m").textContent=meta(e);
+  const bd=badge(e);if(bd)tx.insertBefore(bd,tx.querySelector("h3"));
   b.append(th,tx);b.onclick=()=>sheet(e);return b;
 }
 function card(e){
@@ -766,6 +774,7 @@ function card(e){
   const chip=document.createElement("span");chip.className="dch";chip.innerHTML='<small></small><b></b>';chip.firstChild.textContent=JL[e.S.getDay()].slice(0,3)+".";chip.lastChild.textContent=e.S.getDate()+" "+MO[e.S.getMonth()];
   const ic=document.createElement("span");ic.className="ich";ic.innerHTML=icon(e.cat,17);th.append(chip,ic);
   const tx=document.createElement("span");tx.className="tx";tx.innerHTML='<h3></h3><span class="m"></span>';tx.querySelector("h3").textContent=e.t;tx.querySelector(".m").textContent=meta(e);
+  const bd=badge(e);if(bd)tx.prepend(bd);
   b.append(th,tx);b.onclick=()=>sheet(e);return b;
 }
 
@@ -937,6 +946,7 @@ function sheet(e){
   '<div class="sbl-btns"><a class="sbl-btn go" id="sbl-g" target="_blank" rel="noopener">Google Agenda</a><a class="sbl-btn" id="sbl-o" target="_blank" rel="noopener">Outlook</a>'+(inViewer?'':'<button class="sbl-btn" id="sbl-i" type="button">iPhone, Android (.ics)</button>')+'</div>'+
   '<div class="sbl-hint" id="sbl-h"></div></div><div class="sbl-add"><h3>Y aller</h3><div class="sbl-btns" id="sbl-gps"></div></div></div></div>';
   $("sbl-st").textContent=e.t;h.querySelector(".kind").textContent=CATS[e.cat][0]+" · "+depName(e.z);
+  {const bd=badge(e);if(bd){bd.classList.add("lg");$("sbl-st").after(bd)}}
   const hero=$("sbl-hero");hero.style.setProperty("--pc","var(--sbl-p-"+e.cat+")");
   if(e.img){const im=new Image();im.onload=()=>{hero.classList.add("ph","poster");hero.style.setProperty("--img",'url("'+im.src+'")');const p=document.createElement("img");p.className="pst";p.src=im.src;p.alt="Affiche : "+e.t;hero.prepend(p);
       const c=hero.querySelector(".cr");c.hidden=false;c.textContent="Image : "+e.src;if(e.u)c.href=e.u;else c.removeAttribute("href")};im.onerror=()=>paint(hero,e.w,e.z,true);im.src=e.img}

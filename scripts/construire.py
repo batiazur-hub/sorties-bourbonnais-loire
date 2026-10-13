@@ -409,9 +409,89 @@ def occitanie():
         if ev: out.append(ev)
     return out
 
+# --- Adaptateur générique pour les portails open data (Opendatasoft) ---
+def _pick(r, *keys):
+    for k in keys:
+        if r.get(k) not in (None, "", [], "None"):
+            return r[k]
+    for k in r:
+        for kk in keys:
+            if kk in k and r[k] not in (None, "", [], "None"):
+                return r[k]
+    return None
+def _joli(s, ville=""):
+    s = re.sub(r"\s+", " ", s or "").strip()
+    if s.isupper():
+        s = s.lower()
+        s = s[:1].upper() + s[1:]
+        if ville:
+            s = re.sub(re.escape(ville.lower()), ville, s, flags=re.I)
+    return s
+def ods_generique(url, src, prefix, dep_defaut=None):
+    rows = json.loads(get(url))
+    out = []
+    for i, r in enumerate(rows):
+        ville = _pick(r, "commune", "ville", "adresses", "location_city", "nom_commune", "libelle_commune")
+        ville = ville[0] if isinstance(ville, list) else ville
+        ville = str(ville or "")
+        if ville.isupper():
+            ville = "-".join(w.capitalize() if w not in ("SUR", "LES", "LE", "LA", "DE", "DU", "DES", "EN", "SOUS") else w.lower() for w in ville.replace(" ", "-").split("-"))
+        titre = _joli(str(_pick(r, "titremanifestation", "titre", "title", "nom", "intitule", "libelle", "nom_manifestation") or ""), ville)
+        a = _d(str(_pick(r, "datedebut", "date_debut", "date_start", "firstdate", "debut", "date") or ""))
+        b = _d(str(_pick(r, "datefin", "date_fin", "date_end", "lastdate", "fin") or "")) or a
+        gp = _pick(r, "geopoint", "geo_point_2d", "geo_point", "location_coordinates", "coordonnees", "geolocalisation") or {}
+        if isinstance(gp, list) and len(gp) == 2: gp = {"lat": gp[0], "lon": gp[1]}
+        if isinstance(gp, str):
+            m = re.findall(r"-?\d+\.\d+", gp); gp = {"lat": m[0], "lon": m[1]} if len(m) >= 2 else {}
+        cp = str(_pick(r, "code_postal", "codepostal", "location_postalcode", "cp") or "")
+        insee = str(_pick(r, "insee", "code_insee", "location_insee") or "")
+        dep = dep_de(cp) or (insee[:2] if insee[:2].isdigit() else None) or dep_defaut
+        lieu = _pick(r, "lieu", "nom_du_lieu", "location_name", "adresse")
+        desc = _pick(r, "descriptionlongue", "description", "descriptif", "resume", "description_fr")
+        lien = _pick(r, "url", "lien", "site_web", "siteweb", "canonicalurl")
+        img = _pick(r, "image", "photo", "visuel", "illustration")
+        typ = " ".join(str(_pick(r, k) or "") for k in ("types", "categories", "themes", "type", "categorie", "thematique"))
+        ev = _ev(src, f"{prefix}{_pick(r, 'id', 'uid', 'identifiant') or i}-{a.isoformat() if a else ''}", titre, a, b, dep, ville,
+                 str(lieu or "")[:120], gp.get("lat"), gp.get("lon"), str(desc or ""), lien if isinstance(lien, str) else "",
+                 img if isinstance(img, str) else "", "", typ, "gratuit" in norm(str(_pick(r, "tarif", "tarifs", "conditions") or "")))
+        if ev:
+            out.append(ev)
+    return out
+def herault():
+    w = urllib.parse.quote(f"datefin >= '{AUJ.isoformat()}'")
+    return ods_generique("https://data.opendatasoft.com/api/explore/v2.1/catalog/datasets/fetes-et-manifestations@data-herault-occitanie/exports/json?where=" + w,
+                         "Hérault Tourisme", "he-", "34")
+def pays_de_la_loire():
+    return ods_generique("https://data.paysdelaloire.fr/api/explore/v2.1/catalog/datasets/234400034_070-002_offre-touristique-fetes_et_manifestations-rpdl/exports/json",
+                         "Région des Pays de la Loire (offre touristique)", "pdl-")
+def toulouse_culture():
+    return ods_generique("https://data.toulouse-metropole.fr/api/explore/v2.1/catalog/datasets/agenda-des-manifestations-culturelles-so-toulouse/exports/json",
+                         "So Toulouse (office de tourisme)", "tl-", "31")
+
+# --- Fondation Le PAL Nature : programme saisi à la main + veille de la publication du suivant ---
+ALERTES = []
+def lepal_nature():
+    src = json.load(open("data/sources/lepal-nature.json"))
+    out = []
+    for i, e in enumerate(src["evenements"]):
+        ev = _ev(src["nom"], f"lpn-{e['s']}-{i}", e["t"], _d(e["s"]), _d(e.get("e") or e["s"]), "03", src["commune"], e["lieu"],
+                 src["lat"], src["lon"], e["d"], src["page"], "", e.get("h", ""))
+        if ev:
+            ev["cat"] = e["cat"]; ev["b"] = "palnature"; ev["o"] = "lepal"
+            out.append(ev)
+    try:
+        h = get("https://www.lepal.com/decouvrir/actualites/actualites-de-la-fondation-le-pal-nature").decode("utf-8", "ignore")
+        ans = [int(x) for x in re.findall(r"programme-des-manifestations-(\d{4})", h)]
+        if ans and max(ans) > src["programme_connu"]:
+            ALERTES.append(f"Nouveau programme de la Fondation Le PAL Nature ({max(ans)}) : à saisir dans data/sources/lepal-nature.json")
+    except Exception as e:
+        ALERTES.append(f"Veille Fondation Le PAL Nature impossible : {str(e)[:120]}")
+    return out
+
 # Sources complémentaires : chacune est rafraîchie un jour fixe de la semaine (rang modulo 7)
 SOURCES_ROT = [("paris-marches", marches_paris), ("62-pas-de-calais", pas_de_calais), ("63-clermont", clermont), ("38-isere-musees", isere_musees),
-               ("06-nice", nice_otm), ("92-gpso", gpso), ("idf-nature", idf_nature), ("occitanie", occitanie)]
+               ("06-nice", nice_otm), ("92-gpso", gpso), ("idf-nature", idf_nature), ("occitanie", occitanie),
+               ("34-herault", herault), ("pays-de-la-loire", pays_de_la_loire), ("31-toulouse-culture", toulouse_culture)]
 RAPPORT_ROT = {}
 def enrichir():
     os.makedirs("data/enrich", exist_ok=True)
@@ -512,7 +592,7 @@ def main():
             continue
         vus.add(cle); stats[ev["cat"]] += 1; stats["(OpenAgenda)"] += 1
         par_dep[ev["z"]].append(ev)
-    for ev in enrichir():
+    for ev in lepal_nature() + enrichir():
         cle = (norm(ev["t"]), norm(ev["w"]), dt.date.fromisoformat(ev["s"]))
         if cle in vus:
             continue
@@ -549,7 +629,7 @@ def main():
 
     ecartes["coordonnées corrigées (centre de la commune)"] = corriges
     json.dump({"maj": AUJ.isoformat(), "par_type": stats, "ecartes": ecartes, "classes": classes_vues.most_common(80),
-               "total": sum(v for k, v in stats.items() if not k.startswith("(")), "rotation": RAPPORT_ROT}, open("data/_stats.json", "w"), ensure_ascii=False, indent=1)
+               "total": sum(v for k, v in stats.items() if not k.startswith("(")), "rotation": RAPPORT_ROT, "alertes": ALERTES}, open("data/_stats.json", "w"), ensure_ascii=False, indent=1)
     print("événements retenus :", sum(stats.values()), dict(stats), "écartés :", dict(ecartes))
 
 if __name__ == "__main__":

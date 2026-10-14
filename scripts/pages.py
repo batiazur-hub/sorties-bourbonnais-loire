@@ -98,7 +98,12 @@ P["mentions-legales.html"] = ("Mentions légales", "Qui publie ce site, qui l’
 </dl>
 
 <h2>Hébergement</h2>
-<p>GitHub, Inc. (service GitHub Pages), 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, États-Unis. <a href="https://github.com/contact">github.com/contact</a></p>
+<p>Site : GitHub, Inc. (service GitHub Pages), 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, États-Unis. <a href="https://github.com/contact">github.com/contact</a></p>
+<p>Serveur des comptes, des propositions et de l’API : Cloudflare, Inc., 101 Townsend Street, San Francisco, CA 94107, États-Unis. <a href="https://www.cloudflare.com/fr-fr/">cloudflare.com</a></p>
+<p>Envoi des e-mails : Brevo (Sendinblue SAS), Paris, France. <a href="https://www.brevo.com/fr/">brevo.com</a></p>
+
+<h2>Données personnelles</h2>
+<p>Voir la <a href="confidentialite.html">politique de confidentialité</a> : ce qui est collecté, pourquoi, combien de temps, et comment exercer vos droits.</p>
 
 <h2 id="sources">Origine des informations</h2>
 <p>Trucs à faire rassemble des agendas publiés en données ouvertes par des collectivités, des offices de tourisme et des organisateurs. Les fiches sont reprises automatiquement chaque nuit, avec un lien vers la source. Chaque donnée reste soumise à la licence de son producteur.</p>
@@ -115,7 +120,7 @@ P["mentions-legales.html"] = ("Mentions légales", "Qui publie ce site, qui l’
 <li>Affichage de la carte : bibliothèque <a href="https://maplibre.org/">MapLibre GL JS</a>, licence BSD.</li>
 <li>Photos des communes : <a href="https://fr.wikipedia.org/">Wikipédia</a> et <a href="https://commons.wikimedia.org/">Wikimedia Commons</a>, sous la licence indiquée sur la page de chaque image.</li>
 <li>Affiches et visuels d’événements : propriété de leurs auteurs ou des organisateurs. Ils sont affichés tels que publiés par la source, pour annoncer l’événement.</li>
-<li>Police de caractères : Figtree, SIL Open Font License.</li>
+<li>Polices de caractères : Outfit et DM Sans, SIL Open Font License, hébergées sur le site.</li>
 </ul>
 
 <h2>Retrait ou correction</h2>
@@ -130,12 +135,25 @@ P["cgu.html"] = ("Conditions générales d’utilisation", "Les règles d’util
 <p>Trucs à faire est un agenda gratuit des sorties en France : fêtes, marchés, brocantes, spectacles, expositions, activités en famille et événements sportifs. Ces conditions encadrent l’utilisation du site, y compris lorsqu’il est intégré dans un autre site, une borne ou une application. En utilisant le site, vous les acceptez.</p>
 
 <h2>2. Accès</h2>
-<p>Le site est accessible gratuitement et sans inscription. L’éditeur peut l’interrompre pour maintenance ou le faire évoluer à tout moment, sans que cela ouvre droit à indemnité.</p>
+<p>La consultation des sorties, de la carte et du calendrier est gratuite et ne demande pas de compte. L’éditeur peut interrompre le site pour maintenance ou le faire évoluer à tout moment, sans que cela ouvre droit à indemnité.</p>
 
-<h2>3. Fiabilité des informations</h2>
+<h2>3. Compte Trucophile</h2>
+<p>Le compte Trucophile est gratuit. Il permet de garder des sorties en favoris sur plusieurs appareils, d’enregistrer ses préférences (commune, distance, centres d’intérêt) et, si on le demande, de recevoir une sélection de sorties par e-mail.</p>
+<ul>
+<li><strong>Âge</strong> : le compte est réservé aux personnes de 15 ans et plus.</li>
+<li><strong>Création et connexion</strong> : sans mot de passe. Un lien à usage unique, valable 30 minutes, est envoyé à l’adresse indiquée ; le compte n’est créé qu’après un clic sur ce lien. Vous êtes responsable de l’accès à votre boîte e-mail.</li>
+<li><strong>Exactitude</strong> : indiquez une adresse e-mail qui vous appartient. Un compte par personne.</li>
+<li><strong>Newsletter</strong> : facultative, jamais cochée d’avance, et sans effet sur l’accès au compte. Désinscription en un clic dans chaque e-mail ou depuis « Mon compte ».</li>
+<li><strong>Fin du compte</strong> : vous pouvez supprimer votre compte à tout moment depuis « Mon compte » ; la suppression est immédiate et définitive. Un compte sans connexion pendant trois ans est supprimé automatiquement. L’éditeur peut suspendre ou supprimer un compte utilisé de façon abusive (envois automatisés, usurpation d’adresse, atteinte au service).</li>
+</ul>
+
+<h2>4. Offres pour les organisateurs et les professionnels</h2>
+<p>Les offres Faiseur de trucs (gratuite), Truc Pro et Truc &amp; Co (payantes) sont présentées sur la page <a href="offres.html">Créer un compte</a>. Les offres payantes feront l’objet de conditions générales de vente propres, communiquées avant toute souscription (prix, durée, résiliation, droit de rétractation lorsqu’il s’applique).</p>
+
+<h2>5. Fiabilité des informations</h2>
 <p>Les sorties proviennent de sources publiques et de propositions des visiteurs. Elles sont mises à jour chaque nuit, mais un organisateur peut modifier, reporter ou annuler un événement à tout moment. <strong>Vérifiez toujours la date, l’horaire et le lieu sur la fiche source avant de vous déplacer.</strong> L’éditeur n’organise aucun des événements présentés et n’en est pas responsable.</p>
 
-<h2>4. Proposer une sortie ou une source</h2>
+<h2>6. Proposer une sortie ou une source</h2>
 <p>Chacun peut proposer une sortie ou signaler un agenda. En envoyant une proposition, vous garantissez :</p>
 <ul>
 <li>que les informations sont exactes et concernent un événement réel ouvert au public ;</li>
@@ -144,61 +162,98 @@ P["cgu.html"] = ("Conditions générales d’utilisation", "Les règles d’util
 </ul>
 <p>Les propositions sont filtrées automatiquement puis relues par une personne avant publication. L’éditeur peut refuser, raccourcir ou corriger une proposition, et retirer une fiche à tout moment. Vous autorisez la diffusion gratuite de votre proposition sur le site et sur les sites, bornes et applications qui l’intègrent.</p>
 
-<h2>5. Liens et services externes</h2>
+<h2>7. Liens et services externes</h2>
 <p>Les fiches renvoient vers les sites des organisateurs, des offices de tourisme et vers des applications de navigation (Waze, Apple Plans, Google Maps) ou d’agenda. Ces services ont leurs propres conditions et l’éditeur n’en est pas responsable.</p>
 
-<h2>6. Propriété intellectuelle</h2>
+<h2>8. Propriété intellectuelle</h2>
 <p>Voir les <a href="mentions-legales.html">mentions légales</a>. Les données d’agenda reprises restent sous la licence de leur producteur ; la réutilisation du code ou de la mise en page du site nécessite l’accord de l’éditeur.</p>
 
-<h2>7. Données personnelles</h2>
-<p>Le site fonctionne sans compte et sans traceur publicitaire. Le détail figure dans la <a href="confidentialite.html">politique de confidentialité</a>.</p>
+<h2>9. Données personnelles</h2>
+<p>Le site n’utilise ni traceur publicitaire ni mesure d’audience. Les données du compte servent uniquement au service et ne sont jamais vendues. Le détail figure dans la <a href="confidentialite.html">politique de confidentialité</a>.</p>
 
-<h2>8. Signaler un contenu</h2>
+<h2>10. Signaler un contenu</h2>
 <p>Pour signaler une fiche erronée ou un contenu illicite : {mail()}. Indiquez le titre de la fiche et la raison du signalement.</p>
 
-<h2>9. Modification et droit applicable</h2>
-<p>Ces conditions peuvent évoluer ; la date de mise à jour figure en haut de la page. Elles sont soumises au droit français. En cas de litige, une solution amiable sera recherchée avant toute action devant les tribunaux compétents.</p>
+<h2>11. Modification et droit applicable</h2>
+<p>Ces conditions peuvent évoluer ; la date de mise à jour figure en haut de la page. En cas de modification importante, les titulaires d’un compte en sont informés par e-mail. Elles sont soumises au droit français. En cas de litige, une solution amiable sera recherchée avant toute action devant les tribunaux compétents.</p>
 """)
 
-P["confidentialite.html"] = ("Politique de confidentialité", "Ce que le site enregistre, ce qu’il n’enregistre pas, et vos droits.", f"""
+P["confidentialite.html"] = ("Politique de confidentialité", "Ce que le site enregistre, pourquoi, combien de temps, et comment exercer vos droits.", f"""
 <h2>En résumé</h2>
 <ul class="sum">
-<li>Pas de compte, pas de cookie publicitaire, pas de mesure d’audience.</li>
-<li>Vos choix (département, recherche) restent dans votre navigateur.</li>
-<li>Votre position, si vous l’autorisez, sert seulement à trouver les communes proches, sur votre appareil. Elle n’est envoyée nulle part.</li>
+<li>Consulter les sorties ne demande ni compte ni donnée personnelle. Pas de cookie publicitaire, pas de mesure d’audience.</li>
+<li>Le compte Trucophile est facultatif : il ne demande qu’une adresse e-mail. Votre commune et vos centres d’intérêt sont facultatifs.</li>
+<li>La newsletter n’est envoyée qu’avec votre accord explicite, confirmé par e-mail, et se désactive en un clic.</li>
+<li>Vos données ne sont jamais vendues ni cédées. Vous pouvez les télécharger ou supprimer votre compte vous-même, à tout moment.</li>
 </ul>
 
 <h2>Responsable du traitement</h2>
-<p>{v("nom")} (Saryn Digital), {v("adresse")}. Contact : {mail()}.</p>
+<p>{v("nom")} (Saryn Digital), {v("adresse")}. Contact pour toute question sur vos données : {mail()}.</p>
+
+<h2>Traitements, bases légales et durées</h2>
+<div class="tbl"><table>
+<thead><tr><th scope="col">Pourquoi</th><th scope="col">Quelles données</th><th scope="col">Base légale</th><th scope="col">Combien de temps</th></tr></thead>
+<tbody>
+<tr><td>Compte Trucophile : connexion, favoris, préférences</td><td>Adresse e-mail ; commune choisie (son centre, jamais votre adresse), distance, centres d’intérêt ; favoris ; dates de création et de dernière connexion ; date d’acceptation des conditions</td><td>Exécution du contrat (conditions d’utilisation), art. 6.1.b du RGPD</td><td>Jusqu’à la suppression du compte par vous, ou trois ans après la dernière connexion (suppression automatique)</td></tr>
+<tr><td>Sélection des sorties par e-mail (newsletter et alertes)</td><td>Adresse e-mail, préférences ; preuve du consentement (date, texte accepté, origine)</td><td>Consentement, art. 6.1.a, retirable à tout moment</td><td>Jusqu’au retrait du consentement ; la preuve est conservée tant que le compte existe</td></tr>
+<tr><td>Lien de connexion</td><td>Adresse e-mail et empreinte du lien</td><td>Exécution du contrat</td><td>30 minutes, ou jusqu’à son utilisation</td></tr>
+<tr><td>Sécurité et prévention des abus</td><td>Adresse IP (nombre de demandes par heure)</td><td>Intérêt légitime : protéger le service</td><td>Une heure</td></tr>
+<tr><td>Propositions de sorties et de sources</td><td>Contenu du formulaire (aucun nom ni contact demandé)</td><td>Intérêt légitime : publier un agenda complet</td><td>Propositions refusées : quatre mois au plus ; sorties publiées : jusqu’à leur date</td></tr>
+<tr><td>Offres payantes (à leur ouverture)</td><td>Identité ou raison sociale, adresse de facturation, historique des factures. Les données de carte sont traitées par le prestataire de paiement, jamais par l’éditeur</td><td>Contrat et obligation légale (comptabilité)</td><td>Durée de l’abonnement ; factures : dix ans (Code de commerce)</td></tr>
+</tbody></table></div>
+<p>Aucune décision produisant des effets juridiques n’est prise automatiquement à votre sujet. La sélection de sorties envoyée par e-mail est un simple filtre selon la commune, la distance et les centres d’intérêt que vous avez choisis.</p>
 
 <h2>Ce qui est enregistré sur votre appareil</h2>
-<p>Le site utilise le stockage local du navigateur, sans cookie, pour quelques réglages strictement utiles au service :</p>
+<p>Le site utilise le stockage local du navigateur, sans cookie, uniquement pour faire fonctionner ce que vous demandez :</p>
 <ul>
-<li>les départements que vous avez choisis, pour les retrouver à la prochaine visite ;</li>
-<li>l’affichage ou non des lieux à visiter sur la carte, la période et les types de sorties montrés sur la carte ;</li>
-<li>les adresses des photos de communes déjà trouvées, pour éviter de les rechercher à nouveau.</li>
+<li>les départements choisis, les réglages de la carte et les adresses des photos de communes déjà trouvées ;</li>
+<li>vos favoris (jusqu’à cinq sans compte) ;</li>
+<li>si vous êtes connecté : un jeton de session et une copie de vos préférences, pour rester connecté ;</li>
+<li>le fait que vous ayez fermé une invitation à créer un compte, pour ne pas vous la reproposer trop tôt.</li>
 </ul>
-<p>Ces informations ne quittent pas votre appareil. Vous pouvez les effacer depuis les réglages de votre navigateur (données de site). Comme elles sont nécessaires au fonctionnement demandé, elles ne nécessitent pas de bandeau de consentement selon les recommandations de la CNIL.</p>
+<p>Ces éléments sont strictement nécessaires au service demandé : ils ne nécessitent pas de bandeau de consentement selon les recommandations de la CNIL. Vous pouvez les effacer depuis les réglages de votre navigateur (données de site) ; « Se déconnecter » supprime le jeton de session.</p>
 
-<h2>Propositions de sorties et de sources</h2>
-<p>Quand vous proposez une sortie ou une source, le contenu du formulaire (titre, date, lieu, description, liens, organisateur) est transmis à l’éditeur pour relecture. Aucun nom, e-mail ni téléphone n’est demandé : n’indiquez pas de données personnelles dans la description. Les propositions refusées sont supprimées sous trois mois ; les sorties publiées ne sont plus affichées après leur date.</p>
-<p>Base légale : l’intérêt légitime de l’éditeur à publier un agenda complet et à jour.</p>
+<h2>Destinataires et sous-traitants</h2>
+<p>Seul l’éditeur a accès aux données des comptes. Elles ne sont ni vendues, ni louées, ni cédées. Les prestataires techniques suivants les traitent pour son compte, dans le cadre d’un contrat conforme à l’article 28 du RGPD :</p>
+<div class="tbl"><table>
+<thead><tr><th scope="col">Prestataire</th><th scope="col">Rôle</th><th scope="col">Localisation et garanties</th></tr></thead>
+<tbody>
+<tr><td>Cloudflare, Inc.</td><td>Serveur et stockage des comptes, des propositions et de l’API</td><td>États-Unis et réseau mondial ; certifié Data Privacy Framework UE–États-Unis, clauses contractuelles types</td></tr>
+<tr><td>Brevo (Sendinblue SAS)</td><td>Envoi des liens de connexion et de la sélection par e-mail</td><td>France, données hébergées dans l’Union européenne</td></tr>
+<tr><td>GitHub, Inc.</td><td>Hébergement des pages du site (journaux techniques)</td><td>États-Unis ; certifié Data Privacy Framework UE–États-Unis</td></tr>
+<tr><td>Prestataire de paiement (à l’ouverture des offres payantes)</td><td>Paiement par carte</td><td>Précisé ici avant toute souscription</td></tr>
+</tbody></table></div>
+
+<h2>Sécurité</h2>
+<ul>
+<li>Connexion sans mot de passe : aucun mot de passe n’est stocké, donc aucun ne peut fuiter.</li>
+<li>Les liens de connexion et les jetons de session ne sont jamais conservés en clair, seulement leur empreinte (SHA-256). Un lien ne sert qu’une fois et expire au bout de 30 minutes ; une session expire au bout de 90 jours.</li>
+<li>Toutes les connexions sont chiffrées (HTTPS). La commune est enregistrée par son centre : votre adresse n’est jamais demandée.</li>
+</ul>
 
 <h2>Services tiers contactés par votre navigateur</h2>
 <p>Pour afficher la page, votre navigateur contacte les services suivants, qui reçoivent techniquement votre adresse IP :</p>
 <div class="tbl"><table>
 <thead><tr><th scope="col">Service</th><th scope="col">Pourquoi</th></tr></thead>
 <tbody>
-<tr><td>GitHub Pages (hébergeur, États-Unis)</td><td>Héberge le site. Conserve des journaux techniques pour la sécurité. Transferts encadrés par le Data Privacy Framework UE–États-Unis.</td></tr>
+<tr><td>GitHub Pages (hébergeur, États-Unis)</td><td>Héberge le site. Conserve des journaux techniques pour la sécurité.</td></tr>
+<tr><td>Cloudflare (États-Unis)</td><td>Serveur des comptes, des propositions et des sorties ajoutées par les visiteurs.</td></tr>
 <tr><td>Géoplateforme de l’IGN (France)</td><td>Fonds de carte.</td></tr>
 <tr><td>Wikipédia / Wikimedia</td><td>Photos des communes.</td></tr>
 <tr><td>Sites des organisateurs</td><td>Affiches des événements, chargées depuis la source.</td></tr>
 </tbody></table></div>
-<p>La police de caractères et la bibliothèque d’affichage de la carte sont hébergées sur le site lui-même : aucun appel à Google Fonts ni à un réseau de diffusion tiers.</p>
-<p>Lorsque vous ouvrez un itinéraire ou ajoutez une sortie à votre agenda, vous quittez le site pour Waze, Apple Plans, Google Maps, Google Agenda ou Outlook, qui appliquent leur propre politique.</p>
+<p>Les polices de caractères et la bibliothèque d’affichage de la carte sont hébergées sur le site lui-même : aucun appel à Google Fonts ni à un réseau de diffusion tiers.</p>
+<p>Lorsque vous ouvrez un itinéraire, une billetterie ou ajoutez une sortie à votre agenda, vous quittez le site pour un service tiers (Waze, Apple Plans, Google Maps, Google Agenda, Outlook, site de billetterie), qui applique sa propre politique.</p>
 
 <h2>Vos droits</h2>
-<p>Vous disposez d’un droit d’accès, de rectification, d’effacement, d’opposition et de limitation sur les données vous concernant. Écrivez à {mail()}. Si vous estimez que vos droits ne sont pas respectés, vous pouvez saisir la <a href="https://www.cnil.fr/fr/plaintes">CNIL</a>.</p>
+<p>Vous disposez d’un droit d’accès, de rectification, d’effacement, de limitation, d’opposition et de portabilité, ainsi que du droit de retirer votre consentement à tout moment et de définir des directives sur le sort de vos données après votre décès. La plupart s’exercent directement, sans attendre :</p>
+<ul>
+<li><strong>Accès et portabilité</strong> : « Mon compte » → « Télécharger mes données » (fichier JSON lisible).</li>
+<li><strong>Rectification</strong> : « Mon compte » → préférences.</li>
+<li><strong>Effacement</strong> : « Mon compte » → « Supprimer mon compte » (immédiat et définitif).</li>
+<li><strong>Retrait du consentement</strong> : lien de désinscription en bas de chaque e-mail, ou case à décocher dans « Mon compte ».</li>
+</ul>
+<p>Pour toute autre demande, écrivez à {mail()} : réponse sous un mois au plus. Si vous estimez que vos droits ne sont pas respectés, vous pouvez adresser une réclamation à la <a href="https://www.cnil.fr/fr/plaintes">CNIL</a>.</p>
 """)
 
 P["intelligence-artificielle.html"] = ("Intelligence artificielle", "Transparence sur l’usage de l’intelligence artificielle, conformément au règlement européen sur l’IA (AI Act).", """

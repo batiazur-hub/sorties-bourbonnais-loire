@@ -7,6 +7,14 @@ compatibility_date = "2026-09-01"
 binding = "DLC"
 id = "A_REMPLACER"
 
+# Suppression des comptes inactifs depuis 3 ans : chaque lundi à 3 h 17 UTC
+[triggers]
+crons = ["17 3 * * 1"]
+
 [vars]
 ORIGINS = "https://batiazur-hub.github.io"
+SITE_URL = "https://batiazur-hub.github.io/sorties-bourbonnais-loire/"
+MAIL_FROM = "bonjour@trucsafaire.fr"
 # Secret à créer une fois : npx wrangler secret put ADMIN_TOKEN
+# Comptes : npx wrangler secret put BREVO_KEY      (clé API Brevo, envoi des liens de connexion)
+#          npx wrangler secret put SIGNATURE_KEY  (texte aléatoire long, signe les liens de désinscription)

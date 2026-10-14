@@ -14,8 +14,11 @@
              La clé se passe en en-tête « X-API-Key » ou en paramètre « cle ».
    Gestion des clés (éditeur) : GET /admin/cles · POST /admin/cles {nom, contact, deps, types, quota, origines, notes}
              POST /admin/cles/maj {cle, ...} · POST /admin/cles/revoquer {cle} · POST /admin/cles/reactiver {cle}
+   Comptes (voir comptes.js) : /compte/lien, /compte/connexion, /compte, /compte/export, /compte/supprimer, /newsletter/stop
    Variables : KV « DLC », secret « ADMIN_TOKEN », variable « ORIGINS » (origines autorisées, séparées par des virgules),
                variable « DATA_URL » (adresse des données publiées, par défaut le site GitHub Pages). */
+
+import { comptes, purgerInactifs } from "./comptes.js";
 
 const DATA_DEFAUT = "https://batiazur-hub.github.io/sorties-bourbonnais-loire/data/";
 const TYPES_SORTIES = ["brocante", "fete", "spectacle", "culture", "famille", "sport", "pal"];
@@ -220,6 +223,7 @@ async function api(req, env, url, p, ctx) {
 }
 
 export default {
+  async scheduled(evt, env, ctx) { ctx.waitUntil(purgerInactifs(env)); },
   async fetch(req, env, ctx) {
     try { return await traiter(req, env, ctx); }
     catch (e) {  // jamais de page d'erreur HTML sans CORS : le site affiche un message propre
@@ -232,6 +236,9 @@ async function traiter(req, env, ctx) {
     const cors = corsPour(req, env), url = new URL(req.url), p = url.pathname.replace(/\/+$/, "");
     if (p.startsWith("/v1/")) return api(req, env, url, p, ctx);
     if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: cors });
+
+    const rc = await comptes(req, env, url, p, cors, json);
+    if (rc) return rc;
 
     if (req.method === "GET" && p === "/agenda") {
       const auj = new Date().toISOString().slice(0, 10);

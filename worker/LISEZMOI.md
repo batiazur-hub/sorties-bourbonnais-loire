@@ -49,3 +49,21 @@ documentée sur la page `api.html` du site. Chaque appel exige une clé.
 - Le code éditeur est comparé à durée constante.
 - Tests : `node --test tests/worker.test.mjs` (stockage simulé, aucune connexion réseau).
 
+
+## Comptes Trucophile (connexion par lien e-mail)
+
+Le code est dans `comptes.js`. Pour l'activer :
+
+1. **Brevo** (envoi des e-mails, société française, données dans l'UE) : créer un compte gratuit sur brevo.com, ajouter le domaine `trucsafaire.fr` et recopier dans Cloudflare (DNS) les enregistrements SPF, DKIM et DMARC qu'il indique. Créer une clé API (menu « SMTP & API »).
+2. Secrets du serveur :
+   ```sh
+   npx wrangler secret put BREVO_KEY       # la clé API Brevo
+   npx wrangler secret put SIGNATURE_KEY   # un long texte aléatoire (liens de désinscription)
+   ```
+3. Dans `wrangler.toml`, vérifier `SITE_URL` (adresse du site, où arrivent les liens de connexion) et `MAIL_FROM` (expéditeur, sur le domaine vérifié chez Brevo).
+4. Déployer : `npx wrangler deploy`. La tâche planifiée (`[triggers]`) supprime chaque semaine les comptes sans connexion depuis 3 ans.
+
+Tant que `BREVO_KEY` n'est pas défini, le serveur répond « envoi indisponible » (503) : aucun compte ne peut être créé par erreur.
+Côté site, les boutons « Créer un compte » n'apparaissent que lorsque `config.js` contient l'adresse du serveur (`apiUrl`). Pour les voir avant, ouvrir le site avec `#comptes` à la fin de l'adresse (aperçu, sans envoi).
+
+Registre des traitements et liste des démarches RGPD : `docs/rgpd/registre-des-traitements.md`.

@@ -137,3 +137,65 @@ test("sortie proposée avec billetterie : champ « billetterie » dans l'API", a
   const r = await appel(e, "/v1/sorties?dep=03&limite=3&key=" + k);
   assert.ok(r.j.resultats.every(s => "billetterie" in s));
 });
+
+/* ---------- Comptes ---------- */
+const { signature } = await import(path.join(RACINE, "worker/comptes.js"));
+const envC = () => Object.assign(env(), { MODE_TEST: "1" });
+const jsonH = { "Content-Type": "application/json" };
+async function inscrire(e, email, extra) {
+  const r = await appel(e, "/compte/lien", { headers: jsonH, body: Object.assign({ email, cgu: true }, extra || {}) });
+  const jeton = r.j.lien.split("#connexion=")[1];
+  return (await appel(e, "/compte/connexion", { headers: jsonH, body: { jeton } })).j;
+}
+
+test("comptes : CGU obligatoires, e-mail vérifié, sans service d'envoi = 503 propre", async () => {
+  assert.equal((await appel(envC(), "/compte/lien", { headers: jsonH, body: { email: "a@b.fr" } })).j.erreur, "cgu_requises");
+  assert.equal((await appel(envC(), "/compte/lien", { headers: jsonH, body: { email: "pas-un-mail", cgu: true } })).j.erreur, "email_invalide");
+  assert.equal((await appel(env(), "/compte/lien", { headers: jsonH, body: { email: "a@b.fr", cgu: true } })).statut, 503);
+});
+
+test("comptes : inscription par lien, double opt-in newsletter, lien à usage unique", async () => {
+  const e = envC();
+  const r = await appel(e, "/compte/lien", { headers: jsonH, body: { email: "Lea@Exemple.fr", cgu: true, newsletter: true,
+    prefs: { commune: { nom: "Moulins", dep: "03", lat: 46.5661234, lon: 3.3334 }, rayon: 40, cats: ["brocante", "inconnu"] }, fav: ["dt-1"] } });
+  const jeton = r.j.lien.split("#connexion=")[1];
+  assert.equal(e.DLC.m.size > 0 && [...e.DLC.m.keys()].some(k => k.startsWith("cpt:")), false, "aucun compte avant le clic");
+  assert.ok(![...e.DLC.m.keys()].some(k => k.includes(jeton)), "jeton jamais stocké en clair");
+  const c = (await appel(e, "/compte/connexion", { headers: jsonH, body: { jeton } })).j;
+  assert.equal(c.nouveau, true); assert.equal(c.compte.email, "lea@exemple.fr"); assert.equal(c.compte.newsletter, true);
+  assert.equal(c.compte.prefs.rayon, 40); assert.deepEqual(c.compte.prefs.cats, ["brocante"]); assert.equal(c.compte.prefs.commune.lat, 46.566);
+  assert.deepEqual(c.compte.fav, ["dt-1"]);
+  assert.equal((await appel(e, "/compte/connexion", { headers: jsonH, body: { jeton } })).j.erreur, "lien_expire");
+});
+
+test("comptes : profil, retrait du consentement tracé, export, désinscription signée, suppression", async () => {
+  const e = envC(), c = await inscrire(e, "tom@exemple.fr", { newsletter: true });
+  const auth = { Authorization: "Bearer " + c.session, "Content-Type": "application/json" };
+  assert.equal((await appel(e, "/compte")).statut, 401);
+  const m = await appel(e, "/compte", { headers: auth, body: { newsletter: false, fav: ["a", "a", "b"], prefs: { rayon: 500 } } });
+  assert.equal(m.j.compte.newsletter, false); assert.deepEqual(m.j.compte.fav, ["a", "b"]); assert.equal(m.j.compte.prefs.rayon, 100);
+  const x = await appel(e, "/compte/export", { headers: auth });
+  assert.deepEqual(x.j.compte.consentements.map(k => k.action), ["accord", "retrait"]); assert.ok(!("sessions" in x.j.compte));
+  await appel(e, "/compte", { headers: auth, body: { newsletter: true } });
+  const id = x.j.compte.id;
+  assert.match((await appel(e, "/newsletter/stop?c=" + id + "&s=faux")).t, /invalide/);
+  assert.match((await appel(e, "/newsletter/stop?c=" + id + "&s=" + await signature(e, id))).t, /désinscrit/);
+  assert.equal((await appel(e, "/compte", { headers: auth })).j.compte.newsletter, false);
+  await appel(e, "/compte/supprimer", { headers: auth, body: {} });
+  assert.equal((await appel(e, "/compte", { headers: auth })).statut, 401);
+  assert.ok(![...e.DLC.m.keys()].some(k => k.startsWith("cpt:") || k.startsWith("ses:")), "tout est effacé");
+});
+
+test("comptes : trop de demandes de lien refusées", async () => {
+  const e = envC(); let dernier;
+  for (let i = 0; i < 5; i++) dernier = await appel(e, "/compte/lien", { headers: jsonH, body: { email: "x@exemple.fr", cgu: true } });
+  assert.equal(dernier.statut, 429);
+});
+
+test("comptes : suppression automatique après 3 ans sans connexion", async () => {
+  const { purgerInactifs } = await import(path.join(RACINE, "worker/comptes.js"));
+  const e = envC(); await inscrire(e, "actif@exemple.fr"); await inscrire(e, "ancien@exemple.fr");
+  for (const [k, v] of e.DLC.m) if (k.startsWith("cpt:") && v.includes("ancien")) { const c = JSON.parse(v); c.vu = "2020-01-01"; e.DLC.m.set(k, JSON.stringify(c)); }
+  assert.equal(await purgerInactifs(e), 1);
+  assert.equal([...e.DLC.m.keys()].filter(k => k.startsWith("cpt:")).length, 1);
+});

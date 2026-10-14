@@ -20,7 +20,10 @@ async function audit(p,label){
     for(let i=0;i<boxes.length;i++)for(let j=i+1;j<boxes.length;j++){const a=boxes[i],c=boxes[j];if(a.el===c.el||a.el.contains(c.el)||c.el.contains(a.el))continue;
       const w=Math.min(a.rc.right,c.rc.right)-Math.max(a.rc.left,c.rc.left),h=Math.min(a.rc.bottom,c.rc.bottom)-Math.max(a.rc.top,c.rc.top);
       if(w>3&&h>3&&w*h>40){const ta=top(a),tc=top(c);const va=ta&&(ta===a.el||a.el.contains(ta)||ta.contains(a.el)),vc=tc&&(tc===c.el||c.el.contains(tc)||tc.contains(c.el));
-        if(va&&vc)out.overlap.push(a.t+'  ⟂  '+c.t+' ['+Math.round(w)+'x'+Math.round(h)+']')}}
+        const cx=(Math.max(a.rc.left,c.rc.left)+Math.min(a.rc.right,c.rc.right))/2,cy=(Math.max(a.rc.top,c.rc.top)+Math.min(a.rc.bottom,c.rc.bottom))/2;
+        const t0=document.elementFromPoint(cx,cy);let cache=false;
+        if(t0){const autre=(a.el.contains(t0)||t0.contains(a.el))?c.el:a.el;let x=t0;while(x&&x!==document.body&&!x.contains(autre)){const bg=getComputedStyle(x).backgroundColor;if(bg&&!/rgba\(0, 0, 0, 0\)|transparent/.test(bg)&&x!==a.el&&x!==c.el){cache=true;break}x=x.parentElement}}
+        if(va&&vc&&!cache)out.overlap.push(a.t+'  ⟂  '+c.t+' ['+Math.round(w)+'x'+Math.round(h)+']')}}
     // textes coupés (overflow caché sans ellipse voulue) et éléments plus larges que l'écran
     document.querySelectorAll('body *').forEach(el=>{if(!vis(el))return;const s=getComputedStyle(el);const r=el.getBoundingClientRect();
       if(r.right>vw+2&&!el.closest('.sbl-rail,.sbl-mh .mc,.maplibregl-map,.tbl,.sbl-tabs,.seg'))out.clipped.push('déborde: '+(el.id||el.className||el.tagName)+' '+Math.round(r.right));

@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: "17 4 * * *"
   push:
-    paths: ["scripts/construire.py", ".github/workflows/donnees.yml"]
+    paths: ["scripts/construire.py", "scripts/qualite_donnees.py", ".github/workflows/donnees.yml"]
 permissions:
   contents: write
 concurrency: { group: donnees, cancel-in-progress: false }
@@ -18,6 +18,8 @@ jobs:
       - run: python scripts/construire.py
         env:
           TOUT_ENRICHIR: ${{ github.event_name != 'schedule' && '1' || '0' }}
+      - name: Contrôle qualité avant enregistrement (rien n'est publié si une source a renvoyé des données incohérentes)
+        run: python scripts/verifier.py --donnees
       - run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898299+github-actions[bot]@users.noreply.github.com"

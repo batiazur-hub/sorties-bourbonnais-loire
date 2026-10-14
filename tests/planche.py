@@ -1,5 +1,5 @@
 """Planche de contrôle : réduit les captures des tests mobiles en une image par téléphone (pour relecture rapide)."""
-import glob, json, os, sys
+import glob, os, sys
 from PIL import Image
 src = sys.argv[1] if len(sys.argv) > 1 else "captures"
 out = sys.argv[2] if len(sys.argv) > 2 else "planches"

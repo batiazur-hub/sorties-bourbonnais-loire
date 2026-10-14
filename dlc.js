@@ -267,8 +267,9 @@
     if (mlPromesse) return mlPromesse;
     var base = "https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.";
     mlPromesse = new Promise(function (ok, ko) {
-      var l = el("link"); l.rel = "stylesheet"; l.href = base + "css"; d.head.appendChild(l);
-      var s = el("script"); s.src = base + "js"; s.onload = function () { ok(w.maplibregl); }; s.onerror = function () { ko(Erreur("carte_indisponible", 0, "Impossible de charger la carte.")); };
+      /* Empreintes SRI : le navigateur refuse un fichier modifié sur le CDN (vérifiées en intégration continue) */
+      var l = el("link"); l.rel = "stylesheet"; l.href = base + "css"; l.integrity = "sha384-MinO0mNliZ3vwppuPOUnGa+iq619pfMhLVUXfC4LHwSCvF9H+6P/KO4Q7qBOYV5V"; l.crossOrigin = "anonymous"; d.head.appendChild(l);
+      var s = el("script"); s.src = base + "js"; s.integrity = "sha384-SYKAG6cglRMN0RVvhNeBY0r3FYKNOJtznwA0v7B5Vp9tr31xAHsZC0DqkQ/pZDmj"; s.crossOrigin = "anonymous"; s.onload = function () { ok(w.maplibregl); }; s.onerror = function () { ko(Erreur("carte_indisponible", 0, "Impossible de charger la carte.")); };
       d.head.appendChild(s);
     });
     return mlPromesse;

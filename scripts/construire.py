@@ -7,7 +7,8 @@ Sorties :
   data/communes-fr.json     communes de France (nom, département, lat, lon) pour la recherche
   data/_stats.json          contrôle : répartition par type, classes rencontrées
 """
-import csv, io, json, os, re, sys, unicodedata, urllib.parse, urllib.request, datetime as dt
+import csv, io, json, os, re, unicodedata, urllib.parse, urllib.request, datetime as dt
+from qualite_donnees import assainir, zones
 from collections import Counter, defaultdict
 
 AUJ = dt.date.today()
@@ -607,7 +608,7 @@ def main():
         a, b, autres = per
         if a > HORIZON:
             ecartes["trop lointain"] += 1; continue
-        cpc = r.get("Code_postal_et_commune", "")
+        cpc = r.get("Code_postal_et_commune", "").split("|", 1)[0]  # plusieurs communes possibles : on garde la première
         cp, _, commune = cpc.partition("#")
         dep = dep_de(cp)
         try:
@@ -636,7 +637,7 @@ def main():
         classes_vues.update(cls)
         cat = categorie(titre, cls)
         stats[cat] += 1
-        ev = {"id": "dt-" + r["URI_ID_du_POI"].rsplit("/", 1)[-1][:13], "t": titre, "cat": cat, "z": dep,
+        ev = {"id": "dt-" + r["URI_ID_du_POI"].rsplit("/", 1)[-1], "t": titre, "cat": cat, "z": dep,
               "w": commune, "lieu": ((r.get("Adresse_postale") or "").strip() or commune) + (f" ({arr.group(2)}e)" if arr else ""),
               "s": a.isoformat(), "d": resume(r.get("Description")), "u": premier_lien(r.get("Contacts_du_POI")),
               "src": (r.get("Createur_de_la_donnee") or "DATAtourisme").strip(), "lat": lat, "lon": lon, "o": "dt"}
@@ -686,8 +687,12 @@ def main():
         ecartes["annulée ou reportée"] += avant - len(par_dep[dep])
         if not par_dep[dep]:
             del par_dep[dep]
-    for dep, evs in sorted(par_dep.items()):
+    zones_dep, centres_com = zones([(c["nom"], c["codeDepartement"], c["centre"]["coordinates"][1], c["centre"]["coordinates"][0])
+                                    for c in com if (c.get("centre") or {}).get("coordinates")])
+    for evs in par_dep.values():
         evs.sort(key=lambda e: (e["s"], e["t"]))
+    assainir(par_dep, zones_dep, centres_com, ecartes)
+    for dep, evs in sorted(par_dep.items()):
         json.dump(evs, open(f"data/dep/{dep}.json", "w"), ensure_ascii=False, separators=(",", ":"))
         la = sum(e["lat"] for e in evs) / len(evs); lo = sum(e["lon"] for e in evs) / len(evs)
         index.append({"code": dep, "nom": noms.get(dep, dep), "n": len(evs), "lat": round(la, 3), "lon": round(lo, 3),

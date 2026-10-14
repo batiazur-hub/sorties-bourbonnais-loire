@@ -39,3 +39,13 @@ documentée sur la page `api.html` du site. Chaque appel exige une clé.
   Pour une clé utilisée dans un navigateur, renseigner toujours les **sites autorisés**.
 - Le serveur lit les données publiées sur GitHub Pages (variable facultative `DATA_URL` pour en changer)
   et les garde 30 minutes en cache.
+
+## Limites de l'offre gratuite et choix techniques
+
+- KV gratuit : 100 000 lectures et 1 000 écritures par jour. Les compteurs d'appels sont donc regroupés en mémoire
+  (une écriture toutes les 25 requêtes ou toutes les 60 secondes par instance) : le quota est approximatif à quelques appels près.
+- L'agenda public (`/agenda`) se lit en un seul enregistrement `agenda`, recalculé à chaque publication ou retrait.
+- Toute erreur interne renvoie un JSON `500 erreur_serveur` avec les en-têtes CORS, jamais une page HTML.
+- Le code éditeur est comparé à durée constante.
+- Tests : `node --test tests/worker.test.mjs` (stockage simulé, aucune connexion réseau).
+

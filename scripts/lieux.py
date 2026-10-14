@@ -7,7 +7,8 @@ Sorties :
   data/lieux/index.json     nombre de lieux par département et par type
   data/_lieux_stats.json    contrôle : classes DATAtourisme rencontrées, lieux retenus ou écartés
 """
-import csv, glob, io, json, math, os, re, sys, unicodedata, urllib.parse, urllib.request, datetime as dt
+import csv, glob, io, json, math, os, re, unicodedata, urllib.parse, urllib.request, datetime as dt
+from qualite_donnees import assainir, zones
 from collections import Counter, defaultdict
 
 API = "https://www.data.gouv.fr/api/1/datasets/5b598be088ee387c0c353714/"
@@ -134,7 +135,7 @@ def main():
     res = [r for r in meta["resources"] if r["title"].strip() == "datatourisme-place.csv"][0]
     flux = io.TextIOWrapper(ouvrir(res["url"]), encoding="utf-8-sig", newline="")
     classes_vues = Counter(); classes_gardees = Counter(); ecartes = Counter(); par_type = Counter()
-    par_dep = defaultdict(list); vus = set(); echantillons = []; ech_contacts = []
+    par_dep = defaultdict(list); vus = set(); echantillons = []; ech_contacts = []; lignes_par_dep = Counter()
     lecteur = csv.DictReader(flux)
     for r in lecteur:
         cls = [x.rsplit("#", 1)[-1].rsplit("/", 1)[-1] for x in (r.get("Categories_de_POI") or "").split("|") if x]
@@ -152,8 +153,9 @@ def main():
             echantillons.append({c: (r.get(c) or "")[:300] for c in ("Nom_du_POI", "Periodes_regroupees", "Contacts_du_POI", "Classements_du_POI")})
         if k not in ("musee", "loisirs", "office") and any(FORT_EXCLU.search(c) for c in cls):
             ecartes["hébergement, restauration, commerce"] += 1; continue
-        cp, _, commune = (r.get("Code_postal_et_commune") or "").partition("#")
+        cp, _, commune = (r.get("Code_postal_et_commune") or "").split("|", 1)[0].partition("#")
         dep = dep_de(cp); commune = commune.strip()
+        lignes_par_dep[dep or "?"] += 1
         arr = re.match(r"^(Paris|Lyon|Marseille) \d+", commune)
         if arr:
             commune = arr.group(1)
@@ -171,7 +173,7 @@ def main():
             ecartes["doublon"] += 1; continue
         vus.add(cle)
         classes_gardees.update(cls)
-        lieu = {"id": "lv-" + (r.get("URI_ID_du_POI") or "").rsplit("/", 1)[-1][:13], "t": nom, "k": k, "z": dep, "w": commune,
+        lieu = {"id": "lv-" + (r.get("URI_ID_du_POI") or "").rsplit("/", 1)[-1], "t": nom, "k": k, "z": dep, "w": commune,
                 "a": (r.get("Adresse_postale") or "").strip()[:120], "lat": lat, "lon": lon}
         d = resume(r.get("Description"))
         if d: lieu["d"] = d
@@ -187,6 +189,12 @@ def main():
         src = (r.get("Createur_de_la_donnee") or "").strip()
         if src: lieu["src"] = src
         par_dep[dep].append(lieu); par_type[k] += 1
+    try:
+        with open("data/communes-fr.json", encoding="utf-8") as f:
+            zones_dep, centres_com = zones(json.load(f))
+    except (OSError, ValueError):
+        zones_dep, centres_com = {}, {}
+    assainir(par_dep, zones_dep, centres_com, ecartes)
     avec_horaires = rapprocher(par_dep, osm_horaires())
     print("Horaires OpenStreetMap rattachés :", avec_horaires)
     os.makedirs("data/lieux", exist_ok=True)
@@ -200,7 +208,7 @@ def main():
         index[dep] = {"n": len(L), "m": sum(1 for x in L if x.get("m")), **Counter(x["k"] for x in L)}
     json.dump({"source": res["url"], "total": sum(par_type.values()), "types": par_type, "departements": index},
               open("data/lieux/index.json", "w"), ensure_ascii=False, indent=0)
-    json.dump({"retenus_par_type": par_type, "ecartes": ecartes, "avec_horaires_osm": avec_horaires,
+    json.dump({"retenus_par_type": par_type, "ecartes": ecartes, "lignes_source_par_departement": dict(sorted(lignes_par_dep.items())), "avec_horaires_osm": avec_horaires,
                "avec_periodes": sum(1 for L in par_dep.values() for x in L if x.get("p")), "colonnes": lecteur.fieldnames, "echantillons": echantillons, "contacts_offices": ech_contacts,  "classes_gardees": classes_gardees.most_common(80),
                "classes_vues": classes_vues.most_common(200)}, open("data/_lieux_stats.json", "w"), ensure_ascii=False, indent=1)
     print("Lieux retenus :", dict(par_type), "écartés :", dict(ecartes))

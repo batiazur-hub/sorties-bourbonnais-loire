@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: "41 3 * * 0"
   push:
-    paths: ["scripts/lieux.py", ".github/workflows/lieux.yml"]
+    paths: ["scripts/lieux.py", "scripts/qualite_donnees.py", ".github/workflows/lieux.yml"]
 permissions:
   contents: write
 concurrency: { group: donnees, cancel-in-progress: false }
@@ -16,6 +16,8 @@ jobs:
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
       - run: python scripts/lieux.py
+      - name: Contrôle qualité avant enregistrement (rien n'est publié si une source a renvoyé des données incohérentes)
+        run: python scripts/verifier.py --donnees
       - run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898299+github-actions[bot]@users.noreply.github.com"

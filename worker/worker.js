@@ -38,6 +38,44 @@ function corsPour(req, env) {
            "Access-Control-Allow-Headers": "Content-Type, Authorization", "Vary": "Origin" };
 }
 
+/* Comparaison à durée constante (évite de deviner le code éditeur caractère par caractère) */
+function egal(a, b) {
+  const x = new TextEncoder().encode(String(a)), y = new TextEncoder().encode(String(b));
+  if (x.length !== y.length) return false;
+  if (crypto.subtle && crypto.subtle.timingSafeEqual) return crypto.subtle.timingSafeEqual(x, y);
+  let d = 0; for (let i = 0; i < x.length; i++) d |= x[i] ^ y[i]; return d === 0;
+}
+
+/* Compteurs d'appels par clé et par jour, regroupés en mémoire : l'offre gratuite de KV limite les écritures
+   (1 000 par jour), on n'écrit donc qu'une fois toutes les 25 requêtes ou toutes les 60 secondes par instance. */
+const COMPTEURS = new Map();
+async function compter(env, cu, ctx) {
+  let c = COMPTEURS.get(cu);
+  if (!c) {
+    if (COMPTEURS.size > 500) COMPTEURS.clear();
+    c = { kv: +(await env.DLC.get(cu) || 0), attente: 0, t: Date.now() };
+    COMPTEURS.set(cu, c);
+  }
+  const avant = c.kv + c.attente;
+  c.attente++;
+  if (c.attente >= 25 || Date.now() - c.t > 60000) {
+    const n = c.attente; c.attente = 0; c.t = Date.now();
+    const ecrire = (async () => { const frais = +(await env.DLC.get(cu) || 0); c.kv = Math.max(frais, c.kv) + n;
+      await env.DLC.put(cu, String(c.kv), { expirationTtl: 60 * 60 * 24 * 40 }); })().catch(() => {});
+    if (ctx && ctx.waitUntil) ctx.waitUntil(ecrire); else await ecrire;
+  }
+  return avant;
+}
+async function aConsommer(env, cu) { const c = COMPTEURS.get(cu); return c ? c.kv + c.attente : +(await env.DLC.get(cu) || 0); }
+
+/* Sorties publiées : un seul enregistrement « agenda » (une lecture par visite au lieu d'une liste + N lectures) */
+async function agenda(env) {
+  let a = await env.DLC.get("agenda", "json");
+  if (!a) { a = await tout(env, "a:"); await env.DLC.put("agenda", JSON.stringify(a)); }
+  return a;
+}
+async function majAgenda(env) { await env.DLC.put("agenda", JSON.stringify(await tout(env, "a:"))); }
+
 async function tout(env, prefix) {
   const out = []; let cursor;
   do {
@@ -92,7 +130,7 @@ async function bibliotheque(env, url) {
   const js = (await r.text()).split("__DLC_API__").join(url.origin);
   return new Response(js, { headers: { "Content-Type": "application/javascript; charset=utf-8", "Cache-Control": "public, max-age=3600", "Access-Control-Allow-Origin": "*" } });
 }
-async function api(req, env, url, p) {
+async function api(req, env, url, p, ctx) {
   if (p === "/v1/dlc.js") return bibliotheque(env, url);
   const ouvert = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "GET, OPTIONS", "Access-Control-Allow-Headers": "X-API-Key, Content-Type" };
   if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: ouvert });
@@ -107,9 +145,8 @@ async function api(req, env, url, p) {
     cors = Object.assign({}, ouvert, { "Access-Control-Allow-Origin": origine || k.origines[0], "Vary": "Origin" });
   }
   const jour = new Date().toISOString().slice(0, 10), cu = "u:" + cle + ":" + jour;
-  const n = +(await env.DLC.get(cu) || 0);
-  if (k.quota && n >= k.quota) return json({ erreur: "quota_atteint", quota: k.quota }, 429, cors);
-  await env.DLC.put(cu, String(n + 1), { expirationTtl: 60 * 60 * 24 * 40 });
+  if (k.quota && await aConsommer(env, cu) >= k.quota) return json({ erreur: "quota_atteint", quota: k.quota }, 429, cors);
+  const n = await compter(env, cu, ctx);
   const q = url.searchParams;
   const entetes = Object.assign({ "Content-Type": "application/json; charset=utf-8", "Cache-Control": "public, max-age=600", "X-Quota-Restant": k.quota ? String(k.quota - n - 1) : "illimité" }, cors);
   const rep = d => new Response(JSON.stringify(Object.assign(d, { licence: LICENCE })), { headers: entetes });
@@ -123,15 +160,18 @@ async function api(req, env, url, p) {
   }
   // départements demandés, limités à ceux de la clé
   let deps = liste(q.get("dep")).map(x => x.toUpperCase());
+  const plat = parseFloat(q.get("lat")), plon = parseFloat(q.get("lon"));
+  if (!deps.length && isFinite(plat) && isFinite(plon)) {  // position sans département : les départements proches, dans la limite de la clé
+    deps = (await depsDeZone(env, { lat: plat, lon: plon, rayon: Math.min(300, parseFloat(q.get("rayon")) || 20) }))
+      .filter(d => !(k.deps && k.deps.length) || k.deps.includes(d));
+    if (!deps.length) return json({ erreur: "hors_zone", message: "Cette position est hors de la zone de votre clé." }, 403, cors);
+  }
   if (k.deps && k.deps.length) {
     const demandes = deps.length;
     deps = demandes ? deps.filter(x => k.deps.includes(x)) : k.deps.slice();
     if (demandes && !deps.length) return json({ erreur: "departement_non_autorise", autorises: k.deps }, 403, cors);
     if (!demandes && deps.length > MAX_DEPS) deps = deps.slice(0, MAX_DEPS);
   }
-  // sans département ni clé limitée : on déduit les départements de la position demandée
-  const qlat0 = parseFloat(q.get("lat")), qlon0 = parseFloat(q.get("lon"));
-  if (!deps.length && isFinite(qlat0) && isFinite(qlon0)) deps = await depsDeZone(env, { lat: qlat0, lon: qlon0, rayon: Math.min(300, parseFloat(q.get("rayon")) || 20) });
   if (!deps.length) return json({ erreur: "dep_requis", message: "Indiquez un ou plusieurs départements (dep=03,58) ou une position (lat, lon, rayon)." }, 400, cors);
   if (deps.length > MAX_DEPS) return json({ erreur: "trop_de_departements", max: MAX_DEPS }, 400, cors);
   let types = liste(q.get("type"));
@@ -180,14 +220,22 @@ async function api(req, env, url, p) {
 }
 
 export default {
-  async fetch(req, env) {
+  async fetch(req, env, ctx) {
+    try { return await traiter(req, env, ctx); }
+    catch (e) {  // jamais de page d'erreur HTML sans CORS : le site affiche un message propre
+      return json({ erreur: "erreur_serveur", message: "Erreur interne, réessayez dans un instant." }, 500, Object.assign({ "Access-Control-Allow-Origin": "*" }, corsPour(req, env)));
+    }
+  }
+};
+
+async function traiter(req, env, ctx) {
     const cors = corsPour(req, env), url = new URL(req.url), p = url.pathname.replace(/\/+$/, "");
-    if (p.startsWith("/v1/")) return api(req, env, url, p);
+    if (p.startsWith("/v1/")) return api(req, env, url, p, ctx);
     if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: cors });
 
     if (req.method === "GET" && p === "/agenda") {
       const auj = new Date().toISOString().slice(0, 10);
-      const ev = (await tout(env, "a:")).filter(e => (e.e || e.s) >= auj);
+      const ev = (await agenda(env)).filter(e => (e.e || e.s) >= auj);
       return new Response(JSON.stringify(ev), { headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "public, max-age=300", ...cors } });
     }
 
@@ -216,7 +264,7 @@ export default {
 
     if (p.startsWith("/admin/")) {
       const tok = (req.headers.get("Authorization") || "").replace(/^Bearer\s+/i, "");
-      if (!env.ADMIN_TOKEN || tok !== env.ADMIN_TOKEN) return json({ erreur: "non_autorise" }, 401, cors);
+      if (!env.ADMIN_TOKEN || !egal(tok, env.ADMIN_TOKEN)) return json({ erreur: "non_autorise" }, 401, cors);
       if (req.method === "GET" && p === "/admin/cles") {
         const out = []; let cursor;
         const jour = new Date().toISOString().slice(0, 10);
@@ -236,11 +284,11 @@ export default {
       if (p === "/admin/publish" && b.event) {
         const e = b.event; e.id = k; e.p = 1;
         await env.DLC.put("a:" + k, JSON.stringify(e));
-        await env.DLC.delete("p:" + k); return json({ ok: true }, 200, cors);
+        await env.DLC.delete("p:" + k); await majAgenda(env); return json({ ok: true }, 200, cors);
       }
       if (p === "/admin/refuse") { await env.DLC.delete("p:" + k); return json({ ok: true }, 200, cors); }
       if (p === "/admin/source") { await env.DLC.delete("s:" + k); return json({ ok: true }, 200, cors); }
-      if (p === "/admin/unpublish") { await env.DLC.delete("a:" + k); return json({ ok: true }, 200, cors); }
+      if (p === "/admin/unpublish") { await env.DLC.delete("a:" + k); await majAgenda(env); return json({ ok: true }, 200, cors); }
       if (p === "/admin/cles" && req.method === "POST") {
         const cle = nouvelleCle(), r = reglages(b, { active: true, cree: new Date().toISOString(), quota: 5000, lieux: true });
         if (!r.nom) return json({ erreur: "nom_requis" }, 400, cors);
@@ -256,5 +304,4 @@ export default {
       }
     }
     return json({ erreur: "introuvable" }, 404, cors);
-  }
-};
+}

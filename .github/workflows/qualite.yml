@@ -1,0 +1,37 @@
+name: Contrôle qualité
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    paths-ignore: ["data/**"]
+permissions:
+  contents: read
+jobs:
+  verifier:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - uses: actions/setup-node@v4
+        with: { node-version: "22" }
+      - name: Python sans erreur (pyflakes)
+        run: pip install --quiet pyflakes && python -m pyflakes scripts tests/planche.py
+      - name: JavaScript sans erreur de syntaxe
+        run: |
+          for f in dlc.js config.js vendor/qrcode.js tests/mobile.mjs; do node --check "$f"; done
+          node --input-type=module -e "await import('./worker/worker.js')"
+      - name: Données, liens, pages générées à jour, aucun secret
+        run: python scripts/verifier.py
+      - name: Tests du serveur (Worker)
+        run: node --test tests/worker.test.mjs
+      - name: Empreintes SRI de MapLibre identiques au CDN et à la copie hébergée
+        run: |
+          for t in js css; do
+            attendu=$(grep -o "sha384-[A-Za-z0-9+/=]*" dlc.js | sed -n "$([ $t = js ] && echo 2 || echo 1)p")
+            cdn="sha384-$(curl -sfL https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.$t | openssl dgst -sha384 -binary | openssl base64 -A)"
+            local="sha384-$(openssl dgst -sha384 -binary vendor/maplibre-gl-4.7.1/maplibre-gl.$t | openssl base64 -A)"
+            echo "$t attendu=$attendu cdn=$cdn local=$local"
+            [ "$attendu" = "$cdn" ] && [ "$attendu" = "$local" ]
+          done

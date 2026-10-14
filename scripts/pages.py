@@ -4,10 +4,13 @@ ainsi que sitemap.xml et robots.txt. Toutes partagent pages.css et la police aut
 Les informations de l'éditeur sont regroupées dans EDITEUR : c'est le seul endroit à modifier.
 Une valeur None s'affiche « à compléter » en surbrillance, pour ne rien publier d'inexact.
 """
-import json, html, datetime as dt
+import json, html, os, datetime as dt
+
+RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SORTIE = os.environ.get("PAGES_SORTIE", RACINE)  # dossier où écrire les pages (le contrôle qualité les génère à part)
 
 SITE = "https://batiazur-hub.github.io/sorties-bourbonnais-loire/"
-MAJ = "13 octobre 2026"
+MAJ = "14 octobre 2026"
 EDITEUR = {
     "nom": "Clément Monteiro EI",
     "forme": "entrepreneur individuel (micro-entreprise), nom commercial « Saryn Digital »",
@@ -186,11 +189,10 @@ P["confidentialite.html"] = ("Politique de confidentialité", "Ce que le site en
 <tbody>
 <tr><td>GitHub Pages (hébergeur, États-Unis)</td><td>Héberge le site. Conserve des journaux techniques pour la sécurité. Transferts encadrés par le Data Privacy Framework UE–États-Unis.</td></tr>
 <tr><td>Géoplateforme de l’IGN (France)</td><td>Fonds de carte.</td></tr>
-<tr><td>jsDelivr</td><td>Fournit la bibliothèque d’affichage de la carte.</td></tr>
 <tr><td>Wikipédia / Wikimedia</td><td>Photos des communes.</td></tr>
 <tr><td>Sites des organisateurs</td><td>Affiches des événements, chargées depuis la source.</td></tr>
 </tbody></table></div>
-<p>La police de caractères est hébergée sur le site lui-même : aucun appel à Google Fonts.</p>
+<p>La police de caractères et la bibliothèque d’affichage de la carte sont hébergées sur le site lui-même : aucun appel à Google Fonts ni à un réseau de diffusion tiers.</p>
 <p>Lorsque vous ouvrez un itinéraire ou ajoutez une sortie à votre agenda, vous quittez le site pour Waze, Apple Plans, Google Maps, Google Agenda ou Outlook, qui appliquent leur propre politique.</p>
 
 <h2>Vos droits</h2>
@@ -242,7 +244,7 @@ P["accessibilite.html"] = ("Accessibilité", "Ce qui a été vérifié pour que 
 <p>Si vous ne parvenez pas à accéder à une information, écrivez à {mail()} : une réponse ou une version accessible vous sera proposée.</p>
 """)
 
-DEPS = json.load(open("data/departements.json"))["departements"]
+DEPS = json.load(open(os.path.join(RACINE, "data/departements.json"), encoding="utf-8"))["departements"]
 deps_li = "".join(f'<li><a href="index.html#dep={d["code"]}">{html.escape(d["nom"])}</a> <span>{d["code"]}</span></li>' for d in sorted(DEPS, key=lambda d: d["code"].replace("2A", "20A").replace("2B", "20B").zfill(3)) if d.get("n"))
 P["plan-du-site.html"] = ("Plan du site", "Toutes les pages et tous les départements couverts.", f"""
 <h2>Les sorties</h2>
@@ -308,12 +310,11 @@ P["integrer.html"] = ("Intégrer l’agenda", "Ajoutez « Dans le coin » à vot
 </script>
 """)
 
-import os
 TETE["api.html"] = '\n<script src="config.js"></script>\n<script src="dlc.js"></script>'
 P["api.html"] = ("API Dans le coin", "Ajoutez les sorties et les lieux à visiter de toute la France à votre site ou à votre application : une ligne de script et votre clé, comme pour Google Maps.",
                  open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "api_page.html"), encoding="utf-8").read())
 
-TETE["cles.html"] = '\n<meta name="robots" content="noindex, nofollow">\n<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css">\n<script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>\n<script src="config.js"></script>'
+TETE["cles.html"] = '\n<meta name="robots" content="noindex, nofollow">\n<link rel="stylesheet" href="vendor/maplibre-gl-4.7.1/maplibre-gl.css">\n<script src="vendor/maplibre-gl-4.7.1/maplibre-gl.js"></script>\n<script src="config.js"></script>'
 P["cles.html"] = ("Générateur de clés API", "Espace éditeur : choisissez la zone et les critères, vérifiez ce que la clé récupérera, puis générez-la.", """
 <form class="gen" id="cx" autocomplete="on">
 <div class="row"><label for="cx-url">Adresse du serveur</label><input id="cx-url" type="url" placeholder="https://dans-le-coin.compte.workers.dev"></div>
@@ -409,10 +410,10 @@ P["cles.html"] = ("Générateur de clés API", "Espace éditeur : choisissez la 
   get("data/departements.json").then(d=>{DEPS=d.departements||[];maj()});
   const K=s=>N(s).replace(/[-']/g," ").replace(/\\s+/g," ").trim();
   get("data/communes-fr.json").then(a=>{COMS=a});
-  $("gz-com").addEventListener("input",()=>{if(!COMS)return;const v=K($("gz-com").value.replace(/\\s*\([^)]*\)\\s*$/,""));if(v.length<2)return;
+  $("gz-com").addEventListener("input",()=>{if(!COMS)return;const v=K($("gz-com").value.replace(/\\s*\\([^)]*\\)\\s*$/,""));if(v.length<2)return;
     $("gz-cl").innerHTML=COMS.filter(c=>K(c[0]).startsWith(v)).slice(0,40).map(c=>'<option value="'+(c[0]+" ("+c[1]+")").replace(/"/g,"&quot;")+'">').join("")});
   /* « Moulins (03) » ; sans département, on prend l'homonyme le plus proche de la zone actuelle */
-  $("gz-com").addEventListener("change",()=>{if(!COMS)return;const raw=$("gz-com").value,m=raw.match(/\(([0-9AB]{2,3})\)\\s*$/i),v=K(raw.replace(/\\s*\([^)]*\)\\s*$/,""));
+  $("gz-com").addEventListener("change",()=>{if(!COMS)return;const raw=$("gz-com").value,m=raw.match(/\\(([0-9AB]{2,3})\\)\\s*$/i),v=K(raw.replace(/\\s*\\([^)]*\\)\\s*$/,""));
     const cand=COMS.filter(c=>K(c[0])===v&&(!m||c[1]===m[1].toUpperCase()));if(!cand.length)return;
     const c=cand.sort((a,b)=>kmd(centre.lat,centre.lon,a[2],a[3])-kmd(centre.lat,centre.lon,b[2],b[3]))[0];
     centre={lat:c[2],lon:c[3],nom:c[0]+" ("+c[1]+")"};$("gz-com").value=centre.nom;if(map)map.flyTo({center:[c[3],c[2]],zoom:9});maj()});
@@ -447,11 +448,12 @@ P["cles.html"] = ("Générateur de clés API", "Espace éditeur : choisissez la 
 """)
 
 for f, (t, intro, corps) in P.items():
-    open(f, "w").write(page(f, t, intro, corps))
+    with open(os.path.join(SORTIE, f), "w", encoding="utf-8") as h:
+        h.write(page(f, t, intro, corps))
 
 urls = ["", "plan-du-site.html", "mentions-legales.html", "cgu.html", "confidentialite.html", "intelligence-artificielle.html", "accessibilite.html", "integrer.html", "api.html"]
 jour = dt.date.today().isoformat()
-open("sitemap.xml", "w").write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+open(os.path.join(SORTIE, "sitemap.xml"), "w", encoding="utf-8").write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
     "".join(f"  <url><loc>{SITE}{u}</loc><lastmod>{jour}</lastmod><changefreq>{'daily' if not u else 'monthly'}</changefreq></url>\n" for u in urls) + "</urlset>\n")
-open("robots.txt", "w").write(f"User-agent: *\nAllow: /\nDisallow: /data/enrich/\nSitemap: {SITE}sitemap.xml\n")
+open(os.path.join(SORTIE, "robots.txt"), "w", encoding="utf-8").write(f"User-agent: *\nAllow: /\nDisallow: /data/enrich/\nSitemap: {SITE}sitemap.xml\n")
 print("Pages :", ", ".join(P))

@@ -2,7 +2,7 @@ name: Tests mobile (iPhone Safari et Android Chrome)
 on:
   workflow_dispatch:
   push:
-    paths: ["index.html", "*.html", "pages.css", "tests/**", ".github/workflows/tests-mobile.yml"]
+    paths: ["*.html", "src/**", "dlc.js", "pages.css", "vendor/**", "tests/mobile.mjs", ".github/workflows/tests-mobile.yml"]
 permissions:
   contents: write
 jobs:

@@ -1,0 +1,1690 @@
+<title>Dans le coin</title>
+<link rel="stylesheet" href="fonts/figtree.css">
+<style>
+%%MAPCSS%%
+</style>
+<style>
+/* Mise en page : bandeau, barre de filtres collante, puis liste à gauche et carte/calendrier à droite (onglets sur téléphone).
+   Intégration : toutes les couleurs, polices et arrondis passent par les variables --sbl-*. Un site hôte peut les redéfinir sur .sbl
+   ou appeler SortiesBL.setTheme({...}). */
+:root{
+  --sbl-bg:#ffffff; --sbl-surface:#ffffff; --sbl-soft:#f4f4f1; --sbl-ink:#151515; --sbl-muted:#6d6d68; --sbl-line:#e9e9e5; --sbl-hover:#f4f4f1;
+  --sbl-head:#ffffff; --sbl-head-ink:#151515; --sbl-accent:#151515; --sbl-accent-ink:#ffffff;
+  --sbl-land:#f1f1ec; --sbl-out:#e6e6e0; --sbl-border:#a9a9a2; --sbl-water:#7fb0c8;
+  --sbl-c-brocante:#b85c00; --sbl-c-fete:#23824a; --sbl-c-spectacle:#b8285a; --sbl-c-culture:#5a3fc4; --sbl-c-famille:#8f6a00; --sbl-c-sport:#1668b8; --sbl-c-pal:#56801a; --sbl-bad:#b3261e;
+  --sbl-p-brocante:#f07d00; --sbl-p-fete:#2b9a4a; --sbl-p-spectacle:#d6336c; --sbl-p-culture:#6741d9; --sbl-p-famille:#e5a800; --sbl-p-sport:#1c7ed6; --sbl-p-pal:#74a520;
+  --sbl-display:"Figtree","Segoe UI",Roboto,Arial,sans-serif;
+  --sbl-body:"Figtree","Segoe UI",Roboto,Arial,sans-serif;
+  --sbl-radius:999px; --sbl-card-r:18px; --sbl-tap:44px; --sbl-ink-fixed:#151515;
+  --sbl-shadow:0 1px 2px rgb(0 0 0 / .05),0 6px 24px rgb(0 0 0 / .08);
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --sbl-bg:#121212; --sbl-surface:#1b1b1a; --sbl-soft:#202020; --sbl-ink:#f1f1ee; --sbl-muted:#a4a49e; --sbl-line:#2b2b29; --sbl-hover:#232322;
+  --sbl-head:#121212; --sbl-head-ink:#f1f1ee; --sbl-accent:#f1f1ee; --sbl-accent-ink:#121212;
+  --sbl-land:#1e1e1d; --sbl-out:#151515; --sbl-border:#5e5e59; --sbl-water:#4b8aa6;
+  --sbl-c-brocante:#f39a45; --sbl-c-fete:#5fc98a; --sbl-c-spectacle:#ef7aa5; --sbl-c-culture:#a596f2; --sbl-c-famille:#e6be4f; --sbl-c-sport:#62b4ef; --sbl-c-pal:#a8c862; --sbl-bad:#ff8a80;
+  --sbl-shadow:0 1px 2px rgb(0 0 0 / .4),0 8px 28px rgb(0 0 0 / .45);
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --sbl-bg:#121212; --sbl-surface:#1b1b1a; --sbl-soft:#202020; --sbl-ink:#f1f1ee; --sbl-muted:#a4a49e; --sbl-line:#2b2b29; --sbl-hover:#232322;
+  --sbl-head:#121212; --sbl-head-ink:#f1f1ee; --sbl-accent:#f1f1ee; --sbl-accent-ink:#121212;
+  --sbl-land:#1e1e1d; --sbl-out:#151515; --sbl-border:#5e5e59; --sbl-water:#4b8aa6;
+  --sbl-c-brocante:#f39a45; --sbl-c-fete:#5fc98a; --sbl-c-spectacle:#ef7aa5; --sbl-c-culture:#a596f2; --sbl-c-famille:#e6be4f; --sbl-c-sport:#62b4ef; --sbl-c-pal:#a8c862; --sbl-bad:#ff8a80;
+  --sbl-shadow:0 1px 2px rgb(0 0 0 / .4),0 8px 28px rgb(0 0 0 / .45);
+  color-scheme:dark}
+body{background:var(--sbl-bg);color:var(--sbl-ink);margin:0}
+.sbl{background:var(--sbl-bg);color:var(--sbl-ink);font:16px/1.5 var(--sbl-body)}
+.sbl *{box-sizing:border-box}
+.sbl button,.sbl input,.sbl select,.sbl textarea{font:inherit;color:inherit}
+.sbl button{cursor:pointer}
+.sbl :focus-visible{outline:3px solid var(--sbl-accent);outline-offset:2px}
+.sbl a{color:inherit}
+.sbl.kiosk{font-size:19px}
+
+.sbl-head{background:var(--sbl-head);color:var(--sbl-head-ink);padding:16px}
+.sbl-head .in{max-width:1400px;margin:0 auto;display:flex;flex-wrap:wrap;gap:6px 28px;align-items:baseline;justify-content:space-between}
+.sbl-head h1{margin:0;font:700 clamp(1.7rem,4.2vw,2.5rem)/1 var(--sbl-display);letter-spacing:.005em}
+.sbl-head .sub{font-size:.95rem;opacity:.8}
+
+.sbl-bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:1000;background:var(--sbl-bg);border-bottom:1px solid var(--sbl-line);padding:10px 16px}
+.sbl-bar .in{max-width:1400px;margin:0 auto;display:grid;gap:8px}
+.sbl-q{width:100%;height:var(--sbl-tap);border:1px solid var(--sbl-border);border-radius:var(--sbl-radius);background:var(--sbl-surface);padding:0 14px}
+.sbl-row{display:flex;gap:6px;align-items:center;overflow-x:auto;scrollbar-width:none}
+.sbl-row::-webkit-scrollbar{display:none}
+.sbl-row .k{flex:none;width:44px;color:var(--sbl-muted);font-size:.88rem}
+.sbl-b{flex:none;height:38px;border:1px solid var(--sbl-line);border-radius:var(--sbl-radius);background:var(--sbl-surface);padding:0 12px;display:inline-flex;align-items:center;gap:8px;font-size:.93rem;white-space:nowrap}
+.sbl-b:hover{border-color:var(--sbl-border)}
+.sbl-b i{width:9px;height:9px;background:var(--c);flex:none}
+.sbl-b[aria-pressed="true"]{background:var(--sbl-ink);border-color:var(--sbl-ink);color:var(--sbl-bg)}
+.sbl-b.x{background:var(--sbl-accent);border-color:var(--sbl-accent);color:var(--sbl-accent-ink);font-weight:600}
+
+.sbl-tabs{display:none;max-width:1400px;margin:12px auto 0;padding-inline:16px;gap:0}
+.sbl-tab{flex:1;height:42px;border:1px solid var(--sbl-line);background:var(--sbl-surface);font-weight:600}
+.sbl-tab+.sbl-tab{border-left:0}
+.sbl-tab[aria-selected="true"]{background:var(--sbl-ink);color:var(--sbl-bg);border-color:var(--sbl-ink)}
+
+.sbl-main{max-width:1400px;margin:0 auto;padding-block:8px 40px;padding-inline:16px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:28px;align-items:start}
+.sbl-side{position:sticky;top:178px;display:grid;gap:10px}
+.sbl-switch{display:flex;gap:0}
+.sbl-switch button{height:36px;padding:0 16px;border:1px solid var(--sbl-line);background:var(--sbl-surface);font-weight:600}
+.sbl-switch button+button{border-left:0}
+.sbl-switch button[aria-selected="true"]{background:var(--sbl-ink);color:var(--sbl-bg);border-color:var(--sbl-ink)}
+
+.sbl-sum{display:flex;justify-content:space-between;gap:10px;align-items:baseline;flex-wrap:wrap;padding:14px 0 4px;color:var(--sbl-muted);font-size:.92rem}
+.sbl-sum b{color:var(--sbl-ink);font:700 1.15rem var(--sbl-display)}
+.sbl-day{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin:18px 0 0;padding-bottom:6px;border-bottom:2px solid var(--sbl-ink)}
+.sbl-day h2{margin:0;font:700 1.35rem/1.1 var(--sbl-display);text-transform:none}
+.sbl-day span{color:var(--sbl-muted);font-size:.85rem}
+.sbl-grp{display:grid;gap:8px;padding-top:10px}
+.sbl-ev{display:grid;grid-template-columns:112px minmax(0,1fr);gap:14px;align-items:center;width:100%;text-align:left;background:var(--sbl-surface);border:1px solid var(--sbl-line);border-radius:var(--sbl-card-r);padding:7px 12px 7px 7px}
+.sbl-ev:hover{border-color:var(--sbl-border)}
+.sbl-th{position:relative;display:block;aspect-ratio:4/3;max-width:100%;border-radius:calc(var(--sbl-card-r) - 4px);overflow:hidden;background:color-mix(in srgb,var(--pc) 16%,var(--sbl-surface)) center/cover no-repeat;color:var(--pc)}
+.sbl-th .fb{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:.9}
+.sbl-th.ph .fb{display:none}
+.sbl-th.ph::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,rgb(0 0 0 / .45))}
+.sbl-th .dch{position:absolute;left:6px;bottom:6px;z-index:1;background:var(--sbl-surface);color:var(--sbl-ink);border-radius:7px;padding:2px 7px 3px;line-height:1.05;text-align:center;font-family:var(--sbl-display);box-shadow:0 1px 3px rgb(0 0 0 / .2)}
+.sbl-th .dch small{display:block;font-size:.76rem;font-weight:600;color:var(--sbl-muted);text-transform:uppercase;letter-spacing:.04em}
+.sbl-th .dch b{font-size:.98rem;font-weight:700;white-space:nowrap}
+.sbl-ev .tx{min-width:0;display:grid;gap:2px}
+.sbl-ev .c,.sbl-card .c{display:inline-flex;align-items:center;gap:5px;color:var(--c);font-size:.82rem;font-weight:700}
+.sbl-ev h3{margin:0;font:600 1.03rem/1.28 var(--sbl-body)}
+.sbl-ev .m{color:var(--sbl-muted);font-size:.87rem}
+.sbl-ic{flex:none;display:block}
+.sbl-badge{display:inline-flex;align-items:center;gap:5px;justify-self:start;width:max-content;max-width:100%;padding:2px 9px 2px 7px;border-radius:999px;background:color-mix(in srgb,var(--bc) 14%,var(--sbl-surface));color:var(--bc);font-size:.76rem;font-weight:700;line-height:1.5}
+.sbl-badge.lg{font-size:.85rem;margin:-4px 0 12px}
+.sbl-b .bi{color:var(--c);display:inline-flex}
+.sbl-b[aria-pressed="true"] .bi{color:inherit}
+.sbl-wk{margin-top:6px}
+.sbl-wkh{display:flex;justify-content:space-between;align-items:baseline;margin:10px 0 8px}
+.sbl-wkh h2{margin:0;font:700 1.45rem var(--sbl-display)}
+.sbl-wkh button{border:0;background:none;color:var(--sbl-ink);font-weight:600;text-decoration:underline;text-underline-offset:3px;min-height:var(--sbl-tap)}
+.sbl-rail{display:grid;grid-auto-flow:column;grid-auto-columns:min(240px,72%);gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px;scrollbar-width:thin}
+.sbl-card{scroll-snap-align:start;display:grid;gap:8px;text-align:left;background:none;border:0;padding:0;min-width:0}
+.sbl-card .sbl-th{aspect-ratio:3/2;border-radius:var(--sbl-card-r)}
+.sbl-card .ich,.sbl-hero .ich{position:absolute;right:8px;top:8px;z-index:1;width:32px;height:32px;border-radius:50%;background:var(--pc);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 3px rgb(0 0 0 / .3)}
+.sbl-card .tx{display:grid;gap:2px;padding:0 2px}
+.sbl-card h3{margin:0;font:600 1rem/1.25 var(--sbl-body);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.sbl-card .m{color:var(--sbl-muted);font-size:.85rem}
+.sbl-card:hover h3{text-decoration:underline;text-underline-offset:3px}
+.sbl-hero{position:relative;overflow:hidden;margin:-18px -20px 14px;aspect-ratio:16/8;max-width:calc(100% + 40px);background:color-mix(in srgb,var(--pc) 16%,var(--sbl-surface)) center/cover no-repeat;color:var(--pc)}
+.sbl-hero .fb{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.sbl-hero.ph .fb{display:none}
+.sbl-hero .ich{left:16px;right:auto;top:auto;bottom:14px;width:40px;height:40px}
+.sbl-hero .cl.cl{color:var(--sbl-ink);position:absolute;right:12px;top:12px;z-index:2;border-radius:50%;border:0;background:var(--sbl-surface);box-shadow:0 1px 4px rgb(0 0 0 / .3)}
+.sbl-hero .cr{position:absolute;right:10px;bottom:2px;padding:6px 0;line-height:1.2;min-height:24px;z-index:1;max-width:calc(100% - 84px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:.72rem;color:#fff;text-shadow:0 0 4px #000;text-decoration:none}
+.sbl-hero.ph::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgb(0 0 0 / .15),transparent 40%,rgb(0 0 0 / .35))}
+.sbl-sheet.ev{border-top:0}
+.sbl-hero.poster{background:#111}
+.sbl-hero.poster::before{content:"";position:absolute;inset:-20px;background:var(--img) center/cover;filter:blur(18px) brightness(.7);transform:scale(1.1)}
+.sbl-hero.poster::after{display:none}
+.sbl-hero .pst{position:relative;z-index:1;display:block;height:100%;max-width:100%;margin:0 auto;object-fit:contain}
+.sbl-leg i{color:var(--pc);display:inline-flex}
+.sbl-pin .nb{fill:#fff;stroke:var(--pc);stroke-width:1.6}
+.sbl-pin text{fill:var(--sbl-ink-fixed);font:700 10px/1 var(--sbl-display)}
+.sbl-cd .tm{display:flex;align-items:center;gap:5px}
+.sbl-pop .k{display:flex;align-items:center;gap:5px}
+.sbl-none{padding:26px 6px;color:var(--sbl-muted)}
+.sbl-info{border-left:3px solid var(--sbl-c-pal);background:var(--sbl-surface);padding:10px 12px;font-size:.92rem;margin-top:10px}
+
+.sbl-box{background:var(--sbl-surface);border:1px solid var(--sbl-line);border-radius:var(--sbl-radius);overflow:hidden}
+#sbl-map{height:min(68vh,620px);min-height:360px;background:var(--sbl-out)}
+.sbl.kiosk #sbl-map{height:min(72vh,760px)}
+.sbl-mapnote{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:8px 12px;border-top:1px solid var(--sbl-line);font-size:.82rem;color:var(--sbl-muted)}
+.sbl [hidden]{display:none!important}
+.sbl-mapbox{position:relative}
+.sbl .maplibregl-map{font-family:var(--sbl-body)}
+.sbl-mk{width:34px;height:46px}
+.sbl-pin{display:block;width:34px;height:46px;padding:0;border:0;background:none;cursor:pointer;filter:drop-shadow(0 2px 2px rgb(0 0 0 / .35));transform-origin:50% 100%;transition:transform .12s}
+.sbl-pin:hover,.sbl-pin:focus-visible{transform:scale(1.15)}
+.sbl-pin.on{transform:scale(1.25)}
+.sbl-pin svg{display:block}
+.sbl-pin .b{fill:var(--pc);stroke:#fff;stroke-width:2}
+.sbl-pin .b.mx{fill:#ffffff;stroke:#151515;stroke-width:2.2}
+.sbl-pin text.mxn{fill:#151515;font:700 11px/1 var(--sbl-display)}
+.sbl-pop .k{color:var(--c);font-weight:700;font-size:.85rem}
+.sbl-leg{display:flex;flex-wrap:wrap;gap:4px 12px;padding:8px 12px;border-top:1px solid var(--sbl-line);font-size:.84rem;color:var(--sbl-ink)}
+.sbl-leg span{display:inline-flex;align-items:center;gap:5px}
+.sbl-lab{display:flex;align-items:center;gap:5px;pointer-events:none;white-space:nowrap}
+.sbl-lab i{width:6px;height:6px;border-radius:50%;background:var(--sbl-muted);flex:none}
+.sbl-lab span{font:600 12px/1 var(--sbl-body);color:var(--sbl-muted);text-shadow:0 0 3px var(--sbl-land),0 0 3px var(--sbl-land)}
+.sbl-lab.big span{font:700 14px/1 var(--sbl-display);color:var(--sbl-ink)}
+.sbl-lab.dep span{font:600 13px/1 var(--sbl-display);color:var(--sbl-border);letter-spacing:.18em;text-transform:uppercase;text-shadow:none}
+.sbl-lab.riv span{font:italic 500 12px/1 var(--sbl-body);color:var(--sbl-water);text-shadow:none}
+.z-lo .sbl-lab.small{display:none}
+.sbl .maplibregl-popup-content{background:var(--sbl-surface);color:var(--sbl-ink);border-radius:var(--sbl-radius);padding:14px 16px;box-shadow:0 6px 20px rgb(0 0 0 / .28)}
+.sbl .maplibregl-popup-anchor-bottom .maplibregl-popup-tip,.sbl .maplibregl-popup-anchor-bottom-left .maplibregl-popup-tip,.sbl .maplibregl-popup-anchor-bottom-right .maplibregl-popup-tip{border-top-color:var(--sbl-surface)}
+.sbl .maplibregl-popup-anchor-top .maplibregl-popup-tip,.sbl .maplibregl-popup-anchor-top-left .maplibregl-popup-tip,.sbl .maplibregl-popup-anchor-top-right .maplibregl-popup-tip{border-bottom-color:var(--sbl-surface)}
+.sbl .maplibregl-popup-anchor-left .maplibregl-popup-tip{border-right-color:var(--sbl-surface)}
+.sbl .maplibregl-popup-anchor-right .maplibregl-popup-tip{border-left-color:var(--sbl-surface)}
+.sbl .maplibregl-popup-close-button{width:34px;height:34px;font-size:22px;color:var(--sbl-muted)}
+.sbl-pop h4{margin:0;padding-right:24px;font:700 1.25rem var(--sbl-display)}
+.sbl-pop p{margin:0 0 6px;color:var(--sbl-muted)}
+.sbl-pop ul{margin:0 0 10px;padding-left:18px;font-size:.88rem}
+.sbl-pop .sbl-btn{min-height:40px;padding:0 12px;font-size:.9rem;color:var(--sbl-ink)}
+.sbl-pop .sbl-btn.go{color:var(--sbl-accent-ink)}
+.sbl-pop>.sbl-btn{width:100%}
+.sbl-poph{margin:12px 0 6px;font-weight:600}
+.sbl-fonds{position:absolute;top:10px;left:10px;z-index:3;display:flex;box-shadow:0 1px 4px rgb(0 0 0 / .3);border-radius:var(--sbl-radius);overflow:hidden}
+.sbl-fonds button{height:34px;padding:0 11px;border:0;border-right:1px solid var(--sbl-line);background:var(--sbl-surface);font-size:.85rem;font-weight:600}
+.sbl-fonds button:last-child{border-right:0}
+.sbl-fonds button[aria-pressed="true"]{background:var(--sbl-ink);color:var(--sbl-bg)}
+
+.sbl-calh{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border-bottom:1px solid var(--sbl-line)}
+.sbl-calh h2{margin:0;font:700 1.3rem var(--sbl-display)}
+.sbl-calh button{width:var(--sbl-tap);height:var(--sbl-tap);border:1px solid var(--sbl-line);background:var(--sbl-surface);border-radius:var(--sbl-radius);font-size:1.3rem}
+.sbl-cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:1px;background:var(--sbl-line);border-bottom:1px solid var(--sbl-line)}
+.sbl-cal>*{background:var(--sbl-surface)}
+.sbl-cal .w{text-align:center;font-size:.8rem;color:var(--sbl-muted);padding:6px 0}
+.sbl-cal button{border:0;min-height:62px;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;padding:6px 7px;font-variant-numeric:tabular-nums;text-align:left}
+.sbl-cal button:hover{background:var(--sbl-hover)}
+.sbl-cal button.o{color:var(--sbl-muted);opacity:.5}
+.sbl-cal button.p{color:var(--sbl-muted)}
+.sbl-cal button.t span:first-child{background:var(--sbl-accent);color:var(--sbl-accent-ink);padding:0 5px;border-radius:2px}
+.sbl-cal button[aria-pressed="true"]{background:var(--sbl-ink);color:var(--sbl-bg)}
+.sbl-cal .n{font:600 .78rem var(--sbl-display);color:var(--sbl-muted)}
+.sbl-cal button[aria-pressed="true"] .n{color:var(--sbl-bg)}
+.sbl-cal .n b{font-size:1rem;color:var(--sbl-ink)}
+.sbl-cal button[aria-pressed="true"] .n b{color:var(--sbl-bg)}
+.sbl-calf{padding:8px 12px;font-size:.82rem;color:var(--sbl-muted)}
+
+.sbl-veil{position:fixed;inset:0;background:rgb(8 14 12 / .55);z-index:2000;display:flex;align-items:flex-end;justify-content:center;padding:12px}
+@media (min-width:760px){.sbl-veil{align-items:center}}
+.sbl-sheet{background:var(--sbl-surface);color:var(--sbl-ink);width:min(600px,100%);max-height:calc(100% - 16px);overflow:auto;border-radius:var(--sbl-radius);border-top:6px solid var(--c);padding:18px 20px calc(18px + env(safe-area-inset-bottom,0px))}
+.sbl-sheet .top{display:flex;justify-content:space-between;gap:12px;align-items:start}
+.sbl-sheet .kind{color:var(--c);font-weight:600;font-size:.9rem}
+.sbl-sheet h2{margin:2px 0 12px;font:700 1.7rem/1.1 var(--sbl-display);text-wrap:balance}
+.sbl-sheet .cl{width:var(--sbl-tap);height:var(--sbl-tap);flex:none;border:1px solid var(--sbl-line);background:var(--sbl-surface);border-radius:var(--sbl-radius);font-size:1.1rem}
+.sbl-sheet dl{display:grid;grid-template-columns:70px minmax(0,1fr);gap:4px 12px;margin:0 0 12px}
+.sbl-sheet dt{color:var(--sbl-muted)}
+.sbl-sheet dd{margin:0;font-weight:500}
+.sbl-sheet p{margin:0 0 16px;max-width:62ch}
+.sbl-add{border-top:1px solid var(--sbl-line);padding-top:14px;display:grid;gap:10px}
+.sbl-add h3{margin:0;font:700 1.15rem var(--sbl-display)}
+.sbl-add label{font-size:.88rem;color:var(--sbl-muted)}
+.sbl-add select{height:var(--sbl-tap);border:1px solid var(--sbl-border);border-radius:var(--sbl-radius);background:var(--sbl-surface);padding:0 10px;width:100%}
+.sbl-btns{display:flex;flex-wrap:wrap;gap:8px}
+.sbl-btn{display:inline-flex;align-items:center;justify-content:center;min-height:var(--sbl-tap);padding:0 16px;border:1px solid var(--sbl-border);border-radius:var(--sbl-radius);background:var(--sbl-surface);font-weight:600;text-decoration:none}
+.sbl-btn.go{background:var(--sbl-accent);border-color:var(--sbl-accent);color:var(--sbl-accent-ink)}
+.sbl-hint{font-size:.82rem;color:var(--sbl-muted)}
+.sbl-toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--sbl-ink);color:var(--sbl-bg);padding:9px 16px;border-radius:var(--sbl-radius);z-index:2100;font-weight:600}
+
+.sbl-foot{max-width:1400px;margin:0 auto;padding-inline:16px;padding-block:0 32px;display:grid;gap:14px;color:var(--sbl-muted);font-size:.86rem}
+.sbl-foot h4{margin:0 0 4px;color:var(--sbl-ink);font:700 1.05rem var(--sbl-display)}
+.sbl-foot ul{margin:0;padding:0;list-style:none;columns:2 260px;column-gap:24px}
+.sbl-foot li{break-inside:avoid;padding:2px 0}
+.sbl-skins{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.sbl-head .in{align-items:center}
+.sbl-acts{display:flex;gap:8px;flex-wrap:wrap}
+.sbl-hb{min-height:var(--sbl-tap);padding:0 16px;border:0;border-radius:var(--sbl-radius);background:var(--sbl-accent);color:var(--sbl-accent-ink);font-weight:700}
+.sbl-hb.alt{background:transparent;color:var(--sbl-head-ink);border:1px solid currentColor}
+.sbl .sbl-hb.alt.hot{background:var(--sbl-head-ink);color:var(--sbl-head)}
+.sbl-calday{grid-column:1/-1;background:var(--sbl-bg)!important;border-top:2px solid var(--sbl-ink);border-bottom:2px solid var(--sbl-ink);padding:10px 10px 12px;display:grid;gap:6px}
+.sbl-calday .hd{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.sbl-calday h3{margin:0;font:700 1.2rem var(--sbl-display)}
+.sbl-calday .x{width:36px;height:36px;border:1px solid var(--sbl-line);border-radius:var(--sbl-radius);background:var(--sbl-surface);min-height:0;padding:0;display:inline-flex;align-items:center;justify-content:center}
+.sbl-calday .none{margin:2px 0;color:var(--sbl-muted)}
+.sbl-cal .sbl-cd,#sbl-ne .sbl-cd{display:grid;grid-template-columns:74px minmax(0,1fr);gap:10px;align-items:start;min-height:0;width:100%;text-align:left;background:var(--sbl-surface);border:1px solid var(--sbl-line);border-left:4px solid var(--c);border-radius:var(--sbl-radius);padding:8px 10px}
+.sbl-cal .sbl-cd:hover,#sbl-ne .sbl-cd:hover{background:var(--sbl-hover)}
+.sbl-cd .tm{font:700 .95rem/1.3 var(--sbl-display);color:var(--c)}
+.sbl-cd b{display:block;font-weight:600;line-height:1.3}
+.sbl-cd small{display:block;color:var(--sbl-muted);font-size:.84rem}
+.sbl-longs{display:grid;gap:6px}
+.sbl-cal .sbl-more{min-height:40px;display:inline-flex;flex-direction:row;align-items:center;justify-content:flex-start;padding:0 12px;font-size:.9rem;color:var(--sbl-ink);background:var(--sbl-surface)}
+.sbl-cal .sbl-dayadd{min-height:40px;display:inline-flex;flex-direction:row;align-items:center;justify-content:center;justify-self:start;font-size:.9rem;padding:0 12px}
+.sbl-form{display:grid;gap:12px}
+.sbl-f label,.sbl-src h4{display:block}
+.sbl-f label{font-weight:600;font-size:.9rem;margin-bottom:4px}
+.sbl-in{width:100%;min-height:var(--sbl-tap);border:1px solid var(--sbl-border);border-radius:var(--sbl-radius);background:var(--sbl-surface);color:var(--sbl-ink);padding:8px 10px}
+textarea.sbl-in{min-height:100px;resize:vertical}
+.sbl-2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+@media (max-width:540px){.sbl-2{grid-template-columns:minmax(0,1fr)}}
+.sbl-err{margin:0;color:var(--sbl-bad);font-weight:600;min-height:1.2em}
+.sbl-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.sbl-note{margin:0 0 14px}
+.sbl-src{background:var(--sbl-surface);border:1px solid var(--sbl-line);border-radius:var(--sbl-radius);padding:14px 16px;color:var(--sbl-ink)}
+.sbl-src p{margin:4px 0 10px;color:var(--sbl-muted);max-width:70ch}
+.sbl-src .row{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) auto;gap:8px}
+@media (max-width:700px){.sbl-src .row{grid-template-columns:minmax(0,1fr)}}
+.sbl-sfm{margin:8px 0 0;font-weight:600;color:var(--sbl-bad)}
+.sbl-sfm.ok{color:var(--sbl-c-fete)}
+.sbl-sfm:empty{display:none}
+.sbl-mh{font:700 1.15rem var(--sbl-display);margin:16px 0 6px}
+.sbl-mod{border:1px solid var(--sbl-line);border-radius:var(--sbl-radius);padding:10px 12px;margin-top:8px}
+.sbl-mod .m{color:var(--sbl-muted);font-size:.86rem;margin:2px 0 6px;word-break:break-word}
+.sbl-mod p{margin:0 0 8px}
+.sbl-mod b{word-break:break-word}
+.sbl-modh{margin:18px 0 4px;font-size:1.05rem}
+.sbl-mod.ed .mt{color:var(--sbl-muted);font-size:.85rem;margin-bottom:6px}
+.sbl-mod.ed .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 10px}
+.sbl-mod.ed .full{grid-column:1/-1}
+@media (max-width:540px){.sbl-mod.ed .grid{grid-template-columns:minmax(0,1fr)}}
+
+@media (max-width:540px){.sbl-ev{grid-template-columns:92px minmax(0,1fr);gap:11px}.sbl-ev h3{font-size:.98rem}}
+@media (max-width:900px){
+  .sbl-main{grid-template-columns:minmax(0,1fr)}
+  .sbl-tabs{display:flex}
+  .sbl-side{position:static}
+  .sbl-switch{display:none}
+  .sbl-main[data-v="list"] .sbl-side{display:none}
+  .sbl-main[data-v="map"] .sbl-listp,.sbl-main[data-v="cal"] .sbl-listp{display:none}
+  .sbl-main[data-v="map"] .sbl-calbox{display:none}
+  .sbl-main[data-v="cal"] .sbl-mapbox{display:none}
+  .sbl-cal button{min-height:52px}
+}
+@media (min-width:901px){
+  .sbl-side[data-s="map"] .sbl-calbox{display:none}
+  .sbl-side[data-s="cal"] .sbl-mapbox{display:none}
+}
+
+
+.sbl-reg{display:inline-flex;align-items:center;gap:6px;margin-top:14px;min-height:40px;padding:0 14px 0 12px;border:1px solid var(--sbl-line);border-radius:999px;background:var(--sbl-surface);color:var(--sbl-ink);font-weight:500;max-width:100%}
+.sbl-reg #sbl-regl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.sbl-reg .ch{color:var(--sbl-muted);text-decoration:underline;text-underline-offset:3px;padding-left:4px;flex:none}
+.sbl-rgl{display:grid;gap:2px;max-height:min(46vh,420px);overflow:auto;margin-top:10px;border:1px solid var(--sbl-line);border-radius:16px;padding:6px}
+.sbl-rg{display:grid;grid-template-columns:22px 34px minmax(0,1fr) auto;gap:8px;align-items:center;padding:8px 10px;border-radius:12px;cursor:pointer}
+.sbl-rg:hover{background:var(--sbl-hover)}
+.sbl-rg input{width:18px;height:18px;accent-color:var(--sbl-ink)}
+.sbl-rg .c{color:var(--sbl-muted);font-variant-numeric:tabular-nums;font-size:.9rem}
+.sbl-rg .n{color:var(--sbl-muted);font-size:.85rem;font-variant-numeric:tabular-nums}
+.sbl-rgf{margin-top:12px}
+.sbl-moreall{margin:18px auto 0;display:flex}
+/* ===== Habillage « app de voyage » : fond blanc, barre de recherche ronde, cartes photo ===== */
+.sbl{font-size:16px;letter-spacing:-.005em}
+.sbl :focus-visible{outline:2px solid var(--sbl-ink);outline-offset:2px}
+.sbl-top{position:relative;z-index:5;background:var(--sbl-head);color:var(--sbl-head-ink);padding:14px 16px}
+.sbl-top .in{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.sbl-brand{display:flex;align-items:center;gap:8px}
+.sbl-brand svg{color:var(--sbl-p-brocante)}
+.sbl-brand .mk{font-weight:700;font-size:1.2rem;letter-spacing:-.02em}
+.sbl-brand .rg{color:var(--sbl-muted);font-size:.92rem;padding-left:8px;border-left:1px solid var(--sbl-line)}
+.sbl-acts{display:flex;gap:8px}
+.sbl .sbl-hb{min-height:42px;padding:0 18px;border:0;border-radius:999px;background:var(--sbl-accent);color:var(--sbl-accent-ink);font-weight:600;font-size:.95rem}
+.sbl .sbl-hb.alt{background:transparent;color:var(--sbl-ink);border:1px solid var(--sbl-line)}
+.sbl-hb.alt.hot{background:var(--sbl-soft);border-color:var(--sbl-ink)}
+.sbl-intro{max-width:760px;margin:0 auto;padding:clamp(20px,5vw,52px) 16px 18px;text-align:center}
+.sbl-intro h1{margin:0;font-weight:600;font-size:clamp(1.9rem,5.2vw,3.1rem);line-height:1.05;letter-spacing:-.035em;text-wrap:balance}
+.sbl-intro p{margin:10px auto 0;color:var(--sbl-muted);max-width:52ch;text-wrap:balance}
+.sbl-sbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:1000;padding:10px 16px;background:linear-gradient(var(--sbl-bg) 70%,transparent)}
+.sbl-sbox{position:relative;max-width:760px;margin:0 auto}
+.sbl-sw{display:flex;align-items:center;gap:10px;height:60px;padding:0 10px 0 22px;border:1px solid var(--sbl-line);border-radius:999px;background:var(--sbl-surface);box-shadow:var(--sbl-shadow);color:var(--sbl-muted);transition:box-shadow .15s,border-color .15s}
+.sbl-sbox.open .sbl-sw,.sbl-sw:focus-within{border-color:var(--sbl-ink)}
+.sbl .sbl-sw input:focus-visible{outline:none}
+.sbl-sw input{flex:1;min-width:0;height:100%;border:0;background:none;outline:none;font-size:1.06rem;color:var(--sbl-ink)}
+.sbl-sw input::placeholder{color:var(--sbl-muted)}
+.sbl-sw .qx{width:40px;height:40px;flex:none;border:0;border-radius:50%;background:var(--sbl-soft);color:var(--sbl-ink)}
+.sbl-sug{position:absolute;left:0;right:0;top:calc(100% + 8px);max-height:min(70vh,560px);overflow:auto;background:var(--sbl-surface);border:1px solid var(--sbl-line);border-radius:24px;box-shadow:var(--sbl-shadow);padding:10px 8px 12px}
+.sbl-steps{display:flex;gap:6px;padding:4px 8px 10px;border-bottom:1px solid var(--sbl-line);margin-bottom:4px}
+.sbl-steps span{display:inline-flex;align-items:center;gap:6px;color:var(--sbl-muted);font-size:.88rem;font-weight:500;padding-right:10px}
+.sbl-steps b{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;border:1px solid var(--sbl-line);font-size:.72rem;font-weight:700}
+.sbl-steps .cur{color:var(--sbl-ink)}
+.sbl-steps .cur b{background:var(--sbl-ink);border-color:var(--sbl-ink);color:var(--sbl-bg)}
+.sbl-steps .ok b{background:var(--sbl-soft);border-color:var(--sbl-soft);color:var(--sbl-ink)}
+.sbl-sh{padding:12px 12px 4px;color:var(--sbl-muted);font-size:.8rem;font-weight:600}
+.sbl-si{display:flex;align-items:center;gap:12px;width:100%;min-height:46px;padding:8px 12px;border:0;border-radius:14px;background:none;text-align:left;color:var(--sbl-ink)}
+.sbl-si:hover,.sbl-si.act{background:var(--sbl-hover)}
+.sbl-si>.sbl-ic{color:var(--sbl-muted)}
+.sbl-si .t{flex:1;min-width:0;font-weight:400}
+.sbl-si .t b{font-weight:600}
+.sbl-si .t small{display:block;color:var(--sbl-muted);font-size:.82rem}
+.sbl-si .n{color:var(--sbl-muted);font-size:.84rem;font-variant-numeric:tabular-nums}
+.sbl-si.go .t{font-weight:600}
+.sbl-tabs{margin:4px auto 0;max-width:1200px;justify-content:center}
+.sbl-tabs,.sbl-switch{gap:4px;background:var(--sbl-soft);border-radius:999px;padding:4px;width:max-content;max-width:100%}
+.sbl .sbl-tab,.sbl .sbl-switch button{flex:none;height:38px;border:0;border-radius:999px;background:none;padding:0 18px;font-weight:600;color:var(--sbl-muted)}
+.sbl-tab+.sbl-tab,.sbl-switch button+button{border-left:0}
+.sbl .sbl-tab[aria-selected="true"],.sbl .sbl-switch button[aria-selected="true"]{background:var(--sbl-surface);color:var(--sbl-ink);box-shadow:0 1px 3px rgb(0 0 0 / .12)}
+.sbl-main{max-width:1200px;gap:32px;padding-block:6px 48px}
+.sbl-side{top:96px}
+.sbl-sum{padding:8px 0 2px;font-size:.98rem;color:var(--sbl-muted);align-items:center}
+.sbl-sum b{font:inherit;font-weight:700;color:var(--sbl-ink)}
+.sbl-sum button{border:0;background:none;color:var(--sbl-ink);text-decoration:underline;text-underline-offset:3px;font-weight:600;min-height:36px}
+.sbl-wkh h2,.sbl-day h2{font-family:var(--sbl-body);font-weight:600;letter-spacing:-.02em}
+.sbl-wkh h2{font-size:1.4rem}
+.sbl-day{border-bottom:0;margin-top:22px;padding-bottom:0}
+.sbl-day h2{font-size:1.12rem}
+.sbl-grp{gap:2px;padding-top:6px}
+.sbl-ev{border:0;background:none;border-radius:20px;padding:8px;margin-inline:-8px;width:calc(100% + 16px);grid-template-columns:104px minmax(0,1fr)}
+.sbl-ev:hover{background:var(--sbl-hover)}
+.sbl-th{border-radius:16px}
+.sbl-th .dch{border-radius:10px;font-family:var(--sbl-body)}
+.sbl-th .dch small{letter-spacing:0;text-transform:none;font-weight:500}
+.sbl-ev h3{font-weight:600;letter-spacing:-.01em}
+.sbl-ev .c{font-weight:600}
+.sbl-card .sbl-th{border-radius:20px}
+.sbl-card h3{letter-spacing:-.01em}
+.sbl-box{border-radius:24px;border-color:var(--sbl-line)}
+.sbl-fonds{border-radius:999px;top:12px;left:12px}
+.sbl-fonds button{border-right:0;border-radius:999px;margin:3px}
+.sbl-calh h2{font-family:var(--sbl-body);font-weight:600;letter-spacing:-.02em}
+.sbl-calh button{border-radius:50%}
+.sbl-cal button[aria-pressed="true"]{border-radius:0}
+.sbl-calday h3{font-family:var(--sbl-body);font-weight:600}
+.sbl-cal .sbl-cd,#sbl-ne .sbl-cd{border-radius:14px;border-left-width:1px;border-color:var(--sbl-line)}
+.sbl-btn{border-radius:999px;border-color:var(--sbl-line)}
+.sbl-btn.go{background:var(--sbl-accent);border-color:var(--sbl-accent);color:var(--sbl-accent-ink)}
+.sbl-sheet{border-radius:28px 28px 0 0;border-top:0}
+@media (min-width:760px){.sbl-sheet{border-radius:28px}}
+.sbl-hero{border-radius:0}
+.sbl-sheet h2,.sbl-add h3,.sbl-mh{font-family:var(--sbl-body);font-weight:600;letter-spacing:-.02em}
+.sbl-sheet .cl{border-radius:50%}
+.sbl-in{border-radius:14px;border-color:var(--sbl-line)}
+.sbl-add select{border-radius:14px;border-color:var(--sbl-line)}
+.sbl-src{border-radius:24px;background:var(--sbl-soft);border:0}
+.sbl-src .sbl-in{background:var(--sbl-surface)}
+.sbl-foot h4{font-family:var(--sbl-body);font-weight:600}
+.sbl-pop h4{font-family:var(--sbl-body);font-weight:600}
+.sbl .maplibregl-popup-content{border-radius:20px}
+.sbl-b{border-radius:999px}
+.sbl-toast{border-radius:999px}
+.sbl-mod{border-radius:16px}
+@media (max-width:900px){.sbl-tabs{display:flex}.sbl-side{top:auto}}
+@media (max-width:540px){.sbl-brand .rg{display:none}.sbl-sw{height:54px;padding-left:18px}.sbl-hb{padding:0 14px;min-height:40px}.sbl-ev{grid-template-columns:88px minmax(0,1fr)}}
+.sbl.kiosk .sbl-sw{height:72px}.sbl.kiosk .sbl-sw input{font-size:1.25rem}
+.sbl-fine{margin:0;max-width:80ch}
+.sbl-legal{display:flex;flex-wrap:wrap;gap:6px 18px;padding-top:14px;border-top:1px solid var(--sbl-line)}
+.sbl-legal a{color:var(--sbl-muted);text-decoration:underline;text-underline-offset:3px;min-height:32px;display:inline-flex;align-items:center}
+.sbl-legal a:hover{color:var(--sbl-ink)}
+.sbl-legal .by{margin-left:auto;color:var(--sbl-muted);display:inline-flex;align-items:center;min-height:32px}
+
+/* Petits écrans (téléphones pliables fermés, 280 à 380 px) */
+@media (max-width:380px){
+  .sbl-top{padding:10px 12px}
+  .sbl-top .in{flex-wrap:nowrap}
+  .sbl .sbl-hb{padding:0 14px;font-size:.9rem}
+  .sbl-hb .lg{display:none}
+  .sbl-intro{padding:14px 12px 10px}
+  .sbl-intro h1{font-size:1.7rem}
+  .sbl-intro p{font-size:.95rem}
+  .sbl-sbar{padding:8px 12px}
+  .sbl-main{padding-inline:12px}
+  .sbl-tabs{width:auto;margin-inline:12px}
+  .sbl-tab{flex:1}
+}
+@media (max-width:380px) and (max-height:700px){.sbl-intro p{display:none}.sbl-reg{margin-top:8px}}
+/* Écran pliable ouvert à plat sur deux segments : liste à gauche, carte ou calendrier à droite, rien sous la charnière */
+@media (horizontal-viewport-segments:2){
+  .sbl-main{max-width:none;padding-inline:0;grid-template-columns:calc(env(viewport-segment-width 0 0) - 16px) calc(env(viewport-segment-width 1 0) - 16px);column-gap:calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0) + 32px);padding-left:16px}
+  .sbl-tabs{display:none!important}
+  .sbl-switch{display:flex!important}
+  .sbl-main[data-v] .sbl-listp,.sbl-main[data-v] .sbl-side{display:block!important}
+  .sbl-side{position:sticky;top:80px}
+  .sbl-side[data-s="map"] .sbl-calbox{display:none!important}
+  .sbl-side[data-s="cal"] .sbl-mapbox{display:none!important}
+}
+/* Pliable à moitié fermé, posture « portable » : la recherche reste dans la moitié haute */
+@media (vertical-viewport-segments:2){
+  .sbl-intro{min-height:0;padding-block:12px}
+  .sbl-sbar{top:0}
+}
+
+/* Lieux à visiter : ronds neutres, distincts des épingles de sorties */
+.sbl-lvm{width:30px;height:30px;display:grid;place-items:center;z-index:0}
+.sbl-mk{z-index:1}
+.sbl .maplibregl-popup{z-index:20}
+#sbl-ne{display:grid;gap:6px}
+.sbl-lv{display:grid;place-items:center;width:22px;height:22px;padding:0;border-radius:50%;border:2px solid #fff;background:#4a5866;color:#fff;cursor:pointer;box-shadow:0 1px 3px rgb(0 0 0 / .35);transition:transform .12s}
+.sbl-lv.big{width:28px;height:28px;background:#2f3b47}
+.sbl-lv{position:relative}.sbl-lv::after{content:"";position:absolute;top:-8px;right:-8px;bottom:-8px;left:-8px;border-radius:50%} /* zone tactile de 38 à 44 px */
+.sbl-lv:hover,.sbl-lv:focus-visible{transform:scale(1.18)}
+.sbl-lv svg{stroke-width:2.2}
+.sbl-lvt{display:inline-flex;align-items:center;gap:6px;margin-left:auto;min-height:32px;padding:0 12px 0 6px;border:1px solid var(--sbl-line);border-radius:999px;background:var(--sbl-surface);color:var(--sbl-ink);font-size:.84rem;font-weight:600}
+.sbl-lvt .dot{display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:#2f3b47;color:#fff}
+.sbl-lvt[aria-pressed="false"]{color:var(--sbl-muted)}
+.sbl-lvt[aria-pressed="false"] .dot{background:var(--sbl-muted)}
+.sbl-lvn{flex-basis:100%;color:var(--sbl-muted);font-size:.82rem}
+.sbl-lvn:empty{display:none}
+.sbl-pop.lvp .k{color:#4a5866}
+.sbl-sheet dd a{overflow-wrap:anywhere}
+.sbl-pop .lb{margin:2px 0 0;font-weight:600;font-size:.85rem}
+.lvc .tx{display:grid;gap:2px;text-align:left}
+.lvc h3{margin:0;font-size:1rem;font-weight:600;line-height:1.3}
+.lvc .m{color:var(--sbl-muted);font-size:.86rem}
+.sbl-wkh .n{color:var(--sbl-muted);font-size:.86rem}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .sbl-lv{background:#5c6d7d}:root:not([data-theme="light"]) .sbl-lv.big{background:#465664}}
+
+.sbl-mh{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;padding:8px 10px;border-bottom:1px solid var(--sbl-line);font-size:.86rem}
+.sbl-mh .l{font-weight:600}
+.sbl-mh .own{color:var(--sbl-muted)}
+.sbl-mh .seg{display:inline-flex;gap:2px;margin-left:auto;background:var(--sbl-soft);border-radius:999px;padding:3px}
+.sbl-mh .seg button{min-height:32px;padding:0 11px;border:0;border-radius:999px;background:none;font-size:.84rem;font-weight:600;color:var(--sbl-muted)}
+.sbl-mh .seg button[aria-pressed="true"]{background:var(--sbl-surface);color:var(--sbl-ink);box-shadow:0 1px 2px rgb(0 0 0 / .12)}
+@media (max-width:420px){.sbl-mh .seg{margin-left:0;width:100%}.sbl-mh .seg button{flex:1;padding:0 4px}}
+.sbl.kiosk .sbl-mh .seg button{min-height:48px;font-size:1rem}
+
+.sbl-mh .mc{display:flex;gap:6px;flex-basis:100%;overflow-x:auto;scrollbar-width:none;padding:2px 0}
+.sbl-mh .mc::-webkit-scrollbar{display:none}
+.sbl-mh .mc button{flex:none;display:inline-flex;align-items:center;gap:5px;min-height:34px;padding:0 12px;border:1px solid var(--sbl-line);border-radius:999px;background:var(--sbl-surface);color:var(--sbl-ink);font-size:.84rem;font-weight:600}
+.sbl-mh .mc button i{display:inline-flex;color:var(--pc)}
+.sbl-mh .mc button[aria-pressed="true"]{border-color:var(--sbl-ink);background:var(--sbl-ink);color:var(--sbl-bg)}
+.sbl-mh .mc button[aria-pressed="true"] i{color:var(--pc);background:#fff;border-radius:50%;padding:2px;margin-left:-4px}
+.sbl.kiosk .sbl-mh .mc button{min-height:48px;font-size:1rem}
+.sbl-leg .sbl-lvt{margin-left:0}
+
+.sbl.kiosk #sbl-prop,.sbl.kiosk .sbl-src,.sbl.kiosk .sbl-dayadd,.sbl.kiosk .sbl-legal,.sbl.kiosk .sbl-fine{display:none!important}
+.sbl.kiosk .sbl-ev,.sbl.kiosk .sbl-card{min-height:64px}
+.sbl.kiosk .sbl-btn{min-height:56px;font-size:1.05rem}
+.sbl-qr{display:flex;align-items:center;gap:16px}
+.sbl-qr .q{width:150px;height:150px;flex:none;background:#fff;padding:6px;border-radius:12px}
+.sbl-qr .q svg{display:block;width:100%;height:100%}
+.sbl-qr p{margin:0;font-weight:600;max-width:24ch}
+.sbl.embed .sbl-intro h1,.sbl.embed #sbl-sub{display:none}
+.sbl.embed .sbl-intro{padding-top:8px}
+.sbl.embed .sbl-foot>div:not(.sbl-skins),.sbl.embed .sbl-fine{display:none}
+
+/* Bulles de la carte : date et heure de chaque sortie */
+.sbl-pop .when{color:var(--sbl-ink);font-weight:600;margin:4px 0 2px}
+.sbl-pop ul.evl{max-height:min(240px,34vh);overflow:auto;overscroll-behavior:contain;list-style:none;padding:0;margin:4px 0 8px;display:grid;gap:2px;font-size:.9rem}
+.sbl-pop ul.evl button{display:grid;grid-template-columns:auto;gap:0;width:100%;text-align:left;border:0;background:none;padding:5px 6px;border-radius:8px;cursor:pointer;color:var(--sbl-ink)}
+.sbl-pop ul.evl button:hover,.sbl-pop ul.evl button:focus-visible{background:var(--sbl-hover)}
+.sbl-pop ul.evl .d{font-size:.8rem;font-weight:700;color:var(--c)}
+.sbl-pop ul.evl .t{line-height:1.3}
+.sbl-pop .more{font-size:.85rem}
+/* Ordinateur : pleine largeur, carte à hauteur d'écran, en-tête plus compact */
+@media (min-width:901px){
+  .sbl-top .in,.sbl-main,.sbl-foot{max-width:none;padding-inline:clamp(16px,2.5vw,40px)}
+}
+@media (min-width:1100px){
+  .sbl-top .in,.sbl-main,.sbl-foot{max-width:none;padding-inline:clamp(20px,2.5vw,40px)}
+  .sbl-tabs{max-width:none}
+  .sbl-main{grid-template-columns:minmax(400px,.9fr) minmax(0,1.1fr);gap:clamp(24px,2.5vw,44px)}
+  .sbl-intro{padding:clamp(12px,2.5vh,36px) 16px 6px}
+  .sbl-intro h1{font-size:clamp(2rem,2.4vw,2.9rem)}
+  .sbl-sbox{max-width:860px}
+  .sbl-side{top:84px}
+  #sbl-map{height:max(400px,calc(100vh - 318px));max-height:1100px}
+}
+@media (min-width:1100px) and (max-height:820px){.sbl-intro p{display:none}.sbl-intro h1{font-size:2rem}.sbl-reg{margin-top:8px}}
+
+.sbl-lv.of{background:#1c64b8}
+.sbl-lvt.ot .dot{background:#1c64b8}
+.sbl-lvt.ot[aria-pressed="false"] .dot{background:var(--sbl-muted)}
+.sbl-pop .when.ok,.sbl-st.ok{color:#1d7a3a}
+.sbl-pop .when.ko,.sbl-st.ko{color:var(--sbl-bad)}
+.sbl-st{display:block;font-weight:700}
+.sbl-ohd{display:block;white-space:pre-line;color:var(--sbl-ink)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .sbl-pop .when.ok,:root:not([data-theme="light"]) .sbl-st.ok{color:#5fc98a}}
+
+/* ===== Téléphone : en-tête compact, navigation en bas, carte plein écran ===== */
+.sbl-mpop{position:fixed;left:8px;right:8px;bottom:calc(72px + env(safe-area-inset-bottom,0px));z-index:1500;max-height:min(58vh,460px);overflow:auto;background:var(--sbl-surface);color:var(--sbl-ink);border-radius:20px;box-shadow:0 8px 30px rgb(0 0 0 / .28);padding:14px 16px 12px}
+.sbl-mpop[hidden]{display:none}
+.sbl-mpop .x{position:sticky;top:0;float:right;width:36px;height:36px;border-radius:50%;border:1px solid var(--sbl-line);background:var(--sbl-surface);margin:-4px -6px 0 8px}
+.sbl-mpop .sbl-pop{padding:0}
+.sbl-mpop ul.evl{max-height:none}
+.sbl-tab svg{display:none}
+@media (max-width:600px){
+  .sbl-top{padding:8px 12px}
+  .sbl .sbl-hb{min-height:38px;padding:0 14px;font-size:.88rem}
+  .sbl-hb .lg{display:none}
+  .sbl-intro{padding:6px 14px 4px}
+  .sbl-intro h1{font-size:1.5rem;line-height:1.15}
+  .sbl-intro p{display:none}
+  .sbl-reg{margin-top:8px;min-height:36px;font-size:.92rem}
+  .sbl-sbar{padding:6px 12px 8px}
+  .sbl-sw{height:50px}
+  .sbl-sw input{font-size:1rem}
+  /* navigation fixe en bas */
+  .sbl-navw{position:fixed;left:0;right:0;bottom:0;z-index:1400;background:var(--sbl-surface);border-top:1px solid var(--sbl-line);padding:4px 6px calc(4px + env(safe-area-inset-bottom,0px));box-shadow:0 -2px 12px rgb(0 0 0 / .06)}
+  .sbl-navw .sbl-tabs{display:flex!important;width:100%;max-width:none;margin:0;background:none;padding:0;gap:0;border-radius:0}
+  .sbl-navw .sbl-tab{flex:1;height:auto;min-height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:0!important;background:none!important;border-radius:12px;font-size:.78rem;font-weight:600;color:var(--sbl-muted);box-shadow:none!important}
+  .sbl-navw .sbl-tab svg{display:block}
+  .sbl-navw .sbl-tab[aria-selected="true"]{color:var(--sbl-ink)}
+  .sbl-navw .sbl-tab[aria-selected="true"] svg{color:var(--sbl-p-brocante)}
+  .sbl{padding-bottom:calc(72px + env(safe-area-inset-bottom,0px))}
+  .sbl-main{padding-top:4px}
+  /* carte : toute la hauteur disponible */
+  .sbl-main[data-v="map"] #sbl-map{height:calc(100dvh - 330px);min-height:320px}
+  .sbl-main[data-v="map"] .sbl-mapnote{display:none}
+  .sbl-mh{padding:6px 8px;gap:6px}
+  .sbl-mh .l{font-size:.82rem}
+  /* calendrier : nombre de sorties en pastille */
+  .sbl-cal button{min-height:48px;padding:4px 3px;align-items:center}
+  .sbl-cal .n{display:flex;justify-content:center;width:100%}
+  .sbl-cal .n b{font-size:.72rem;min-width:20px;padding:1px 5px;border-radius:999px;background:color-mix(in srgb,var(--sbl-p-brocante) 18%,var(--sbl-surface));color:var(--sbl-ink);text-align:center}
+  .sbl-cal button[aria-pressed="true"] .n b{background:var(--sbl-bg);color:var(--sbl-ink)}
+  /* fenêtres : pleine largeur, boutons d'action toujours visibles */
+  .sbl-veil{padding:0;align-items:flex-end}
+  .sbl-sheet{max-height:92dvh;width:100%;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px))}
+  .sbl-sheet h2{font-size:1.45rem}
+  .sbl-sheet dl{grid-template-columns:84px minmax(0,1fr)}
+  .sbl-rgl{max-height:calc(92dvh - 330px)}
+  .sbl-hero{aspect-ratio:16/9;margin:-16px -16px 12px}
+  .sbl-toast{bottom:calc(84px + env(safe-area-inset-bottom,0px))!important}
+}
+@media (max-width:600px){.sbl .maplibregl-ctrl-group button{width:38px;height:38px}.sbl-lvm{width:40px;height:40px}.sbl[data-v="map"] .sbl-intro,.sbl[data-v="cal"] .sbl-intro{display:none}.sbl-sug{max-height:calc(100dvh - 250px);overflow:auto}}
+@media (max-width:600px) and (max-height:700px){.sbl-intro h1{font-size:1.3rem}.sbl-main[data-v="map"] #sbl-map{height:calc(100dvh - 300px)}}
+.sbl.kiosk .sbl-navw{position:static}
+
+/* ===== Accueil épuré (façon Airbnb) ===== */
+.sbl .sbl-hb#sbl-prop{background:transparent;color:var(--sbl-ink);border:1px solid var(--sbl-line)}
+.sbl .sbl-hb#sbl-prop:hover{background:var(--sbl-hover)}
+.sbl-brand{text-decoration:none;color:inherit;min-height:44px}
+.sbl.home #sbl-sub{display:none}
+.sbl.home .sbl-side,.sbl.home .sbl-sum{display:none}
+.sbl.home .sbl-main{grid-template-columns:minmax(0,1fr);max-width:1280px;margin-inline:auto}
+.sbl.home .sbl-wk{margin-top:4px}
+.sbl.home .sbl-wkh{margin-top:26px}
+.sbl.home .sbl-wkh h2{font-size:1.35rem}
+.sbl.home .sbl-rail{grid-auto-columns:min(260px,74%)}
+.sbl-cta{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:34px 0 8px}
+.sbl-cta .sbl-btn{min-height:48px;padding:0 22px}
+.sbl-tab.hm{display:none}
+@media (min-width:601px){.sbl.home .sbl-navw .sbl-tabs{display:none!important}}
+.sbl-srcd{border:1px solid var(--sbl-line);border-radius:16px;padding:0}
+.sbl-srcd summary{cursor:pointer;padding:12px 16px;font-weight:600;color:var(--sbl-ink);list-style-position:inside}
+.sbl-srcd[open] summary{border-bottom:1px solid var(--sbl-line)}
+.sbl-srcd .sbl-src{border:0;background:none}
+@media (max-width:600px){.sbl-tab.hm{display:flex}}
+</style>
+
+<div class="sbl" id="sbl">
+<header class="sbl-top"><div class="in">
+  <a class="sbl-brand" href="#" id="sbl-home" aria-label="Dans le coin, accueil"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M12 2.5c-4 0-7.3 3.2-7.3 7.2 0 5.3 6.4 11.4 6.7 11.7.3.3.9.3 1.2 0 .3-.3 6.7-6.4 6.7-11.7 0-4-3.3-7.2-7.3-7.2zm0 9.9a2.7 2.7 0 1 1 0-5.4 2.7 2.7 0 0 1 0 5.4z"/></svg><span class="mk">Dans le coin</span></a>
+  <div class="sbl-acts"><button class="sbl-hb alt" type="button" id="sbl-mod" hidden>À valider</button><button class="sbl-hb" type="button" id="sbl-prop" aria-label="Proposer une sortie">Proposer<span class="lg"> une sortie</span></button></div>
+</div></header>
+<section class="sbl-intro" aria-label="Présentation"><h1>Que faire autour de chez vous&nbsp;?</h1><p id="sbl-sub"></p><button type="button" class="sbl-reg" id="sbl-reg"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg><span id="sbl-regl"></span><span class="ch">Changer</span></button></section>
+<div class="sbl-sbar" role="search"><div class="sbl-sbox" id="sbl-sbox">
+  <div class="sbl-sw"><svg class="sbl-ic" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.6-4.6"/></svg>
+    <input id="sbl-q" type="text" role="combobox" aria-expanded="false" aria-controls="sbl-sug" aria-autocomplete="list" autocomplete="off" enterkeyhint="search" aria-label="Rechercher une sortie">
+    <button type="button" id="sbl-qx" class="qx" aria-label="Effacer la recherche" hidden>✕</button>
+  </div>
+  <div class="sbl-sug" id="sbl-sug" role="listbox" aria-label="Suggestions" hidden></div>
+</div></div>
+
+<section aria-label="Choix de l’affichage" class="sbl-navw"><div class="sbl-tabs" role="tablist" id="sbl-mt">
+  <button class="sbl-tab hm" type="button" data-v="home" aria-selected="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4.5v-6h-5v6H5a1 1 0 0 1-1-1z"/></svg><span>Accueil</span></button>
+  <button class="sbl-tab" role="tab" data-v="list" aria-selected="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg><span>Liste</span></button>
+  <button class="sbl-tab" role="tab" data-v="map" aria-selected="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4 3 6.5v13.5l6-2.5 6 2.5 6-2.5V4l-6 2.5z"/><path d="M9 4v13.5M15 6.5V20"/></svg><span>Carte</span></button>
+  <button class="sbl-tab" role="tab" data-v="cal" aria-selected="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><span>Calendrier</span></button>
+</div></section>
+
+<main class="sbl-main" id="sbl-main" data-v="list">
+  <section class="sbl-listp" aria-live="polite">
+    <div class="sbl-sum" id="sbl-sum"></div>
+    <div id="sbl-info"></div>
+    <div class="sbl-wk" id="sbl-wk"></div>
+    <div id="sbl-list"></div>
+  </section>
+  <aside class="sbl-side" id="sbl-side" data-s="map">
+    <div class="sbl-switch" role="tablist" id="sbl-dt">
+      <button role="tab" data-s="map" aria-selected="true">Carte</button>
+      <button role="tab" data-s="cal" aria-selected="false">Calendrier</button>
+    </div>
+    <div class="sbl-box sbl-mapbox">
+      <div class="sbl-mh" id="sbl-mh" role="group" aria-label="Sorties affichées sur la carte"></div>
+      <div id="sbl-map" aria-label="Carte des communes avec des sorties"></div>
+      <div class="sbl-fonds" id="sbl-fonds" role="group" aria-label="Fond de carte"></div>
+      <div class="sbl-leg" id="sbl-leg"></div>
+      <div class="sbl-mapnote"><span>Touchez un repère pour voir les sorties.</span><span id="sbl-attr"></span></div>
+    </div>
+    <div class="sbl-box sbl-calbox">
+      <div class="sbl-calh"><button id="sbl-pm" aria-label="Mois précédent">‹</button><h2 id="sbl-mt2"></h2><button id="sbl-nm" aria-label="Mois suivant">›</button></div>
+      <div class="sbl-cal" id="sbl-cal"></div>
+      <div class="sbl-calf">Nombre de sorties par jour, hors expositions de plusieurs semaines.</div>
+    </div>
+  </aside>
+</main>
+
+<footer class="sbl-foot">
+  <details class="sbl-srcd" id="sbl-srcd"><summary>Vous connaissez une source d’événements ? Proposez-la</summary>
+  <form class="sbl-src" id="sbl-sf" novalidate>
+        <p>Agenda de mairie, page d’association, office de tourisme, groupe Facebook… Indiquez-la ici, elle sera étudiée pour alimenter l’outil.</p>
+    <div class="row"><label class="vh" for="sf-u">Adresse ou nom de la source</label><input class="sbl-in" id="sf-u" maxlength="200" placeholder="https://… ou « Comité des fêtes de Cercy-la-Tour »">
+    <label class="vh" for="sf-n">Ce qu’on y trouve</label><input class="sbl-in" id="sf-n" maxlength="200" placeholder="Ce qu’on y trouve (facultatif)">
+    <button class="sbl-btn go" type="submit">Envoyer</button></div>
+    <p class="sbl-sfm" id="sf-msg" role="status"></p>
+  </form>
+  </details>
+  <p class="sbl-fine">Mis à jour chaque nuit. Un organisateur peut changer une date&nbsp;: vérifiez sur la fiche source avant de vous déplacer. Fonds de carte © IGN, via cartes.gouv.fr. Photos de communes&nbsp;: Wikipédia et Wikimedia Commons.</p>
+  <nav class="sbl-legal" aria-label="Informations légales">
+    <a href="plan-du-site.html">Plan du site</a><a href="mentions-legales.html">Mentions légales</a><a href="cgu.html">Conditions d’utilisation</a><a href="confidentialite.html">Confidentialité</a><a href="intelligence-artificielle.html">Intelligence artificielle</a><a href="accessibilite.html">Accessibilité</a><a href="integrer.html">Intégrer l’agenda</a><a href="api.html">API</a><span class="by">Conçu par Saryn Digital</span>
+  </nav>
+  <div class="sbl-skins" id="sbl-skins"><span>Aperçu dans la charte d’un autre site :</span></div>
+</footer>
+<div id="sbl-sheet"></div>
+</div>
+
+<datalist id="sbl-cl"></datalist>
+<script type="application/json" id="sbl-communes">%%COMMUNES%%</script>
+<script type="application/json" id="sbl-data">%%EVENTS%%</script>
+<script type="application/json" id="sbl-geo">%%GEO%%</script>
+<script src="%%MAPJS%%"></script>
+<script>
+(function(){
+"use strict";
+/* ---------- Configuration (surcharge possible par window.SORTIES_CONFIG avant ce script) ---------- */
+const CFG=Object.assign({
+  dataUrl:null,          // URL d'un flux JSON (ex. Cloudflare Worker) ; sinon données intégrées
+  tiles:"auto",          // "ign" (Plan IGN, Géoplateforme), "osm", "none" ou "auto" (IGN hors aperçu Claude)
+  theme:null,            // ex. {accent:"#0a6ebd", head:"#0b2e4f", font:"Montserrat, sans-serif", radius:"8px"}
+  inheritFont:false,     // true : reprend la police du site hôte
+  apiUrl:null            // adresse du serveur des propositions (Cloudflare Worker), ex. "https://dans-le-coin.xxx.workers.dev"
+},window.SORTIES_CONFIG||{});
+const ROOT=document.getElementById("sbl");
+const inViewer=!!window.claude;
+
+/* ---------- Thème ---------- */
+const THEME_KEYS={bg:"--sbl-bg",surface:"--sbl-surface",ink:"--sbl-ink",muted:"--sbl-muted",line:"--sbl-line",hover:"--sbl-hover",
+  head:"--sbl-head",headInk:"--sbl-head-ink",accent:"--sbl-accent",accentInk:"--sbl-accent-ink",land:"--sbl-land",out:"--sbl-out",
+  border:"--sbl-border",water:"--sbl-water",font:"--sbl-body",display:"--sbl-display",radius:"--sbl-radius"};
+function setTheme(t){
+  Object.values(THEME_KEYS).forEach(v=>ROOT.style.removeProperty(v));
+  if(t)Object.entries(t).forEach(([k,v])=>THEME_KEYS[k]&&ROOT.style.setProperty(THEME_KEYS[k],v));
+  styleMap();
+}
+const SKINS=[
+  ["Par défaut",null],
+  ["Bleu, arrondi",{head:"#0b3a5c",headInk:"#f2f7fb",accent:"#1479c4",accentInk:"#ffffff",ink:"#13283a",bg:"#f4f8fb",surface:"#ffffff",line:"#d9e4ec",hover:"#eaf2f8",land:"#eef3f6",out:"#dfe8ee",radius:"10px",display:"Barlow, Arial, sans-serif"}],
+  ["Sombre",{bg:"#16171b",surface:"#1e2025",ink:"#ecedf0",muted:"#a2a6b0",line:"#30333a",hover:"#25282e",head:"#0e0f12",headInk:"#ecedf0",accent:"#e5484d",accentInk:"#ffffff",land:"#22252b",out:"#18191d",border:"#5a5f6a",water:"#4b7fa6",radius:"0px"}]
+];
+
+/* ---------- Données ---------- */
+const CATS={brocante:["Brocantes, vide-greniers","Brocante"],fete:["Fêtes, foires, marchés","Fête"],spectacle:["Concerts, spectacles","Spectacle"],
+  culture:["Expos, visites","Culture"],famille:["En famille","Famille"],sport:["Sport, rando","Sport"],pal:["Le Pal, parcs","Le Pal"]};
+const ZONES={"03":"Allier","58":"Sud Nivernais","71":"Digoin, Paray, Bourbon-Lancy"};
+let EVENTS=[];
+const MO=["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."];
+const ML=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+const JL=["dimanche","lundi","mardi","mercredi","jeudi","vendredi","samedi"];
+const P=s=>{const[y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d)};
+const iso=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const add=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x};
+const today=()=>{const t=new Date();t.setHours(0,0,0,0);return t};
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+const norm=s=>s.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu,"");
+const hh=h=>h.replace(":","h").replace("h00","h");
+function unCaps(t){const L=(t||"").replace(/[^A-Za-zÀ-ÖØ-öø-ÿ]/g,"");if(L.length<6||L.replace(/[^A-ZÀ-ÖØ-Þ]/g,"").length/L.length<.7)return t;const x=t.toLowerCase();return x.charAt(0).toUpperCase()+x.slice(1)}
+function prep(list){list.forEach(e=>{if(!CATS[e.cat])e.cat="fete";e.t=unCaps(e.t);e.S=P(e.s);e.E=P(e.e||e.s);e.long=(e.E-e.S)/864e5>14;e.k=norm(e.t+" "+e.w+" "+e.lieu+" "+e.d+" "+CATS[e.cat][0]+" "+(e.b&&BADGES[e.b]?BADGES[e.b].l:""))});return list}
+function when(e){const a=e.S,b=e.E;
+  if(+a===+b)return cap(JL[a.getDay()])+" "+a.getDate()+" "+ML[a.getMonth()]+(e.h?", "+hh(e.h):"");
+  if(e.long)return "Jusqu’au "+b.getDate()+" "+ML[b.getMonth()]+" "+b.getFullYear();
+  return "Du "+a.getDate()+(a.getMonth()!==b.getMonth()?" "+ML[a.getMonth()]:"")+" au "+b.getDate()+" "+ML[b.getMonth()]+(e.h?", "+hh(e.h):"");}
+
+/* ---------- État et compréhension de la recherche ---------- */
+const st={q:"",w:"30",cats:new Set(),z:"",place:"",near:null,words:[],day:"",view:"list",side:"map",month:null};
+function range(w){const t=today(),d=t.getDay();
+  if(w==="today")return[t,t];
+  if(w==="tomorrow"){const x=add(t,1);return[x,x]}
+  if(w==="we"){if(d===6)return[t,add(t,1)];if(d===0)return[t,t];const s=add(t,6-d);return[s,add(s,1)]}
+  if(w==="7")return[t,add(t,6)];if(w==="30")return[t,add(t,29)];
+  if(w==="vac"){const a=P("2026-10-17");return[t>a?t:a,P("2026-11-01")]}
+  if(/^m\d+$/.test(w)){const m=+w.slice(1),y=m<t.getMonth()?t.getFullYear()+1:t.getFullYear(),a=new Date(y,m,1),b=new Date(y,m+1,0);return[a<t?t:a,b]}
+  return[t,new Date(2100,0,1)];}
+const CAT_KW={brocante:["brocante","brocantes","vide-grenier","vide-greniers","vide-maison","puces","chine","chiner","bourse","bourses","braderie","braderies"],
+  fete:["fete","fetes","foire","foires","marche","marches","festivite","festivites"],spectacle:["concert","concerts","spectacle","spectacles"],
+  culture:["expo","expos","exposition","expositions","musee","musees","visite","visites","culture","patrimoine","conference"],famille:["famille","familles","enfant","enfants","kids"],
+  sport:["sport","sports","rando","randos","randonnee","randonnees","course","courses","trail","balade","balades"],pal:["pal","parc","parcs"]};
+const KW2CAT=new Map();Object.entries(CAT_KW).forEach(([c,a])=>a.forEach(w=>KW2CAT.set(w,c)));
+const LVW={musee:"musee",musees:"musee",chateau:"patrimoine",chateaux:"patrimoine",eglise:"patrimoine",eglises:"patrimoine",abbaye:"patrimoine",abbayes:"patrimoine",cathedrale:"patrimoine",
+  monument:"patrimoine",monuments:"patrimoine",patrimoine:"patrimoine",jardin:"nature",jardins:"nature",lac:"nature",lacs:"nature",plage:"nature",plages:"nature",cascade:"nature",cascades:"nature",
+  zoo:"loisirs",zoos:"loisirs",aquarium:"loisirs",office:"office",offices:"office",ot:"office",visiter:"*",lieux:"*",sites:"*",tourisme:"*",touristique:"*",touristiques:"*"};
+const LVN=new Set(["chateau","chateaux","eglise","eglises","abbaye","abbayes","cathedrale","jardin","jardins","lac","lacs","plage","plages","cascade","cascades","zoo","zoos","aquarium"]);
+const LVL={chateau:"Châteaux",eglise:"Églises",abbaye:"Abbayes",cathedrale:"Cathédrales",jardin:"Jardins",lac:"Lacs",plage:"Plages",cascade:"Cascades",zoo:"Zoos",aquarium:"Aquariums"};
+const LVGEN=new Set(["visiter","lieux","sites","monument","monuments","tourisme","touristique","touristiques"]);
+const STOP=new Set("de du des d le la les l en a au aux pour sortie sorties sortir quoi faire que qu un une et ou ce cet cette ces dans sur avec chez moi tout tous toutes je veux on peut y idee idees autour pres vers".split(" "));
+const MONTHS=["janvier","fevrier","mars","avril","mai","juin","juillet","aout","septembre","octobre","novembre","decembre"];
+const MONTHL=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+const WHENQ={today:"aujourd’hui",tomorrow:"demain",we:"ce week-end","7":"cette semaine","30":"ce mois-ci",vac:"pendant les vacances",all:""};
+let PIDX=null;
+const PKEY=s=>norm(s).replace(/['’-]/g," ").replace(/\s+/g," ").trim();
+function placeIndex(){
+  if(PIDX)return PIDX;
+  const m=new Map(),add=(name,z,la,lo,has)=>{const k=PKEY(name),sc=(has?2:0)+(REGION.includes(z)?1:0),cur=m.get(k);if(!cur||sc>cur[4])m.set(k,[name,z,la,lo,sc])};
+  EVENTS.forEach(e=>add(e.w,e.z,e.lat,e.lon,1));(NATCOM||COMMUNES).forEach(c=>add(c[0],c[1],c[2],c[3],0));
+  const deps=new Map();Object.entries(Object.assign({},DEF_NAMES,DEPNAME)).forEach(([c,n])=>deps.set(PKEY(n),c));
+  [["bourbonnais","03"],["sud nivernais","58"],["nivernais","58"],["charolais","71"],["brionnais","71"]].forEach(([k,c])=>deps.set(k,c));
+  PIDX={m,deps};return PIDX;
+}
+function findPlace(arr){
+  const{m,deps}=placeIndex();
+  for(let len=Math.min(6,arr.length);len>=1;len--)for(let i=0;i+len<=arr.length;i++){
+    const k=arr.slice(i,i+len).join(" "),pv=arr.slice(Math.max(0,i-3),i).join(" ");
+    const near=/(autour de|pres de|proche de|vers|a cote de)$/.test(pv),depPre=/(dans l|dans le|dans la|dans les|en)$/.test(pv);
+    const preLen=near?(/a cote de$/.test(pv)?3:/vers$/.test(pv)?1:2):(depPre?(/^en$|en$/.test(pv)&&!/dans/.test(pv)?1:2):(/(^| )(a|au|aux|sur)$/.test(pv)?1:0));
+    if(deps.has(k)&&(depPre||k.length>=6||len>=2)&&!near)return{type:"z",code:deps.get(k),i:i-(depPre?preLen:0),len:len+(depPre?preLen:0)};
+    const c=m.get(k);
+    if(c){if(k.length<5&&!preLen&&c[4]<2)continue;if(len===1&&!preLen&&(KW2CAT.has(k)||STOP.has(k)))continue;return{type:near?"near":"place",c,i:i-preLen,len:len+preLen}}
+  }
+  return null;
+}
+function parseQ(text){
+  let s=" "+norm(text||"").replace(/[’']/g," ").replace(/[^a-z0-9\- ]+/g," ").replace(/\bvide (grenier|greniers|maison)\b/g,"vide-$1").replace(/\s+/g," ")+" ";
+  const o={w:"",cats:new Set(),z:"",place:"",near:null,words:[]};
+  const take=(re,fn)=>{const m=s.match(re);if(m){fn(m);s=s.replace(re," ")}};
+  take(/ aujourd hui | ce soir /,()=>o.w="today");
+  take(/ demain /,()=>o.w="tomorrow");
+  take(/ (ce )?week ?-?end /,()=>o.w="we");
+  take(/ (cette semaine|7 jours) /,()=>o.w="7");
+  take(/ (pendant les |aux |les )?vacances( de la toussaint| de toussaint)? | (a la )?toussaint /,()=>o.w="vac");
+  take(/ (ce mois-ci|ce mois ci|ce mois|30 jours) /,()=>o.w="30");
+  take(new RegExp(" (en |d |au mois de )?("+MONTHS.join("|")+") "),m=>o.w="m"+MONTHS.indexOf(m[2]));
+  take(/ (toutes les dates|a venir|bientot) /,()=>o.w="all");
+  take(/ (gratuit|gratuite|gratuits|gratuites|sans payer) /,()=>o.free=1);
+  let arr=[];s.trim().split(/\s+/).filter(Boolean).forEach(w=>{if(KW2CAT.has(w))arr.push(w);else w.split("-").forEach(x=>x&&arr.push(x))});
+  const f=findPlace(arr);
+  if(f){if(f.type==="z")o.z=f.code;else if(f.type==="near")o.near={n:f.c[0],la:f.c[2],lo:f.c[3],z:f.c[1]};else{o.place=f.c[0];o.pz=f.c[1]}arr.splice(Math.max(0,f.i),f.len)}
+  /* Lieux à visiter : « musées », « châteaux », « à visiter »… */
+  arr.forEach(w=>{const k=LVW[w];if(k){o.lv=o.lv||{k:null,n:[]};if(k!=="*"&&!o.lv.k)o.lv.k=k;if(LVN.has(w))o.lv.n.push(w.replace(/(s|x)$/,""))}});
+  arr=arr.filter(w=>!LVGEN.has(w));
+  arr.forEach(w=>{if(KW2CAT.has(w))o.cats.add(KW2CAT.get(w));else if(!STOP.has(w)&&w.length>1)o.words.push(w)});
+  return o;
+}
+const km=(a,b)=>{const dx=(a.lon-b.lo)*Math.cos(a.lat*Math.PI/180)*111.3,dy=(a.lat-b.la)*111.2;return Math.hypot(dx,dy)};
+const matchO=(e,o)=>(!o.free||e.g)&&(o.place||o.near||o.z||!REGION.length||REGION.includes(e.z))&&(!o.cats.size||o.cats.has(e.cat))&&(!o.z||e.z===o.z)&&(!o.place||e.w===o.place)&&(!o.near||km(e,o.near)<=25)&&o.words.every(w=>e.k.includes(w));
+function matchBase(e){return matchO(e,st)}
+function pickO(o,w,day){const[a,b]=day?[P(day),P(day)]:range(w);
+  return EVENTS.filter(e=>!(e.E<a||e.S>b)&&matchO(e,o)).sort((x,y)=>(x.long-y.long)||(Math.max(x.S,a)-Math.max(y.S,a))||((x.h||"99")<(y.h||"99")?-1:1));}
+function pick(){return pickO(st,st.w,st.day)}
+const wOf=(o,text)=>o.w||((text||"").trim()?"all":"30");
+const countQ=text=>{const o=parseQ(text);return pickO(o,wOf(o,text),"").length};
+function applyQ(text){st.q=text;st.lim=LIM0;const o=parseQ(text);const prev=(st.place||"")+(st.near?st.near.n:"")+st.z;
+  Object.assign(st,{lv:o.lv||null,free:o.free,w:wOf(o,text),cats:o.cats,z:o.z,place:o.place,pz:o.pz,near:o.near,words:o.words});$("sbl-qx").hidden=!text;
+  const cur=(o.place||"")+(o.near?o.near.n:"")+o.z;
+  if(cur&&cur!==prev)needFor(o).then(ds=>ensureDeps(ds)).then(ch=>{if(ch)draw();flyTo(o)});}
+function flyTo(o){if(!map)return;ZSAVE=null;let p=null;if(o.near)p=[o.near.lo,o.near.la];else if(o.place){const e=EVENTS.find(x=>x.w===o.place);if(e)p=[e.lon,e.lat];else{const c=placeIndex().m.get(PKEY(o.place));if(c)p=[c[3],c[2]]}}
+  if(p)map.flyTo({center:p,zoom:o.near?9.5:11,duration:700});else if(o.z){const ev=EVENTS.filter(e=>e.z===o.z);if(ev.length){let a=90,b=180,c=-90,d=-180;ev.forEach(e=>{a=Math.min(a,e.lat);c=Math.max(c,e.lat);b=Math.min(b,e.lon);d=Math.max(d,e.lon)});map.fitBounds([[b,a],[d,c]],{padding:30,maxZoom:10,duration:600})}}}
+const CATQ={brocante:"brocantes",fete:"fêtes et marchés",spectacle:"concerts",culture:"expos",famille:"en famille",sport:"sport et rando",pal:"Le Pal"};
+const CAT1={brocante:"brocante ou vide-grenier",fete:"fête ou marché",spectacle:"concert ou spectacle",culture:"expo ou visite",famille:"sortie en famille",sport:"sortie sport ou rando",pal:"sortie au Pal"};
+const CATP={brocante:"brocantes et vide-greniers",fete:"fêtes et marchés",spectacle:"concerts et spectacles",culture:"expos et visites",famille:"sorties en famille",sport:"sorties sport et rando",pal:"sorties au Pal"};
+
+const whenTxt=w=>/^m\d+$/.test(w)?"en "+MONTHL[+w.slice(1)]:WHENQ[w]||"";
+function whereTxt(o){return o.place?"à "+o.place:o.near?"autour de "+o.near.n:o.z?dansDep(o.z):""}
+function buildQ(o){const parts=[];if(o.cats.size===1)parts.push(CATQ[[...o.cats][0]]);else if(o.cats.size)parts.push([...o.cats].map(c=>CATQ[c]).join(" et "));
+  if(o.words.length)parts.push(o.words.join(" "));if(o.free)parts.push("gratuit");const wt=whenTxt(o.w);if(wt)parts.push(wt);const wh=whereTxt(o);if(wh)parts.push(wh);return parts.join(" ").trim()}
+function setQ(text,keepOpen){$("sbl-q").value=text;applyQ(text);draw();if(!keepOpen)closeSug();else openSug()}
+function setPlace(w){const o=parseQ(st.q);o.place=w;o.near=null;o.z="";o.w=o.w||"";setQ(buildQ(o).replace(/^ /,""))}
+
+/* ---------- Suggestions guidées : Quoi, Quand, Où ---------- */
+const IDEAS=[["brocante","Brocantes ce week-end"],["famille","En famille pendant les vacances"],["spectacle","Concerts cette semaine"],["fete","Marchés de Noël en décembre"],["culture","Expos ce mois-ci"],["sport","Randos ce week-end"]];
+const searchIco='<svg class="sbl-ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.6-4.6"/></svg>';
+const clockIco='<svg class="sbl-ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>';
+const pinIco='<svg class="sbl-ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>';
+let SUG=[],sugI=-1;
+function topTowns(o,w,n){const c=new Map();pickO(Object.assign({},o,{place:"",near:null,z:""}),w,"").forEach(e=>c.set(e.w,(c.get(e.w)||0)+1));return[...c.entries()].sort((a,b)=>b[1]-a[1]).slice(0,n).map(x=>x[0])}
+function buildSug(text){
+  const base=text.trim(),o=parseQ(text),secs=[],w=wOf(o,text);
+  const item=(full,ico,extra)=>Object.assign({full,ico,n:countQ(full)},extra||{});
+  const tail=text.match(/(\S*)$/)[1],partial=!/\s$/.test(text)&&tail.length>=2,pre=text.slice(0,text.length-tail.length);
+  if(!base){
+    secs.push(["Idées de sorties",IDEAS.map(([c,t])=>item(t,icon(c,17))).filter(x=>x.n>0)]);
+    secs.push(["Par envie",Object.keys(CATS).filter(k=>k!=="pal").map(k=>item(cap(CATQ[k].replace(/^en /,"sorties en ")),icon(k,17),{label:CATP[k],cont:1}))]);
+    return secs;
+  }
+  if(partial){const t=norm(tail),out=[];
+    const cw=[...new Set(Object.entries(CAT_KW).flatMap(([c,a])=>a.filter(x=>x.startsWith(t)&&x!==t).slice(0,1).map(x=>[c,CATQ[c]])))];
+    cw.slice(0,2).forEach(([c,q])=>out.push(item(pre+q,icon(c,17),{cont:1})));
+    [...placeIndex().m.entries()].filter(([k])=>k.startsWith(t)).sort((a,b)=>b[1][4]-a[1][4]||a[0].length-b[0].length).slice(0,4).forEach(([,c])=>out.push(item(pre+"à "+c[0],pinIco,{cont:1})));
+    if(out.length)secs.push(["Suggestions",out]);
+    const ev=EVENTS.filter(e=>norm(e.t).includes(t)).slice(0,3).map(e=>({full:e.t,ico:icon(e.cat,17),ev:e,sub:when(e)+" · "+e.w}));
+    if(ev.length)secs.push(["Sorties",ev]);
+  }
+  const hasWhat=o.cats.size||o.words.length,hasWhen=!!o.w,hasWhere=!!(o.place||o.near||o.z);
+  if(!hasWhat)secs.push(["Quoi ?",Object.keys(CATS).filter(k=>k!=="pal").map(k=>item(CATQ[k]+" "+base,icon(k,17),{cont:1}))]);
+  if(!hasWhen)secs.push(["Quand ?",["aujourd’hui","demain","ce week-end","cette semaine","pendant les vacances","en novembre","en décembre"].map(x=>item(base+" "+x,clockIco,{cont:1}))]);
+  if(!hasWhere){const tw=topTowns(o,w,4);secs.push(["Où ?",tw.map(x=>item(base+" à "+x,pinIco,{cont:1})).concat(REGION.slice(0,4).map(c=>item(base+" "+dansDep(c),pinIco,{cont:1})))]);}
+  return secs.map(([h,a])=>[h,a.filter(x=>x.ev||x.n>0).slice(0,h==="Où ?"?6:7)]).filter(([,a])=>a.length);
+}
+function stepsHtml(o,text){const s=[["Quoi",o.cats.size||o.words.length],["Quand",!!o.w],["Où",!!(o.place||o.near||o.z)]];let cur=s.findIndex(x=>!x[1]);
+  return '<div class="sbl-steps">'+s.map(([n,ok],i)=>'<span class="'+(ok?"ok":i===cur?"cur":"")+'"><b>'+(ok?"✓":i+1)+'</b>'+n+'</span>').join("")+'</div>'}
+function openSug(){
+  const text=$("sbl-q").value,box=$("sbl-sug"),o=parseQ(text);SUG=[];sugI=-1;
+  let h=stepsHtml(o,text);
+  if(text.trim())SUG.push({full:text,go:1});
+  const secs=buildSug(text);
+  if(text.trim())h+='<button type="button" class="sbl-si go" data-i="0" role="option">'+searchIco+'<span class="t">Voir les '+countQ(text)+' sorties pour « '+escH(text.trim())+' »</span></button>';
+  secs.forEach(([title,arr])=>{h+='<div class="sbl-sh">'+title+'</div>';arr.forEach(it=>{const i=SUG.push(it)-1;
+    const lab=it.label?escH(cap(it.label)):hl(it.full,text);
+    h+='<button type="button" class="sbl-si" data-i="'+i+'" role="option">'+it.ico+'<span class="t">'+lab+(it.sub?'<small>'+escH(it.sub)+'</small>':'')+'</span>'+(it.ev?'':'<span class="n">'+it.n+'</span>')+'</button>'})});
+  box.innerHTML=h;box.hidden=false;$("sbl-q").setAttribute("aria-expanded","true");$("sbl-sbox").classList.add("open");
+  box.querySelectorAll(".sbl-si").forEach(b=>{b.onmousedown=ev=>ev.preventDefault();b.onclick=()=>choose(+b.dataset.i)});
+}
+function hl(full,typed){const t=typed.trim();if(t&&full.toLowerCase().startsWith(t.toLowerCase()))return escH(full.slice(0,t.length))+'<b>'+escH(full.slice(t.length))+'</b>';return '<b>'+escH(full)+'</b>'}
+function closeSug(){$("sbl-sug").hidden=true;$("sbl-q").setAttribute("aria-expanded","false");$("sbl-sbox").classList.remove("open")}
+function choose(i){const it=SUG[i];if(!it)return;
+  if(it.ev){closeSug();sheet(it.ev);return}
+  if(it.go){setQ(it.full);$("sbl-q").blur();return}
+  const o=parseQ(it.full),done=(o.cats.size||o.words.length)&&o.w&&(o.place||o.near||o.z);
+  setQ(it.full+(done?"":" "),!done);if(done)$("sbl-q").blur();else $("sbl-q").focus();
+}
+function moveSug(d){const items=[...$("sbl-sug").querySelectorAll(".sbl-si")];if(!items.length)return;sugI=(sugI+d+items.length)%items.length;items.forEach((b,k)=>b.classList.toggle("act",k===sugI));items[sugI].scrollIntoView({block:"nearest"})}
+function initSearch(){
+  const q=$("sbl-q");let tm;
+  q.addEventListener("focus",openSug);
+  q.addEventListener("input",()=>{applyQ(q.value);clearTimeout(tm);tm=setTimeout(draw,120);openSug()});
+  q.addEventListener("keydown",ev=>{if(ev.key==="ArrowDown"){ev.preventDefault();moveSug(1)}else if(ev.key==="ArrowUp"){ev.preventDefault();moveSug(-1)}
+    else if(ev.key==="Enter"){ev.preventDefault();if(sugI>=0){const b=$("sbl-sug").querySelectorAll(".sbl-si")[sugI];choose(+b.dataset.i)}else{setQ(q.value);q.blur()}}
+    else if(ev.key==="Escape"){closeSug();q.blur()}});
+  q.addEventListener("blur",()=>setTimeout(closeSug,120));
+  $("sbl-qx").onclick=()=>{setQ("",true);q.focus()};
+  const ex=innerWidth<=600?["Brocantes ce week-end","En famille cette semaine","Concerts en novembre","Marchés autour de Decize","Expos dans l’Allier"]:["Brocantes ce week-end à Moulins","Que faire en famille pendant les vacances ?","Concerts en novembre","Marchés de Noël autour de Decize","Expos dans l’Allier"];let k=0;
+  setInterval(()=>{if(document.activeElement!==q&&!q.value){k=(k+1)%ex.length;q.placeholder=ex[k]}},3500);q.placeholder=ex[0];
+}
+function summary(n){
+  const o=st,c1=o.cats.size===1?[...o.cats][0]:"",what=c1?(n<2?CAT1[c1]:CATP[c1]):(n<2?"sortie":"sorties"),
+    raw=(st.q||"").split(/\s+/).filter(x=>o.words.includes(norm(x).replace(/[^a-z0-9-]/g,""))).join(" ")||o.words.join(" "),wt=st.day?"le "+P(st.day).getDate()+" "+ML[P(st.day).getMonth()]:(st.w==="30"&&!st.q?"dans les 30 prochains jours":st.w==="all"?"à venir":whenTxt(st.w)),wh=whereTxt(o);
+  return "<b>"+n+"</b> "+what+(o.free?(n>1?" gratuites":" gratuite"):"")+(o.words.length?" « "+escH(raw)+" »":"")+" "+wt+(wh?" "+escH(wh):"");
+}
+const $=id=>document.getElementById(id);
+function btn(label,on,fn,color){const b=document.createElement("button");b.type="button";b.className="sbl-b";b.setAttribute("aria-pressed",on?"true":"false");
+  if(color){b.style.setProperty("--c","var(--sbl-p-"+color+")");const s=document.createElement("span");s.className="bi";s.innerHTML=icon(color,16);b.append(s)}b.append(label);b.onclick=fn;return b}
+function filters(){}
+
+/* ---------- Icônes par type de sortie (trait 24 px) ---------- */
+const ICONS={
+  brocante:'<path d="M3.5 12.2V4.5a1 1 0 0 1 1-1h7.7l8.3 8.3a1 1 0 0 1 0 1.4l-7.3 7.3a1 1 0 0 1-1.4 0z"/><circle cx="8" cy="8" r="1.6"/>',
+  fete:'<path d="M4 20.5 8.2 8.6l7.2 7.2z"/><path d="M14 3.5v2.2M19.6 5.9l-1.6 1.6M20.5 11.5h-2.2M10.8 6.7l1.2 1.2M15.7 9.8c1.3-1.3 3.1-1.3 4.3-.4"/>',
+  spectacle:'<path d="M9 18.2V5.6l11-2.1v12.6"/><circle cx="6.3" cy="18.2" r="2.7"/><circle cx="17.3" cy="16.1" r="2.7"/>',
+  culture:'<path d="M3 9.5 12 4l9 5.5M5 10v8M9.7 10v8M14.3 10v8M19 10v8M3 20.5h18"/>',
+  famille:'<path d="M12 3.2c3 0 5.3 2.6 5.3 5.9 0 3.6-2.6 6.4-5.3 6.4s-5.3-2.8-5.3-6.4c0-3.3 2.3-5.9 5.3-5.9z"/><path d="m11 15.5-.8 1.8h3.6l-.8-1.8M12 17.3c0 1.6-1.6 1.9-.6 3.7"/>',
+  sport:'<circle cx="12" cy="13.5" r="7.5"/><path d="M12 13.5V9.2M9.8 2.8h4.4M12 2.8V6M18.3 6.6l1.4-1.4"/>',
+  patrimoine:'<path d="M4 21V9.5l2-1V5h2.4v2h2.2V5h2.8v2h2.2V5H18v3.5l2 1V21z"/><path d="M10 21v-3.6a2 2 0 0 1 4 0V21"/>',
+  nature:'<path d="M12 21v-5.5"/><path d="M12 3c3.6 0 6.2 2.8 6.2 6.2 0 3.3-2.7 5.9-6.2 6.3-3.5-.4-6.2-3-6.2-6.3C5.8 5.8 8.4 3 12 3z"/>',
+  loisirs:'<path d="m12 3.5 2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/>',
+  office:'<circle cx="12" cy="12" r="8.6"/><path d="M12 11v5.6M12 7.6v.2"/>',
+  pal:'<circle cx="12" cy="10" r="6.8"/><path d="M12 3.2v13.6M5.2 10h13.6M7.2 5.2l9.6 9.6M16.8 5.2l-9.6 9.6M8.6 21 12 10l3.4 11M7 21h10"/>'
+};
+const icon=(cat,s)=>'<svg class="sbl-ic" viewBox="0 0 24 24" width="'+(s||18)+'" height="'+(s||18)+'" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+ICONS[cat]+'</svg>';
+
+/* ---------- Photos des communes (Wikipédia), chargées à la demande ---------- */
+
+const IMG=new Map();let imgCache={};try{imgCache=JSON.parse(localStorage.getItem("sbl-img2")||"{}")}catch(_){}
+function townPhoto(w,z){
+  const k=w+"|"+z;if(IMG.has(k))return IMG.get(k);
+  const p=(async()=>{
+    if(k in imgCache)return imgCache[k];
+    if(inViewer||CFG.photos===false)return null;
+    const get=t=>fetch("https://fr.wikipedia.org/api/rest_v1/page/summary/"+encodeURIComponent(t.replace(/ /g,"_"))).then(r=>r.ok?r.json():null).catch(()=>null);
+    const ok=j=>j&&j.type!=="disambiguation"&&/commune/i.test(j.description||"")&&(j.description||"").includes(depName(z));
+    let j=await get(w);if(!ok(j))j=await get(w+" ("+depName(z)+")");
+    let r=null;
+    if(ok(j)&&j.thumbnail&&!/\.svg|blason|logo|carte|map|locator|flag|drapeau|armoiries|plan_/i.test(j.thumbnail.source))
+      r={u:j.thumbnail.source,page:(j.content_urls&&j.content_urls.desktop&&j.content_urls.desktop.page)||""};
+    imgCache[k]=r;try{localStorage.setItem("sbl-img2",JSON.stringify(imgCache))}catch(_){}
+    return r})();
+  IMG.set(k,p);return p;
+}
+const big=u=>u.replace(/\/(\d+)px-/,(m,n)=>+n<800?"/800px-":m);
+function paint(el,w,z,large){
+  townPhoto(w,z).then(r=>{if(!r)return;const try1=large?big(r.u):r.u;const im=new Image();
+    im.onload=()=>{el.style.backgroundImage='url("'+im.src+'")';el.classList.add("ph")};
+    im.onerror=()=>{if(im.src!==r.u)im.src=r.u};im.src=try1;
+    if(large){const c=el.querySelector(".cr");if(c&&r.page){c.hidden=false;c.href=r.page}}});
+}
+const lazy=("IntersectionObserver" in window)?new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){lazy.unobserve(en.target);paint(en.target,en.target.dataset.w,en.target.dataset.z)}}),{rootMargin:"200px"}):null;
+function thumb(e,cls){const d=document.createElement("div");d.className="sbl-th "+(cls||"");d.style.setProperty("--pc","var(--sbl-p-"+e.cat+")");
+  d.dataset.w=e.w;d.dataset.z=e.z;d.innerHTML='<span class="fb">'+icon(e.cat,cls==="xl"?54:30)+'</span>';
+  if(e.img){const im=new Image();im.onload=()=>{d.style.backgroundImage='url("'+im.src+'")';d.classList.add("ph","own")};im.onerror=()=>{if(lazy)lazy.observe(d);else paint(d,e.w,e.z)};im.src=e.img}
+  else if(lazy)lazy.observe(d);else paint(d,e.w,e.z);return d}
+
+/* ---------- Badges partenaires ---------- */
+const BADGES={palnature:{l:"Fondation Le PAL Nature",c:"#2f7d3b"}};
+const leafIco='<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19c0-8 5-13 14-14-1 9-6 14-14 14z"/><path d="M5 19l7-7"/></svg>';
+function badge(e){const b=BADGES[e.b];if(!b)return null;const s=document.createElement("span");s.className="sbl-badge";s.style.setProperty("--bc",b.c);s.innerHTML=leafIco+"<span></span>";s.lastChild.textContent=b.l;return s}
+
+/* ---------- Liste ---------- */
+/* Accueil épuré : quelques sélections ; la liste complète, la carte et le calendrier s'ouvrent à la demande */
+const isHome=()=>!st.explore&&!st.q&&!st.day;
+function goHome(){st.explore=false;st.day="";if(st.q)setQ("");else draw();view("list");scrollTo({top:0,behavior:"smooth"})}
+function explore(v){st.explore=true;view(v||"list");draw();const m=$("sbl-main");if(m)m.scrollIntoView({behavior:"smooth",block:"start"})}
+/* Lieux mis en avant : labels, musées, châteaux et grands sites d'abord ; équipements de quartier écartés ; renouvelés chaque jour */
+const LV_BOF=/terrain|stade|city ?stade|multisport|skate|aire de|piscine|gymnase|salle |boulodrome|tennis|parcours de sante|jeux pour enfants|bowling|laser|escape|karting|paintball|hive|trampoline/;
+const LV_TOP=/chateau|abbaye|cathedrale|basilique|prieure|musee|palais|forteresse|donjon|jardin|arboretum|grotte|gorges|lac |cascade|zoo|parc animalier|ecomusee|maison natale|moulin|pont |citadelle|village/;
+function homeLieux(){const j=Math.floor(Date.now()/864e5);
+  const sc=x=>{const t=norm(x.t);if(LV_BOF.test(t))return -9;return (x.l?4:0)+(x.k==="musee"?2:0)+(LV_TOP.test(t)?3:0)+(x.d?1:0)+(x.oh?1:0)};
+  const L=allLieux().filter(x=>x.k!=="office"&&REGION.includes(x.z)).map(x=>[x,sc(x)]).filter(a=>a[1]>=3).sort((a,b)=>b[1]-a[1]).slice(0,40).map(a=>a[0]);
+  return L.map((x,i)=>[x,(i*2654435761+j*97)%1000]).sort((a,b)=>a[1]-b[1]).slice(0,12).map(a=>a[0])}
+function homeCTA(n){const d=document.createElement("div");d.className="sbl-cta";
+  d.innerHTML='<button type="button" class="sbl-btn go" data-x="list"></button><button type="button" class="sbl-btn" data-x="map">Voir sur la carte</button><button type="button" class="sbl-btn" data-x="cal">Calendrier</button>';
+  d.firstChild.textContent="Voir les "+n.toLocaleString("fr-FR")+" sorties";d.querySelectorAll("[data-x]").forEach(b=>b.onclick=()=>explore(b.dataset.x));return d}
+function weekendPicks(){
+  const t=today(),d=t.getDay(),sat=d===0?add(t,-1):add(t,(6-d)%7),sun=add(sat,1),from=d===0||d===6?t:add(sat,-1);
+  const all=EVENTS.filter(e=>!e.long&&e.S>=from&&e.S<=sun&&matchBase(e)).sort((a,b)=>(!!b.img-!!a.img)||(a.S-b.S)||((a.h||"99")<(b.h||"99")?-1:1));
+  const par={};all.forEach(e=>(par[e.cat]=par[e.cat]||[]).push(e));const out=[];
+  for(let i=0;out.length<12&&i<12;i++)Object.keys(par).forEach(c=>{if(par[c][i]&&out.length<12)out.push(par[c][i])});
+  return out.sort((a,b)=>(a.S-b.S)||((a.h||"99")<(b.h||"99")?-1:1));
+}
+function list(items){
+  const box=$("sbl-list");box.textContent="";const n=items.length;
+  const per=st.day?"le "+P(st.day).getDate()+" "+ML[P(st.day).getMonth()]:({today:"aujourd’hui",we:"ce week-end","7":"sur 7 jours","30":"sur 30 jours",all:"au total"})[st.w];
+  $("sbl-sum").innerHTML="<span>"+summary(n)+"</span>"+(st.q||st.day?'<button type="button" id="sbl-clr">Effacer</button>':"");
+  const clr=$("sbl-clr");if(clr)clr.onclick=()=>goHome();
+  $("sbl-info").innerHTML=st.cats.has("pal")?'<div class="sbl-info">Le Pal a fermé sa saison 2026 le 27 septembre. La date de réouverture 2027 sera ajoutée dès que le parc l’annoncera.</div>':"";
+  const wk=$("sbl-wk");wk.textContent="";
+  const home=isHome();ROOT.classList.toggle("home",home);syncTabs();
+  if(home){
+    $("sbl-sum").textContent="";$("sbl-info").textContent="";
+    const sec=(titre,items,mk,tout)=>{if(!items.length)return;const h=document.createElement("div");h.className="sbl-wkh";h.innerHTML='<h2></h2>';h.firstChild.textContent=titre;
+      if(tout){const b=document.createElement("button");b.type="button";b.textContent="Tout voir";b.onclick=tout;h.append(b)}
+      const rail=document.createElement("div");rail.className="sbl-rail";items.forEach(x=>rail.append(mk(x)));wk.append(h,rail)};
+    sec("Ce week-end",weekendPicks(),card,()=>setQ("ce week-end"));
+    const t=today(),fin=add(t,7),sem=EVENTS.filter(e=>!e.long&&e.S>=t&&e.S<=fin&&matchBase(e)&&e.img).slice(0,12);
+    if(sem.length>=4)sec("Cette semaine, en images",sem,card,()=>setQ("cette semaine"));
+    sec("À visiter dans le coin",homeLieux(),lieuCard,()=>setQ("à visiter "+(REGION.length===1?dansDep(REGION[0]):"")));
+    const pv=document.createElement("div");pv.id="sbl-pourvous";wk.append(pv); /* futures préférences du compte */
+    wk.append(homeCTA(n));
+    return;
+  }
+  if(!st.day&&!st.q){
+    const picks=weekendPicks();
+    if(picks.length){const h=document.createElement("div");h.className="sbl-wkh";h.innerHTML='<h2>Ce week-end</h2>';
+      const all=document.createElement("button");all.type="button";all.textContent="Tout voir";all.onclick=()=>setQ("ce week-end");h.append(all);
+      const rail=document.createElement("div");rail.className="sbl-rail";picks.forEach(e=>rail.append(card(e)));wk.append(h,rail)}
+  }
+  {const lr=lieuxRail();if(lr)wk.append(lr)}
+  if(!n){box.innerHTML='<p class="sbl-none">Rien ne correspond à ces critères. Élargissez la période ou retirez un filtre.</p>';return}
+  const t=today(),a0=st.day?P(st.day):t;let key=null,cnt=0,hd=null,grp=null;
+  const all=items;items=items.slice(0,st.lim||LIM0);
+  items.forEach(e=>{
+    const ref=e.long?null:(e.S<a0?a0:e.S),k=e.long?"L":iso(ref);
+    if(k!==key){key=k;hd=document.createElement("div");hd.className="sbl-day";
+      const h=document.createElement("h2");
+      if(e.long)h.textContent="Expositions et visites en cours";
+      else{const diff=Math.round((ref-t)/864e5);h.textContent=(diff===0?"Aujourd’hui, ":diff===1?"Demain, ":"")+(diff<2?JL[ref.getDay()]:cap(JL[ref.getDay()]))+" "+ref.getDate()+" "+ML[ref.getMonth()]}
+      const s=document.createElement("span");hd.append(h,s);grp=document.createElement("div");grp.className="sbl-grp";box.append(hd,grp);cnt=0}
+    cnt++;hd.lastChild.textContent=cnt+(cnt>1?" sorties":" sortie");
+    grp.append(row(e,ref));
+  });
+  if(all.length>items.length){const m=document.createElement("button");m.type="button";m.className="sbl-btn sbl-moreall";m.textContent="Afficher plus de sorties ("+(all.length-items.length).toLocaleString("fr-FR")+" restantes)";m.onclick=()=>{st.lim=(st.lim||LIM0)+LIM0;list(pick())};box.append(m)}
+}
+function meta(e){const bits=[];if(e.g)bits.push("Gratuit");if(e.h)bits.push(hh(e.h));bits.push(e.w);if(!e.long&&+e.S!==+e.E)bits.push("jusqu’au "+e.E.getDate()+" "+MO[e.E.getMonth()]);if(e.long)bits.push("jusqu’au "+e.E.getDate()+" "+MO[e.E.getMonth()]);return bits.join(" · ")}
+function row(e,ref){
+  const b=document.createElement("button");b.type="button";b.className="sbl-ev";b.style.setProperty("--c","var(--sbl-c-"+e.cat+")");b.style.setProperty("--pc","var(--sbl-p-"+e.cat+")");
+  const th=thumb(e);const d=e.long?e.E:ref;
+  const chip=document.createElement("span");chip.className="dch";chip.innerHTML='<small></small><b></b>';chip.firstChild.textContent=e.long?"au":JL[d.getDay()].slice(0,3)+".";chip.lastChild.textContent=d.getDate()+" "+MO[d.getMonth()];th.append(chip);
+  const tx=document.createElement("span");tx.className="tx";tx.innerHTML='<span class="c">'+icon(e.cat,15)+'<span></span></span><h3></h3><span class="m"></span>';
+  tx.querySelector(".c span").textContent=CATS[e.cat][1];tx.querySelector("h3").textContent=e.t;tx.querySelector(".m").textContent=meta(e);
+  const bd=badge(e);if(bd)tx.insertBefore(bd,tx.querySelector("h3"));
+  b.append(th,tx);b.onclick=()=>sheet(e);return b;
+}
+function card(e){
+  const b=document.createElement("button");b.type="button";b.className="sbl-card";b.style.setProperty("--pc","var(--sbl-p-"+e.cat+")");
+  const th=thumb(e,"lg");
+  const chip=document.createElement("span");chip.className="dch";chip.innerHTML='<small></small><b></b>';chip.firstChild.textContent=JL[e.S.getDay()].slice(0,3)+".";chip.lastChild.textContent=e.S.getDate()+" "+MO[e.S.getMonth()];
+  const ic=document.createElement("span");ic.className="ich";ic.innerHTML=icon(e.cat,17);th.append(chip,ic);
+  const tx=document.createElement("span");tx.className="tx";tx.innerHTML='<h3></h3><span class="m"></span>';tx.querySelector("h3").textContent=e.t;tx.querySelector(".m").textContent=meta(e);
+  const bd=badge(e);if(bd)tx.prepend(bd);
+  b.append(th,tx);b.onclick=()=>sheet(e);return b;
+}
+
+/* ---------- Carte : fonds cartes.gouv.fr (Géoplateforme de l'IGN) affichés avec MapLibre ---------- */
+let map,G,pins=[],labels=[],fallback=false,fond="standard";try{if(localStorage.getItem("sbl-fond")==="photo")fond="photo"}catch(_){}
+const css=v=>getComputedStyle(ROOT).getPropertyValue(v).trim();
+const GPF="https://data.geopf.fr";
+const FONDS={
+  standard:["Plan IGN",GPF+"/annexes/ressources/vectorTiles/styles/PLAN.IGN/standard.json"],
+  photo:["Satellite",null]
+};
+const TOWNS=[["Moulins",46.566,3.333,1],["Vichy",46.127,3.426,1],["Montluçon",46.340,2.603,1],["Nevers",46.990,3.159,1],["Decize",46.828,3.461,1],["Digoin",46.481,3.981,1],["Paray-le-Monial",46.451,4.119,1],
+ ["Bourbon-Lancy",46.622,3.770,0],["Lapalisse",46.248,3.637,0],["Gannat",46.100,3.198,0],["Saint-Pourçain-sur-Sioule",46.308,3.289,0],["Commentry",46.289,2.740,0],["Cosne-d'Allier",46.474,2.833,0],
+ ["Dompierre-sur-Besbre",46.518,3.678,0],["Gueugnon",46.603,4.062,0],["Charolles",46.434,4.276,0],["Luzy",46.790,3.970,0],["Saint-Pierre-le-Moûtier",46.793,3.118,0],["Cérilly",46.618,2.822,0],["Le Mayet-de-Montagne",46.071,3.666,0],["Varennes-sur-Allier",46.313,3.401,0],["Bourbon-l'Archambault",46.583,3.056,0]];
+const depsFC=onlyMain=>({type:"FeatureCollection",features:G.deps.filter(d=>!onlyMain||d.m).map(d=>({type:"Feature",properties:{m:d.m?1:0},geometry:{type:"MultiPolygon",coordinates:d.r.map(r=>[r])}}))});
+const rivFC=()=>({type:"FeatureCollection",features:G.rivers.map(r=>({type:"Feature",properties:{},geometry:{type:"LineString",coordinates:r.l}}))});
+const photoStyle=()=>({version:8,sources:{ortho:{type:"raster",tileSize:256,maxzoom:19,tiles:[GPF+"/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=ORTHOIMAGERY.ORTHOPHOTOS&STYLE=normal&TILEMATRIXSET=PM&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=image/jpeg"]}},layers:[{id:"ortho",type:"raster",source:"ortho"}]});
+const drawnStyle=()=>({version:8,sources:{deps:{type:"geojson",data:depsFC()},riv:{type:"geojson",data:rivFC()}},layers:[
+  {id:"bg",type:"background",paint:{"background-color":css("--sbl-out")}},
+  {id:"dep-fill",type:"fill",source:"deps",paint:{"fill-color":css("--sbl-land"),"fill-opacity":["case",["==",["get","m"],1],1,.45]}},
+  {id:"dep-line",type:"line",source:"deps",paint:{"line-color":["case",["==",["get","m"],1],css("--sbl-ink"),css("--sbl-border")],"line-width":["case",["==",["get","m"],1],1.6,.8],"line-opacity":.7}},
+  {id:"riv",type:"line",source:"riv",paint:{"line-color":css("--sbl-water"),"line-width":2.6}}]});
+function initMap(){
+  if(!window.maplibregl){$("sbl-map").innerHTML='<p class="sbl-none" style="padding:20px;color:var(--sbl-ink)">La carte n’a pas pu se charger. La liste et le calendrier restent disponibles.</p>';$("sbl-fonds").hidden=true;return}
+  G=JSON.parse($("sbl-geo").textContent);
+  const tryIGN=CFG.tiles!=="none"&&!inViewer;
+  map=new maplibregl.Map({container:"sbl-map",style:tryIGN?(fond==="photo"?photoStyle():FONDS.standard[1]):drawnStyle(),bounds:[[2.45,45.98],[4.32,47.0]],fitBoundsOptions:{padding:8},
+    minZoom:6.5,maxZoom:18,attributionControl:false,dragRotate:false,pitchWithRotate:false,touchPitch:false});
+  map.touchZoomRotate.disableRotation();
+  map.addControl(new maplibregl.NavigationControl({showCompass:false}),"top-right");
+  map.on("style.load",overlay);
+  map.on("zoom",()=>$("sbl-map").classList.toggle("z-lo",map.getZoom()<8.5));$("sbl-map").classList.add("z-lo");
+  if(!tryIGN)goDrawn(true);
+  else{
+    $("sbl-attr").textContent=(fond==="photo"?"Photographies aériennes":"Plan IGN")+" © IGN – cartes.gouv.fr";
+    let baseOk=false;map.once("load",()=>{baseOk=true});
+    map.on("error",()=>{if(!baseOk&&!fallback&&!map.isStyleLoaded())goDrawn()});
+    setTimeout(()=>{if(!baseOk&&!fallback&&!map.isStyleLoaded())goDrawn()},9000);
+  }
+  const f=$("sbl-fonds");$("sbl-map").append(f);
+  Object.entries(FONDS).forEach(([k,[n]])=>{const b=document.createElement("button");b.type="button";b.textContent=n;b.dataset.f=k;b.setAttribute("aria-pressed",k===fond?"true":"false");
+    b.onclick=()=>{if(fallback)return;fond=k;f.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b?"true":"false"));
+      map.setStyle(k==="photo"?photoStyle():FONDS[k][1]);$("sbl-attr").textContent=(k==="photo"?"Photographies aériennes":"Plan IGN")+" © IGN – cartes.gouv.fr";try{localStorage.setItem("sbl-fond",k)}catch(_){}};f.append(b)});
+}
+function overlay(){
+  if(fallback||map.getSource("sbl-z"))return;
+  map.addSource("sbl-z",{type:"geojson",data:depsFC(true)});
+  map.addLayer({id:"sbl-z",type:"line",source:"sbl-z",paint:{"line-color":fond==="photo"?"#ffffff":"#7a2f8a","line-width":2.2,"line-opacity":.7,"line-dasharray":[3,2]}});
+}
+function goDrawn(quiet){
+  fallback=true;$("sbl-fonds").hidden=true;
+  map.setStyle(drawnStyle());
+  $("sbl-attr").textContent=quiet&&inViewer?"Aperçu Claude : le fond cartes.gouv.fr s’affiche une fois l’outil ouvert dans un navigateur ou sur un site":"Fond cartes.gouv.fr injoignable : carte simplifiée";
+  const lab=(t,la,lo,cls,dot)=>{const el=document.createElement("div");el.className="sbl-lab "+cls;el.innerHTML=(dot?"<i></i>":"")+"<span></span>";el.lastChild.textContent=t;
+    labels.push(new maplibregl.Marker({element:el,anchor:"left",offset:[dot?-3:0,0]}).setLngLat([lo,la]).addTo(map))};
+  TOWNS.forEach(([n,la,lo,big])=>lab(n,la,lo,big?"big":"small",1));
+  [["Allier",46.72,2.70],["Nièvre",47.10,3.55],["Saône-et-Loire",46.72,4.30],["Puy-de-Dôme",45.98,2.95],["Loire",46.05,4.15],["Cher",46.80,2.25],["Creuse",46.20,2.25]].forEach(([n,la,lo])=>lab(n,la,lo,"dep"));
+  [["Loire",46.70,3.62],["Allier",46.40,3.355],["Cher",46.47,2.60]].forEach(([n,la,lo])=>lab(n,la,lo,"riv"));
+}
+function styleMap(){if(map&&fallback)map.setStyle(drawnStyle())}
+/* GPS : liens vers Waze, Google Maps, Apple Plans et l'appli par défaut du téléphone */
+const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+const isAndroid=/Android/i.test(navigator.userAgent);
+function gps(la,lo,label){
+  const q=encodeURIComponent(label),ll=la+","+lo,L=[];
+  if(!inViewer&&isAndroid)L.push(["GPS du téléphone","geo:"+ll+"?q="+ll+"("+q+")",1]);
+  if(isIOS)L.push(["Plans (iPhone)","https://maps.apple.com/?daddr="+q+"&ll="+ll+"&dirflg=d",1]);
+  L.push(["Waze","https://waze.com/ul?ll="+ll+"&navigate=yes"]);
+  L.push(["Google Maps","https://www.google.com/maps/dir/?api=1&destination="+q+"&travelmode=driving"]);
+  if(!isIOS)L.push(["Apple Plans","https://maps.apple.com/?daddr="+q+"&ll="+ll+"&dirflg=d"]);
+  return L.map(([n,u,main])=>'<a class="sbl-btn'+(main?" go":"")+'" href="'+u.replace(/"/g,"&quot;")+'" target="_blank" rel="noopener">'+n+'</a>').join("");
+}
+const escH=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]);
+const PINC={brocante:"--sbl-p-brocante",fete:"--sbl-p-fete",spectacle:"--sbl-p-spectacle",culture:"--sbl-p-culture",famille:"--sbl-p-famille",sport:"--sbl-p-sport",pal:"--sbl-p-pal"};
+function pinSvg(n,cat,mix){if(mix)return '<svg viewBox="0 0 34 46" width="34" height="46" aria-hidden="true"><path class="b mx" d="M17 3C9.3 3 3 9.2 3 16.9c0 10.2 12.2 24.3 13.1 25.4a1.2 1.2 0 0 0 1.8 0C18.8 41.2 31 27.1 31 16.9 31 9.2 24.7 3 17 3z"/><text class="mxn" x="17" y="21.5" text-anchor="middle">'+(n>99?"99+":n)+'</text></svg>';
+  return '<svg viewBox="0 0 34 46" width="34" height="46" aria-hidden="true"><path class="b" d="M17 3C9.3 3 3 9.2 3 16.9c0 10.2 12.2 24.3 13.1 25.4a1.2 1.2 0 0 0 1.8 0C18.8 41.2 31 27.1 31 16.9 31 9.2 24.7 3 17 3z"/>'+
+  '<g transform="translate(9.5 9.4) scale(.625)" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">'+ICONS[cat]+'</g>'+
+  (n>1?'<circle class="nb" cx="27" cy="7" r="7"/><text x="27" y="10.2" text-anchor="middle">'+(n>9?"9+":n)+'</text>':'')+'</svg>'}
+let PIN_ITEMS=[],pinTm=null,ZSAVE=null;
+/* Téléphone : la bulle d'un repère s'ouvre en carte posée en bas de l'écran, au-dessus de la barre de navigation */
+const PHONE=()=>matchMedia("(max-width:600px)").matches;
+function mobilePop(pop){
+  let box=$("sbl-mpop");if(!box){box=document.createElement("div");box.id="sbl-mpop";box.className="sbl-mpop";box.setAttribute("role","dialog");box.setAttribute("aria-label","Détail du repère");ROOT.append(box)}
+  const html=pop._content?pop._content.innerHTML:"";box.innerHTML='<button type="button" class="x" aria-label="Fermer">✕</button>'+html;box.hidden=false;
+  box.querySelectorAll(".maplibregl-popup-close-button").forEach(b=>b.remove());
+  box.querySelector(".x").onclick=()=>{box.hidden=true};
+  /* même comportement que la bulle : on rejoue ses gestionnaires sur la copie */
+  pop.getElement=()=>box;pop.remove=()=>{box.hidden=true;return pop};
+  (pop._listeners&&pop._listeners.open||[]).slice().forEach(fn=>{try{fn.call(pop)}catch(_){}});
+}
+
+/* Un clic sur la carte, hors des repères et des bulles, ramène à la vue d'avant le zoom sur un groupe */
+function hookZoomBack(){if(hookZoomBack.done||!map)return;hookZoomBack.done=1;
+  map.on("click",e=>{const t=e.originalEvent&&e.originalEvent.target;if(t&&t.closest&&t.closest(".maplibregl-marker,.maplibregl-popup,.maplibregl-ctrl"))return;{const mp=$("sbl-mpop");if(mp)mp.hidden=true}
+    if(ZSAVE&&!popOpen()){const v=ZSAVE;ZSAVE=null;map.flyTo({center:v.c,zoom:v.z,duration:650})}})}
+/* Une bulle ouverte reste entière dans la carte : la carte glisse si besoin */
+const popOpen=()=>pins.concat(lvMarks).some(m=>{const p=m.getPopup&&m.getPopup();return p&&p.isOpen()});
+function popClosed(){clearTimeout(pinTm);pinTm=setTimeout(()=>{if(popOpen())return;renderPins();renderLieux()},80)}
+function fitPopup(pop){if(PHONE())return;pop.once("close",popClosed);requestAnimationFrame(()=>{const el=pop.getElement();if(!el||!map)return;const pr=el.getBoundingClientRect(),mr=map.getContainer().getBoundingClientRect(),m=12;
+  let dx=0,dy=0;if(pr.bottom>mr.bottom-m)dy=pr.bottom-mr.bottom+m;if(pr.top-dy<mr.top+m)dy=pr.top-mr.top-m;if(pr.right>mr.right-m)dx=pr.right-mr.right+m;if(pr.left-dx<mr.left+m)dx=pr.left-mr.left-m;
+  if(dx||dy)map.panBy([dx,dy],{duration:300})})}
+function popDate(e){const t=today();if(e.S<t)return "jusqu’au "+e.E.getDate()+" "+MO[e.E.getMonth()];return JL[e.S.getDay()].slice(0,3)+". "+e.S.getDate()+" "+MO[e.S.getMonth()]+(e.h?" · "+hh(e.h):"")}
+function drawPins(items){PIN_ITEMS=items;if(!map)return;if(!drawPins.hooked){drawPins.hooked=1;map.on("moveend",()=>{clearTimeout(pinTm);pinTm=setTimeout(()=>{if(popOpen())return;renderPins();renderLieux()},60)})}renderPins()}
+function renderPins(){
+  if(!map)return;hookZoomBack();pins.forEach(m=>m.remove());pins=[];
+  const z=map.getZoom(),mix=z<10,cell=360/(256*Math.pow(2,z))*(mix?64:46),cy=cell*Math.cos(46*Math.PI/180),B=map.getBounds(),padX=(B.getEast()-B.getWest())*.15,padY=(B.getNorth()-B.getSouth())*.15;
+  const by=new Map();
+  PIN_ITEMS.forEach(e=>{if(e.lon<B.getWest()-padX||e.lon>B.getEast()+padX||e.lat<B.getSouth()-padY||e.lat>B.getNorth()+padY)return;
+    const ck=Math.floor(e.lon/cell)+"|"+Math.floor(e.lat/cy),k=mix?ck:e.cat+"|"+ck;let g=by.get(k);if(!g){g={cat:e.cat,ck,ev:[],la:0,lo:0};by.set(k,g)}g.ev.push(e);g.la+=e.lat;g.lo+=e.lon});
+  let groups=[...by.values()];groups.forEach(g=>{g.la/=g.ev.length;g.lo/=g.ev.length;
+    if(mix){const c={};g.ev.forEach(e=>c[e.cat]=(c[e.cat]||0)+1);const ks=Object.keys(c);g.cat=ks.sort((a,b)=>c[b]-c[a])[0];g.mix=ks.length>1}});
+  groups.sort((a,b)=>b.ev.length-a.ev.length);groups=groups.slice(0,500);
+  const per=new Map();groups.forEach(g=>{(per.get(g.ck)||per.set(g.ck,[]).get(g.ck)).push(g)});
+  per.forEach(gs=>{gs.sort((a,b)=>Object.keys(CATS).indexOf(a.cat)-Object.keys(CATS).indexOf(b.cat));gs.forEach((g,i)=>{g.dx=(i-(gs.length-1)/2)*17;g.dy=-Math.abs(i-(gs.length-1)/2)*3})});
+  groups.sort((a,b)=>b.la-a.la).forEach(g=>{
+    const n=g.ev.length,lieux=new Set(g.ev.map(e=>e.lieu+"|"+e.w)),towns=new Set(g.ev.map(e=>e.w)),one=lieux.size===1,w=g.ev[0].w;
+    const title=one?(g.ev[0].lieu&&g.ev[0].lieu!==w?g.ev[0].lieu.replace(/ \(\d+e\)$/,"")+", "+w:w):towns.size===1?w:n+" sorties dans ce secteur";
+    const el=document.createElement("div");el.className="sbl-mk";
+    const pb=document.createElement("button");pb.type="button";pb.className="sbl-pin"+(st.place&&towns.has(st.place)?" on":"");pb.style.setProperty("--pc","var("+PINC[g.cat]+")");
+    pb.innerHTML=pinSvg(n,g.cat,g.mix);pb.setAttribute("aria-label",title+", "+(g.mix?"plusieurs types":CATS[g.cat][0])+" : "+n+" sortie"+(n>1?"s":""));el.append(pb);
+    const evs=g.ev.slice().sort((a,b)=>(a.S-b.S)||((a.h||"99")<(b.h||"99")?-1:1)),shown=evs.slice(0,6);
+    const first=shown.map((e,i)=>'<li><button type="button" data-ev="'+i+'"><span class="d">'+escH(popDate(e))+'</span><span class="t">'+escH(e.t)+'</span></button></li>').join("");
+    const action=n===1?"la sortie":towns.size===1?"les "+n+" sorties":"de plus près";
+    const e0=evs[0],head=n===1?'<h4>'+escH(e0.t)+'</h4><p class="when">'+escH(when(e0))+'</p><p>'+escH(title)+'</p>'
+      :'<h4>'+escH(title)+'</h4><p>'+n+' sorties</p><ul class="evl">'+first+'</ul>'+(n>shown.length?'<p class="more">et '+(n-shown.length)+' autre'+(n-shown.length>1?'s':'')+'</p>':'');
+    const pop=new maplibregl.Popup({offset:[g.dx,-44],maxWidth:"320px",focusAfterOpen:false}).setHTML('<div class="sbl-pop" style="--c:var('+PINC[g.cat]+')"><div class="k">'+(g.mix?'Sorties variées':icon(g.cat,15)+' '+CATS[g.cat][0])+'</div>'+head+
+      '<button type="button" class="sbl-btn go" data-see="1">'+(towns.size===1||n===1?"Voir "+action:"Zoomer ici")+'</button>'+
+      (one?'<div class="sbl-poph">Y aller</div><div class="sbl-btns">'+gps(e0.lat,e0.lon,title)+'</div>':'')+'</div>');
+    pop.on("open",()=>{fitPopup(pop);pop.getElement().querySelectorAll("[data-ev]").forEach(x=>x.onclick=()=>{pop.remove();sheet(shown[+x.dataset.ev])});const b=pop.getElement().querySelector("[data-see]");if(b)b.onclick=()=>{pop.remove();if(n===1){sheet(g.ev[0]);return}
+      if(towns.size===1&&(one||z>=13)){setPlace(w);if(innerWidth<=900)view("list");return}map.flyTo({center:[g.lo,g.la],zoom:Math.min(z+2.5,16)})}});
+    if(n>1&&!one){let a=90,b=180,c=-90,d=-180;g.ev.forEach(e=>{a=Math.min(a,e.lat);c=Math.max(c,e.lat);b=Math.min(b,e.lon);d=Math.max(d,e.lon)});
+      if(c-a>0.0004||d-b>0.0006){el.addEventListener("click",ev=>{ev.stopPropagation();ev.preventDefault();
+        if(!ZSAVE)ZSAVE={c:map.getCenter(),z:map.getZoom()};map.fitBounds([[b,a],[d,c]],{padding:{top:70,bottom:40,left:50,right:50},maxZoom:16,duration:650})},true)}}
+    if(PHONE())el.addEventListener("click",ev=>{if(ev.defaultPrevented)return;ev.stopPropagation();mobilePop(pop)},false);
+    pins.push(new maplibregl.Marker({element:el,anchor:"bottom",offset:[g.dx,g.dy]}).setLngLat([g.lo,g.la]).setPopup(PHONE()?null:pop).addTo(map));el.removeAttribute("tabindex");el.removeAttribute("aria-label");el.removeAttribute("role");
+  });
+}
+function pinLegend(){const l=$("sbl-leg");if(!l)return;l.innerHTML="";l.append(lvToggle());const n=document.createElement("span");n.className="sbl-lvn";n.id="sbl-lvn";n.setAttribute("role","status");l.append(n)}
+
+/* ---------- Calendrier (un jour choisi s'ouvre sous sa semaine) ---------- */
+function dayEvents(d){return EVENTS.filter(e=>e.S<=d&&e.E>=d&&matchBase(e)).sort((a,b)=>(a.long-b.long)||((a.h||"99")<(b.h||"99")?-1:1)||a.t.localeCompare(b.t))}
+function dayPanel(d){
+  const box=document.createElement("div");box.className="sbl-calday";box.setAttribute("role","region");
+  const evs=dayEvents(d),diff=Math.round((d-today())/864e5);
+  const h=document.createElement("div");h.className="hd";
+  const t=document.createElement("h3");t.textContent=(diff===0?"Aujourd’hui, ":diff===1?"Demain, ":"")+(diff<2?JL[d.getDay()]:cap(JL[d.getDay()]))+" "+d.getDate()+" "+ML[d.getMonth()];
+  const x=document.createElement("button");x.type="button";x.className="x";x.setAttribute("aria-label","Fermer le jour");x.textContent="✕";x.onclick=()=>{st.day="";draw()};
+  h.append(t,x);box.append(h);box.setAttribute("aria-label",t.textContent);
+  if(!evs.length){const p=document.createElement("p");p.className="none";p.textContent="Aucune sortie connue ce jour-là.";box.append(p)}
+  const longs=evs.filter(e=>e.long);
+  const row=e=>{const b=document.createElement("button");b.type="button";b.className="sbl-cd";b.style.setProperty("--c","var(--sbl-c-"+e.cat+")");
+    b.innerHTML='<span class="tm"></span><span class="tx"><b></b><small></small></span>';
+    b.querySelector(".tm").innerHTML=icon(e.cat,15)+"<span></span>";b.querySelector(".tm span").textContent=e.long?"en cours":(e.h?hh(e.h):CATS[e.cat][1]);
+    b.querySelector("b").textContent=e.t;b.querySelector("small").textContent=e.w+(e.lieu&&e.lieu!==e.w?" · "+e.lieu:"");
+    b.onclick=()=>sheet(e);return b};
+  evs.filter(e=>!e.long).forEach(e=>box.append(row(e)));
+  if(longs.length){const more=document.createElement("button");more.type="button";more.className="sbl-btn sbl-more";more.setAttribute("aria-expanded","false");
+    more.textContent="+ "+longs.length+(longs.length>1?" expositions et visites en cours":" exposition ou visite en cours");
+    const wrap=document.createElement("div");wrap.className="sbl-longs";wrap.hidden=true;longs.forEach(e=>wrap.append(row(e)));
+    more.onclick=()=>{wrap.hidden=!wrap.hidden;more.setAttribute("aria-expanded",String(!wrap.hidden))};box.append(more,wrap)}
+  const add=document.createElement("button");add.type="button";add.className="sbl-btn sbl-dayadd";add.textContent="Proposer une sortie ce jour-là";add.onclick=()=>proposeForm(iso(d));box.append(add);
+  return box;
+}
+function cal(){
+  const m=st.month,first=new Date(m.getFullYear(),m.getMonth(),1);$("sbl-mt2").textContent=cap(ML[m.getMonth()])+" "+m.getFullYear();
+  const g=$("sbl-cal");g.textContent="";["lun.","mar.","mer.","jeu.","ven.","sam.","dim."].forEach(d=>{const s=document.createElement("div");s.className="w";s.textContent=d;g.append(s)});
+  const start=add(first,-((first.getDay()+6)%7)),t=today();
+  const base=EVENTS.filter(e=>!e.long&&matchBase(e));
+  let sel=null,focusSel=false;
+  for(let i=0;i<42;i++){const d=add(start,i),n=base.filter(e=>e.S<=d&&e.E>=d).length;
+    const b=document.createElement("button");b.type="button";b.className=(d.getMonth()!==m.getMonth()?"o ":"")+(d<t?"p ":"")+(+d===+t?"t":"");
+    const on=st.day===iso(d);if(on)sel=d;
+    b.setAttribute("aria-pressed",on?"true":"false");b.setAttribute("aria-label",d.getDate()+" "+ML[d.getMonth()]+", "+n+" sortie"+(n>1?"s":""));
+    b.innerHTML='<span>'+d.getDate()+'</span>'+(n?'<span class="n"><b>'+n+'</b></span>':'');
+    b.onclick=()=>{st.day=st.day===iso(d)?"":iso(d);draw();if(st.day){const p=$("sbl-cal").querySelector(".sbl-calday");p&&p.scrollIntoView({block:"nearest",behavior:"smooth"})}};g.append(b);
+    if(i%7===6&&sel){g.append(dayPanel(sel));sel=null}}
+}
+
+/* ---------- Fiche et ajout à l'agenda ---------- */
+const pad=n=>String(n).padStart(2,"0");
+function span(e){if(e.h){const[a,b]=e.h.split(":").map(Number),s=new Date(e.S);s.setHours(a,b);const en=new Date(+e.E===+e.S?s:e.S);en.setHours(a+2,b);return{all:false,s,e:en}}return{all:true,s:e.S,e:add(e.E,1)}}
+const stamp=(d,all)=>d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+(all?"":"T"+pad(d.getHours())+pad(d.getMinutes())+"00");
+const RAPP=[["","Pas de rappel"],["PT1H","1 heure avant"],["PT3H","3 heures avant"],["P1D","La veille"],["P2D","2 jours avant"],["P7D","Une semaine avant"]];
+const notes=(e,r)=>e.d+"\n\n"+e.lieu+(e.lieu!==e.w?", "+e.w:"")+(e.u?"\nInfos : "+e.u:"")+(r?"\nRappel souhaité : "+RAPP.find(x=>x[0]===r)[1].toLowerCase():"");
+function gUrl(e,r){const T=span(e),p=new URLSearchParams({action:"TEMPLATE",text:e.t,dates:stamp(T.s,T.all)+"/"+stamp(T.e,T.all),details:notes(e,r),location:e.lieu+", "+e.w});if(!T.all)p.set("ctz","Europe/Paris");return"https://calendar.google.com/calendar/render?"+p}
+function oUrl(e,r){const T=span(e),f=d=>d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())+"T"+pad(d.getHours())+":"+pad(d.getMinutes())+":00";
+  const p=new URLSearchParams({path:"/calendar/action/compose",rru:"addevent",subject:e.t,startdt:f(T.s),enddt:f(T.e),body:notes(e,r),location:e.lieu+", "+e.w});if(T.all)p.set("allday","true");return"https://outlook.live.com/calendar/0/action/compose?"+p}
+function ics(e,r){const T=span(e),x=s=>s.replace(/[\\;,]/g,m=>"\\"+m).replace(/\n/g,"\\n");
+  const L=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Dans le coin//FR","BEGIN:VEVENT","UID:"+e.id+"@dans-le-coin","DTSTAMP:"+new Date().toISOString().replace(/[-:]/g,"").slice(0,15)+"Z",
+   T.all?"DTSTART;VALUE=DATE:"+stamp(T.s,1):"DTSTART;TZID=Europe/Paris:"+stamp(T.s),T.all?"DTEND;VALUE=DATE:"+stamp(T.e,1):"DTEND;TZID=Europe/Paris:"+stamp(T.e),
+   "SUMMARY:"+x(e.t),"LOCATION:"+x(e.lieu+", "+e.w),"DESCRIPTION:"+x(e.d+(e.u?"\n"+e.u:""))].concat(e.u?["URL:"+e.u]:[]);
+  if(r)L.push("BEGIN:VALARM","ACTION:DISPLAY","DESCRIPTION:"+x(e.t),"TRIGGER:-"+r,"END:VALARM");L.push("END:VEVENT","END:VCALENDAR");return L.join("\r\n")}
+let back=null;
+function sheet(e){
+  back=document.activeElement;const h=$("sbl-sheet");
+  h.innerHTML='<div class="sbl-veil" id="sbl-veil"><div class="sbl-sheet ev" role="dialog" aria-modal="true" aria-labelledby="sbl-st" style="--c:var(--sbl-c-'+e.cat+')">'+
+  '<div class="sbl-hero" id="sbl-hero"><span class="fb">'+icon(e.cat,64)+'</span><span class="ich">'+icon(e.cat,20)+'</span><a class="cr" hidden target="_blank" rel="noopener">Photo : Wikipédia</a><button class="cl" id="sbl-x" aria-label="Fermer">✕</button></div>'+
+  '<div class="top"><div><div class="kind"></div><h2 id="sbl-st"></h2></div></div>'+
+  '<dl><dt>Quand</dt><dd id="sbl-sw"></dd><dt>Où</dt><dd id="sbl-sl"></dd><dt>Source</dt><dd><a id="sbl-su" target="_blank" rel="noopener"></a></dd></dl><p id="sbl-sd"></p>'+
+  '<div class="sbl-add"><h3>Ajouter à mon agenda</h3><label for="sbl-r">Rappel</label><select id="sbl-r">'+RAPP.map(([v,l])=>'<option value="'+v+'"'+(v==="P1D"?" selected":"")+'>'+l+'</option>').join("")+'</select>'+
+  '<div class="sbl-btns"><a class="sbl-btn go" id="sbl-g" target="_blank" rel="noopener">Google Agenda</a><a class="sbl-btn" id="sbl-o" target="_blank" rel="noopener">Outlook</a>'+(inViewer?'':'<button class="sbl-btn" id="sbl-i" type="button">iPhone, Android (.ics)</button>')+'</div>'+
+  '<div class="sbl-hint" id="sbl-h"></div></div><div class="sbl-add"><h3>Y aller</h3><div class="sbl-btns" id="sbl-gps"></div></div></div></div>';
+  $("sbl-st").textContent=e.t;h.querySelector(".kind").textContent=CATS[e.cat][0]+" · "+depName(e.z);
+  {const bd=badge(e);if(bd){bd.classList.add("lg");$("sbl-st").after(bd)}}
+  const hero=$("sbl-hero");hero.style.setProperty("--pc","var(--sbl-p-"+e.cat+")");
+  if(e.img){const im=new Image();im.onload=()=>{hero.classList.add("ph","poster");hero.style.setProperty("--img",'url("'+im.src+'")');const p=document.createElement("img");p.className="pst";p.src=im.src;p.alt="Affiche : "+e.t;hero.prepend(p);
+      const c=hero.querySelector(".cr");c.hidden=false;c.textContent="Image : "+e.src;if(e.u)c.href=e.u;else c.removeAttribute("href")};im.onerror=()=>paint(hero,e.w,e.z,true);im.src=e.img}
+  else paint(hero,e.w,e.z,true);
+  $("sbl-sw").textContent=when(e)+(e.n?" (et "+e.n+" autre"+(e.n>1?"s":"")+" date"+(e.n>1?"s":"")+")":"")+(e.g?" · Gratuit":"");$("sbl-sl").textContent=e.lieu+(e.lieu!==e.w?", "+e.w:"");$("sbl-sd").textContent=e.d;
+  const u=$("sbl-su");if(e.u)u.href=e.u;else u.removeAttribute("href");u.textContent=e.src;
+  if(e.p&&PX.admin){const r=document.createElement("button");r.type="button";r.className="sbl-btn";r.textContent="Retirer de l’agenda";r.onclick=()=>unpublish(e,close);h.querySelector(".sbl-sheet").append(r)}
+  $("sbl-gps").innerHTML=gps(e.lat,e.lon,(e.lieu&&e.lieu!==e.w?e.lieu+", ":"")+e.w);
+  if(KIOSK){h.querySelector(".sbl-add").hidden=true;kioskQR($("sbl-gps"),"https://www.google.com/maps/dir/?api=1&destination="+e.lat+","+e.lon,"Scannez avec votre téléphone pour l’itinéraire")}
+  const up=()=>{const r=$("sbl-r").value;$("sbl-g").href=gUrl(e,r);$("sbl-o").href=oUrl(e,r);
+    $("sbl-h").textContent=inViewer?"Google et Outlook gardent votre rappel habituel. Le rappel choisi est noté dans l’événement.":"Le fichier .ics règle le rappel choisi sur iPhone, Android et Mac."};
+  $("sbl-r").onchange=up;up();
+  const ib=$("sbl-i");if(ib)ib.onclick=()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([ics(e,$("sbl-r").value)],{type:"text/calendar"}));a.download=e.id+".ics";document.body.append(a);a.click();a.remove();toast("Événement prêt à ouvrir dans votre agenda")};
+  const close=()=>{h.textContent="";document.removeEventListener("keydown",esc);back&&back.focus()};
+  const esc=ev=>{if(ev.key==="Escape")close()};document.addEventListener("keydown",esc);
+  $("sbl-x").onclick=close;$("sbl-veil").onclick=ev=>{if(ev.target.id==="sbl-veil")close()};$("sbl-x").focus();
+}
+function toast(m){const t=document.createElement("div");t.className="sbl-toast";t.textContent=m;ROOT.append(t);setTimeout(()=>t.remove(),2600)}
+
+
+
+/* ---------- Horaires d'ouverture (format OpenStreetMap) : lecture, mise en français, « ouvert maintenant » ---------- */
+const OHD=["Mo","Tu","We","Th","Fr","Sa","Su"],OHJ=["lun.","mar.","mer.","jeu.","ven.","sam.","dim."],OHM=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const MOISL=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+function ohParse(src){
+  if(!src)return null;const raw=src.trim();if(raw==="24/7")return[{m:null,d:null,t:[[0,1440]]}];
+  const rules=[];
+  for(let part of raw.split(/\s*;\s*|\s*\|\|\s*/)){if(!part)continue;part=part.replace(/"[^"]*"/g,"").trim();
+    const r={m:null,d:null,t:null,off:false};
+    let mm=part.match(/^((?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)(?:\s*\d{1,2})?(?:\s*-\s*(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)(?:\s*\d{1,2})?)?)(?::)?\s+/);
+    if(mm){const a=mm[1].match(/(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)/g);r.m=[OHM.indexOf(a[0]),OHM.indexOf(a[a.length-1])];part=part.slice(mm[0].length)}
+    const dm=part.match(/^((?:Mo|Tu|We|Th|Fr|Sa|Su|PH|SH)(?:\[[^\]]*\])?(?:\s*-\s*(?:Mo|Tu|We|Th|Fr|Sa|Su))?(?:\s*,\s*(?:Mo|Tu|We|Th|Fr|Sa|Su|PH|SH)(?:\s*-\s*(?:Mo|Tu|We|Th|Fr|Sa|Su))?)*)\s*/);
+    if(dm){const set=new Set();let ph=false;dm[1].replace(/\[[^\]]*\]/g,"").split(/\s*,\s*/).forEach(seg=>{const ab=seg.split(/\s*-\s*/);
+        if(ab[0]==="PH"||ab[0]==="SH"){ph=true;return}const i=OHD.indexOf(ab[0]),j=ab[1]?OHD.indexOf(ab[1]):i;if(i<0||j<0)return;for(let k=i;;k=(k+1)%7){set.add(k);if(k===j)break}});
+      if(!set.size&&ph)continue;r.d=set;part=part.slice(dm[0].length)}
+    part=part.trim();
+    if(/^(off|closed)$/i.test(part)){r.off=true;rules.push(r);continue}
+    if(!part){if(r.d||r.m){r.t=[[0,1440]];rules.push(r)}continue}
+    const ts=[];let ok=true;part.split(/\s*,\s*/).forEach(seg=>{const t=seg.match(/^(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})\+?$/);if(!t){ok=false;return}
+      let a=+t[1]*60+ +t[2],b=+t[3]*60+ +t[4];if(b<=a)b+=1440;ts.push([a,b])});
+    if(!ok||!ts.length)return null;r.t=ts;rules.push(r)}
+  return rules.length?rules:null}
+function ohRuleFor(rules,d){let hit=null;const wd=(d.getDay()+6)%7,mo=d.getMonth();
+  rules.forEach(r=>{if(r.m){const[a,b]=r.m;const inM=a<=b?mo>=a&&mo<=b:mo>=a||mo<=b;if(!inM)return}if(r.d&&!r.d.has(wd))return;hit=r});return hit}
+function ohNow(rules,now){now=now||new Date();const r=ohRuleFor(rules,now);const min=now.getHours()*60+now.getMinutes();
+  if(r&&!r.off)for(const[a,b]of r.t)if(min>=a&&min<b)return{open:true,until:b>=1440?null:b};
+  if(r&&!r.off)for(const[a]of r.t)if(a>min)return{open:false,next:a};return{open:false}}
+const hm=m=>{const h=Math.floor(m/60),mi=m%60;return h+"h"+(mi?String(mi).padStart(2,"0"):"")};
+function ohText(rules){return rules.map(r=>{let days=r.d?[...r.d].sort((a,b)=>a-b):null,dt="";
+    if(days){const runs=[];days.forEach(d=>{const l=runs[runs.length-1];if(l&&l[1]===d-1)l[1]=d;else runs.push([d,d])});dt=runs.map(([a,b])=>a===b?OHJ[a]:(b===a+1?OHJ[a]+", "+OHJ[b]:OHJ[a]+" au "+OHJ[b])).join(", ")}
+    const mt=r.m?(r.m[0]===r.m[1]?"en "+MOISL[r.m[0]]:"d’"+(/^[aeiou]/.test(MOISL[r.m[0]])?"":"")+MOISL[r.m[0]]+" à "+MOISL[r.m[1]]).replace("d’j","de j").replace(/^d’([^aeiou])/,"de $1"):"";
+    const tt=r.off?"fermé":r.t.map(([a,b])=>a===0&&b===1440?"toute la journée":hm(a)+"–"+hm(b%1440||1440)).join(", ");
+    return[mt&&mt[0].toUpperCase()+mt.slice(1),dt||(r.m?"":"tous les jours")].filter(Boolean).join(", ")+" : "+tt}).join("\n")}
+function lieuStatut(x){
+  const rules=ohParse(x.oh);
+  if(rules){const n=ohNow(rules);return{txt:n.open?"Ouvert maintenant"+(n.until?" · ferme à "+hm(n.until):""):"Fermé maintenant"+(n.next!=null?" · ouvre à "+hm(n.next):""),open:n.open,detail:ohText(rules)}}
+  if(x.oh)return{txt:"",open:null,detail:x.oh};
+  if(x.p&&x.p.length){const t=iso(today()),cur=x.p.find(([a,b])=>a<=t&&t<=b),nx=x.p.find(([a])=>a>t),f=s=>{const d=P(s);return d.getDate()+" "+MO[d.getMonth()]};
+    if(cur)return{txt:"Ouvert en saison",open:true,detail:"Période d’ouverture : du "+f(cur[0])+" au "+f(cur[1])};
+    if(nx)return{txt:"Fermé en ce moment",open:false,detail:"Réouverture le "+f(nx[0])+" (jusqu’au "+f(nx[1])+")"}}
+  return null}
+/* ---------- Lieux à visiter : musées, patrimoine, nature, loisirs (DATAtourisme, mis à jour chaque semaine) ---------- */
+const KIND={office:["Office de tourisme","Offices de tourisme","office"],musee:["Musée","Musées",ICONS.culture?"culture":"musee"],patrimoine:["Patrimoine","Patrimoine","patrimoine"],nature:["Site naturel","Nature","nature"],loisirs:["Loisirs","Loisirs","loisirs"]};
+const kIcon=(k,s)=>icon(KIND[k]?KIND[k][2]:"culture",s);
+const LV=new Map();let LV_ON=true,OT_ON=true,lvMarks=[],lvTm=null;
+try{LV_ON=localStorage.getItem("sbl-lv")!=="0";OT_ON=localStorage.getItem("sbl-ot")!=="0"}catch(_){}
+function loadLieux(c){if(!LV.has(c))LV.set(c,fetch(DATA+"lieux/"+c+".json").then(r=>r.ok?r.json():[]).catch(()=>[]).then(a=>{LV.set(c,a);renderLieux();if(st.place||st.near)list(pick());return a}));return Promise.resolve(LV.get(c))}
+function allLieux(){const out=[];LV.forEach(a=>{if(Array.isArray(a))for(const x of a)out.push(x)});return out}
+function lvToggle(){const f=document.createDocumentFragment();
+  const mk=(id,label,ico,cls,get,set,key)=>{const b=document.createElement("button");b.type="button";b.className="sbl-lvt "+cls;b.id=id;b.setAttribute("aria-pressed",get()?"true":"false");
+    b.innerHTML='<span class="dot">'+kIcon(ico,12)+'</span>'+label;b.onclick=()=>{set(!get());b.setAttribute("aria-pressed",get()?"true":"false");try{localStorage.setItem(key,get()?"1":"0")}catch(_){}renderLieux()};return b};
+  f.append(mk("sbl-lvt","Lieux à visiter","patrimoine","",()=>LV_ON,v=>LV_ON=v,"sbl-lv"),mk("sbl-ott","Offices de tourisme","office","ot",()=>OT_ON,v=>OT_ON=v,"sbl-ot"));return f}
+function renderLieux(){
+  if(!map)return;lvMarks.forEach(m=>m.remove());lvMarks=[];
+  const z=map.getZoom(),note=$("sbl-lvn");
+  if(note)note.textContent=(LV_ON||OT_ON)&&z<8?"Zoomez pour voir les offices de tourisme, musées et lieux à visiter.":"";
+  if((!LV_ON&&!OT_ON)||z<8)return;
+  const B=map.getBounds(),minor=z>=12,cell=360/(256*Math.pow(2,z))*30,cy=cell*Math.cos(46*Math.PI/180),seen=new Set(),pick=[];
+  const all=allLieux().filter(x=>x.k==="office"?OT_ON:LV_ON&&z>=9).sort((a,b)=>(b.k==="office")-(a.k==="office"));
+  for(const x of all){if(!minor&&!x.m)continue;if(x.lon<B.getWest()||x.lon>B.getEast()||x.lat<B.getSouth()||x.lat>B.getNorth())continue;
+    const ck=Math.floor(x.lon/cell)+"|"+Math.floor(x.lat/cy);if(seen.has(ck))continue;seen.add(ck);pick.push(x);if(pick.length>=300)break}
+  pick.forEach(x=>{
+    const el=document.createElement("div");el.className="sbl-lvm";
+    const b=document.createElement("button");b.type="button";b.className="sbl-lv"+(x.m?" big":"")+(x.k==="office"?" of":"");b.innerHTML=kIcon(x.k,x.m?15:12);
+    b.setAttribute("aria-label",KIND[x.k][0]+" : "+x.t+", "+x.w);el.append(b);
+    const pop=new maplibregl.Popup({offset:[0,-16],maxWidth:"290px",focusAfterOpen:false}).setHTML('<div class="sbl-pop lvp"><div class="k">'+kIcon(x.k,15)+' '+KIND[x.k][0]+'</div><h4>'+escH(x.t)+'</h4>'+
+      (x.l?'<p class="lb">'+escH(x.l)+'</p>':'')+'<p>'+escH(x.w)+'</p>'+(()=>{const st=lieuStatut(x);return st&&st.txt?'<p class="when '+(st.open?"ok":"ko")+'">'+escH(st.txt)+'</p>':''})()+
+      (x.tel?'<p><a href="tel:'+x.tel.replace(/\s/g,"")+'">'+escH(x.tel)+'</a></p>':'')+'<button type="button" class="sbl-btn go" data-see="1">Voir '+(x.k==="office"?"l’office":"le lieu")+'</button></div>');
+    pop.on("open",()=>{fitPopup(pop);const s=pop.getElement().querySelector("[data-see]");if(s)s.onclick=()=>{pop.remove();lieuSheet(x)}});
+    if(PHONE())el.addEventListener("click",ev=>{ev.stopPropagation();mobilePop(pop)});
+    lvMarks.push(new maplibregl.Marker({element:el,anchor:"center"}).setLngLat([x.lon,x.lat]).setPopup(PHONE()?null:pop).addTo(map));el.removeAttribute("tabindex");el.removeAttribute("aria-label");el.removeAttribute("role")});
+}
+function lieuPhoto(x){
+  const k="lv|"+x.id;if(IMG.has(k))return IMG.get(k);
+  const p=(async()=>{if(k in imgCache)return imgCache[k];if(inViewer||CFG.photos===false)return null;
+    let r=null;try{const j=await fetch("https://fr.wikipedia.org/api/rest_v1/page/summary/"+encodeURIComponent(x.t.replace(/ /g,"_"))).then(r=>r.ok?r.json():null);
+      if(j&&j.type!=="disambiguation"&&j.thumbnail&&!/\.svg|blason|logo|carte|map|locator|flag|plan_/i.test(j.thumbnail.source)&&(j.extract||"").includes(x.w.split(/[- ]/)[0]))
+        r={u:j.thumbnail.source,page:(j.content_urls&&j.content_urls.desktop&&j.content_urls.desktop.page)||""}}catch(_){}
+    if(!r)try{/* Wikimedia Commons : photos prises à moins de 300 m dont le nom reprend un mot du lieu */
+      const mots=norm(x.t).split(/[^a-z0-9]+/).filter(w=>w.length>4&&!/^(musee|eglise|chapelle|chateau|jardin|maison|place|saint|sainte|notre|grand|petit|centre)$/.test(w));
+      if(mots.length){const q="https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*&generator=geosearch&ggsnamespace=6&ggslimit=20&ggsradius=300&ggscoord="+x.lat+"|"+x.lon+"&prop=imageinfo&iiprop=url&iiurlwidth=800";
+        const j=await fetch(q).then(r=>r.ok?r.json():null);const pg=j&&j.query&&j.query.pages?Object.values(j.query.pages):[];
+        const hit=pg.find(p=>{const t=norm(p.title||"");return /\.(jpe?g|png|webp)$/i.test(p.title||"")&&mots.some(w=>t.includes(w))&&p.imageinfo&&p.imageinfo[0]});
+        if(hit){const ii=hit.imageinfo[0];r={u:ii.thumburl||ii.url,page:ii.descriptionurl||""}}}}catch(_){}
+    imgCache[k]=r;try{localStorage.setItem("sbl-img2",JSON.stringify(imgCache))}catch(_){}return r})();
+  IMG.set(k,p);return p}
+function nearEvents(x,km0){const t=today(),lim=add(t,30);return EVENTS.filter(e=>!e.long&&e.E>=t&&e.S<=lim&&km(e,{la:x.lat,lo:x.lon})<=km0).sort((a,b)=>a.S-b.S).slice(0,5)}
+function lieuSheet(x){
+  back=document.activeElement;const h=$("sbl-sheet");
+  h.innerHTML='<div class="sbl-veil" id="sbl-veil"><div class="sbl-sheet ev" role="dialog" aria-modal="true" aria-labelledby="sbl-st" style="--c:var(--sbl-ink)">'+
+  '<div class="sbl-hero" id="sbl-hero" style="--pc:#5b6b7a"><span class="fb">'+kIcon(x.k,64)+'</span><span class="ich">'+kIcon(x.k,20)+'</span><a class="cr" hidden target="_blank" rel="noopener">Photo : Wikimedia</a><button class="cl" id="sbl-x" aria-label="Fermer">✕</button></div>'+
+  '<div class="top"><div><div class="kind"></div><h2 id="sbl-st"></h2></div></div>'+
+  '<dl><dt>Horaires</dt><dd id="sbl-oh"></dd><dt>Où</dt><dd id="sbl-sl"></dd><dt>Téléphone</dt><dd id="sbl-tel"></dd><dt>Site</dt><dd><a id="sbl-su" target="_blank" rel="noopener"></a></dd><dt>Source</dt><dd id="sbl-ss"></dd></dl><p id="sbl-sd"></p>'+
+  '<p class="sbl-hint" id="sbl-ohh"></p>'+
+  '<div class="sbl-add"><h3>Y aller</h3><div class="sbl-btns" id="sbl-gps"></div></div><div class="sbl-add" id="sbl-ne" hidden><h3>Sorties à proximité</h3></div></div></div>';
+  $("sbl-st").textContent=x.t;h.querySelector(".kind").textContent=KIND[x.k][0]+" · "+depName(x.z);
+  if(x.l){const s=document.createElement("span");s.className="sbl-badge";s.style.setProperty("--bc","#5b6b7a");s.textContent=x.l;s.classList.add("lg");$("sbl-st").after(s)}
+  $("sbl-sl").textContent=(x.a?x.a+", ":"")+x.w;$("sbl-sd").textContent=x.d||"";$("sbl-ss").textContent=(x.src||"DATAtourisme")+(x.oh?" · horaires © contributeurs OpenStreetMap":"");
+  {const st=lieuStatut(x),o=$("sbl-oh");if(st){if(st.txt){const b=document.createElement("b");b.className="sbl-st "+(st.open?"ok":"ko");b.textContent=st.txt;o.append(b)}
+      if(st.detail){const d=document.createElement("span");d.className="sbl-ohd";d.textContent=st.detail;o.append(d)}
+      $("sbl-ohh").textContent="Horaires indicatifs : jours fériés et fermetures exceptionnelles non pris en compte, vérifiez auprès du lieu."}
+    else{o.textContent="Non communiqués";$("sbl-ohh").textContent="Horaires et tarifs : consultez le site du lieu avant de vous déplacer."}}
+  {const t=$("sbl-tel");if(x.tel){const a=document.createElement("a");a.href="tel:"+x.tel.replace(/\s/g,"");a.textContent=x.tel;t.append(a)}else{t.previousSibling.remove();t.remove()}}
+  const u=$("sbl-su");if(x.u){u.href=x.u;u.textContent=x.u.replace(/^https?:\/\/(www\.)?/,"").replace(/\/$/,"").slice(0,48)}else u.closest("dd").previousSibling.remove(),u.closest("dd").remove();
+  $("sbl-gps").innerHTML=gps(x.lat,x.lon,x.t+", "+x.w);
+  if(KIOSK)kioskQR($("sbl-gps"),"https://www.google.com/maps/dir/?api=1&destination="+x.lat+","+x.lon,"Scannez avec votre téléphone pour l’itinéraire");
+  const hero=$("sbl-hero");
+  lieuPhoto(x).then(r=>{if(r){const im=new Image();im.onload=()=>{hero.style.backgroundImage='url("'+im.src+'")';hero.classList.add("ph");const c=hero.querySelector(".cr");if(r.page){c.hidden=false;c.href=r.page}};im.src=big(r.u)}else paint(hero,x.w,x.z,true)});
+  const ne=nearEvents(x,3);if(ne.length){const box=$("sbl-ne");box.hidden=false;ne.forEach(e=>{const b=document.createElement("button");b.type="button";b.className="sbl-cd";b.style.setProperty("--c","var(--sbl-c-"+e.cat+")");
+    b.innerHTML='<span class="tm">'+icon(e.cat,15)+'<span></span></span><span class="tx"><b></b><small></small></span>';b.querySelector(".tm span").textContent=e.S<today()?"en cours":e.S.getDate()+" "+MO[e.S.getMonth()];
+    b.querySelector("b").textContent=e.t;b.querySelector("small").textContent=e.w;b.onclick=()=>sheet(e);box.append(b)})}
+  const close=()=>{h.textContent="";document.removeEventListener("keydown",esc);back&&back.focus()};
+  const esc=ev=>{if(ev.key==="Escape")close()};document.addEventListener("keydown",esc);
+  $("sbl-x").onclick=close;$("sbl-veil").onclick=ev=>{if(ev.target.id==="sbl-veil")close()};$("sbl-x").focus();
+}
+function lieuCard(x){const b=document.createElement("button");b.type="button";b.className="sbl-card lvc";
+  const d=document.createElement("div");d.className="sbl-th lg";d.style.setProperty("--pc","#5b6b7a");d.innerHTML='<span class="fb">'+kIcon(x.k,30)+'</span>';
+  lieuPhoto(x).then(r=>{if(r){const im=new Image();im.onload=()=>{d.style.backgroundImage='url("'+im.src+'")';d.classList.add("ph")};im.src=r.u}else paint(d,x.w,x.z)});
+  const ic=document.createElement("span");ic.className="ich";ic.innerHTML=kIcon(x.k,17);d.append(ic);
+  const tx=document.createElement("span");tx.className="tx";tx.innerHTML='<h3></h3><span class="m"></span>';tx.querySelector("h3").textContent=x.t;tx.querySelector(".m").textContent=KIND[x.k][0]+(x.l?" · "+x.l:"");
+  b.append(d,tx);b.onclick=()=>lieuSheet(x);return b}
+function lieuxRail(){
+  if(st.day||!(st.lv||st.place||st.near))return null;
+  const inArea=x=>st.place?x.w===st.place:st.near?km(x,st.near)<=(st.lv?15:12):st.z?x.z===st.z:REGION.includes(x.z);
+  const lv=st.lv||{k:null,n:[]};
+  let L=allLieux().filter(x=>inArea(x)&&(!lv.k||x.k===lv.k)&&lv.n.every(n=>norm(x.t).includes(n)));
+  const tot=L.length;
+  L=L.sort((a,b)=>(b.m||0)-(a.m||0)||"omlpn".indexOf(a.k[0])-"omlpn".indexOf(b.k[0])||a.t.localeCompare(b.t)).slice(0,st.lv?30:14);
+  if(!L.length){if(!st.lv)return null;const p=document.createElement("p");p.className="sbl-hint";p.textContent="Aucun lieu à visiter ne correspond dans cette zone pour l’instant.";return p}
+  const where=st.place?"à "+st.place:st.near?"autour de "+st.near.n:st.z?dansDep(st.z):"dans le coin";
+  const what=lv.k==="office"?"Offices de tourisme":lv.k==="musee"?"Musées":lv.n.length?(LVL[lv.n[0]]||cap(lv.n[0])):lv.k==="nature"?"Sites naturels":lv.k==="loisirs"?"Loisirs":lv.k==="patrimoine"?"Patrimoine":"À visiter";
+  const f=document.createDocumentFragment(),h=document.createElement("div");h.className="sbl-wkh";h.innerHTML='<h2></h2><span class="n"></span>';
+  h.firstChild.textContent=what+" "+where;h.lastChild.textContent=tot>L.length?L.length+" sur "+tot:"";
+  const rail=document.createElement("div");rail.className="sbl-rail";L.forEach(x=>rail.append(lieuCard(x)));f.append(h,rail);return f}
+/* ---------- Données nationales : un fichier par département (DATAtourisme, mis à jour chaque nuit) ---------- */
+const DATA=CFG.dataBase||"data/";
+let DEPIDX=null,DEPNAME={},REGION=[],NATCOM=null,NATMAP=null,MANUAL=[];
+const DTEV=new Map();
+const DEF_NAMES={"03":"Allier","58":"Nièvre","71":"Saône-et-Loire"};
+const depName=c=>DEPNAME[c]||DEF_NAMES[c]||c;
+const PLUR=new Set(["Ardennes","Bouches-du-Rhône","Côtes-d'Armor","Deux-Sèvres","Hautes-Alpes","Alpes-de-Haute-Provence","Alpes-Maritimes","Hautes-Pyrénées","Pyrénées-Atlantiques","Pyrénées-Orientales","Landes","Vosges","Yvelines","Hauts-de-Seine"]);
+const MASC_E=new Set(["Rhône","Finistère","Puy-de-Dôme","Maine-et-Loire","Val-de-Marne","Val-d'Oise","Lot-et-Garonne","Tarn-et-Garonne"]);
+const FEM_X=new Set(["Seine-Saint-Denis","Eure-et-Loir","Côte-d'Or","Corse-du-Sud"]);
+const DOM={"Guadeloupe":"en Guadeloupe","Martinique":"en Martinique","Guyane":"en Guyane","La Réunion":"à La Réunion","Mayotte":"à Mayotte","Paris":"à Paris"};
+function dansDep(c){const n=depName(c);if(DOM[n])return DOM[n];if(PLUR.has(n))return "dans les "+n;if(/^[AEIOUYÉÈH]/i.test(n))return "dans l’"+n;
+  if((/e$/.test(n)&&!MASC_E.has(n))||FEM_X.has(n))return "dans la "+n;return "dans le "+n}
+async function loadIndex(){try{const r=await fetch(DATA+"departements.json");if(r.ok){DEPIDX=await r.json();DEPIDX.departements.forEach(d=>DEPNAME[d.code]=d.nom);PIDX=null}}catch(_){}}
+function loadDep(c){if(!DTEV.has(c))DTEV.set(c,fetch(DATA+"dep/"+c+".json").then(r=>r.ok?r.json():[]).catch(()=>[]).then(a=>{const p=prep(a);DTEV.set(c,p);return p}));return Promise.resolve(DTEV.get(c))}
+async function ensureDeps(codes){codes=[...new Set(codes.filter(Boolean))];codes.forEach(loadLieux);if(codes.every(c=>Array.isArray(DTEV.get(c))))return false;await Promise.all(codes.map(loadDep));rebuild();return true}
+function loadCommunes(){if(NATCOM||loadCommunes.p)return loadCommunes.p;loadCommunes.p=fetch(DATA+"communes-fr.json").then(r=>r.ok?r.json():null).then(a=>{if(a){NATCOM=a;NATMAP=new Map(a.map(c=>[norm(c[0]).replace(/[-']/g," "),c]));PIDX=null;fillCommuneList();if(st.q){applyQ(st.q);draw()}}}).catch(()=>{});return loadCommunes.p}
+function rebuild(){
+  const seen=new Set(),out=[],key=e=>norm(e.t).replace(/[^a-z0-9]/g,"").slice(0,22)+"|"+norm(e.w)+"|"+e.s;
+  MANUAL.forEach(e=>{seen.add(key(e));out.push(e)});
+  for(const v of DTEV.values())if(Array.isArray(v))v.forEach(e=>{const k=key(e);if(!seen.has(k)){seen.add(k);out.push(e)}});
+  BASE=out;merge();
+}
+function subtitle(extra){
+  const tot=DEPIDX?DEPIDX.departements.reduce((s,d)=>s+d.n,0):EVENTS.length;
+  $("sbl-sub").textContent=(DEPIDX?tot.toLocaleString("fr-FR")+" sorties partout en France, mises à jour chaque nuit avec les offices de tourisme":EVENTS.length+" sorties repérées")+(extra?". Dont "+extra+(extra>1?" proposées":" proposée")+" par des habitants.":"");
+  const r=$("sbl-regl");if(r)r.textContent=REGION.map(depName).join(", ");
+}
+function fitRegion(){if(!map)return;ZSAVE=null;let ev=EVENTS.filter(e=>REGION.includes(e.z));if(!ev.length)return;
+  const med=k=>{const v=ev.map(e=>e[k]).sort((x,y)=>x-y);return v[v.length>>1]},mla=med("lat"),mlo=med("lon");ev=ev.filter(e=>Math.abs(e.lat-mla)<2.5&&Math.abs(e.lon-mlo)<3.5);if(!ev.length)return;
+  let a=90,b=180,c=-90,d=-180;ev.forEach(e=>{a=Math.min(a,e.lat);c=Math.max(c,e.lat);b=Math.min(b,e.lon);d=Math.max(d,e.lon)});
+  map.fitBounds([[b,a],[d,c]],{padding:30,maxZoom:10,duration:600})}
+async function setRegion(codes){REGION=codes;try{localStorage.setItem("sbl-deps",JSON.stringify(codes))}catch(_){}subtitle();PIDX=null;await ensureDeps(codes);draw();fitRegion();fillCommuneList()}
+function fillCommuneList(){const dl=$("sbl-cl");if(!dl)return;const src=NATCOM?NATCOM.filter(c=>REGION.includes(c[1])):COMMUNES;dl.innerHTML=src.map(c=>'<option value="'+escH(c[0])+'"></option>').join("")}
+function regionPicker(){
+  const deps=DEPIDX?DEPIDX.departements.slice():Object.keys(DEF_NAMES).map(c=>({code:c,nom:DEF_NAMES[c],n:0}));
+  const sel=new Set(REGION);
+  const M=modal('<div class="top"><div><div class="kind">Secteur</div><h2>Où cherchez-vous&nbsp;?</h2></div><button class="cl" data-close aria-label="Fermer">✕</button></div>'+
+    '<p class="sbl-hint">Choisissez un ou plusieurs départements. Vous pouvez aussi taper une ville dans la recherche : « concerts à Lyon ».</p>'+
+    '<div class="sbl-btns" style="margin:10px 0"><button type="button" class="sbl-btn" id="rg-me">'+pinIco+' Autour de moi</button></div>'+
+    '<input class="sbl-in" id="rg-q" placeholder="Rechercher un département ou un numéro" aria-label="Rechercher un département">'+
+    '<div class="sbl-rgl" id="rg-l"></div><p class="sbl-err" id="rg-err" role="alert"></p>'+
+    '<div class="sbl-btns sbl-rgf"><button type="button" class="sbl-btn go" id="rg-go">Afficher</button><button type="button" class="sbl-btn" data-close>Annuler</button></div>');
+  const L=$("rg-l");
+  const paint=()=>{const q=norm($("rg-q").value.trim());L.innerHTML="";
+    deps.filter(d=>!q||norm(d.nom).includes(q)||d.code.toLowerCase().startsWith(q)).forEach(d=>{const l=document.createElement("label");l.className="sbl-rg";
+      l.innerHTML='<input type="checkbox"'+(sel.has(d.code)?" checked":"")+'><span class="c"></span><span class="nm"></span><span class="n"></span>';
+      l.querySelector(".c").textContent=d.code;l.querySelector(".nm").textContent=d.nom;l.querySelector(".n").textContent=d.n?d.n.toLocaleString("fr-FR"):"";
+      l.querySelector("input").onchange=ev=>{ev.target.checked?sel.add(d.code):sel.delete(d.code)};L.append(l)})};
+  $("rg-q").oninput=paint;paint();
+  $("rg-go").onclick=()=>{if(!sel.size){$("rg-err").textContent="Choisissez au moins un département.";return}M.close();setRegion([...sel])};
+  $("rg-me").onclick=()=>{if(!navigator.geolocation){$("rg-err").textContent="La localisation n’est pas disponible sur cet appareil.";return}
+    $("rg-me").disabled=true;navigator.geolocation.getCurrentPosition(async p=>{await loadCommunes();const me={la:p.coords.latitude,lo:p.coords.longitude};
+      const near=(NATCOM||COMMUNES).filter(c=>km({lat:c[2],lon:c[3]},me)<=45);const ds=[...new Set(near.map(c=>c[1]))];
+      if(!ds.length){$("rg-err").textContent="Aucun département trouvé autour de vous.";$("rg-me").disabled=false;return}M.close();setRegion(ds)},
+      ()=>{$("rg-err").textContent="La localisation a été refusée. Choisissez votre département dans la liste.";$("rg-me").disabled=false},{timeout:10000})};
+}
+async function needFor(o){
+  if(o.z)return[o.z];
+  if(o.place)return[o.pz];
+  if(o.near){await loadCommunes();const pts=(NATCOM||COMMUNES).filter(c=>km({lat:c[2],lon:c[3]},o.near)<=25);return[...new Set(pts.map(c=>c[1]).concat([o.near.z]))]}
+  return[];
+}
+/* ---------- Participatif : propositions d'événements et de sources ---------- */
+const COMMUNES=JSON.parse($("sbl-communes").textContent);
+const CMAP=new Map(COMMUNES.map(c=>[norm(c[0]).replace(/[-']/g," "),c]));
+const findCommune=v=>{const k=norm(v.trim()).replace(/[-']/g," ");return(NATMAP&&NATMAP.get(k))||CMAP.get(k)};
+const BADS=new Set(["con","cons","conne","connes","connard","connards","connasse","salope","salopes","salaud","salauds","pute","putes","putain","merde","merdes","merdique","encule","enculer","encules","nique","niquer","niquez","ntm","fdp","tg","batard","batards","couille","couilles","bite","bites","chier","emmerde","emmerder","pd","pede","pedes","tapette","enfoire","enfoires","branleur","branleurs","foutre","nazi","nazis","negre","negres","bougnoule","youpin","gouine","pouffiasse","grognasse","trouduc","abruti","abrutis","debile","debiles","cretin","cretins","bordel","chiotte","chiottes","zizi","teub","schneck","cul"]);
+function rude(s){if(!s)return false;const t=norm(s).replace(/0|@/g,"o").replace(/1|!/g,"i").replace(/3/g,"e").replace(/4/g,"a").replace(/5|\$/g,"s").replace(/\*/g,"");
+  return t.split(/[^a-z]+/).some(w=>BADS.has(w))||/fils de p|ta mere|nique ta/.test(t)}
+const PX={mode:"none",db:null,user:null,uid:null,admin:false,why:""};
+let BASE=[],USER_EV=[],PEND=[],SRCS=[];
+function merge(){PIDX=null;
+  const extra=USER_EV.filter(o=>o&&o.t&&o.s&&CATS[o.cat]&&typeof o.lat==="number").map(o=>Object.assign({},o));
+  EVENTS=BASE.concat(prep(extra));
+  subtitle(extra.length);PIDX=null;draw();
+}
+const API=CFG.apiUrl?String(CFG.apiUrl).replace(/\/+$/,""):null;let API_TOK="";
+async function apiCall(path,body){const r=await fetch(API+path,{method:body?"POST":"GET",headers:Object.assign({"Content-Type":"application/json"},API_TOK?{Authorization:"Bearer "+API_TOK}:{}),body:body?JSON.stringify(body):undefined});if(!r.ok)throw new Error("http "+r.status);return r.json()}
+let API_LIST={propositions:[],sources:[],publiees:[]};
+async function apiRefresh(){API_LIST=await apiCall("/admin/list");PEND=[];SRCS=[];modBadge()}
+async function apiAdmin(){
+  try{API_TOK=sessionStorage.getItem("sbl-tok")||""}catch(_){}
+  const tryTok=async()=>{try{await apiRefresh();PX.admin=true;try{sessionStorage.setItem("sbl-tok",API_TOK)}catch(_){}modBadge();return true}catch(_){API_TOK="";return false}};
+  if(API_TOK&&await tryTok())return;
+  const M=modal('<form id="sbl-tk"><div class="top"><div><div class="kind">Espace éditeur</div><h2>Code d’accès</h2></div><button class="cl" type="button" data-close aria-label="Fermer">✕</button></div>'+
+    '<div class="sbl-f"><label for="tk-v">Code éditeur</label><input class="sbl-in" id="tk-v" type="password" autocomplete="current-password" required></div><p class="sbl-err" id="tk-e" role="alert"></p>'+
+    '<div class="sbl-btns"><button class="sbl-btn go" type="submit">Entrer</button></div></form>');
+  $("tk-v").focus();
+  $("sbl-tk").onsubmit=async ev=>{ev.preventDefault();API_TOK=$("tk-v").value.trim();if(await tryTok()){M.close();modPanel()}else $("tk-e").textContent="Code refusé."};
+}
+/* Opérations d'édition, identiques en mode Claude (base partagée) et en mode serveur (Worker) */
+const BK={
+  async publish(uid,i,x,e){if(API){await apiCall("/admin/publish",{id:x.id,event:e});USER_EV=USER_EV.filter(o=>o.id!==x.id).concat([e]);merge();API_LIST.propositions=API_LIST.propositions.filter(o=>o.id!==x.id);modBadge();return}
+    await PX.db.doc("agenda/"+x.id).set(e);await setItem("propositions",uid,i,{statut:"valide"})},
+  async refuse(uid,i,x){if(API){await apiCall("/admin/refuse",{id:x.id});API_LIST.propositions=API_LIST.propositions.filter(o=>o.id!==x.id);modBadge();return}
+    await setItem("propositions",uid,i,{statut:"refuse"})},
+  async source(uid,i,x){if(API){await apiCall("/admin/source",{id:x.id});API_LIST.sources=API_LIST.sources.filter(o=>o.id!==x.id);modBadge();return}
+    await setItem("sources",uid,i,{statut:"traitee"})},
+  async unpublish(e){if(API){await apiCall("/admin/unpublish",{id:e.id});USER_EV=USER_EV.filter(o=>o.id!==e.id);merge();return}
+    await PX.db.doc("agenda/"+e.id).delete()}
+};
+async function initParticip(){
+  if(API){PX.mode="url";CFG.submitUrl=API+"/propose";
+    fetch(API+"/agenda").then(r=>r.ok?r.json():[]).then(a=>{if(Array.isArray(a)){USER_EV=a;merge()}}).catch(()=>{});
+    if(/(^|[#&])admin\b/.test(location.hash))apiAdmin();else{try{if(sessionStorage.getItem("sbl-tok"))apiAdmin()}catch(_){}}
+    return}
+  if(CFG.submitUrl){PX.mode="url"}
+  else if(window.claude&&window.claude.use){
+    try{
+      const[db,user]=await Promise.all([claude.use("db"),claude.use("user")]);
+      if(db){PX.db=db;
+        db.collection("agenda").onSnapshot(s=>{USER_EV=s.docs.map(d=>d.data());merge()},()=>{});}
+      if(db&&user){PX.user=user;PX.uid=await user.id();PX.admin=await user.canEdit();
+        const w=await user.can("data.write");
+        if(PX.uid&&w!==false)PX.mode="db";else PX.why="Votre accès à cette page est en lecture seule. Demandez à son propriétaire un accès « Contributeur » pour proposer des sorties.";
+        if(PX.admin){
+          db.collection("propositions").onSnapshot(s=>{PEND=s.docs;modBadge()},()=>{});
+          db.collection("sources").onSnapshot(s=>{SRCS=s.docs;modBadge()},()=>{});
+        }
+      }else if(!db)PX.why="Connectez-vous à Claude pour proposer une sortie.";
+    }catch(_){}
+  }
+  if(PX.mode==="none"&&!PX.why)PX.why="Les propositions ouvriront quand l’outil sera relié à son serveur.";
+}
+function pendingItems(){if(API)return API_LIST.propositions.map(x=>({uid:null,i:null,x})).sort((a,b)=>a.x.s<b.x.s?-1:1);const out=[];PEND.forEach(d=>{const it=(d.data()||{}).items||[];it.forEach((x,i)=>{if(x.statut==="en_attente")out.push({uid:d.id,i,x})})});return out.sort((a,b)=>a.x.s<b.x.s?-1:1)}
+function newSources(){if(API)return API_LIST.sources.map(x=>({uid:null,i:null,x}));const out=[];SRCS.forEach(d=>{const it=(d.data()||{}).items||[];it.forEach((x,i)=>{if(x.statut!=="traitee")out.push({uid:d.id,i,x})})});return out}
+function modBadge(){const n=pendingItems().length+newSources().length,b=$("sbl-mod");b.hidden=!PX.admin;b.textContent=n?"À valider ("+n+")":"À valider";b.classList.toggle("hot",n>0)}
+async function pushItem(col,item){
+  if(PX.mode==="url"){const r=await fetch(CFG.submitUrl,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(Object.assign({type:col},item))});if(!r.ok)throw new Error("http");return}
+  const ref=PX.db.doc(col+"/"+PX.uid),snap=await ref.get(),items=snap.exists?((snap.data()||{}).items||[]).slice():[];
+  if(items.length>=60)throw{code:"quota_exceeded"};
+  items.push(item);await ref.set({items});
+}
+const uidGen=()=>"p-"+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+
+/* fenêtre générique */
+function modal(inner,color){
+  back=document.activeElement;const h=$("sbl-sheet");
+  h.innerHTML='<div class="sbl-veil" id="sbl-veil"><div class="sbl-sheet" role="dialog" aria-modal="true" style="--c:'+(color||"var(--sbl-accent)")+'">'+inner+'</div></div>';
+  const close=()=>{h.textContent="";document.removeEventListener("keydown",esc);back&&back.focus()};
+  const esc=ev=>{if(ev.key==="Escape")close()};document.addEventListener("keydown",esc);
+  $("sbl-veil").onclick=ev=>{if(ev.target.id==="sbl-veil")close()};
+  h.querySelectorAll("[data-close]").forEach(b=>b.onclick=close);
+  return{el:h,close};
+}
+function proposeForm(day){loadCommunes();
+  const today0=iso(today());
+  const M=modal('<div class="top"><div><div class="kind">Agenda participatif</div><h2>Proposer une sortie</h2></div><button class="cl" data-close aria-label="Fermer">✕</button></div>'+
+   (PX.mode==="none"?'<p class="sbl-note"></p><div class="sbl-btns"><button class="sbl-btn" data-close type="button">Fermer</button></div>':
+   '<p class="sbl-hint">Votre proposition sera relue avant d’apparaître dans l’agenda.</p>'+
+   '<form class="sbl-form" id="sbl-pf" novalidate>'+
+   '<div class="sbl-f"><label for="pf-t">Nom de la sortie *</label><input class="sbl-in" id="pf-t" maxlength="90" required placeholder="Brocante du comité des fêtes"></div>'+
+   '<div class="sbl-f"><label for="pf-c">Type *</label><select class="sbl-in" id="pf-c">'+Object.entries(CATS).filter(([k])=>k!=="pal").map(([k,v])=>'<option value="'+k+'">'+v[0]+'</option>').join("")+'</select></div>'+
+   '<div class="sbl-2"><div class="sbl-f"><label for="pf-s">Date *</label><input class="sbl-in" id="pf-s" type="date" required min="'+today0+'" value="'+(day||"")+'"></div>'+
+   '<div class="sbl-f"><label for="pf-e">Jusqu’au (si plusieurs jours)</label><input class="sbl-in" id="pf-e" type="date" min="'+today0+'"></div></div>'+
+   '<div class="sbl-2"><div class="sbl-f"><label for="pf-h">Heure</label><input class="sbl-in" id="pf-h" type="time"></div>'+
+   '<div class="sbl-f"><label for="pf-w">Commune *</label><input class="sbl-in" id="pf-w" list="sbl-cl" required autocomplete="off" placeholder="Decize, Moulins, Digoin…"></div></div>'+
+   '<div class="sbl-f"><label for="pf-l">Lieu précis</label><input class="sbl-in" id="pf-l" maxlength="90" placeholder="Salle des fêtes, place du marché…"></div>'+
+   '<div class="sbl-f"><label for="pf-d">Description *</label><textarea class="sbl-in" id="pf-d" maxlength="400" required placeholder="Ce qu’on y trouve, tarif, inscription…"></textarea></div>'+
+   '<div class="sbl-2"><div class="sbl-f"><label for="pf-u">Lien (site, page Facebook)</label><input class="sbl-in" id="pf-u" type="url" maxlength="300" placeholder="https://"></div>'+
+   '<div class="sbl-f"><label for="pf-o">Organisateur</label><input class="sbl-in" id="pf-o" maxlength="60" placeholder="Association, mairie…"></div></div>'+
+   '<div class="sbl-f"><label for="pf-img">Affiche ou photo (lien vers l’image)</label><input class="sbl-in" id="pf-img" type="url" maxlength="400" placeholder="https://…/affiche.jpg"></div>'+
+   '<div class="sbl-hp" aria-hidden="true"><label for="pf-x">Ne pas remplir</label><input id="pf-x" tabindex="-1" autocomplete="off"></div>'+
+   '<p class="sbl-err" id="pf-err" role="alert"></p>'+
+   '<div class="sbl-btns"><button class="sbl-btn go" type="submit" id="pf-go">Envoyer la proposition</button><button class="sbl-btn" type="button" data-close>Annuler</button></div></form>'));
+  if(PX.mode==="none"){M.el.querySelector(".sbl-note").textContent=PX.why;M.el.querySelector("[data-close]").focus();return}
+  M.el.querySelectorAll("[data-close]").forEach(b=>b.onclick=M.close);
+  $("pf-t").focus();
+  $("sbl-pf").onsubmit=async ev=>{ev.preventDefault();const err=$("pf-err");err.textContent="";
+    const v=id=>$(id).value.trim();
+    if($("pf-x").value)return M.close();
+    const img=v("pf-img"),t=v("pf-t"),s=v("pf-s"),e=v("pf-e"),hr=v("pf-h"),wn=v("pf-w"),l=v("pf-l"),d=v("pf-d"),u=v("pf-u"),o=v("pf-o");
+    const c=findCommune(wn);
+    const fail=(m,f)=>{err.textContent=m;f&&$(f).focus()};
+    if(t.length<4)return fail("Indiquez le nom de la sortie.","pf-t");
+    if(!s)return fail("Choisissez la date.","pf-s");
+    if(s<today0)return fail("La date est déjà passée.","pf-s");
+    if(e&&e<s)return fail("La date de fin est avant la date de début.","pf-e");
+    if(!c)return fail("Commune introuvable : vérifiez l’orthographe ou choisissez-la dans la liste.","pf-w");
+    if(d.length<10)return fail("Ajoutez une courte description.","pf-d");
+    if(u&&!/^https?:\/\/[^\s]+\.[^\s]+$/i.test(u))return fail("Le lien doit commencer par https://","pf-u");
+    if(img&&!/^https:\/\/[^\s]+\.[^\s]+$/i.test(img))return fail("Le lien de l’affiche doit commencer par https://","pf-img");
+    if([t,l,d,o,u].some(rude))return fail("Un des textes contient un mot qui n’est pas accepté. Merci de le reformuler.");
+    const item={id:uidGen(),t,cat:$("pf-c").value,z:c[1],w:c[0],lieu:l||c[0],s,d,u:u||"",org:o||"",lat:c[2],lon:c[3],statut:"en_attente",envoye:new Date().toISOString()};
+    if(e&&e!==s)item.e=e;if(hr)item.h=hr;if(img)item.img=img;
+    const go=$("pf-go");go.disabled=true;go.textContent="Envoi…";
+    try{await pushItem("propositions",item);M.close();toast("Merci ! Votre sortie sera visible après relecture.")}
+    catch(x){go.disabled=false;go.textContent="Envoyer la proposition";
+      fail(x&&x.code==="quota_exceeded"?"Vous avez déjà envoyé beaucoup de propositions. Attendez qu’elles soient relues.":x&&x.code==="invalid_argument"?"Votre accès ne permet pas d’envoyer de proposition.":"L’envoi n’a pas abouti. Vérifiez votre connexion et réessayez.")}
+  };
+}
+function sourceForm(){
+  const f=$("sbl-sf");if(!f)return;
+  f.onsubmit=async ev=>{ev.preventDefault();const msg=$("sf-msg"),u=$("sf-u").value.trim(),n=$("sf-n").value.trim();msg.className="sbl-sfm";
+    if(PX.mode==="none"){msg.textContent=PX.why;return}
+    if(u.length<4){msg.textContent="Indiquez l’adresse ou le nom de la source.";$("sf-u").focus();return}
+    if(rude(u)||rude(n)){msg.textContent="Le texte contient un mot qui n’est pas accepté. Merci de le reformuler.";return}
+    const b=f.querySelector("button");b.disabled=true;
+    try{await pushItem("sources",{id:uidGen(),url:u,note:n,statut:"nouvelle",envoye:new Date().toISOString()});f.reset();msg.classList.add("ok");msg.textContent="Merci ! La source sera étudiée pour alimenter l’agenda."}
+    catch(_){msg.textContent="L’envoi n’a pas abouti. Réessayez dans un moment."}
+    b.disabled=false};
+}
+async function setItem(col,uid,idx,patch){const ref=PX.db.doc(col+"/"+uid),snap=await ref.get();if(!snap.exists)return;const items=((snap.data()||{}).items||[]).map(x=>Object.assign({},x));if(!items[idx])return;Object.assign(items[idx],patch);await ref.set({items})}
+function modPanel(){
+  const pend=pendingItems(),srcs=newSources(),pub=USER_EV.slice().sort((a,b)=>a.s<b.s?-1:1);
+  const M=modal('<div class="top"><div><div class="kind">Réservé aux éditeurs</div><h2>À valider</h2></div><button class="cl" data-close aria-label="Fermer">✕</button></div>'+
+    '<p class="sbl-hint">Corrigez directement les champs si besoin, puis publiez. La sortie apparaît aussitôt pour tous les visiteurs.</p>'+
+    '<h3 class="sbl-modh">Sorties proposées ('+pend.length+')</h3><div id="mod-ev"></div><h3 class="sbl-modh">Sources suggérées ('+srcs.length+')</h3><div id="mod-src"></div>'+
+    '<h3 class="sbl-modh">Sorties publiées ('+pub.length+')</h3><div id="mod-pub"></div>');
+  const box=$("mod-ev");
+  if(!pend.length)box.innerHTML='<p class="sbl-hint">Aucune proposition en attente.</p>';
+  const opts=Object.entries(CATS).filter(([k])=>k!=="pal").map(([k,v])=>'<option value="'+k+'">'+v[0]+'</option>').join("");
+  pend.forEach(({uid,i,x},n)=>{const r=document.createElement("form");r.className="sbl-mod ed";r.noValidate=true;const id=k=>"m"+n+k;
+    const f=(k,l,type,full)=>'<div class="sbl-f'+(full?" full":"")+'"><label for="'+id(k)+'">'+l+'</label>'+(type==="ta"?'<textarea class="sbl-in" id="'+id(k)+'" maxlength="400"></textarea>':type==="sel"?'<select class="sbl-in" id="'+id(k)+'">'+opts+'</select>':'<input class="sbl-in" id="'+id(k)+'" type="'+type+'"'+(k==="w"?' list="sbl-cl" autocomplete="off"':"")+'>')+'</div>';
+    r.innerHTML='<div class="mt"></div><div class="grid">'+f("t","Titre","text",1)+f("c","Type","sel")+f("w","Commune","text")+f("s","Date","date")+f("e","Jusqu’au","date")+f("h","Heure","time")+f("l","Lieu précis","text")+
+      f("d","Description","ta",1)+f("u","Lien","url",1)+f("i","Affiche (lien image)","url",1)+'</div><p class="sbl-err" role="alert"></p>'+
+      '<div class="sbl-btns"><button class="sbl-btn go" type="submit">Publier</button><button class="sbl-btn" type="button" data-no>Refuser</button></div>';
+    r.querySelector(".mt").textContent="Envoyée le "+(x.envoye?new Date(x.envoye).toLocaleDateString("fr-FR"):"?")+(x.org?" · organisateur : "+x.org:"");
+    const set=(k,v)=>{r.querySelector("#"+id(k)).value=v||""};set("t",x.t);set("c",x.cat);set("w",x.w);set("s",x.s);set("e",x.e);set("h",x.h);set("l",x.lieu);set("d",x.d);set("u",x.u);set("i",x.img);
+    const val=k=>r.querySelector("#"+id(k)).value.trim(),err=r.querySelector(".sbl-err"),btns=r.querySelectorAll("button");
+    r.onsubmit=async ev=>{ev.preventDefault();err.textContent="";
+      const t=val("t"),cat=val("c"),w=val("w"),sd=val("s");if(t.length<4||!sd||!w){err.textContent="Titre, date et commune sont nécessaires.";return}
+      let la=x.lat,lo=x.lon,z=x.z,wn=w;if(PKEY(w)!==PKEY(x.w||"")){await loadCommunes();PIDX=null;const c=placeIndex().m.get(PKEY(w));if(!c){err.textContent="Commune introuvable : choisissez-la dans la liste.";return}wn=c[0];z=c[1];la=c[2];lo=c[3]}
+      btns.forEach(b=>b.disabled=true);
+      try{const e={id:x.id,t,cat,z,w:wn,lieu:val("l")||wn,s:sd,d:val("d"),u:val("u"),src:x.org?"Proposé par "+x.org:"Proposé par un habitant",lat:la,lon:lo,p:1};
+        if(val("e")&&val("e")>sd)e.e=val("e");if(val("h"))e.h=val("h");if(val("i"))e.img=val("i");
+        await BK.publish(uid,i,x,e);r.remove();toast("Sortie publiée")}
+      catch(_){btns.forEach(b=>b.disabled=false);err.textContent="La publication a échoué. Réessayez."}};
+    r.querySelector("[data-no]").onclick=async()=>{btns.forEach(b=>b.disabled=true);try{await BK.refuse(uid,i,x);r.remove();toast("Proposition refusée")}catch(_){btns.forEach(b=>b.disabled=false)}};
+    box.append(r)});
+  const sb=$("mod-src");
+  if(!srcs.length)sb.innerHTML='<p class="sbl-hint">Aucune source en attente.</p>';
+  srcs.forEach(({uid,i,x})=>{const r=document.createElement("div");r.className="sbl-mod";r.innerHTML='<b></b><p></p><div class="sbl-btns"><a class="sbl-btn" target="_blank" rel="noopener" hidden>Ouvrir</a><button class="sbl-btn" type="button">Marquer comme traitée</button></div>';
+    r.querySelector("b").textContent=x.url;r.querySelector("p").textContent=x.note||"";
+    if(/^https?:\/\//.test(x.url)){const a=r.querySelector("a");a.href=x.url;a.hidden=false}
+    r.querySelector("button").onclick=async()=>{try{await BK.source(uid,i,x);r.remove()}catch(_){}};sb.append(r)});
+  const pb=$("mod-pub");
+  if(!pub.length)pb.innerHTML='<p class="sbl-hint">Aucune sortie publiée depuis les propositions.</p>';
+  pub.forEach(e=>{const r=document.createElement("div");r.className="sbl-mod";r.innerHTML='<b></b><div class="m"></div><div class="sbl-btns"><button class="sbl-btn" type="button">Retirer</button></div>';
+    r.querySelector("b").textContent=e.t;r.querySelector(".m").textContent=(CATS[e.cat]?CATS[e.cat][1]:"")+" · "+e.s.split("-").reverse().join("/")+" · "+e.w;
+    r.querySelector("button").onclick=async()=>{try{await BK.unpublish(e);r.remove();toast("Sortie retirée")}catch(_){toast("Le retrait a échoué")}};pb.append(r)});
+  M.el.querySelector("[data-close]").focus();
+}
+async function unpublish(e,close){try{await BK.unpublish(e);close();toast("Sortie retirée de l’agenda")}catch(_){toast("Le retrait a échoué")}}
+
+
+/* ---------- Vues ---------- */
+function syncTabs(){const v=st.view||"list",hm=isHome()&&v==="list";document.querySelectorAll("#sbl-mt button").forEach(b=>b.setAttribute("aria-selected",b.dataset.v==="home"?hm:(!hm&&b.dataset.v===v)))}
+function view(v){{const mp=$("sbl-mpop");if(mp)mp.hidden=true}st.view=v;ROOT.dataset.v=v;$("sbl-main").dataset.v=v;syncTabs();if(v==="map"&&map)setTimeout(()=>map.resize(),30)}
+document.querySelectorAll("#sbl-mt button").forEach(b=>b.onclick=()=>{if(b.dataset.v==="home")return goHome();if(isHome())explore(b.dataset.v);else view(b.dataset.v)});
+document.querySelectorAll("#sbl-dt button").forEach(b=>b.onclick=()=>{st.side=b.dataset.s;$("sbl-side").dataset.s=st.side;document.querySelectorAll("#sbl-dt button").forEach(x=>x.setAttribute("aria-selected",x===b));if(st.side==="map"&&map)setTimeout(()=>map.resize(),30)});
+$("sbl-pm").onclick=()=>{st.month=new Date(st.month.getFullYear(),st.month.getMonth()-1,1);cal()};
+$("sbl-nm").onclick=()=>{st.month=new Date(st.month.getFullYear(),st.month.getMonth()+1,1);cal()};
+const sk=$("sbl-skins");if(!inViewer)sk.hidden=true;SKINS.forEach(([n,t],i)=>{const b=btn(n,i===0,()=>{setTheme(t);sk.querySelectorAll(".sbl-b").forEach(x=>x.setAttribute("aria-pressed",x===b?"true":"false"))});sk.append(b)});
+try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",styleMap)}catch(_){}
+new MutationObserver(styleMap).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
+
+/* Carte allégée : seules les sorties proches dans le temps ont une épingle (7 jours par défaut, au choix du visiteur) */
+const MH=[["1","Aujourd’hui"],["3","3 jours"],["7","7 jours"],["30","30 jours"]];
+let MAPH="7";try{const v=localStorage.getItem("sbl-mh");if(MH.some(x=>x[0]===v))MAPH=v}catch(_){}
+let MAPC=new Set();try{(JSON.parse(localStorage.getItem("sbl-mc")||"[]")||[]).forEach(c=>{if(CATS[c])MAPC.add(c)})}catch(_){}
+function mapItems(items){
+  const own=!!st.day||!!parseQ(st.q||"").w;
+  const t=today(),end=add(t,+MAPH-1);
+  const out=(own?items.filter(e=>!e.long):items.filter(e=>!e.long&&e.S<=end&&e.E>=t)).filter(e=>!MAPC.size||MAPC.has(e.cat));
+  mhBar(own,out.length);return out}
+const MCL={brocante:"Brocantes",fete:"Fêtes, marchés",spectacle:"Concerts, spectacles",culture:"Expos, visites",famille:"En famille",sport:"Sport, rando"};
+function mcRow(){const r=document.createElement("div");r.className="mc";r.setAttribute("role","group");r.setAttribute("aria-label","Types de sorties sur la carte");
+  const set=()=>{try{localStorage.setItem("sbl-mc",JSON.stringify([...MAPC]))}catch(_){}drawPins(mapItems(pick()))};
+  const all=document.createElement("button");all.type="button";all.textContent="Tout";all.setAttribute("aria-pressed",MAPC.size?"false":"true");all.onclick=()=>{MAPC.clear();set()};r.append(all);
+  Object.entries(CATS).filter(([k])=>k!=="pal").forEach(([k,v])=>{const b=document.createElement("button");b.type="button";b.style.setProperty("--pc","var("+PINC[k]+")");
+    b.setAttribute("aria-pressed",MAPC.has(k)?"true":"false");b.innerHTML='<i>'+icon(k,14)+'</i><span></span>';b.lastChild.textContent=MCL[k]||v[1];
+    b.onclick=()=>{if(MAPC.has(k))MAPC.delete(k);else MAPC.add(k);if(MAPC.size===Object.keys(CATS).length-1)MAPC.clear();set()};r.append(b)});
+  return r}
+function mhBar(own,n){const g=$("sbl-mh");if(!g)return;g.textContent="";
+  const l=document.createElement("span");l.className="l";l.textContent=n.toLocaleString("fr-FR")+" sortie"+(n>1?"s":"")+" sur la carte";g.append(l);
+  if(own){const s=document.createElement("span");s.className="own";s.textContent=st.day?"· jour choisi dans le calendrier":"· période de votre recherche";g.append(s,mcRow());return}
+  const w=document.createElement("span");w.className="seg";
+  MH.forEach(([v,t])=>{const b=document.createElement("button");b.type="button";b.textContent=t;b.setAttribute("aria-pressed",v===MAPH?"true":"false");
+    b.onclick=()=>{MAPH=v;try{localStorage.setItem("sbl-mh",v)}catch(_){}drawPins(mapItems(pick()))};w.append(b)});g.append(w,mcRow())}
+function draw(){const items=pick();filters();list(items);drawPins(mapItems(items));cal()}
+
+/* Mode borne : adresse terminée par #borne */
+/* Mode borne (#borne) : gros boutons, pas de saisie de propositions, QR code pour emporter l'itinéraire, retour à l'accueil après 90 s */
+let KIOSK=false,KIOSK_REGION=null;var LIM0=150;
+function kiosk(){KIOSK=true;ROOT.classList.add("kiosk");KIOSK_REGION=REGION.slice();let tm;
+  const reset=()=>{clearTimeout(tm);tm=setTimeout(()=>{st.day="";$("sbl-sheet").textContent="";document.querySelectorAll(".maplibregl-popup").forEach(p=>p.remove());
+    if(KIOSK_REGION&&KIOSK_REGION.join()!==REGION.join())setRegion(KIOSK_REGION);setQ("");view("list");draw();fitRegion();scrollTo(0,0)},90000)};
+  ["pointerdown","keydown"].forEach(t=>addEventListener(t,reset,{passive:true}));reset()}
+addEventListener("click",ev=>{if(!KIOSK)return;const a=ev.target.closest&&ev.target.closest("a[href]");if(a&&/^(https?:|geo:|mailto:)/.test(a.getAttribute("href")||"")&&!a.closest(".sbl-legal")){ev.preventDefault();toast("Sur la borne, scannez le QR code pour continuer sur votre téléphone")}},true);
+function qrLib(){if(window.qrcode)return Promise.resolve(window.qrcode);if(qrLib.p)return qrLib.p;
+  qrLib.p=new Promise(ok=>{const sc=document.createElement("script");sc.src=(CFG.vendorBase||"vendor/")+"qrcode.js";sc.onload=()=>ok(window.qrcode||null);sc.onerror=()=>ok(null);document.head.append(sc)});return qrLib.p}
+function kioskQR(box,url,label){box.innerHTML='<div class="sbl-qr"><div class="q" aria-hidden="true"></div><p></p></div>';box.querySelector("p").textContent=label;
+  qrLib().then(q=>{if(!q){box.querySelector(".q").remove();return}const c=q(0,"M");c.addData(url);c.make();box.querySelector(".q").innerHTML=c.createSvgTag({cellSize:5,margin:2,scalable:true})})}
+
+async function boot(){
+  let data=JSON.parse($("sbl-data").textContent);
+  if(CFG.dataUrl){try{const r=await fetch(CFG.dataUrl);if(r.ok)data=await r.json()}catch(_){}}
+  MANUAL=prep(data);BASE=MANUAL.slice();EVENTS=BASE.slice();
+  let saved=null;try{saved=JSON.parse(localStorage.getItem("sbl-deps")||"null")}catch(_){}
+  /* Liens directs : #dep=03,58  #q=brocante ce week-end  #proposer  #source */
+  const H=new URLSearchParams(location.hash.slice(1).replace(/^(proposer|source|borne)$/,"$1="));
+  const hdep=(H.get("dep")||"").split(",").map(x=>x.trim().toUpperCase()).filter(x=>/^(\d{2,3}|2A|2B)$/.test(x));
+  REGION=(hdep.length?hdep:Array.isArray(CFG.deps)&&CFG.deps.length?CFG.deps:Array.isArray(saved)&&saved.length?saved:["03","58","71"]).map(String);
+  if(H.has("borne"))kiosk();
+  if(H.has("integre")){ROOT.classList.add("embed");LIM0=30;document.querySelectorAll(".sbl-legal a").forEach(a=>a.target="_blank")}
+  if(H.has("sombre"))document.documentElement.dataset.theme="dark";else if(H.has("clair"))document.documentElement.dataset.theme="light";
+  {const c=(H.get("couleur")||"").replace(/[^0-9a-f]/gi,"");if(c.length===6||c.length===3)CFG.theme=Object.assign({},CFG.theme,{accent:"#"+c,accentInk:"#ffffff"})}
+  const t=today();st.month=new Date(t.getFullYear(),t.getMonth(),1);st.lim=LIM0;
+  subtitle();initSearch();$("sbl-reg").onclick=regionPicker;
+  if(CFG.inheritFont)ROOT.style.setProperty("--sbl-body","inherit");
+  initMap();pinLegend();if(CFG.theme)setTheme(CFG.theme);draw();
+  fillCommuneList();
+  loadIndex().then(()=>{subtitle();return ensureDeps(REGION)}).then(()=>{if(st.place||st.near||st.z)flyTo(st);else fitRegion()});
+  $("sbl-q").addEventListener("focus",()=>loadCommunes(),{once:true});
+  $("sbl-prop").onclick=()=>proposeForm(st.day||"");$("sbl-home").onclick=e=>{e.preventDefault();goHome()};$("sbl-mod").onclick=()=>API?apiRefresh().then(modPanel,modPanel):modPanel();sourceForm();
+  await initParticip();modBadge();
+  if(H.get("q")){setQ(H.get("q"));loadCommunes()}
+  if(H.has("proposer"))proposeForm("");
+  if(H.has("source")){$("sbl-srcd").open=true;const f=$("sbl-sf");f.scrollIntoView();$("sf-u").focus({preventScroll:true})}
+}
+window.SortiesBL={setTheme,config:CFG,reload:boot,get map(){return map}};
+if(window.parent!==window&&"ResizeObserver" in window){let lastH=0;new ResizeObserver(()=>{const hh=Math.ceil(document.documentElement.scrollHeight);if(Math.abs(hh-lastH)>4){lastH=hh;try{window.parent.postMessage({dansLeCoin:"hauteur",h:hh},"*")}catch(_){}}}).observe(document.body)}
+boot();
+})();
+</script>

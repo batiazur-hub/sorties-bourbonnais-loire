@@ -316,6 +316,10 @@ TETE["api.html"] = '\n<script src="config.js"></script>\n<script src="dlc.js"></
 P["api.html"] = ("API Trucs à faire", "Ajoutez les sorties et les lieux à visiter de toute la France à votre site ou à votre application : une ligne de script et votre clé, comme pour Google Maps.",
                  open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "api_page.html"), encoding="utf-8").read())
 
+TETE["offres.html"] = '\n<meta name="robots" content="noindex, nofollow">'  # maquette : non référencée tant que les comptes ne sont pas ouverts
+P["offres.html"] = ("Créer un compte", "Le site reste libre et gratuit. Un compte vous permet de garder vos sorties, de publier les vôtres ou d’intégrer l’agenda chez vous.",
+                    open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "offres_page.html"), encoding="utf-8").read())
+
 TETE["cles.html"] = '\n<meta name="robots" content="noindex, nofollow">\n<link rel="stylesheet" href="vendor/maplibre-gl-4.7.1/maplibre-gl.css">\n<script src="vendor/maplibre-gl-4.7.1/maplibre-gl.js"></script>\n<script src="config.js"></script>'
 P["cles.html"] = ("Générateur de clés API", "Espace éditeur : choisissez la zone et les critères, vérifiez ce que la clé récupérera, puis générez-la.", """
 <form class="gen" id="cx" autocomplete="on">

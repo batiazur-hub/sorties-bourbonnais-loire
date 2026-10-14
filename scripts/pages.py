@@ -327,6 +327,8 @@ P["api.html"] = ("API Dans le coin", "Récupérez les sorties et les lieux à vi
 <tr><td>du / au</td><td>2026-10-14</td><td>Période (par défaut : à partir d’aujourd’hui)</td></tr>
 <tr><td>commune</td><td>Moulins</td><td>Une seule commune</td></tr>
 <tr><td>q</td><td>marché</td><td>Mot recherché dans le titre, le lieu et la description</td></tr>
+<tr><td>lat / lon / rayon</td><td>46.83 / 3.46 / 15</td><td>Autour d’une position, rayon en km (20 par défaut) ; ajoute <code>distance_km</code> à chaque résultat</td></tr>
+<tr><td>tri</td><td>distance</td><td>Trier par distance plutôt que par date</td></tr>
 <tr><td>gratuit</td><td>1</td><td>Seulement les sorties gratuites</td></tr>
 <tr><td>limite / page</td><td>100 / 1</td><td>Pagination (500 au plus par page)</td></tr>
 </tbody></table></div>
@@ -338,6 +340,8 @@ P["api.html"] = ("API Dans le coin", "Récupérez les sorties et les lieux à vi
 
 <h2>Départements</h2>
 <p><code>GET /v1/departements</code> — liste des départements accessibles avec votre clé et leur nombre de sorties.</p>
+<p><code>GET /v1/cle</code> — réglages de votre clé : zone, départements, types, période, quota et appels du jour.</p>
+<p>Une clé peut être limitée à une zone (un point et un rayon) : seules les sorties et les lieux situés dans cette zone sont renvoyés, et les départements concernés sont choisis automatiquement.</p>
 
 <h2>Exemple</h2>
 <pre class="code" id="api-ex">fetch("https://dans-le-coin.&lt;compte&gt;.workers.dev/v1/sorties?dep=03&amp;type=brocante&amp;limite=20", {
@@ -359,20 +363,30 @@ P["api.html"] = ("API Dans le coin", "Récupérez les sorties et les lieux à vi
 <script>(function(){const c=window.SORTIES_CONFIG&&SORTIES_CONFIG.apiUrl;if(!c)return;const b=c.replace(/\\/+$/,"");document.getElementById("api-base").textContent=b;const ex=document.getElementById("api-ex");ex.textContent=ex.textContent.replace(/https:\\/\\/dans-le-coin\\.<compte>\\.workers\\.dev/,b)})();</script>
 """)
 
-TETE["cles.html"] = '\n<meta name="robots" content="noindex, nofollow">\n<script src="config.js"></script>'
-P["cles.html"] = ("Clés API", "Espace éditeur : créer, régler et révoquer les clés de l’API Dans le coin.", """
+TETE["cles.html"] = '\n<meta name="robots" content="noindex, nofollow">\n<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css">\n<script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>\n<script src="config.js"></script>'
+P["cles.html"] = ("Générateur de clés API", "Espace éditeur : choisissez la zone et les critères, vérifiez ce que la clé récupérera, puis générez-la.", """
 <form class="gen" id="cx" autocomplete="on">
 <div class="row"><label for="cx-url">Adresse du serveur</label><input id="cx-url" type="url" placeholder="https://dans-le-coin.compte.workers.dev"></div>
 <div class="row"><label for="cx-tok">Code éditeur</label><input id="cx-tok" type="password" autocomplete="current-password"></div>
-<p><button class="btn" type="submit">Se connecter</button> <span id="cx-msg" role="status"></span></p>
+<p><button class="btn" type="submit">Se connecter</button> <span id="cx-msg" role="status">L’aperçu ci-dessous marche sans connexion ; la connexion sert à créer et gérer les clés.</span></p>
 </form>
-<div id="zone" hidden>
-<h2>Nouvelle clé</h2>
-<form class="gen" id="nk">
-<div class="row"><label for="nk-nom">Nom (structure) *</label><input id="nk-nom" required maxlength="80" placeholder="Mairie de Moulins"></div>
-<div class="row"><label for="nk-contact">Contact</label><input id="nk-contact" maxlength="120" placeholder="adresse e-mail"></div>
-<div class="row"><label for="nk-deps">Départements autorisés (vide : tous)</label><input id="nk-deps" placeholder="03,58,71"></div>
-<fieldset class="row"><legend>Types autorisés (aucun coché : tous)</legend>
+
+<h2>1. Zone géographique</h2>
+<form class="gen" id="gz" onsubmit="return false">
+<fieldset class="row"><legend>Limiter la clé</legend>
+<label class="ck"><input type="radio" name="gz-m" value="zone" checked> À une zone autour d’un point (cliquez sur la carte ou indiquez une commune)</label>
+<label class="ck"><input type="radio" name="gz-m" value="deps"> À des départements</label>
+<label class="ck"><input type="radio" name="gz-m" value="tout"> Toute la France (6 départements par appel)</label></fieldset>
+<div class="row" id="gz-zone"><label for="gz-com">Commune au centre</label><input id="gz-com" list="gz-cl" autocomplete="off" placeholder="Decize">
+<label for="gz-r">Rayon : <b id="gz-rv">20 km</b></label><input id="gz-r" type="range" min="1" max="150" value="20"></div>
+<div class="row" id="gz-deps" hidden><label for="gz-d">Départements (codes)</label><input id="gz-d" placeholder="03,58,71"></div>
+</form>
+<div class="map" id="gz-map" aria-label="Carte de la zone de la clé"></div>
+<datalist id="gz-cl"></datalist>
+
+<h2>2. Critères</h2>
+<form class="gen" id="gc" onsubmit="return false">
+<fieldset class="row"><legend>Types de sorties et de lieux (aucun coché : tous)</legend>
 <div class="ty">
 <label class="ck"><input type="checkbox" value="brocante"> Brocantes</label><label class="ck"><input type="checkbox" value="fete"> Fêtes, marchés</label>
 <label class="ck"><input type="checkbox" value="spectacle"> Concerts, spectacles</label><label class="ck"><input type="checkbox" value="culture"> Expos, visites</label>
@@ -380,47 +394,103 @@ P["cles.html"] = ("Clés API", "Espace éditeur : créer, régler et révoquer l
 <label class="ck"><input type="checkbox" value="office"> Offices de tourisme</label><label class="ck"><input type="checkbox" value="musee"> Musées</label>
 <label class="ck"><input type="checkbox" value="patrimoine"> Patrimoine</label><label class="ck"><input type="checkbox" value="nature"> Nature</label>
 <label class="ck"><input type="checkbox" value="loisirs"> Loisirs</label></div></fieldset>
-<div class="row"><label for="nk-quota">Appels par jour (0 : illimité)</label><input id="nk-quota" type="number" min="0" value="5000"></div>
-<div class="row"><label for="nk-orig">Sites autorisés (vide : tous)</label><input id="nk-orig" placeholder="https://www.ville-moulins.fr"></div>
-<div class="row"><label for="nk-notes">Notes</label><input id="nk-notes" maxlength="300"></div>
-<p><button class="btn" type="submit">Créer la clé</button> <span id="nk-msg" role="status"></span></p>
+<div class="row"><label for="gc-j">Sorties jusqu’à</label><select id="gc-j"><option value="0">sans limite</option><option value="7">7 jours</option><option value="30" selected>30 jours</option><option value="90">3 mois</option></select></div>
+<label class="ck"><input type="checkbox" id="gc-l" checked> Donner aussi accès aux lieux à visiter et offices</label>
 </form>
-<h2>Clés existantes</h2>
-<div id="liste"></div>
-</div>
+
+<h2>3. Ce que la clé récupérera</h2>
+<p id="ap-n" class="lead">Choisissez une zone.</p>
+<div id="ap-l"></div>
+
+<h2>4. Générer la clé</h2>
+<form class="gen" id="nk">
+<div class="row"><label for="nk-nom">Nom (structure) *</label><input id="nk-nom" required maxlength="80" placeholder="Office de tourisme du Sud Nivernais"></div>
+<div class="row"><label for="nk-contact">Contact</label><input id="nk-contact" maxlength="120" placeholder="adresse e-mail"></div>
+<div class="row"><label for="nk-quota">Appels par jour (0 : illimité)</label><input id="nk-quota" type="number" min="0" value="5000"></div>
+<div class="row"><label for="nk-orig">Sites autorisés (vide : tous)</label><input id="nk-orig" placeholder="https://www.ville-decize.fr"></div>
+<div class="row"><label for="nk-notes">Notes</label><input id="nk-notes" maxlength="300"></div>
+<p><button class="btn" type="submit">Générer la clé</button> <span id="nk-msg" role="status"></span></p>
+<div id="nk-out" hidden><p><b>Clé :</b> <code id="nk-k"></code> <button type="button" class="btn" id="nk-cp">Copier</button></p>
+<p>Exemple d’appel :</p><pre class="code" id="nk-ex"></pre></div>
+</form>
+
+<div id="zone" hidden><h2>Clés existantes</h2><div id="liste"></div></div>
 <script>
 (function(){
-  const $=id=>document.getElementById(id);let base="",tok="";
+  const $=id=>document.getElementById(id),N=s=>String(s||"").normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").toLowerCase();
+  const kmd=(a,b,c,d)=>Math.hypot((d-b)*Math.cos((a+c)/2*Math.PI/180)*111.32,(c-a)*110.57);
+  let base="",tok="",DEPS=null,COMS=null,centre={lat:46.83,lon:3.46,nom:"Decize (58)"},map=null;const CACHE={};
   try{base=sessionStorage.getItem("dlc-url")||(window.SORTIES_CONFIG&&SORTIES_CONFIG.apiUrl)||"";tok=sessionStorage.getItem("dlc-tok")||""}catch(_){}
   $("cx-url").value=base;$("cx-tok").value=tok;
-  const call=async(path,body)=>{const r=await fetch(base.replace(/\\/+$/,"")+path,{method:body?"POST":"GET",headers:{"Content-Type":"application/json",Authorization:"Bearer "+tok},body:body?JSON.stringify(body):undefined});const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.erreur||("erreur "+r.status));return j};
-  const types=f=>[...f.querySelectorAll(".ty input:checked")].map(x=>x.value);
+  const call=async(path,body)=>{if(!base||!tok)throw new Error("connectez-vous d’abord");const r=await fetch(base.replace(/\\/+$/,"")+path,{method:body?"POST":"GET",headers:{"Content-Type":"application/json",Authorization:"Bearer "+tok},body:body?JSON.stringify(body):undefined});const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.erreur||("erreur "+r.status));return j};
+  const get=u=>CACHE[u]||(CACHE[u]=fetch(u).then(r=>r.ok?r.json():[]).catch(()=>[]));
+  const mode=()=>document.querySelector("[name=gz-m]:checked").value,rayon=()=>+$("gz-r").value;
+  const types=()=>[...document.querySelectorAll("#gc .ty input:checked")].map(x=>x.value);
+  const TS=["brocante","fete","spectacle","culture","famille","sport"],TL=["office","musee","patrimoine","nature","loisirs"];
+  const NOMS={brocante:"Brocante",fete:"Fête, marché",spectacle:"Concert, spectacle",culture:"Expo, visite",famille:"En famille",sport:"Sport, rando",pal:"Le Pal",office:"Office de tourisme",musee:"Musée",patrimoine:"Patrimoine",nature:"Nature",loisirs:"Loisirs"};
+  function depsVoulus(){if(mode()==="deps")return $("gz-d").value.toUpperCase().split(/[^0-9AB]+/).filter(x=>/^(\\d{2,3}|2A|2B)$/.test(x)).slice(0,8);
+    if(mode()==="zone"&&DEPS)return DEPS.map(d=>[d.code,kmd(centre.lat,centre.lon,d.lat,d.lon)]).filter(x=>x[1]<=rayon()+90).sort((a,b)=>a[1]-b[1]).slice(0,8).map(x=>x[0]);return[]}
+  function cercle(){const pts=[],r=rayon();for(let i=0;i<=64;i++){const a=i/64*2*Math.PI;pts.push([centre.lon+r/(111.32*Math.cos(centre.lat*Math.PI/180))*Math.cos(a),centre.lat+r/110.57*Math.sin(a)])}
+    return{type:"FeatureCollection",features:mode()==="zone"?[{type:"Feature",geometry:{type:"Polygon",coordinates:[pts]},properties:{}}]:[]}}
+  function points(L){return{type:"FeatureCollection",features:L.map(x=>({type:"Feature",geometry:{type:"Point",coordinates:[x.lon,x.lat]},properties:{l:x._l?1:0}}))}}
+  let tm=null;const maj=()=>{clearTimeout(tm);tm=setTimeout(apercu,250)};
+  async function apercu(){
+    $("gz-zone").hidden=mode()!=="zone";$("gz-deps").hidden=mode()!=="deps";$("gz-rv").textContent=rayon()+" km";
+    if(map&&map.getSource("z"))map.getSource("z").setData(cercle());
+    const deps=depsVoulus();if(!deps.length){$("ap-n").textContent=mode()==="tout"?"Toute la France : chaque appel devra préciser ses départements (6 au plus).":"Indiquez une zone ou des départements.";$("ap-l").textContent="";if(map&&map.getSource("p"))map.getSource("p").setData(points([]));return}
+    $("ap-n").textContent="Calcul…";
+    const ty=types(),ts=ty.filter(t=>TS.includes(t)),tl=ty.filter(t=>TL.includes(t)),j=+$("gc-j").value,auj=new Date().toISOString().slice(0,10),lim=j?new Date(Date.now()+j*864e5).toISOString().slice(0,10):"9999";
+    const dz=x=>mode()!=="zone"||kmd(centre.lat,centre.lon,x.lat,x.lon)<=rayon();
+    let E=[],L=[];for(const d of deps){E=E.concat(await get("data/dep/"+d+".json"));if($("gc-l").checked)L=L.concat(await get("data/lieux/"+d+".json"))}
+    E=E.filter(e=>(!ts.length||ts.includes(e.cat))&&(ty.length&&!ts.length?false:true)&&(e.e||e.s)>=auj&&e.s<=lim&&dz(e));
+    L=L.filter(x=>(!tl.length?!(ty.length&&!tl.length):tl.includes(x.k))&&dz(x));
+    const parT={};E.forEach(e=>parT[e.cat]=(parT[e.cat]||0)+1);L.forEach(x=>parT[x.k]=(parT[x.k]||0)+1);
+    $("ap-n").textContent=E.length.toLocaleString("fr-FR")+" sorties"+(j?" sur "+j+" jours":" à venir")+" et "+L.length.toLocaleString("fr-FR")+" lieux"+(mode()==="zone"?" dans un rayon de "+rayon()+" km autour de "+centre.nom:" dans "+deps.join(", "))+".";
+    const box=$("ap-l");box.innerHTML="";const t=document.createElement("p");t.textContent=Object.entries(parT).sort((a,b)=>b[1]-a[1]).map(([k,v])=>(NOMS[k]||k)+" : "+v).join(" · ");box.append(t);
+    const ul=document.createElement("ul");E.sort((a,b)=>a.s<b.s?-1:1).slice(0,6).forEach(e=>{const li=document.createElement("li");li.textContent=e.s.split("-").reverse().join("/")+" · "+e.t+" · "+e.w;ul.append(li)});box.append(ul);
+    if(map&&map.getSource("p"))map.getSource("p").setData(points(E.concat(L.map(x=>Object.assign({_l:1},x))).slice(0,4000)));
+  }
+  function initMap(){if(!window.maplibregl)return;
+    map=new maplibregl.Map({container:"gz-map",style:"https://data.geopf.fr/annexes/ressources/vectorTiles/styles/PLAN.IGN/standard.json",center:[centre.lon,centre.lat],zoom:8,attributionControl:{compact:true,customAttribution:"Plan IGN © IGN"}});
+    map.addControl(new maplibregl.NavigationControl({showCompass:false}));
+    map.on("load",()=>{map.addSource("z",{type:"geojson",data:cercle()});map.addLayer({id:"zf",type:"fill",source:"z",paint:{"fill-color":"#f07d00","fill-opacity":.12}});map.addLayer({id:"zl",type:"line",source:"z",paint:{"line-color":"#f07d00","line-width":2}});
+      map.addSource("p",{type:"geojson",data:points([])});map.addLayer({id:"p",type:"circle",source:"p",paint:{"circle-radius":4,"circle-color":["case",["==",["get","l"],1],"#1c64b8","#d6336c"],"circle-stroke-color":"#fff","circle-stroke-width":1}});apercu()});
+    map.on("click",e=>{centre={lat:e.lngLat.lat,lon:e.lngLat.lng,nom:"le point choisi"};const near=COMS&&COMS.reduce((b,c)=>{const d=kmd(centre.lat,centre.lon,c[2],c[3]);return d<b[0]?[d,c]:b},[1e9,null]);if(near&&near[1]&&near[0]<8){centre.nom=near[1][0]+" ("+near[1][1]+")";$("gz-com").value=centre.nom}maj()})}
+  get("data/departements.json").then(d=>{DEPS=d.departements||[];maj()});
+  const K=s=>N(s).replace(/[-']/g," ").replace(/\\s+/g," ").trim();
+  get("data/communes-fr.json").then(a=>{COMS=a});
+  $("gz-com").addEventListener("input",()=>{if(!COMS)return;const v=K($("gz-com").value.replace(/\\s*\([^)]*\)\\s*$/,""));if(v.length<2)return;
+    $("gz-cl").innerHTML=COMS.filter(c=>K(c[0]).startsWith(v)).slice(0,40).map(c=>'<option value="'+(c[0]+" ("+c[1]+")").replace(/"/g,"&quot;")+'">').join("")});
+  /* « Moulins (03) » ; sans département, on prend l'homonyme le plus proche de la zone actuelle */
+  $("gz-com").addEventListener("change",()=>{if(!COMS)return;const raw=$("gz-com").value,m=raw.match(/\(([0-9AB]{2,3})\)\\s*$/i),v=K(raw.replace(/\\s*\([^)]*\)\\s*$/,""));
+    const cand=COMS.filter(c=>K(c[0])===v&&(!m||c[1]===m[1].toUpperCase()));if(!cand.length)return;
+    const c=cand.sort((a,b)=>kmd(centre.lat,centre.lon,a[2],a[3])-kmd(centre.lat,centre.lon,b[2],b[3]))[0];
+    centre={lat:c[2],lon:c[3],nom:c[0]+" ("+c[1]+")"};$("gz-com").value=centre.nom;if(map)map.flyTo({center:[c[3],c[2]],zoom:9});maj()});
+  ["gz","gc"].forEach(id=>{$(id).addEventListener("input",maj);$(id).addEventListener("change",maj)});
+  initMap();
   async function charger(){
-    const d=await call("/admin/cles"),L=$("liste");L.textContent="";
-    if(!d.cles.length){L.innerHTML="<p>Aucune clé pour l’instant.</p>";return}
+    const d=await call("/admin/cles"),Ls=$("liste");Ls.textContent="";$("zone").hidden=false;
+    if(!d.cles.length){Ls.innerHTML="<p>Aucune clé pour l’instant.</p>";return}
     d.cles.sort((a,b)=>(a.cree<b.cree?1:-1)).forEach(k=>{
       const c=document.createElement("div");c.className="gen";
-      c.innerHTML='<p><b class="n"></b> <span class="et"></span></p><p><code class="k"></code> <button type="button" class="btn cp">Copier</button></p><p class="d"></p>'+
-        '<p><button type="button" class="btn ed">Modifier</button> <button type="button" class="btn rv"></button></p>';
+      c.innerHTML='<p><b class="n"></b> <span class="et"></span></p><p><code class="k"></code> <button type="button" class="btn cp">Copier</button></p><p class="d"></p><p><button type="button" class="btn rv"></button></p>';
       c.querySelector(".n").textContent=k.nom;c.querySelector(".et").textContent=k.active===false?"· révoquée":"· active";c.querySelector(".k").textContent=k.cle;
-      c.querySelector(".d").textContent="Départements : "+((k.deps||[]).join(", ")||"tous")+" · Types : "+((k.types||[]).join(", ")||"tous")+" · Quota : "+(k.quota||"illimité")+"/jour · Aujourd’hui : "+k.appels_aujourdhui+" appels · Sites : "+((k.origines||[]).join(", ")||"tous")+(k.contact?" · Contact : "+k.contact:"")+(k.notes?" · "+k.notes:"");
+      c.querySelector(".d").textContent=(k.zone?"Zone : "+k.zone.rayon+" km autour de "+(k.zone.nom||k.zone.lat+","+k.zone.lon)+" · ":"")+"Départements : "+((k.deps||[]).join(", ")||"tous")+" · Types : "+((k.types||[]).join(", ")||"tous")+(k.jours?" · "+k.jours+" jours":"")+" · Quota : "+(k.quota||"illimité")+"/jour · Aujourd’hui : "+k.appels_aujourdhui+" appels"+(k.contact?" · "+k.contact:"");
       c.querySelector(".cp").onclick=()=>navigator.clipboard.writeText(k.cle).catch(()=>{});
       const rv=c.querySelector(".rv");rv.textContent=k.active===false?"Réactiver":"Révoquer";
-      rv.onclick=async()=>{if(k.active!==false&&!confirm("Révoquer la clé de « "+k.nom+" » ? Les sites qui l’utilisent ne recevront plus de données."))return;await call(k.active===false?"/admin/cles/reactiver":"/admin/cles/revoquer",{cle:k.cle});charger()};
-      c.querySelector(".ed").onclick=async()=>{
-        const deps=prompt("Départements autorisés (vide : tous)",(k.deps||[]).join(","));if(deps===null)return;
-        const ty=prompt("Types autorisés, séparés par des virgules (vide : tous)",(k.types||[]).join(","));if(ty===null)return;
-        const q=prompt("Appels par jour (0 : illimité)",k.quota||0);if(q===null)return;
-        const o=prompt("Sites autorisés (vide : tous)",(k.origines||[]).join(","));if(o===null)return;
-        await call("/admin/cles/maj",{cle:k.cle,deps,types:ty,quota:q,origines:o});charger()};
-      L.append(c)});
+      rv.onclick=async()=>{if(k.active!==false&&!confirm("Révoquer la clé de « "+k.nom+" » ?"))return;await call(k.active===false?"/admin/cles/reactiver":"/admin/cles/revoquer",{cle:k.cle});charger()};
+      Ls.append(c)});
   }
   $("cx").onsubmit=async e=>{e.preventDefault();base=$("cx-url").value.trim();tok=$("cx-tok").value.trim();
-    try{await charger();$("zone").hidden=false;$("cx-msg").textContent="Connecté.";try{sessionStorage.setItem("dlc-url",base);sessionStorage.setItem("dlc-tok",tok)}catch(_){}}
+    try{await charger();$("cx-msg").textContent="Connecté.";try{sessionStorage.setItem("dlc-url",base);sessionStorage.setItem("dlc-tok",tok)}catch(_){}}
     catch(err){$("cx-msg").textContent="Connexion refusée ("+err.message+")."}};
-  $("nk").onsubmit=async e=>{e.preventDefault();const f=e.target;
-    try{const r=await call("/admin/cles",{nom:$("nk-nom").value,contact:$("nk-contact").value,deps:$("nk-deps").value,types:types(f),quota:$("nk-quota").value,origines:$("nk-orig").value,notes:$("nk-notes").value});
-      $("nk-msg").textContent="Clé créée : "+r.cle;f.reset();charger()}catch(err){$("nk-msg").textContent="Échec ("+err.message+")."}};
+  $("nk").onsubmit=async e=>{e.preventDefault();
+    const m=mode(),body={nom:$("nk-nom").value,contact:$("nk-contact").value,types:types(),quota:$("nk-quota").value,origines:$("nk-orig").value,notes:$("nk-notes").value,jours:$("gc-j").value,lieux:$("gc-l").checked};
+    if(m==="zone"){body.zone={lat:centre.lat,lon:centre.lon,rayon:rayon(),nom:centre.nom};body.deps=depsVoulus()}else if(m==="deps")body.deps=depsVoulus();else{body.deps=[];body.zone=null}
+    try{const r=await call("/admin/cles",body);$("nk-msg").textContent="Clé générée.";$("nk-out").hidden=false;$("nk-k").textContent=r.cle;
+      $("nk-ex").textContent='fetch("'+base.replace(/\\/+$/,"")+'/v1/sorties?limite=50", { headers: { "X-API-Key": "'+r.cle+'" } })\\n  .then(r => r.json()).then(d => console.log(d.total, d.resultats));';
+      $("nk-cp").onclick=()=>navigator.clipboard.writeText(r.cle).catch(()=>{});charger()}
+    catch(err){$("nk-msg").textContent="Échec : "+err.message+"."}};
   if(base&&tok)$("cx").requestSubmit();
 })();
 </script>

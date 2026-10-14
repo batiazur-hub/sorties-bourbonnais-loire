@@ -8,7 +8,8 @@
    API publique (clé obligatoire, réglable par clé) :
              GET  /v1/sorties?dep=03,58&type=brocante,fete&du=2026-10-14&au=2026-10-31&commune=Moulins&q=marché&gratuit=1&limite=100&page=1
              GET  /v1/lieux?dep=03&type=musee,office&commune=Moulins
-             GET  /v1/departements
+             GET  /v1/departements · GET /v1/cle (réglages de sa clé)
+             Position : lat, lon, rayon (km) et tri=distance ; une clé peut être limitée à une zone (centre + rayon).
              La clé se passe en en-tête « X-API-Key » ou en paramètre « cle ».
    Gestion des clés (éditeur) : GET /admin/cles · POST /admin/cles {nom, contact, deps, types, quota, origines, notes}
              POST /admin/cles/maj {cle, ...} · POST /admin/cles/revoquer {cle} · POST /admin/cles/reactiver {cle}
@@ -18,7 +19,7 @@
 const DATA_DEFAUT = "https://batiazur-hub.github.io/sorties-bourbonnais-loire/data/";
 const TYPES_SORTIES = ["brocante", "fete", "spectacle", "culture", "famille", "sport", "pal"];
 const TYPES_LIEUX = ["office", "musee", "patrimoine", "nature", "loisirs"];
-const MAX_DEPS = 6;
+const MAX_DEPS = 8;
 const LICENCE = "Données agrégées par Dans le coin (Saryn Digital) depuis DATAtourisme (Licence Ouverte), OpenAgenda, open data des collectivités et OpenStreetMap (ODbL, horaires). Citer « Dans le coin » et la source de chaque fiche. Détail : /mentions-legales.html";
 
 const MAX_PAR_HEURE = 20;
@@ -61,7 +62,20 @@ function reglages(b, ancien) {
   if (b.origines !== undefined) r.origines = liste(b.origines).filter(x => /^https?:\/\/[^/]+$/.test(x)).slice(0, 20);
   if (b.quota !== undefined) r.quota = Math.max(0, Math.min(1000000, parseInt(b.quota, 10) || 0));
   if (b.lieux !== undefined) r.lieux = !!b.lieux;
+  if (b.jours !== undefined) r.jours = Math.max(0, Math.min(365, parseInt(b.jours, 10) || 0));
+  if (b.zone !== undefined) {
+    const z = b.zone || {};
+    const lat = +z.lat, lon = +z.lon, rayon = +z.rayon;
+    r.zone = isFinite(lat) && isFinite(lon) && rayon > 0 ? { lat: +lat.toFixed(5), lon: +lon.toFixed(5), rayon: Math.min(300, Math.max(1, +rayon.toFixed(1))), nom: texte(z.nom, 80) } : null;
+  }
   return r;
+}
+const km = (a, b, c, d) => { const x = (d - b) * Math.cos((a + c) / 2 * Math.PI / 180) * 111.32, y = (c - a) * 110.57; return Math.hypot(x, y); };
+/* Départements à lire pour couvrir une zone : ceux dont le centre est à moins de rayon + 90 km, les plus proches d'abord */
+async function depsDeZone(env, z) {
+  const d = await donnees(env, "departements.json");
+  return ((d && d.departements) || []).map(x => [x.code, km(z.lat, z.lon, x.lat, x.lon)]).filter(x => x[1] <= z.rayon + 90)
+    .sort((a, b) => a[1] - b[1]).slice(0, 8).map(x => x[0]);
 }
 async function donnees(env, chemin) {
   const base = env.DATA_URL || DATA_DEFAUT;
@@ -90,6 +104,7 @@ async function api(req, env, url, p) {
   const entetes = Object.assign({ "Content-Type": "application/json; charset=utf-8", "Cache-Control": "public, max-age=600", "X-Quota-Restant": k.quota ? String(k.quota - n - 1) : "illimité" }, cors);
   const rep = d => new Response(JSON.stringify(Object.assign(d, { licence: LICENCE })), { headers: entetes });
 
+  if (p === "/v1/cle") return rep({ nom: k.nom, departements: k.deps || [], types: k.types || [], zone: k.zone || null, jours: k.jours || 0, quota: k.quota || 0, appels_aujourdhui: n + 1 });
   if (p === "/v1/departements") {
     const d = await donnees(env, "departements.json");
     let deps = (d && d.departements) || [];
@@ -109,6 +124,11 @@ async function api(req, env, url, p) {
   let types = liste(q.get("type"));
   const limite = Math.max(1, Math.min(500, parseInt(q.get("limite") || "100", 10) || 100)), page = Math.max(1, parseInt(q.get("page") || "1", 10) || 1);
   const commune = sansAccent(q.get("commune")), mot = sansAccent(q.get("q"));
+  // position : zone de la clé (obligatoire si définie) et cercle demandé (lat, lon, rayon en km)
+  const qlat = parseFloat(q.get("lat")), qlon = parseFloat(q.get("lon")), qr = Math.min(300, parseFloat(q.get("rayon")) || 20), aPos = isFinite(qlat) && isFinite(qlon);
+  const dansZone = x => (!k.zone || km(k.zone.lat, k.zone.lon, x.lat, x.lon) <= k.zone.rayon) && (!aPos || km(qlat, qlon, x.lat, x.lon) <= qr);
+  const dist = x => aPos ? Math.round(km(qlat, qlon, x.lat, x.lon) * 10) / 10 : (k.zone ? Math.round(km(k.zone.lat, k.zone.lon, x.lat, x.lon) * 10) / 10 : undefined);
+  const parDistance = q.get("tri") === "distance";
 
   if (p === "/v1/lieux") {
     if (k.lieux === false) return json({ erreur: "lieux_non_autorises" }, 403, cors);
@@ -117,28 +137,31 @@ async function api(req, env, url, p) {
     types = types.length ? types.filter(t => autorises.includes(t)) : autorises;
     let L = [];
     for (const d of deps) L = L.concat((await donnees(env, "lieux/" + d + ".json")) || []);
-    L = L.filter(x => types.includes(x.k) && (!commune || sansAccent(x.w) === commune) && (!mot || sansAccent(x.t + " " + (x.d || "")).includes(mot)));
+    L = L.filter(x => types.includes(x.k) && dansZone(x) && (!commune || sansAccent(x.w) === commune) && (!mot || sansAccent(x.t + " " + (x.d || "")).includes(mot)));
+    if (parDistance) L.sort((a, b) => dist(a) - dist(b));
     const total = L.length; L = L.slice((page - 1) * limite, page * limite);
     return rep({ total, page, limite, resultats: L.map(x => ({ id: x.id, nom: x.t, type: x.k, commune: x.w, departement: x.z, adresse: x.a || "",
       description: x.d || "", site: x.u || "", telephone: x.tel || "", horaires_osm: x.oh || "", label: x.l || "", principal: !!x.m,
-      latitude: x.lat, longitude: x.lon, source: x.src || "DATAtourisme" })) });
+      latitude: x.lat, longitude: x.lon, distance_km: dist(x), source: x.src || "DATAtourisme" })) });
   }
   if (p === "/v1/sorties") {
     const autorises = k.types && k.types.length ? k.types.filter(t => TYPES_SORTIES.includes(t)) : TYPES_SORTIES;
     if (types.length && !types.some(t => autorises.includes(t))) return json({ erreur: "type_non_autorise", autorises }, 403, cors);
     types = types.length ? types.filter(t => autorises.includes(t)) : autorises;
-    const auj = jour, du = /^\d{4}-\d{2}-\d{2}$/.test(q.get("du") || "") ? q.get("du") : auj, au = /^\d{4}-\d{2}-\d{2}$/.test(q.get("au") || "") ? q.get("au") : "9999-12-31";
+    const auj = jour, du = /^\d{4}-\d{2}-\d{2}$/.test(q.get("du") || "") ? q.get("du") : auj;
+    let au = /^\d{4}-\d{2}-\d{2}$/.test(q.get("au") || "") ? q.get("au") : "9999-12-31";
+    if (k.jours) { const lim = new Date(Date.now() + k.jours * 864e5).toISOString().slice(0, 10); if (au > lim) au = lim; }
     let E = [];
     for (const d of deps) E = E.concat((await donnees(env, "dep/" + d + ".json")) || []);
     const gratuit = q.get("gratuit") === "1";
-    E = E.filter(e => types.includes(e.cat) && (e.e || e.s) >= du && e.s <= au && (!gratuit || e.g) && (!commune || sansAccent(e.w) === commune) &&
+    E = E.filter(e => types.includes(e.cat) && (e.e || e.s) >= du && e.s <= au && (!gratuit || e.g) && dansZone(e) && (!commune || sansAccent(e.w) === commune) &&
       (!mot || sansAccent(e.t + " " + (e.d || "") + " " + (e.lieu || "")).includes(mot)));
     const deb = e => (e.s < du ? du : e.s), longue = e => (Date.parse(e.e || e.s) - Date.parse(e.s)) > 14 * 864e5;
-    E.sort((a, b) => (longue(a) - longue(b)) || (deb(a) < deb(b) ? -1 : deb(a) > deb(b) ? 1 : (a.h || "99") < (b.h || "99") ? -1 : 1));
+    E.sort((a, b) => (longue(a) - longue(b)) || (parDistance ? dist(a) - dist(b) : 0) || (deb(a) < deb(b) ? -1 : deb(a) > deb(b) ? 1 : (a.h || "99") < (b.h || "99") ? -1 : 1));
     const total = E.length; E = E.slice((page - 1) * limite, page * limite);
     return rep({ total, page, limite, du, au, resultats: E.map(e => ({ id: e.id, titre: e.t, type: e.cat, debut: e.s, fin: e.e || e.s, heure: e.h || "",
       autres_dates: e.n || 0, commune: e.w, departement: e.z, lieu: e.lieu || "", description: e.d || "", lien: e.u || "", image: e.img || "",
-      gratuit: !!e.g, latitude: e.lat, longitude: e.lon, source: e.src || "" })) });
+      gratuit: !!e.g, latitude: e.lat, longitude: e.lon, distance_km: dist(e), source: e.src || "" })) });
   }
   return json({ erreur: "introuvable" }, 404, cors);
 }
@@ -208,12 +231,14 @@ export default {
       if (p === "/admin/cles" && req.method === "POST") {
         const cle = nouvelleCle(), r = reglages(b, { active: true, cree: new Date().toISOString(), quota: 5000, lieux: true });
         if (!r.nom) return json({ erreur: "nom_requis" }, 400, cors);
+        if (r.zone && !(r.deps && r.deps.length)) r.deps = await depsDeZone(env, r.zone);
         await env.DLC.put("k:" + cle, JSON.stringify(r)); return json({ ok: true, cle, reglages: r }, 200, cors);
       }
       if (p === "/admin/cles/maj" || p === "/admin/cles/revoquer" || p === "/admin/cles/reactiver") {
         const cle = texte(b.cle, 80), anc = await env.DLC.get("k:" + cle, "json");
         if (!anc) return json({ erreur: "cle_inconnue" }, 404, cors);
         const r = p.endsWith("maj") ? reglages(b, anc) : Object.assign(anc, { active: p.endsWith("reactiver") });
+        if (p.endsWith("maj") && b.zone !== undefined && r.zone && b.deps === undefined) r.deps = await depsDeZone(env, r.zone);
         await env.DLC.put("k:" + cle, JSON.stringify(r)); return json({ ok: true, reglages: r }, 200, cors);
       }
     }

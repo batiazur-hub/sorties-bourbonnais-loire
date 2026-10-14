@@ -30,8 +30,9 @@ def mail():
 
 NAV = [("index.html", "Accueil"), ("plan-du-site.html", "Plan du site"), ("mentions-legales.html", "Mentions légales"),
        ("cgu.html", "Conditions d’utilisation"), ("confidentialite.html", "Confidentialité"),
-       ("intelligence-artificielle.html", "Intelligence artificielle"), ("accessibilite.html", "Accessibilité"), ("integrer.html", "Intégrer l’agenda")]
+       ("intelligence-artificielle.html", "Intelligence artificielle"), ("accessibilite.html", "Accessibilité"), ("integrer.html", "Intégrer l’agenda"), ("api.html", "API")]
 
+TETE = {}
 def page(fichier, titre, intro, corps):
     nav = "".join(f'<a href="{h}"' + (' aria-current="page"' if h == fichier else "") + f">{t}</a>" for h, t in NAV[1:])
     return f"""<!doctype html>
@@ -42,7 +43,7 @@ def page(fichier, titre, intro, corps):
 <title>{titre} · Dans le coin</title>
 <meta name="description" content="{html.escape(intro)}">
 <link rel="stylesheet" href="fonts/figtree.css">
-<link rel="stylesheet" href="pages.css">
+<link rel="stylesheet" href="pages.css">{TETE.get(fichier, "")}
 </head>
 <body>
 <a class="skip" href="#contenu">Aller au contenu</a>
@@ -307,10 +308,128 @@ P["integrer.html"] = ("Intégrer l’agenda", "Ajoutez « Dans le coin » à vot
 </script>
 """)
 
+TETE["api.html"] = '\n<script src="config.js"></script>'
+P["api.html"] = ("API Dans le coin", "Récupérez les sorties et les lieux à visiter de « Dans le coin » dans votre site, votre application ou votre borne, avec votre propre clé.", """
+<h2>Obtenir une clé</h2>
+<p>Chaque clé est personnelle et réglée pour son usage : départements, types de sorties, nombre d’appels par jour et sites autorisés. Pour en demander une, écrivez à <a href="mailto:clementer@gmail.com?subject=Demande%20de%20cl%C3%A9%20API%20Dans%20le%20coin">clementer@gmail.com</a> en indiquant votre structure, votre site et les départements voulus.</p>
+
+<h2>Adresse</h2>
+<p><code id="api-base">https://dans-le-coin.&lt;compte&gt;.workers.dev</code></p>
+<p>La clé se transmet dans l’en-tête <code>X-API-Key</code> (recommandé) ou dans le paramètre <code>cle</code>.</p>
+
+<h2>Sorties</h2>
+<p><code>GET /v1/sorties</code></p>
+<div class="tbl"><table>
+<thead><tr><th scope="col">Paramètre</th><th scope="col">Exemple</th><th scope="col">Rôle</th></tr></thead>
+<tbody>
+<tr><td>dep</td><td>03,58</td><td>Départements (6 au plus). Facultatif si votre clé est réglée sur des départements.</td></tr>
+<tr><td>type</td><td>brocante,fete</td><td>brocante, fete, spectacle, culture, famille, sport</td></tr>
+<tr><td>du / au</td><td>2026-10-14</td><td>Période (par défaut : à partir d’aujourd’hui)</td></tr>
+<tr><td>commune</td><td>Moulins</td><td>Une seule commune</td></tr>
+<tr><td>q</td><td>marché</td><td>Mot recherché dans le titre, le lieu et la description</td></tr>
+<tr><td>gratuit</td><td>1</td><td>Seulement les sorties gratuites</td></tr>
+<tr><td>limite / page</td><td>100 / 1</td><td>Pagination (500 au plus par page)</td></tr>
+</tbody></table></div>
+<p>Chaque sortie : id, titre, type, debut, fin, heure, autres_dates, commune, departement, lieu, description, lien, image, gratuit, latitude, longitude, source.</p>
+
+<h2>Lieux à visiter et offices de tourisme</h2>
+<p><code>GET /v1/lieux</code> — mêmes paramètres <code>dep</code>, <code>commune</code>, <code>q</code>, <code>limite</code>, <code>page</code> ; <code>type</code> parmi office, musee, patrimoine, nature, loisirs.</p>
+<p>Chaque lieu : id, nom, type, commune, departement, adresse, description, site, telephone, horaires_osm (format OpenStreetMap), label, principal, latitude, longitude, source.</p>
+
+<h2>Départements</h2>
+<p><code>GET /v1/departements</code> — liste des départements accessibles avec votre clé et leur nombre de sorties.</p>
+
+<h2>Exemple</h2>
+<pre class="code" id="api-ex">fetch("https://dans-le-coin.&lt;compte&gt;.workers.dev/v1/sorties?dep=03&amp;type=brocante&amp;limite=20", {
+  headers: { "X-API-Key": "dlc_votre_cle" }
+}).then(r =&gt; r.json()).then(d =&gt; console.log(d.total, d.resultats));</pre>
+
+<h2>Erreurs</h2>
+<ul>
+<li><code>401 cle_invalide</code> : clé absente ou inconnue ; <code>403 cle_revoquee</code> ; <code>403 origine_refusee</code> : site non autorisé pour cette clé.</li>
+<li><code>403 departement_non_autorise</code> ; <code>403 type_non_autorise</code> ; <code>400 dep_requis</code> ; <code>429 quota_atteint</code> : nombre d’appels du jour dépassé (en-tête <code>X-Quota-Restant</code>).</li>
+</ul>
+
+<h2>Conditions</h2>
+<ul>
+<li>Données mises à jour chaque nuit ; réponses mises en cache 10 minutes.</li>
+<li>Affichez « Dans le coin » et la source de chaque fiche. Les données restent sous la licence de leurs producteurs (voir les <a href="mentions-legales.html">mentions légales</a>) ; les horaires viennent d’OpenStreetMap (ODbL).</li>
+<li>Une clé peut être suspendue en cas d’usage abusif.</li>
+</ul>
+<script>(function(){const c=window.SORTIES_CONFIG&&SORTIES_CONFIG.apiUrl;if(!c)return;const b=c.replace(/\\/+$/,"");document.getElementById("api-base").textContent=b;const ex=document.getElementById("api-ex");ex.textContent=ex.textContent.replace(/https:\\/\\/dans-le-coin\\.<compte>\\.workers\\.dev/,b)})();</script>
+""")
+
+TETE["cles.html"] = '\n<meta name="robots" content="noindex, nofollow">\n<script src="config.js"></script>'
+P["cles.html"] = ("Clés API", "Espace éditeur : créer, régler et révoquer les clés de l’API Dans le coin.", """
+<form class="gen" id="cx" autocomplete="on">
+<div class="row"><label for="cx-url">Adresse du serveur</label><input id="cx-url" type="url" placeholder="https://dans-le-coin.compte.workers.dev"></div>
+<div class="row"><label for="cx-tok">Code éditeur</label><input id="cx-tok" type="password" autocomplete="current-password"></div>
+<p><button class="btn" type="submit">Se connecter</button> <span id="cx-msg" role="status"></span></p>
+</form>
+<div id="zone" hidden>
+<h2>Nouvelle clé</h2>
+<form class="gen" id="nk">
+<div class="row"><label for="nk-nom">Nom (structure) *</label><input id="nk-nom" required maxlength="80" placeholder="Mairie de Moulins"></div>
+<div class="row"><label for="nk-contact">Contact</label><input id="nk-contact" maxlength="120" placeholder="adresse e-mail"></div>
+<div class="row"><label for="nk-deps">Départements autorisés (vide : tous)</label><input id="nk-deps" placeholder="03,58,71"></div>
+<fieldset class="row"><legend>Types autorisés (aucun coché : tous)</legend>
+<div class="ty">
+<label class="ck"><input type="checkbox" value="brocante"> Brocantes</label><label class="ck"><input type="checkbox" value="fete"> Fêtes, marchés</label>
+<label class="ck"><input type="checkbox" value="spectacle"> Concerts, spectacles</label><label class="ck"><input type="checkbox" value="culture"> Expos, visites</label>
+<label class="ck"><input type="checkbox" value="famille"> En famille</label><label class="ck"><input type="checkbox" value="sport"> Sport, rando</label>
+<label class="ck"><input type="checkbox" value="office"> Offices de tourisme</label><label class="ck"><input type="checkbox" value="musee"> Musées</label>
+<label class="ck"><input type="checkbox" value="patrimoine"> Patrimoine</label><label class="ck"><input type="checkbox" value="nature"> Nature</label>
+<label class="ck"><input type="checkbox" value="loisirs"> Loisirs</label></div></fieldset>
+<div class="row"><label for="nk-quota">Appels par jour (0 : illimité)</label><input id="nk-quota" type="number" min="0" value="5000"></div>
+<div class="row"><label for="nk-orig">Sites autorisés (vide : tous)</label><input id="nk-orig" placeholder="https://www.ville-moulins.fr"></div>
+<div class="row"><label for="nk-notes">Notes</label><input id="nk-notes" maxlength="300"></div>
+<p><button class="btn" type="submit">Créer la clé</button> <span id="nk-msg" role="status"></span></p>
+</form>
+<h2>Clés existantes</h2>
+<div id="liste"></div>
+</div>
+<script>
+(function(){
+  const $=id=>document.getElementById(id);let base="",tok="";
+  try{base=sessionStorage.getItem("dlc-url")||(window.SORTIES_CONFIG&&SORTIES_CONFIG.apiUrl)||"";tok=sessionStorage.getItem("dlc-tok")||""}catch(_){}
+  $("cx-url").value=base;$("cx-tok").value=tok;
+  const call=async(path,body)=>{const r=await fetch(base.replace(/\\/+$/,"")+path,{method:body?"POST":"GET",headers:{"Content-Type":"application/json",Authorization:"Bearer "+tok},body:body?JSON.stringify(body):undefined});const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.erreur||("erreur "+r.status));return j};
+  const types=f=>[...f.querySelectorAll(".ty input:checked")].map(x=>x.value);
+  async function charger(){
+    const d=await call("/admin/cles"),L=$("liste");L.textContent="";
+    if(!d.cles.length){L.innerHTML="<p>Aucune clé pour l’instant.</p>";return}
+    d.cles.sort((a,b)=>(a.cree<b.cree?1:-1)).forEach(k=>{
+      const c=document.createElement("div");c.className="gen";
+      c.innerHTML='<p><b class="n"></b> <span class="et"></span></p><p><code class="k"></code> <button type="button" class="btn cp">Copier</button></p><p class="d"></p>'+
+        '<p><button type="button" class="btn ed">Modifier</button> <button type="button" class="btn rv"></button></p>';
+      c.querySelector(".n").textContent=k.nom;c.querySelector(".et").textContent=k.active===false?"· révoquée":"· active";c.querySelector(".k").textContent=k.cle;
+      c.querySelector(".d").textContent="Départements : "+((k.deps||[]).join(", ")||"tous")+" · Types : "+((k.types||[]).join(", ")||"tous")+" · Quota : "+(k.quota||"illimité")+"/jour · Aujourd’hui : "+k.appels_aujourdhui+" appels · Sites : "+((k.origines||[]).join(", ")||"tous")+(k.contact?" · Contact : "+k.contact:"")+(k.notes?" · "+k.notes:"");
+      c.querySelector(".cp").onclick=()=>navigator.clipboard.writeText(k.cle).catch(()=>{});
+      const rv=c.querySelector(".rv");rv.textContent=k.active===false?"Réactiver":"Révoquer";
+      rv.onclick=async()=>{if(k.active!==false&&!confirm("Révoquer la clé de « "+k.nom+" » ? Les sites qui l’utilisent ne recevront plus de données."))return;await call(k.active===false?"/admin/cles/reactiver":"/admin/cles/revoquer",{cle:k.cle});charger()};
+      c.querySelector(".ed").onclick=async()=>{
+        const deps=prompt("Départements autorisés (vide : tous)",(k.deps||[]).join(","));if(deps===null)return;
+        const ty=prompt("Types autorisés, séparés par des virgules (vide : tous)",(k.types||[]).join(","));if(ty===null)return;
+        const q=prompt("Appels par jour (0 : illimité)",k.quota||0);if(q===null)return;
+        const o=prompt("Sites autorisés (vide : tous)",(k.origines||[]).join(","));if(o===null)return;
+        await call("/admin/cles/maj",{cle:k.cle,deps,types:ty,quota:q,origines:o});charger()};
+      L.append(c)});
+  }
+  $("cx").onsubmit=async e=>{e.preventDefault();base=$("cx-url").value.trim();tok=$("cx-tok").value.trim();
+    try{await charger();$("zone").hidden=false;$("cx-msg").textContent="Connecté.";try{sessionStorage.setItem("dlc-url",base);sessionStorage.setItem("dlc-tok",tok)}catch(_){}}
+    catch(err){$("cx-msg").textContent="Connexion refusée ("+err.message+")."}};
+  $("nk").onsubmit=async e=>{e.preventDefault();const f=e.target;
+    try{const r=await call("/admin/cles",{nom:$("nk-nom").value,contact:$("nk-contact").value,deps:$("nk-deps").value,types:types(f),quota:$("nk-quota").value,origines:$("nk-orig").value,notes:$("nk-notes").value});
+      $("nk-msg").textContent="Clé créée : "+r.cle;f.reset();charger()}catch(err){$("nk-msg").textContent="Échec ("+err.message+")."}};
+  if(base&&tok)$("cx").requestSubmit();
+})();
+</script>
+""")
+
 for f, (t, intro, corps) in P.items():
     open(f, "w").write(page(f, t, intro, corps))
 
-urls = ["", "plan-du-site.html", "mentions-legales.html", "cgu.html", "confidentialite.html", "intelligence-artificielle.html", "accessibilite.html", "integrer.html"]
+urls = ["", "plan-du-site.html", "mentions-legales.html", "cgu.html", "confidentialite.html", "intelligence-artificielle.html", "accessibilite.html", "integrer.html", "api.html"]
 jour = dt.date.today().isoformat()
 open("sitemap.xml", "w").write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
     "".join(f"  <url><loc>{SITE}{u}</loc><lastmod>{jour}</lastmod><changefreq>{'daily' if not u else 'monthly'}</changefreq></url>\n" for u in urls) + "</urlset>\n")

@@ -24,3 +24,14 @@ de l'offre Workers gratuite de Cloudflare.
   puis corrige, publie ou refuse depuis « À valider ».
 - Garde-fous : 20 envois par heure et par connexion, mots grossiers refusés, propositions
   non traitées effacées au bout de 120 jours.
+
+## API à clés
+
+Le même serveur fournit l'API publique de « Dans le coin » (`/v1/sorties`, `/v1/lieux`, `/v1/departements`),
+documentée sur la page `api.html` du site. Chaque appel exige une clé.
+
+- **Créer, régler, révoquer les clés** : ouvrir `cles.html` sur le site, saisir l'adresse du serveur et le code éditeur.
+- **Réglages par clé** : départements autorisés, types de sorties ou de lieux, nombre d'appels par jour,
+  sites autorisés (pour un usage depuis un navigateur), notes.
+- Le serveur lit les données publiées sur GitHub Pages (variable facultative `DATA_URL` pour en changer)
+  et les garde 30 minutes en cache.

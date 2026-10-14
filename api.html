@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>API Dans le coin · Dans le coin</title>
+<meta name="description" content="Récupérez les sorties et les lieux à visiter de « Dans le coin » dans votre site, votre application ou votre borne, avec votre propre clé.">
+<link rel="stylesheet" href="fonts/figtree.css">
+<link rel="stylesheet" href="pages.css">
+<script src="config.js"></script>
+</head>
+<body>
+<a class="skip" href="#contenu">Aller au contenu</a>
+<header class="top"><a class="brand" href="index.html"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M12 2.5c-4 0-7.3 3.2-7.3 7.2 0 5.3 6.4 11.4 6.7 11.7.3.3.9.3 1.2 0 .3-.3 6.7-6.4 6.7-11.7 0-4-3.3-7.2-7.3-7.2zm0 9.9a2.7 2.7 0 1 1 0-5.4 2.7 2.7 0 0 1 0 5.4z"/></svg>Dans le coin</a>
+<a class="back" href="index.html">Retour aux sorties</a></header>
+<main id="contenu">
+<h1>API Dans le coin</h1>
+<p class="lead">Récupérez les sorties et les lieux à visiter de « Dans le coin » dans votre site, votre application ou votre borne, avec votre propre clé.</p>
+<p class="maj">Mise à jour : 13 octobre 2026</p>
+
+<h2>Obtenir une clé</h2>
+<p>Chaque clé est personnelle et réglée pour son usage : départements, types de sorties, nombre d’appels par jour et sites autorisés. Pour en demander une, écrivez à <a href="mailto:clementer@gmail.com?subject=Demande%20de%20cl%C3%A9%20API%20Dans%20le%20coin">clementer@gmail.com</a> en indiquant votre structure, votre site et les départements voulus.</p>
+
+<h2>Adresse</h2>
+<p><code id="api-base">https://dans-le-coin.&lt;compte&gt;.workers.dev</code></p>
+<p>La clé se transmet dans l’en-tête <code>X-API-Key</code> (recommandé) ou dans le paramètre <code>cle</code>.</p>
+
+<h2>Sorties</h2>
+<p><code>GET /v1/sorties</code></p>
+<div class="tbl"><table>
+<thead><tr><th scope="col">Paramètre</th><th scope="col">Exemple</th><th scope="col">Rôle</th></tr></thead>
+<tbody>
+<tr><td>dep</td><td>03,58</td><td>Départements (6 au plus). Facultatif si votre clé est réglée sur des départements.</td></tr>
+<tr><td>type</td><td>brocante,fete</td><td>brocante, fete, spectacle, culture, famille, sport</td></tr>
+<tr><td>du / au</td><td>2026-10-14</td><td>Période (par défaut : à partir d’aujourd’hui)</td></tr>
+<tr><td>commune</td><td>Moulins</td><td>Une seule commune</td></tr>
+<tr><td>q</td><td>marché</td><td>Mot recherché dans le titre, le lieu et la description</td></tr>
+<tr><td>gratuit</td><td>1</td><td>Seulement les sorties gratuites</td></tr>
+<tr><td>limite / page</td><td>100 / 1</td><td>Pagination (500 au plus par page)</td></tr>
+</tbody></table></div>
+<p>Chaque sortie : id, titre, type, debut, fin, heure, autres_dates, commune, departement, lieu, description, lien, image, gratuit, latitude, longitude, source.</p>
+
+<h2>Lieux à visiter et offices de tourisme</h2>
+<p><code>GET /v1/lieux</code> — mêmes paramètres <code>dep</code>, <code>commune</code>, <code>q</code>, <code>limite</code>, <code>page</code> ; <code>type</code> parmi office, musee, patrimoine, nature, loisirs.</p>
+<p>Chaque lieu : id, nom, type, commune, departement, adresse, description, site, telephone, horaires_osm (format OpenStreetMap), label, principal, latitude, longitude, source.</p>
+
+<h2>Départements</h2>
+<p><code>GET /v1/departements</code> — liste des départements accessibles avec votre clé et leur nombre de sorties.</p>
+
+<h2>Exemple</h2>
+<pre class="code" id="api-ex">fetch("https://dans-le-coin.&lt;compte&gt;.workers.dev/v1/sorties?dep=03&amp;type=brocante&amp;limite=20", {
+  headers: { "X-API-Key": "dlc_votre_cle" }
+}).then(r =&gt; r.json()).then(d =&gt; console.log(d.total, d.resultats));</pre>
+
+<h2>Erreurs</h2>
+<ul>
+<li><code>401 cle_invalide</code> : clé absente ou inconnue ; <code>403 cle_revoquee</code> ; <code>403 origine_refusee</code> : site non autorisé pour cette clé.</li>
+<li><code>403 departement_non_autorise</code> ; <code>403 type_non_autorise</code> ; <code>400 dep_requis</code> ; <code>429 quota_atteint</code> : nombre d’appels du jour dépassé (en-tête <code>X-Quota-Restant</code>).</li>
+</ul>
+
+<h2>Conditions</h2>
+<ul>
+<li>Données mises à jour chaque nuit ; réponses mises en cache 10 minutes.</li>
+<li>Affichez « Dans le coin » et la source de chaque fiche. Les données restent sous la licence de leurs producteurs (voir les <a href="mentions-legales.html">mentions légales</a>) ; les horaires viennent d’OpenStreetMap (ODbL).</li>
+<li>Une clé peut être suspendue en cas d’usage abusif.</li>
+</ul>
+<script>(function(){const c=window.SORTIES_CONFIG&&SORTIES_CONFIG.apiUrl;if(!c)return;const b=c.replace(/\/+$/,"");document.getElementById("api-base").textContent=b;const ex=document.getElementById("api-ex");ex.textContent=ex.textContent.replace(/https:\/\/dans-le-coin\.<compte>\.workers\.dev/,b)})();</script>
+
+</main>
+<footer class="foot"><nav aria-label="Informations légales"><a href="plan-du-site.html">Plan du site</a><a href="mentions-legales.html">Mentions légales</a><a href="cgu.html">Conditions d’utilisation</a><a href="confidentialite.html">Confidentialité</a><a href="intelligence-artificielle.html">Intelligence artificielle</a><a href="accessibilite.html">Accessibilité</a><a href="integrer.html">Intégrer l’agenda</a><a href="api.html" aria-current="page">API</a></nav></footer>
+</body>
+</html>

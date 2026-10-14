@@ -570,11 +570,32 @@ textarea.sbl-in{min-height:100px;resize:vertical}
 @media (max-width:600px){.sbl .maplibregl-ctrl-group button{width:38px;height:38px}.sbl-lvm{width:40px;height:40px}.sbl[data-v="map"] .sbl-intro,.sbl[data-v="cal"] .sbl-intro{display:none}.sbl-sug{max-height:calc(100dvh - 250px);overflow:auto}}
 @media (max-width:600px) and (max-height:700px){.sbl-intro h1{font-size:1.3rem}.sbl-main[data-v="map"] #sbl-map{height:calc(100dvh - 300px)}}
 .sbl.kiosk .sbl-navw{position:static}
+
+/* ===== Accueil épuré (façon Airbnb) ===== */
+.sbl .sbl-hb#sbl-prop{background:transparent;color:var(--sbl-ink);border:1px solid var(--sbl-line)}
+.sbl .sbl-hb#sbl-prop:hover{background:var(--sbl-hover)}
+.sbl-brand{text-decoration:none;color:inherit;min-height:44px}
+.sbl.home #sbl-sub{display:none}
+.sbl.home .sbl-side,.sbl.home .sbl-sum{display:none}
+.sbl.home .sbl-main{grid-template-columns:minmax(0,1fr);max-width:1280px;margin-inline:auto}
+.sbl.home .sbl-wk{margin-top:4px}
+.sbl.home .sbl-wkh{margin-top:26px}
+.sbl.home .sbl-wkh h2{font-size:1.35rem}
+.sbl.home .sbl-rail{grid-auto-columns:min(260px,74%)}
+.sbl-cta{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:34px 0 8px}
+.sbl-cta .sbl-btn{min-height:48px;padding:0 22px}
+.sbl-tab.hm{display:none}
+@media (min-width:601px){.sbl.home .sbl-navw .sbl-tabs{display:none!important}}
+.sbl-srcd{border:1px solid var(--sbl-line);border-radius:16px;padding:0}
+.sbl-srcd summary{cursor:pointer;padding:12px 16px;font-weight:600;color:var(--sbl-ink);list-style-position:inside}
+.sbl-srcd[open] summary{border-bottom:1px solid var(--sbl-line)}
+.sbl-srcd .sbl-src{border:0;background:none}
+@media (max-width:600px){.sbl-tab.hm{display:flex}}
 </style>
 
 <div class="sbl" id="sbl">
 <header class="sbl-top"><div class="in">
-  <div class="sbl-brand"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M12 2.5c-4 0-7.3 3.2-7.3 7.2 0 5.3 6.4 11.4 6.7 11.7.3.3.9.3 1.2 0 .3-.3 6.7-6.4 6.7-11.7 0-4-3.3-7.2-7.3-7.2zm0 9.9a2.7 2.7 0 1 1 0-5.4 2.7 2.7 0 0 1 0 5.4z"/></svg><span class="mk">Dans le coin</span></div>
+  <a class="sbl-brand" href="#" id="sbl-home" aria-label="Dans le coin, accueil"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M12 2.5c-4 0-7.3 3.2-7.3 7.2 0 5.3 6.4 11.4 6.7 11.7.3.3.9.3 1.2 0 .3-.3 6.7-6.4 6.7-11.7 0-4-3.3-7.2-7.3-7.2zm0 9.9a2.7 2.7 0 1 1 0-5.4 2.7 2.7 0 0 1 0 5.4z"/></svg><span class="mk">Dans le coin</span></a>
   <div class="sbl-acts"><button class="sbl-hb alt" type="button" id="sbl-mod" hidden>À valider</button><button class="sbl-hb" type="button" id="sbl-prop" aria-label="Proposer une sortie">Proposer<span class="lg"> une sortie</span></button></div>
 </div></header>
 <section class="sbl-intro" aria-label="Présentation"><h1>Que faire autour de chez vous&nbsp;?</h1><p id="sbl-sub"></p><button type="button" class="sbl-reg" id="sbl-reg"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg><span id="sbl-regl"></span><span class="ch">Changer</span></button></section>
@@ -587,6 +608,7 @@ textarea.sbl-in{min-height:100px;resize:vertical}
 </div></div>
 
 <section aria-label="Choix de l’affichage" class="sbl-navw"><div class="sbl-tabs" role="tablist" id="sbl-mt">
+  <button class="sbl-tab hm" type="button" data-v="home" aria-selected="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4.5v-6h-5v6H5a1 1 0 0 1-1-1z"/></svg><span>Accueil</span></button>
   <button class="sbl-tab" role="tab" data-v="list" aria-selected="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg><span>Liste</span></button>
   <button class="sbl-tab" role="tab" data-v="map" aria-selected="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4 3 6.5v13.5l6-2.5 6 2.5 6-2.5V4l-6 2.5z"/><path d="M9 4v13.5M15 6.5V20"/></svg><span>Carte</span></button>
   <button class="sbl-tab" role="tab" data-v="cal" aria-selected="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><span>Calendrier</span></button>
@@ -620,25 +642,15 @@ textarea.sbl-in{min-height:100px;resize:vertical}
 </main>
 
 <footer class="sbl-foot">
+  <details class="sbl-srcd" id="sbl-srcd"><summary>Vous connaissez une source d’événements ? Proposez-la</summary>
   <form class="sbl-src" id="sbl-sf" novalidate>
-    <h4>Vous connaissez une source d’événements ?</h4>
-    <p>Agenda de mairie, page d’association, office de tourisme, groupe Facebook… Indiquez-la ici, elle sera étudiée pour alimenter l’outil.</p>
+        <p>Agenda de mairie, page d’association, office de tourisme, groupe Facebook… Indiquez-la ici, elle sera étudiée pour alimenter l’outil.</p>
     <div class="row"><label class="vh" for="sf-u">Adresse ou nom de la source</label><input class="sbl-in" id="sf-u" maxlength="200" placeholder="https://… ou « Comité des fêtes de Cercy-la-Tour »">
     <label class="vh" for="sf-n">Ce qu’on y trouve</label><input class="sbl-in" id="sf-n" maxlength="200" placeholder="Ce qu’on y trouve (facultatif)">
     <button class="sbl-btn go" type="submit">Envoyer</button></div>
     <p class="sbl-sfm" id="sf-msg" role="status"></p>
   </form>
-  <div>
-    <h4>D’où viennent les informations</h4>
-    <ul>
-      <li><a href="https://www.datatourisme.fr/" target="_blank" rel="noopener">DATAtourisme</a>, les offices de tourisme de France</li>
-      <li><a href="https://openagenda.com/" target="_blank" rel="noopener">OpenAgenda</a>, agendas des communes et associations</li>
-      <li><a href="https://quefaire.paris.fr/" target="_blank" rel="noopener">Que faire à Paris</a> et les <a href="https://www.paris.fr/pages/les-marches-parisiens-2428" target="_blank" rel="noopener">marchés parisiens</a></li>
-      <li>Portails open data des régions, départements et villes (liste complète dans les <a href="mentions-legales.html#sources">mentions légales</a>)</li>
-      <li><a href="https://www.lepal.com/" target="_blank" rel="noopener">Fondation Le PAL Nature</a></li>
-      <li>Les sorties proposées par les visiteurs, relues avant publication</li>
-    </ul>
-  </div>
+  </details>
   <p class="sbl-fine">Mis à jour chaque nuit. Un organisateur peut changer une date&nbsp;: vérifiez sur la fiche source avant de vous déplacer. Fonds de carte © IGN, via cartes.gouv.fr. Photos de communes&nbsp;: Wikipédia et Wikimedia Commons.</p>
   <nav class="sbl-legal" aria-label="Informations légales">
     <a href="plan-du-site.html">Plan du site</a><a href="mentions-legales.html">Mentions légales</a><a href="cgu.html">Conditions d’utilisation</a><a href="confidentialite.html">Confidentialité</a><a href="intelligence-artificielle.html">Intelligence artificielle</a><a href="accessibilite.html">Accessibilité</a><a href="integrer.html">Intégrer l’agenda</a><a href="api.html">API</a><span class="by">Conçu par Saryn Digital</span>
@@ -926,17 +938,48 @@ const leafIco='<svg viewBox="0 0 24 24" width="13" height="13" fill="none" strok
 function badge(e){const b=BADGES[e.b];if(!b)return null;const s=document.createElement("span");s.className="sbl-badge";s.style.setProperty("--bc",b.c);s.innerHTML=leafIco+"<span></span>";s.lastChild.textContent=b.l;return s}
 
 /* ---------- Liste ---------- */
+/* Accueil épuré : quelques sélections ; la liste complète, la carte et le calendrier s'ouvrent à la demande */
+const isHome=()=>!st.explore&&!st.q&&!st.day;
+function goHome(){st.explore=false;st.day="";if(st.q)setQ("");else draw();view("list");scrollTo({top:0,behavior:"smooth"})}
+function explore(v){st.explore=true;view(v||"list");draw();const m=$("sbl-main");if(m)m.scrollIntoView({behavior:"smooth",block:"start"})}
+/* Lieux mis en avant : labels, musées, châteaux et grands sites d'abord ; équipements de quartier écartés ; renouvelés chaque jour */
+const LV_BOF=/terrain|stade|city ?stade|multisport|skate|aire de|piscine|gymnase|salle |boulodrome|tennis|parcours de sante|jeux pour enfants|bowling|laser|escape|karting|paintball|hive|trampoline/;
+const LV_TOP=/chateau|abbaye|cathedrale|basilique|prieure|musee|palais|forteresse|donjon|jardin|arboretum|grotte|gorges|lac |cascade|zoo|parc animalier|ecomusee|maison natale|moulin|pont |citadelle|village/;
+function homeLieux(){const j=Math.floor(Date.now()/864e5);
+  const sc=x=>{const t=norm(x.t);if(LV_BOF.test(t))return -9;return (x.l?4:0)+(x.k==="musee"?2:0)+(LV_TOP.test(t)?3:0)+(x.d?1:0)+(x.oh?1:0)};
+  const L=allLieux().filter(x=>x.k!=="office"&&REGION.includes(x.z)).map(x=>[x,sc(x)]).filter(a=>a[1]>=3).sort((a,b)=>b[1]-a[1]).slice(0,40).map(a=>a[0]);
+  return L.map((x,i)=>[x,(i*2654435761+j*97)%1000]).sort((a,b)=>a[1]-b[1]).slice(0,12).map(a=>a[0])}
+function homeCTA(n){const d=document.createElement("div");d.className="sbl-cta";
+  d.innerHTML='<button type="button" class="sbl-btn go" data-x="list"></button><button type="button" class="sbl-btn" data-x="map">Voir sur la carte</button><button type="button" class="sbl-btn" data-x="cal">Calendrier</button>';
+  d.firstChild.textContent="Voir les "+n.toLocaleString("fr-FR")+" sorties";d.querySelectorAll("[data-x]").forEach(b=>b.onclick=()=>explore(b.dataset.x));return d}
 function weekendPicks(){
   const t=today(),d=t.getDay(),sat=d===0?add(t,-1):add(t,(6-d)%7),sun=add(sat,1),from=d===0||d===6?t:add(sat,-1);
-  return EVENTS.filter(e=>!e.long&&e.S>=from&&e.S<=sun&&matchBase(e)).sort((a,b)=>(a.S-b.S)||((a.h||"99")<(b.h||"99")?-1:1)).slice(0,10);
+  const all=EVENTS.filter(e=>!e.long&&e.S>=from&&e.S<=sun&&matchBase(e)).sort((a,b)=>(!!b.img-!!a.img)||(a.S-b.S)||((a.h||"99")<(b.h||"99")?-1:1));
+  const par={};all.forEach(e=>(par[e.cat]=par[e.cat]||[]).push(e));const out=[];
+  for(let i=0;out.length<12&&i<12;i++)Object.keys(par).forEach(c=>{if(par[c][i]&&out.length<12)out.push(par[c][i])});
+  return out.sort((a,b)=>(a.S-b.S)||((a.h||"99")<(b.h||"99")?-1:1));
 }
 function list(items){
   const box=$("sbl-list");box.textContent="";const n=items.length;
   const per=st.day?"le "+P(st.day).getDate()+" "+ML[P(st.day).getMonth()]:({today:"aujourd’hui",we:"ce week-end","7":"sur 7 jours","30":"sur 30 jours",all:"au total"})[st.w];
   $("sbl-sum").innerHTML="<span>"+summary(n)+"</span>"+(st.q||st.day?'<button type="button" id="sbl-clr">Effacer</button>':"");
-  const clr=$("sbl-clr");if(clr)clr.onclick=()=>{st.day="";setQ("")};
+  const clr=$("sbl-clr");if(clr)clr.onclick=()=>goHome();
   $("sbl-info").innerHTML=st.cats.has("pal")?'<div class="sbl-info">Le Pal a fermé sa saison 2026 le 27 septembre. La date de réouverture 2027 sera ajoutée dès que le parc l’annoncera.</div>':"";
   const wk=$("sbl-wk");wk.textContent="";
+  const home=isHome();ROOT.classList.toggle("home",home);syncTabs();
+  if(home){
+    $("sbl-sum").textContent="";$("sbl-info").textContent="";
+    const sec=(titre,items,mk,tout)=>{if(!items.length)return;const h=document.createElement("div");h.className="sbl-wkh";h.innerHTML='<h2></h2>';h.firstChild.textContent=titre;
+      if(tout){const b=document.createElement("button");b.type="button";b.textContent="Tout voir";b.onclick=tout;h.append(b)}
+      const rail=document.createElement("div");rail.className="sbl-rail";items.forEach(x=>rail.append(mk(x)));wk.append(h,rail)};
+    sec("Ce week-end",weekendPicks(),card,()=>setQ("ce week-end"));
+    const t=today(),fin=add(t,7),sem=EVENTS.filter(e=>!e.long&&e.S>=t&&e.S<=fin&&matchBase(e)&&e.img).slice(0,12);
+    if(sem.length>=4)sec("Cette semaine, en images",sem,card,()=>setQ("cette semaine"));
+    sec("À visiter dans le coin",homeLieux(),lieuCard,()=>setQ("à visiter "+(REGION.length===1?dansDep(REGION[0]):"")));
+    const pv=document.createElement("div");pv.id="sbl-pourvous";wk.append(pv); /* futures préférences du compte */
+    wk.append(homeCTA(n));
+    return;
+  }
   if(!st.day&&!st.q){
     const picks=weekendPicks();
     if(picks.length){const h=document.createElement("div");h.className="sbl-wkh";h.innerHTML='<h2>Ce week-end</h2>';
@@ -1581,8 +1624,9 @@ async function unpublish(e,close){try{await BK.unpublish(e);close();toast("Sorti
 
 
 /* ---------- Vues ---------- */
-function view(v){{const mp=$("sbl-mpop");if(mp)mp.hidden=true}st.view=v;ROOT.dataset.v=v;$("sbl-main").dataset.v=v;document.querySelectorAll("#sbl-mt button").forEach(b=>b.setAttribute("aria-selected",b.dataset.v===v));if(v==="map"&&map)setTimeout(()=>map.resize(),30)}
-document.querySelectorAll("#sbl-mt button").forEach(b=>b.onclick=()=>view(b.dataset.v));
+function syncTabs(){const v=st.view||"list",hm=isHome()&&v==="list";document.querySelectorAll("#sbl-mt button").forEach(b=>b.setAttribute("aria-selected",b.dataset.v==="home"?hm:(!hm&&b.dataset.v===v)))}
+function view(v){{const mp=$("sbl-mpop");if(mp)mp.hidden=true}st.view=v;ROOT.dataset.v=v;$("sbl-main").dataset.v=v;syncTabs();if(v==="map"&&map)setTimeout(()=>map.resize(),30)}
+document.querySelectorAll("#sbl-mt button").forEach(b=>b.onclick=()=>{if(b.dataset.v==="home")return goHome();if(isHome())explore(b.dataset.v);else view(b.dataset.v)});
 document.querySelectorAll("#sbl-dt button").forEach(b=>b.onclick=()=>{st.side=b.dataset.s;$("sbl-side").dataset.s=st.side;document.querySelectorAll("#sbl-dt button").forEach(x=>x.setAttribute("aria-selected",x===b));if(st.side==="map"&&map)setTimeout(()=>map.resize(),30)});
 $("sbl-pm").onclick=()=>{st.month=new Date(st.month.getFullYear(),st.month.getMonth()-1,1);cal()};
 $("sbl-nm").onclick=()=>{st.month=new Date(st.month.getFullYear(),st.month.getMonth()+1,1);cal()};
@@ -1648,11 +1692,11 @@ async function boot(){
   fillCommuneList();
   loadIndex().then(()=>{subtitle();return ensureDeps(REGION)}).then(()=>{if(st.place||st.near||st.z)flyTo(st);else fitRegion()});
   $("sbl-q").addEventListener("focus",()=>loadCommunes(),{once:true});
-  $("sbl-prop").onclick=()=>proposeForm(st.day||"");$("sbl-mod").onclick=()=>API?apiRefresh().then(modPanel,modPanel):modPanel();sourceForm();
+  $("sbl-prop").onclick=()=>proposeForm(st.day||"");$("sbl-home").onclick=e=>{e.preventDefault();goHome()};$("sbl-mod").onclick=()=>API?apiRefresh().then(modPanel,modPanel):modPanel();sourceForm();
   await initParticip();modBadge();
   if(H.get("q")){setQ(H.get("q"));loadCommunes()}
   if(H.has("proposer"))proposeForm("");
-  if(H.has("source")){const f=$("sbl-sf");f.scrollIntoView();$("sf-u").focus({preventScroll:true})}
+  if(H.has("source")){$("sbl-srcd").open=true;const f=$("sbl-sf");f.scrollIntoView();$("sf-u").focus({preventScroll:true})}
 }
 window.SortiesBL={setTheme,config:CFG,reload:boot,get map(){return map}};
 if(window.parent!==window&&"ResizeObserver" in window){let lastH=0;new ResizeObserver(()=>{const hh=Math.ceil(document.documentElement.scrollHeight);if(Math.abs(hh-lastH)>4){lastH=hh;try{window.parent.postMessage({dansLeCoin:"hauteur",h:hh},"*")}catch(_){}}}).observe(document.body)}

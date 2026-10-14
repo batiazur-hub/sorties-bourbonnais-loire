@@ -7,14 +7,14 @@ de l'offre Workers gratuite de Cloudflare.
 ## Mise en place depuis le tableau de bord Cloudflare (10 minutes, sans ligne de commande)
 
 1. **Créer le stockage** : *Storage & Databases → KV → Create* ; nom : `DLC`.
-2. **Créer le Worker** : *Workers & Pages → Create → Worker* ; nom : `dans-le-coin` ; *Deploy*.
+2. **Créer le Worker** : *Workers & Pages → Create → Worker* ; nom : `trucs-a-faire` ; *Deploy*.
 3. **Coller le code** : *Edit code*, remplacer tout le contenu par celui de `worker.js`, puis *Deploy*.
 4. **Relier le stockage** : dans le Worker, *Settings → Bindings → Add → KV namespace* ;
    nom de variable : `DLC` ; espace : `DLC`.
 5. **Réglages** : *Settings → Variables and Secrets* :
    - `ORIGINS` (texte) : `https://batiazur-hub.github.io` (ajouter le futur nom de domaine, séparé par une virgule) ;
    - `ADMIN_TOKEN` (secret) : un long mot de passe, c'est le **code éditeur** demandé pour valider.
-6. **Brancher le site** : recopier l'adresse du Worker (`https://dans-le-coin.<compte>.workers.dev`)
+6. **Brancher le site** : recopier l'adresse du Worker (`https://trucs-a-faire.<compte>.workers.dev`)
    dans `config.js`, champ `apiUrl`.
 
 ## Utilisation
@@ -27,7 +27,7 @@ de l'offre Workers gratuite de Cloudflare.
 
 ## API à clés
 
-Le même serveur fournit l'API publique de « Dans le coin » (`/v1/sorties`, `/v1/lieux`, `/v1/departements`),
+Le même serveur fournit l'API publique de « Trucs à faire » (`/v1/sorties`, `/v1/lieux`, `/v1/departements`),
 documentée sur la page `api.html` du site. Chaque appel exige une clé.
 
 - **Créer, régler, révoquer les clés** : ouvrir `cles.html` sur le site, saisir l'adresse du serveur et le code éditeur.
@@ -35,7 +35,7 @@ documentée sur la page `api.html` du site. Chaque appel exige une clé.
   sites autorisés (pour un usage depuis un navigateur), notes.
 - **Bibliothèque JavaScript** : le serveur sert aussi `/v1/dlc.js` (copie de `dlc.js` publiée sur le site,
   avec son adresse déjà réglée). Les sites l'incluent comme Google Maps :
-  `<script src="https://dans-le-coin.<compte>.workers.dev/v1/dlc.js?key=dlc_…&callback=initCoin" async></script>`.
+  `<script src="https://trucs-a-faire.<compte>.workers.dev/v1/dlc.js?key=dlc_…&callback=initTrucs" async></script>`.
   Pour une clé utilisée dans un navigateur, renseigner toujours les **sites autorisés**.
 - Le serveur lit les données publiées sur GitHub Pages (variable facultative `DATA_URL` pour en changer)
   et les garde 30 minutes en cache.

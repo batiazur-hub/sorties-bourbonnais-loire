@@ -20,7 +20,7 @@
 <section id="presentation" aria-labelledby="t-pres">
 <h2 id="t-pres" class="vh">Présentation</h2>
 <div class="api-cards">
-<a class="api-card" href="#bibliotheque"><span class="api-ic" aria-hidden="true">{ }</span><b>Bibliothèque JavaScript</b><span>Une ligne de script et votre clé, puis <code>DansLeCoin.sorties()</code> dans votre code.</span></a>
+<a class="api-card" href="#bibliotheque"><span class="api-ic" aria-hidden="true">{ }</span><b>Bibliothèque JavaScript</b><span>Une ligne de script et votre clé, puis <code>TrucsAFaire.sorties()</code> dans votre code.</span></a>
 <a class="api-card" href="#widgets"><span class="api-ic" aria-hidden="true">▦</span><b>Widgets prêts à l’emploi</b><span>Une liste d’événements ou une carte IGN, sans écrire de code.</span></a>
 <a class="api-card" href="#rest"><span class="api-ic" aria-hidden="true">⇄</span><b>API REST</b><span>Du JSON pour vos serveurs, applications mobiles et bornes : PHP, Python, curl…</span></a>
 </div>
@@ -44,8 +44,8 @@
 <pre role="tabpanel" data-lang="html"><code>&lt;div id="agenda"&gt;&lt;/div&gt;
 
 &lt;script&gt;
-  function initCoin() {
-    new DansLeCoin.Liste("#agenda", {
+  function initTrucs() {
+    new TrucsAFaire.Liste("#agenda", {
       autour: { lat: 46.566, lon: 3.333 },  // Moulins
       rayon: 25,                            // en km
       periode: "weekend",
@@ -53,7 +53,7 @@
     });
   }
 &lt;/script&gt;
-&lt;script src="https://VOTRE-SERVEUR/v1/dlc.js?key=VOTRE_CLE&amp;callback=initCoin" async&gt;&lt;/script&gt;</code></pre>
+&lt;script src="https://VOTRE-SERVEUR/v1/dlc.js?key=VOTRE_CLE&amp;callback=initTrucs" async&gt;&lt;/script&gt;</code></pre>
 <pre role="tabpanel" data-lang="decl"><code>&lt;!-- Aucun code à écrire : les réglages se lisent sur l’élément --&gt;
 &lt;div data-dlc="liste" data-lat="46.566" data-lon="3.333" data-rayon="25"
      data-periode="weekend" data-limite="6"&gt;&lt;/div&gt;
@@ -63,9 +63,9 @@
 
 &lt;script src="https://VOTRE-SERVEUR/v1/dlc.js?key=VOTRE_CLE" async&gt;&lt;/script&gt;</code></pre>
 <pre role="tabpanel" data-lang="js"><code>// Après le chargement du script
-await DansLeCoin.pret;
+await TrucsAFaire.pret;
 
-const { total, resultats } = await DansLeCoin.sorties({
+const { total, resultats } = await TrucsAFaire.sorties({
   dep: "03",
   types: ["brocante", "fete"],
   periode: "semaine"
@@ -92,38 +92,38 @@ for (const s of resultats) {
 <tr><td>Quota</td><td>Nombre d’appels par jour (5 000 par défaut).</td><td>5 000</td></tr>
 </tbody></table></div>
 <div class="note"><b>Depuis un serveur</b> (PHP, Python, application mobile) : ne publiez pas la clé, passez-la dans l’en-tête <code>X-API-Key</code> et gardez-la dans une variable d’environnement.</div>
-<p>Pour vérifier les réglages d’une clé : <code>DansLeCoin.cle()</code> ou <code>GET /v1/cle</code>.</p>
+<p>Pour vérifier les réglages d’une clé : <code>TrucsAFaire.cle()</code> ou <code>GET /v1/cle</code>.</p>
 </section>
 
 <section id="bibliotheque" aria-labelledby="t-bib">
 <h2 id="t-bib">Bibliothèque JavaScript</h2>
 <h3>Charger la bibliothèque</h3>
-<pre class="cb"><code>&lt;script src="https://VOTRE-SERVEUR/v1/dlc.js?key=VOTRE_CLE&amp;callback=initCoin" async&gt;&lt;/script&gt;</code></pre>
+<pre class="cb"><code>&lt;script src="https://VOTRE-SERVEUR/v1/dlc.js?key=VOTRE_CLE&amp;callback=initTrucs" async&gt;&lt;/script&gt;</code></pre>
 <div class="tbl"><table>
 <thead><tr><th scope="col">Paramètre du script</th><th scope="col">Rôle</th></tr></thead>
 <tbody>
 <tr><td><code>key</code></td><td>Votre clé API (obligatoire).</td></tr>
-<tr><td><code>callback</code></td><td>Nom d’une fonction globale appelée quand la bibliothèque est prête. Sinon : <code>await DansLeCoin.pret</code> ou l’événement <code>dansLeCoin:pret</code> sur <code>document</code>.</td></tr>
+<tr><td><code>callback</code></td><td>Nom d’une fonction globale appelée quand la bibliothèque est prête. Sinon : <code>await TrucsAFaire.pret</code> ou l’événement <code>trucsAFaire:pret</code> sur <code>document</code>.</td></tr>
 </tbody></table></div>
 <h3>Méthodes</h3>
 <div class="tbl"><table class="ref">
 <thead><tr><th scope="col">Méthode</th><th scope="col">Renvoie</th><th scope="col">Description</th></tr></thead>
 <tbody>
-<tr><td><code>DansLeCoin.sorties(options)</code></td><td>Promise&lt;Réponse&gt;</td><td>Événements à venir correspondant aux <a href="#options">options</a>.</td></tr>
-<tr><td><code>DansLeCoin.lieux(options)</code></td><td>Promise&lt;Réponse&gt;</td><td>Lieux à visiter et offices de tourisme.</td></tr>
-<tr><td><code>DansLeCoin.autourDeMoi(options)</code></td><td>Promise&lt;Réponse&gt;</td><td>Demande la position du visiteur, puis renvoie les sorties (ou les lieux avec <code>quoi: "lieux"</code>) les plus proches.</td></tr>
-<tr><td><code>DansLeCoin.departements()</code></td><td>Promise&lt;Réponse&gt;</td><td>Départements accessibles et nombre de sorties.</td></tr>
-<tr><td><code>DansLeCoin.cle()</code></td><td>Promise&lt;Objet&gt;</td><td>Réglages et consommation de la clé.</td></tr>
-<tr><td><code>DansLeCoin.position()</code></td><td>Promise&lt;{lat, lon}&gt;</td><td>Position du visiteur (avec son accord).</td></tr>
-<tr><td><code>DansLeCoin.url(chemin, options)</code></td><td>Texte</td><td>Adresse REST équivalente, utile pour déboguer.</td></tr>
-<tr><td><code>DansLeCoin.configurer({ cle, serveur })</code></td><td>Objet</td><td>Change la clé ou le serveur après chargement.</td></tr>
+<tr><td><code>TrucsAFaire.sorties(options)</code></td><td>Promise&lt;Réponse&gt;</td><td>Événements à venir correspondant aux <a href="#options">options</a>.</td></tr>
+<tr><td><code>TrucsAFaire.lieux(options)</code></td><td>Promise&lt;Réponse&gt;</td><td>Lieux à visiter et offices de tourisme.</td></tr>
+<tr><td><code>TrucsAFaire.autourDeMoi(options)</code></td><td>Promise&lt;Réponse&gt;</td><td>Demande la position du visiteur, puis renvoie les sorties (ou les lieux avec <code>quoi: "lieux"</code>) les plus proches.</td></tr>
+<tr><td><code>TrucsAFaire.departements()</code></td><td>Promise&lt;Réponse&gt;</td><td>Départements accessibles et nombre de sorties.</td></tr>
+<tr><td><code>TrucsAFaire.cle()</code></td><td>Promise&lt;Objet&gt;</td><td>Réglages et consommation de la clé.</td></tr>
+<tr><td><code>TrucsAFaire.position()</code></td><td>Promise&lt;{lat, lon}&gt;</td><td>Position du visiteur (avec son accord).</td></tr>
+<tr><td><code>TrucsAFaire.url(chemin, options)</code></td><td>Texte</td><td>Adresse REST équivalente, utile pour déboguer.</td></tr>
+<tr><td><code>TrucsAFaire.configurer({ cle, serveur })</code></td><td>Objet</td><td>Change la clé ou le serveur après chargement.</td></tr>
 <tr><td><code>reponse.suivante()</code></td><td>Promise&lt;Réponse&gt;</td><td>Page suivante, présente seulement s’il reste des résultats.</td></tr>
 </tbody></table></div>
 <h3>Gérer les erreurs</h3>
 <pre class="cb"><code>try {
-  const r = await DansLeCoin.sorties({ commune: "Nevers", dep: "58" });
+  const r = await TrucsAFaire.sorties({ commune: "Nevers", dep: "58" });
 } catch (e) {
-  if (e instanceof DansLeCoin.Erreur) {
+  if (e instanceof TrucsAFaire.Erreur) {
     console.warn(e.code, e.statut, e.message);  // ex. "quota_atteint", 429
   }
 }</code></pre>
@@ -140,10 +140,10 @@ for (const s of resultats) {
 <label>Quoi <select id="demo-t"><option value="">Toutes les sorties</option><option value="brocante">Brocantes</option><option value="fete">Fêtes, marchés</option><option value="spectacle">Concerts, spectacles</option><option value="culture">Expos, visites</option><option value="famille">En famille</option><option value="sport">Sport</option></select></label>
 <label>Quand <select id="demo-p"><option value="semaine">7 prochains jours</option><option value="weekend">Ce week-end</option><option value="mois">Ce mois-ci</option></select></label>
 </form>
-<h3><code>DansLeCoin.Liste</code></h3>
+<h3><code>TrucsAFaire.Liste</code></h3>
 <div class="demo" id="demo-liste" aria-live="polite"></div>
 <pre class="cb"><code id="demo-code-l"></code></pre>
-<h3><code>DansLeCoin.Carte</code></h3>
+<h3><code>TrucsAFaire.Carte</code></h3>
 <p>Fond Plan IGN ou photo satellite, points regroupés, fiche au clic. La carte (MapLibre) n’est chargée que si vous l’utilisez.</p>
 <div class="demo demo-map" id="demo-carte"></div>
 <pre class="cb"><code id="demo-code-c"></code></pre>
@@ -229,7 +229,7 @@ for s in r.json()["resultats"]:
       "source": "DATAtourisme"
     }
   ],
-  "licence": "Données agrégées par Dans le coin…"
+  "licence": "Données agrégées par Trucs à faire…"
 }</code></pre>
 </section>
 
@@ -338,7 +338,7 @@ for s in r.json()["resultats"]:
 <h2 id="t-cond">Conditions</h2>
 <ul>
 <li>Données mises à jour chaque nuit ; les horaires des lieux viennent d’OpenStreetMap (ODbL).</li>
-<li>Affichez « Dans le coin » et la source de chaque fiche (les widgets le font pour vous). Les données restent sous la licence de leurs producteurs : voir les <a href="mentions-legales.html">mentions légales</a>.</li>
+<li>Affichez « Trucs à faire » et la source de chaque fiche (les widgets le font pour vous). Les données restent sous la licence de leurs producteurs : voir les <a href="mentions-legales.html">mentions légales</a>.</li>
 <li>Une clé peut être suspendue en cas d’usage abusif ou de revente des données.</li>
 <li>Questions, demande de clé ou de quota plus élevé : <a href="mailto:clementer@gmail.com">clementer@gmail.com</a>.</li>
 </ul>
@@ -352,7 +352,7 @@ for s in r.json()["resultats"]:
   "use strict";
   var $ = function (id) { return document.getElementById(id); };
   var API = (window.SORTIES_CONFIG && SORTIES_CONFIG.apiUrl || "").replace(/\/+$/, "");
-  var DLC = window.DansLeCoin;
+  var DLC = window.TrucsAFaire;
   /* Sur cette page, les démonstrations utilisent toujours les données publiques (sans clé). */
   if (DLC) DLC.configurer({ serveur: null, donnees: "data/" });
 
@@ -424,8 +424,8 @@ for s in r.json()["resultats"]:
     var v = $("demo-v").value.split(","), t = $("demo-t").value, p = $("demo-p").value;
     var o = { autour: { lat: +v[0], lon: +v[1] }, rayon: 25, periode: p, tri: "distance" }; if (t) o.types = [t];
     var opts = '{\n  autour: { lat: ' + v[0] + ', lon: ' + v[1] + ' },  // ' + v[2] + '\n  rayon: 25,\n  periode: "' + p + '",' + (t ? '\n  types: ["' + t + '"],' : "");
-    $("demo-code-l").dataset.orig = 'new DansLeCoin.Liste("#agenda", ' + opts + '\n  limite: 6\n});';
-    $("demo-code-c").dataset.orig = 'new DansLeCoin.Carte("#carte", ' + opts + '\n  zoom: 10\n});';
+    $("demo-code-l").dataset.orig = 'new TrucsAFaire.Liste("#agenda", ' + opts + '\n  limite: 6\n});';
+    $("demo-code-c").dataset.orig = 'new TrucsAFaire.Carte("#carte", ' + opts + '\n  zoom: 10\n});';
     rendre($("demo-code-l")); rendre($("demo-code-c"));
     if (!DLC) return;
     var ol = Object.assign({ limite: 6 }, o), oc = Object.assign({ limite: 300, zoom: 9.5 }, o);
@@ -462,7 +462,7 @@ for s in r.json()["resultats"]:
     DLC.configurer(reel ? { cle: cle, serveur: API } : { cle: cle || null, serveur: null });
     var url = DLC.url(m, o).replace(/[?&]key=[^&]*/, ""), avecCle = url + (url.indexOf("?") < 0 ? "?" : "&") + "key=" + (cle || "VOTRE_CLE");
     var nom = { "/v1/sorties": "sorties", "/v1/lieux": "lieux", "/v1/departements": "departements", "/v1/cle": "cle" }[m];
-    $("ex-js").dataset.orig = "const r = await DansLeCoin." + nom + "(" + ecrireOptions(o) + ");\nconsole.log(r.total, r.resultats);";
+    $("ex-js").dataset.orig = "const r = await TrucsAFaire." + nom + "(" + ecrireOptions(o) + ");\nconsole.log(r.total, r.resultats);";
     $("ex-curl").dataset.orig = 'curl "' + avecCle.replace(/^https:\/\/VOTRE-SERVEUR/, API || "https://VOTRE-SERVEUR") + '"';
     rendre($("ex-js")); rendre($("ex-curl"));
     $("ex-out").hidden = false; $("ex-s").className = ""; $("ex-s").textContent = "Requête en cours…"; $("ex-ms").textContent = "";

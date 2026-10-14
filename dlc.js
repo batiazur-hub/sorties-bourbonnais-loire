@@ -1,25 +1,25 @@
-/*! Dans le coin — bibliothèque JavaScript v1
+/*! Trucs à faire — bibliothèque JavaScript v1
  *  Sorties, fêtes, brocantes, concerts et lieux à visiter partout en France.
  *  Documentation : https://batiazur-hub.github.io/sorties-bourbonnais-loire/api.html
  *
  *  <script src="https://VOTRE-SERVEUR/v1/dlc.js?key=VOTRE_CLE&callback=initCoin" async></script>
  *
- *  DansLeCoin.sorties({ autour: { lat: 46.56, lon: 3.33 }, rayon: 20, types: ["brocante"], periode: "weekend" })
- *  DansLeCoin.lieux({ dep: "03", types: ["musee"] })
- *  new DansLeCoin.Liste("#agenda", { periode: "semaine", limite: 6 })
- *  new DansLeCoin.Carte("#carte", { autour: { lat: 46.56, lon: 3.33 }, rayon: 25 })
+ *  TrucsAFaire.sorties({ autour: { lat: 46.56, lon: 3.33 }, rayon: 20, types: ["brocante"], periode: "weekend" })
+ *  TrucsAFaire.lieux({ dep: "03", types: ["musee"] })
+ *  new TrucsAFaire.Liste("#agenda", { periode: "semaine", limite: 6 })
+ *  new TrucsAFaire.Carte("#carte", { autour: { lat: 46.56, lon: 3.33 }, rayon: 25 })
  *
  *  Données : DATAtourisme (Licence Ouverte), OpenAgenda, open data des collectivités, OpenStreetMap (ODbL).
  *  © Saryn Digital — Clément Monteiro EI.
  */
 (function (w, d) {
   "use strict";
-  if (w.DansLeCoin && w.DansLeCoin.version) return;
+  if ((w.TrucsAFaire && w.TrucsAFaire.version) || (w.DansLeCoin && w.DansLeCoin.version)) return;
 
   var VERSION = "1.0.0";
   var API_INJECTEE = "__DLC_API__"; // remplacé par l'adresse du serveur quand le fichier est servi par /v1/dlc.js
   var SITE = "https://batiazur-hub.github.io/sorties-bourbonnais-loire/";
-  var LICENCE = "Données agrégées par Dans le coin (Saryn Digital) depuis DATAtourisme (Licence Ouverte), OpenAgenda, open data des collectivités et OpenStreetMap (ODbL, horaires). Citer « Dans le coin » et la source de chaque fiche.";
+  var LICENCE = "Données agrégées par Trucs à faire (Saryn Digital) depuis DATAtourisme (Licence Ouverte), OpenAgenda, open data des collectivités et OpenStreetMap (ODbL, horaires). Citer « Trucs à faire » et la source de chaque fiche.";
   var TYPES_SORTIES = ["brocante", "fete", "spectacle", "culture", "famille", "sport", "pal"];
   var TYPES_LIEUX = ["office", "musee", "patrimoine", "nature", "loisirs"];
   var NOMS = { brocante: "Brocante", fete: "Fête, marché", spectacle: "Concert, spectacle", culture: "Expo, visite", famille: "En famille",
@@ -46,7 +46,7 @@
 
   /* ---------- Erreurs ---------- */
   function Erreur(code, statut, message, details) {
-    var e = new Error(message || code); e.name = "DansLeCoinErreur"; e.code = code; e.statut = statut || 0; e.details = details || null;
+    var e = new Error(message || code); e.name = "TrucsAFaireErreur"; e.code = code; e.statut = statut || 0; e.details = details || null;
     Object.setPrototypeOf(e, Erreur.prototype); return e;
   }
   Erreur.prototype = Object.create(Error.prototype); Erreur.prototype.constructor = Erreur;
@@ -105,7 +105,7 @@
     return base + chemin + (q.length ? "?" + q.join("&") : "");
   }
   function distant(chemin, p) {
-    if (!cfg.cle) return Promise.reject(Erreur("cle_manquante", 0, "Aucune clé API : ajoutez ?key=VOTRE_CLE à l'adresse du script ou appelez DansLeCoin.configurer({ cle: '…' })."));
+    if (!cfg.cle) return Promise.reject(Erreur("cle_manquante", 0, "Aucune clé API : ajoutez ?key=VOTRE_CLE à l'adresse du script ou appelez TrucsAFaire.configurer({ cle: '…' })."));
     return fetch(urlRequete(chemin, p)).then(function (r) {
       return r.json().catch(function () { return {}; }).then(function (j) {
         if (!r.ok) throw Erreur(j.erreur || "http_" + r.status, r.status, j.message || ("Erreur " + r.status), j);
@@ -187,7 +187,7 @@
   function css() {
     if (cssPose) return; cssPose = true;
     var s = el("style"); s.setAttribute("data-dlc-css", VERSION);
-    s.textContent = ".dlc{--dlc-c:#f07d00;font:15px/1.45 system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;color:inherit}" +
+    s.textContent = ".dlc{--dlc-c:#2546d8;font:15px/1.45 system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;color:inherit}" +
       ".dlc-grille{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr))}" +
       ".dlc-liste .dlc-grille{grid-template-columns:minmax(0,1fr);gap:0}" +
       ".dlc-f{display:flex;flex-direction:column;border:1px solid rgba(128,128,128,.25);border-radius:14px;overflow:hidden;text-decoration:none;color:inherit;background:transparent;min-width:0}" +
@@ -213,7 +213,7 @@
   }
   function pied(box) {
     var p = el("p", "dlc-pied"); p.append("Agenda fourni par ");
-    var a = el("a", null, "Dans le coin"); a.href = SITE; a.target = "_blank"; a.rel = "noopener"; p.append(a, " · sources : DATAtourisme, OpenAgenda, OpenStreetMap");
+    var a = el("a", null, "Trucs à faire"); a.href = SITE; a.target = "_blank"; a.rel = "noopener"; p.append(a, " · sources : DATAtourisme, OpenAgenda, OpenStreetMap");
     box.append(p);
   }
   function fiche(x, o) {
@@ -281,7 +281,7 @@
     var c = this.options.autour || this.options.centre;
     this.pret = maplibre().then(function (ml) {
       self.map = new ml.Map({ container: m, style: self.options.fond === "satellite" ? stylePhoto() : STYLE_PLAN, center: c ? [c.lon, c.lat] : [2.6, 46.6], zoom: c ? self.options.zoom : 5,
-        attributionControl: { compact: true, customAttribution: "Plan IGN © IGN · Dans le coin" }, cooperativeGestures: !!self.options.gestesCooperatifs });
+        attributionControl: { compact: true, customAttribution: "Plan IGN © IGN · Trucs à faire" }, cooperativeGestures: !!self.options.gestesCooperatifs });
       self.map.addControl(new ml.NavigationControl({ showCompass: false }), "top-right");
       if (self.options.choixFond !== false) self._fonds();
       return new Promise(function (ok) { self.map.once("load", ok); });
@@ -341,14 +341,15 @@
     types: { sorties: TYPES_SORTIES.slice(), lieux: TYPES_LIEUX.slice(), noms: NOMS },
     Liste: Liste, Carte: Carte, Erreur: Erreur, licence: LICENCE
   };
-  w.DansLeCoin = DLC;
+  w.TrucsAFaire = DLC;
+  w.DansLeCoin = DLC; // ancien nom, conservé pour les sites qui l'utilisent déjà
 
-  /* Prêt : rappel « callback » (comme Google Maps), promesse DansLeCoin.pret et événement « dansLeCoin:pret » */
+  /* Prêt : rappel « callback » (comme Google Maps), promesse TrucsAFaire.pret et événement « trucsAFaire:pret » */
   DLC.pret = Promise.resolve(DLC);
   var cb = sp.callback || ds.callback;
   function lancer() {
     if (cb && typeof w[cb] === "function") { try { w[cb](DLC); } catch (e) { setTimeout(function () { throw e; }); } }
-    try { d.dispatchEvent(new CustomEvent("dansLeCoin:pret", { detail: DLC })); } catch (e) {}
+    try { d.dispatchEvent(new CustomEvent("trucsAFaire:pret", { detail: DLC })); d.dispatchEvent(new CustomEvent("dansLeCoin:pret", { detail: DLC })); } catch (e) {}
     /* Widgets déclaratifs : <div data-dlc="liste" data-types="brocante" data-limite="6"></div> */
     d.querySelectorAll("div[data-dlc]:not([data-dlc-ok]),section[data-dlc]:not([data-dlc-ok])").forEach(function (n) {
       n.setAttribute("data-dlc-ok", ""); var a = n.dataset, o = {};

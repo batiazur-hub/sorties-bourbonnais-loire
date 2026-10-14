@@ -50,7 +50,7 @@ test("sorties d'un département, format et licence", async () => {
   const r = await appel(e, "/v1/sorties?dep=03&limite=5", { headers: { "X-API-Key": k } });
   assert.equal(r.statut, 200); assert.ok(r.j.total > 0); assert.ok(r.j.resultats.length <= 5);
   for (const s of r.j.resultats) { assert.ok(s.id && s.titre && s.debut && s.commune); assert.equal(s.departement, "03"); }
-  assert.match(r.j.licence, /Dans le coin/);
+  assert.match(r.j.licence, /Trucs à faire/);
 });
 
 test("position sans département : départements déduits, résultats triés par distance dans le rayon", async () => {

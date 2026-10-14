@@ -43,14 +43,16 @@ def page(fichier, titre, intro, corps):
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>{titre} · Dans le coin</title>
+<title>{titre} · Trucs à faire</title>
 <meta name="description" content="{html.escape(intro)}">
-<link rel="stylesheet" href="fonts/figtree.css">
+<link rel="icon" href="marque/icone-favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="marque/apple-touch-icon-180.png">
+<link rel="stylesheet" href="fonts/trucs.css">
 <link rel="stylesheet" href="pages.css">{TETE.get(fichier, "")}
 </head>
 <body>
 <a class="skip" href="#contenu">Aller au contenu</a>
-<header class="top"><a class="brand" href="index.html"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M12 2.5c-4 0-7.3 3.2-7.3 7.2 0 5.3 6.4 11.4 6.7 11.7.3.3.9.3 1.2 0 .3-.3 6.7-6.4 6.7-11.7 0-4-3.3-7.2-7.3-7.2zm0 9.9a2.7 2.7 0 1 1 0-5.4 2.7 2.7 0 0 1 0 5.4z"/></svg>Dans le coin</a>
+<header class="top"><a class="brand" href="index.html" aria-label="Trucs à faire, accueil"><svg viewBox="0 0 64 64" width="32" height="32" aria-hidden="true"><path d="M32 0C52.5 0 64 4.6 64 32S52.5 64 32 64 0 59.4 0 32 11.5 0 32 0Z" fill="#2546D8"/><path d="M29.5 13.5V38c0 7.5 4.2 12 11.6 12h2.4" fill="none" stroke="#fff" stroke-width="6.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M17.5 27.6 24.6 34C31.5 26.9 38 22.2 46.4 18.6" fill="none" stroke="#fff" stroke-width="6.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="48.6" cy="46.4" r="4.3" fill="#FF8A3D"/></svg><span class="mk">trucs à faire</span></a>
 <a class="back" href="index.html">Retour aux sorties</a></header>
 <main id="contenu">
 <h1>{titre}</h1>
@@ -99,7 +101,7 @@ P["mentions-legales.html"] = ("Mentions légales", "Qui publie ce site, qui l’
 <p>GitHub, Inc. (service GitHub Pages), 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, États-Unis. <a href="https://github.com/contact">github.com/contact</a></p>
 
 <h2 id="sources">Origine des informations</h2>
-<p>Dans le coin rassemble des agendas publiés en données ouvertes par des collectivités, des offices de tourisme et des organisateurs. Les fiches sont reprises automatiquement chaque nuit, avec un lien vers la source. Chaque donnée reste soumise à la licence de son producteur.</p>
+<p>Trucs à faire rassemble des agendas publiés en données ouvertes par des collectivités, des offices de tourisme et des organisateurs. Les fiches sont reprises automatiquement chaque nuit, avec un lien vers la source. Chaque donnée reste soumise à la licence de son producteur.</p>
 <div class="tbl"><table>
 <thead><tr><th scope="col">Jeu de données</th><th scope="col">Producteur</th><th scope="col">Licence</th></tr></thead>
 <tbody>
@@ -120,12 +122,12 @@ P["mentions-legales.html"] = ("Mentions légales", "Qui publie ce site, qui l’
 <p>Un organisateur, un auteur ou un ayant droit peut demander la correction ou le retrait d’une fiche, d’une affiche ou d’une photo en écrivant à {mail()}. La demande est traitée dans les meilleurs délais.</p>
 
 <h2>Propriété du site</h2>
-<p>La mise en page, le code et le nom « Dans le coin » appartiennent à l’éditeur. Les données reprises appartiennent à leurs producteurs respectifs.</p>
+<p>La mise en page, le code et le nom « Trucs à faire », son logo et sa charte graphique appartiennent à l’éditeur. Les données reprises appartiennent à leurs producteurs respectifs.</p>
 """)
 
 P["cgu.html"] = ("Conditions générales d’utilisation", "Les règles d’utilisation du site et des contributions.", f"""
 <h2>1. Objet</h2>
-<p>Dans le coin est un agenda gratuit des sorties en France : fêtes, marchés, brocantes, spectacles, expositions, activités en famille et événements sportifs. Ces conditions encadrent l’utilisation du site, y compris lorsqu’il est intégré dans un autre site, une borne ou une application. En utilisant le site, vous les acceptez.</p>
+<p>Trucs à faire est un agenda gratuit des sorties en France : fêtes, marchés, brocantes, spectacles, expositions, activités en famille et événements sportifs. Ces conditions encadrent l’utilisation du site, y compris lorsqu’il est intégré dans un autre site, une borne ou une application. En utilisant le site, vous les acceptez.</p>
 
 <h2>2. Accès</h2>
 <p>Le site est accessible gratuitement et sans inscription. L’éditeur peut l’interrompre pour maintenance ou le faire évoluer à tout moment, sans que cela ouvre droit à indemnité.</p>
@@ -201,7 +203,7 @@ P["confidentialite.html"] = ("Politique de confidentialité", "Ce que le site en
 
 P["intelligence-artificielle.html"] = ("Intelligence artificielle", "Transparence sur l’usage de l’intelligence artificielle, conformément au règlement européen sur l’IA (AI Act).", """
 <h2>Le site n’utilise pas d’IA pour vous répondre</h2>
-<p>Dans le coin ne comporte ni assistant conversationnel, ni recommandation personnalisée, ni reconnaissance d’images ou de visages. Aucune décision vous concernant n’est prise par un système d’intelligence artificielle.</p>
+<p>Trucs à faire ne comporte ni assistant conversationnel, ni recommandation personnalisée, ni reconnaissance d’images ou de visages. Aucune décision vous concernant n’est prise par un système d’intelligence artificielle.</p>
 
 <h2>Comment les sorties sont triées</h2>
 <ul>
@@ -264,7 +266,7 @@ P["plan-du-site.html"] = ("Plan du site", "Toutes les pages et tous les départe
 <ul class="cols">{deps_li}</ul>
 """)
 
-P["integrer.html"] = ("Intégrer l’agenda", "Ajoutez « Dans le coin » à votre site, votre application ou une borne tactile, aux couleurs de votre charte.", """
+P["integrer.html"] = ("Intégrer l’agenda", "Ajoutez « Trucs à faire » à votre site, votre application ou une borne tactile, aux couleurs de votre charte.", """
 <p>L’agenda s’intègre gratuitement. Choisissez vos réglages : le code à copier et l’aperçu se mettent à jour.</p>
 <form class="gen" id="gen" onsubmit="return false">
 <div class="row"><label for="g-dep">Départements (codes séparés par des virgules)</label><input id="g-dep" value="03,58,71" inputmode="text" autocomplete="off"></div>
@@ -311,13 +313,13 @@ P["integrer.html"] = ("Intégrer l’agenda", "Ajoutez « Dans le coin » à vot
 """)
 
 TETE["api.html"] = '\n<script src="config.js"></script>\n<script src="dlc.js"></script>'
-P["api.html"] = ("API Dans le coin", "Ajoutez les sorties et les lieux à visiter de toute la France à votre site ou à votre application : une ligne de script et votre clé, comme pour Google Maps.",
+P["api.html"] = ("API Trucs à faire", "Ajoutez les sorties et les lieux à visiter de toute la France à votre site ou à votre application : une ligne de script et votre clé, comme pour Google Maps.",
                  open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "api_page.html"), encoding="utf-8").read())
 
 TETE["cles.html"] = '\n<meta name="robots" content="noindex, nofollow">\n<link rel="stylesheet" href="vendor/maplibre-gl-4.7.1/maplibre-gl.css">\n<script src="vendor/maplibre-gl-4.7.1/maplibre-gl.js"></script>\n<script src="config.js"></script>'
 P["cles.html"] = ("Générateur de clés API", "Espace éditeur : choisissez la zone et les critères, vérifiez ce que la clé récupérera, puis générez-la.", """
 <form class="gen" id="cx" autocomplete="on">
-<div class="row"><label for="cx-url">Adresse du serveur</label><input id="cx-url" type="url" placeholder="https://dans-le-coin.compte.workers.dev"></div>
+<div class="row"><label for="cx-url">Adresse du serveur</label><input id="cx-url" type="url" placeholder="https://trucs-a-faire.compte.workers.dev"></div>
 <div class="row"><label for="cx-tok">Code éditeur</label><input id="cx-tok" type="password" autocomplete="current-password"></div>
 <p><button class="btn" type="submit">Se connecter</button> <span id="cx-msg" role="status">L’aperçu ci-dessous marche sans connexion ; la connexion sert à créer et gérer les clés.</span></p>
 </form>

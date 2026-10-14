@@ -1,4 +1,4 @@
-/* Dans le coin : serveur des propositions (Cloudflare Worker + KV).
+/* Trucs à faire : serveur des propositions (Cloudflare Worker + KV).
    Public :  POST /propose   { type: "propositions" | "sources", ... }   → mise en attente
              GET  /agenda                                             → sorties validées
    Éditeur : en-tête Authorization: Bearer <ADMIN_TOKEN>
@@ -21,7 +21,7 @@ const DATA_DEFAUT = "https://batiazur-hub.github.io/sorties-bourbonnais-loire/da
 const TYPES_SORTIES = ["brocante", "fete", "spectacle", "culture", "famille", "sport", "pal"];
 const TYPES_LIEUX = ["office", "musee", "patrimoine", "nature", "loisirs"];
 const MAX_DEPS = 8;
-const LICENCE = "Données agrégées par Dans le coin (Saryn Digital) depuis DATAtourisme (Licence Ouverte), OpenAgenda, open data des collectivités et OpenStreetMap (ODbL, horaires). Citer « Dans le coin » et la source de chaque fiche. Détail : /mentions-legales.html";
+const LICENCE = "Données agrégées par Trucs à faire (Saryn Digital) depuis DATAtourisme (Licence Ouverte), OpenAgenda, open data des collectivités et OpenStreetMap (ODbL, horaires). Citer « Trucs à faire » et la source de chaque fiche. Détail : /mentions-legales.html";
 
 const MAX_PAR_HEURE = 20;
 const MOTS = /(encul|connard|connass|salop|pute\b|putain|merde|fdp|ntm|nique|batard|bâtard|pd\b|tafiole|negro|bougnoul|youpin)/i;
@@ -126,7 +126,7 @@ async function donnees(env, chemin) {
 async function bibliotheque(env, url) {
   const site = env.SITE_URL || (env.DATA_URL || DATA_DEFAUT).replace(/data\/?$/, "");
   const r = await fetch(site + "dlc.js", { cf: { cacheTtl: 3600, cacheEverything: true } });
-  if (!r.ok) return new Response("/* Dans le coin : bibliothèque indisponible */", { status: 503, headers: { "Content-Type": "application/javascript; charset=utf-8" } });
+  if (!r.ok) return new Response("/* Trucs à faire : bibliothèque indisponible */", { status: 503, headers: { "Content-Type": "application/javascript; charset=utf-8" } });
   const js = (await r.text()).split("__DLC_API__").join(url.origin);
   return new Response(js, { headers: { "Content-Type": "application/javascript; charset=utf-8", "Cache-Control": "public, max-age=3600", "Access-Control-Allow-Origin": "*" } });
 }

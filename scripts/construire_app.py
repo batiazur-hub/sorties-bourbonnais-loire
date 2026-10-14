@@ -1,4 +1,4 @@
-"""Assemble l'application « Dans le coin » (index.html) à partir de ses sources.
+"""Assemble l'application « Trucs à faire » (index.html) à partir de ses sources.
 
   src/app.html                    gabarit de l'application (HTML, CSS, JavaScript)
   src/departements-contours.json  contours simplifiés des départements (carte de secours)
@@ -19,9 +19,7 @@ MAPLIBRE = "vendor/maplibre-gl-4.7.1/"
 MAPLIBRE_CDN = "https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"
 DESC = ("Brocantes, fêtes, marchés, concerts, expos et lieux à visiter près de chez vous : "
         "agenda des sorties partout en France, sur carte et calendrier, mis à jour chaque nuit.")
-ICONE = ("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23f07d00' "
-         "d='M12 2.5c-4 0-7.3 3.2-7.3 7.2 0 5.3 6.4 11.4 6.7 11.7.3.3.9.3 1.2 0 .3-.3 6.7-6.4 6.7-11.7 0-4-3.3-7.2-7.3-7.2zm0 "
-         "9.9a2.7 2.7 0 1 1 0-5.4 2.7 2.7 0 0 1 0 5.4z'/%3E%3C/svg%3E")
+
 
 
 def lire(chemin):
@@ -46,20 +44,26 @@ def site():
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Dans le coin · Que faire autour de chez vous ?</title>
+<title>Trucs à faire · Les sorties près de chez vous</title>
 <meta name="description" content="{DESC}">
 <link rel="canonical" href="{SITE}">
-<link rel="icon" href="{ICONE}">
+<link rel="icon" href="marque/icone-favicon.svg" type="image/svg+xml">
+<link rel="icon" href="marque/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="marque/apple-touch-icon-180.png">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Dans le coin">
+<meta property="og:title" content="Trucs à faire">
+<meta property="og:image" content="{SITE}marque/partage-1200x630.png">
+<meta property="og:site_name" content="Trucs à faire">
+<meta name="twitter:card" content="summary_large_image">
 <meta property="og:description" content="{DESC}">
 <meta property="og:url" content="{SITE}">
-<meta name="theme-color" content="#ffffff">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0e1226" media="(prefers-color-scheme: dark)">
 <script src="config.js"></script>
 </head>
 <body>
 """
-    return tete + corps(MAPLIBRE + "maplibre-gl.js").replace("<title>Dans le coin</title>\n", "", 1) + "\n</body>\n</html>\n"
+    return tete + corps(MAPLIBRE + "maplibre-gl.js").replace("<title>Trucs à faire</title>\n", "", 1) + "\n</body>\n</html>\n"
 
 
 def main():

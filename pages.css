@@ -1,9 +1,9 @@
-:root{--bg:#fff;--ink:#151515;--muted:#5f5f5a;--line:#e6e6e1;--soft:#f4f4f1;--accent:#f07d00;--todo:#fff1c2;color-scheme:light}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121212;--ink:#f1f1ee;--muted:#b0b0aa;--line:#2e2e2b;--soft:#1e1e1d;--todo:#5a4600;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#121212;--ink:#f1f1ee;--muted:#b0b0aa;--line:#2e2e2b;--soft:#1e1e1d;--todo:#5a4600;color-scheme:dark}
+:root{--bg:#fff;--ink:#141a33;--muted:#4d5470;--line:#dce0ec;--soft:#f1f3f8;--accent:#2546d8;--accent-tint:#e8edff;--confetti:#ff8a3d;--confetti-ink:#b34a0b;--todo:#fff1c2;--display:"Outfit","Avenir Next","Segoe UI",system-ui,sans-serif;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1226;--ink:#eef0f8;--muted:#a9aecb;--line:#2a3052;--soft:#171c36;--accent:#6c86f5;--accent-tint:#1c2550;--confetti-ink:#ffa366;--todo:#5a4600;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e1226;--ink:#eef0f8;--muted:#a9aecb;--line:#2a3052;--soft:#171c36;--accent:#6c86f5;--accent-tint:#1c2550;--confetti-ink:#ffa366;--todo:#5a4600;color-scheme:dark}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.65 "Figtree","Segoe UI",Roboto,Arial,sans-serif}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.65 "DM Sans","Segoe UI",system-ui,sans-serif}
 a{color:inherit;text-decoration-thickness:1px;text-underline-offset:3px}
 a:hover{text-decoration-thickness:2px}
 :focus-visible{outline:2px solid var(--ink);outline-offset:2px;border-radius:4px}
@@ -11,7 +11,7 @@ a:hover{text-decoration-thickness:2px}
 .skip:focus{left:12px}
 .top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;max-width:1200px;margin:0 auto;padding:14px max(16px,env(safe-area-inset-left))}
 .brand{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:1.2rem;letter-spacing:-.02em;text-decoration:none;min-height:44px}
-.brand svg{color:var(--accent)}
+.brand svg{flex:none}.brand .mk{font:700 1.3rem/1 var(--display);letter-spacing:-.03em}
 .back{display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border:1px solid var(--line);border-radius:999px;text-decoration:none;font-weight:600;font-size:.95rem}
 .back:hover{background:var(--soft)}
 main{max-width:72ch;margin:0 auto;padding:clamp(16px,4vw,40px) 16px 48px}
@@ -135,3 +135,13 @@ main:has(.api){max-width:1240px}
   .demo-map{height:360px}
 }
 @media (max-width:560px){.api table.ref td:first-child{white-space:normal}.kv2{grid-template-columns:minmax(0,1fr);gap:2px}.kv2 .verb{justify-self:start;margin-top:8px}}
+
+/* ---------- Charte Trucs à faire ---------- */
+h1,h2,h3,.api-card b{font-family:var(--display);letter-spacing:-.02em}
+h1{font-weight:700;letter-spacing:-.03em}
+h2,h3{font-weight:700}
+a{text-decoration-color:color-mix(in srgb,var(--accent) 45%,transparent)}
+main :is(p,li,td,dd,figcaption) a:not(.btn){color:var(--accent)}
+.btn{background:var(--accent);color:var(--bg)}
+.api .btn-2{background:transparent;color:var(--ink)}
+.kicker,.maj{color:var(--muted)}

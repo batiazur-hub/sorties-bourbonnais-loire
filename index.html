@@ -1960,6 +1960,7 @@ function openCompte(raison,e){
     '<p class="sbl-err" id="ac-err" role="alert"></p>'+
     '<div class="sbl-btns"><button class="sbl-btn go" type="submit" id="ac-go">'+(login?"Recevoir mon lien de connexion":"Créer mon compte gratuit")+'</button></div>'+
     (login?'':'<p class="sbl-acm">En créant un compte, vous acceptez les <a href="cgu.html" target="_blank" rel="noopener">conditions d’utilisation</a>. Vos données servent uniquement à votre compte, ne sont jamais revendues et peuvent être supprimées en un clic : <a href="confidentialite.html" target="_blank" rel="noopener">confidentialité</a>.</p>')+
+    (login?'':'<p class="sbl-acm alt"><a href="offres.html">Voir toutes les offres</a> · organisateurs, professionnels</p>')+
     '<p class="sbl-acm alt"><button type="button" class="lnk" id="ac-sw">'+(login?"Pas encore de compte ? En créer un":"Déjà un compte ? Se connecter")+'</button></p></form>');
   $("ac-h").textContent=R[0]+(raison==="alerte"&&e?" sorties « "+CATS[e.cat][1].toLowerCase()+" »":"");$("ac-p").textContent=R[1];
   $("ac-sw").onclick=()=>openCompte(login?"def":"login",e);
@@ -2020,13 +2021,15 @@ function monCompte(bienvenue){
     try{await accCall("/compte/supprimer",{});ACC.tok=null;ACC.c=null;accSave();accUI();M.close();toast("Votre compte a été supprimé.")}catch(_){toast("La suppression a échoué. Réessayez.")}};
 }
 
+/* Les boutons d'incitation mènent à la page des offres (cartes Trucophile, Faiseur de trucs, Truc Pro, Truc & Co) */
+function versOffres(){location.href="offres.html"}
 /* Incitations : discrètes, jamais plus d'une à la fois, et on respecte le « non merci » */
 function nudgeOk(){return accOn()&&!ACC.c&&+(lsGet("sbl-nudge")||0)<Date.now()}
 function nudgeStop(jours){lsSet("sbl-nudge",String(Date.now()+864e5*jours))}
 function ctaCard(raison,titre,texte,bouton){const d=document.createElement("div");d.className="sbl-accta";
   d.innerHTML='<span class="ic">'+icon(raison==="semaine"?"bell":"heart",22)+'</span><div class="tx"><b></b><span></span></div><button type="button" class="sbl-btn go"></button><button type="button" class="x" aria-label="Ne plus proposer">✕</button>';
   d.querySelector("b").textContent=titre;d.querySelector(".tx span").textContent=texte;d.querySelector(".go").textContent=bouton;
-  d.querySelector(".go").onclick=()=>openCompte(raison);d.querySelector(".x").onclick=()=>{nudgeStop(14);document.querySelectorAll(".sbl-accta").forEach(x=>x.remove())};return d}
+  d.querySelector(".go").onclick=versOffres;d.querySelector(".x").onclick=()=>{nudgeStop(14);document.querySelectorAll(".sbl-accta").forEach(x=>x.remove())};return d}
 function pourVous(pv){pv.textContent="";if(!accOn())return;
   if(ACC.c&&ACC.c.prefs&&ACC.c.prefs.commune){const p=ACC.c.prefs,t=today(),fin=add(t,10);
     const it=EVENTS.filter(e=>!e.long&&e.S>=t&&e.S<=fin&&e.lat&&kmd(p.commune.lat,p.commune.lon,e.lat,e.lon)<=p.rayon&&(!p.cats.length||p.cats.includes(e.cat))).slice(0,12);
@@ -2038,10 +2041,10 @@ let FICHES=0;
 function banniere(){if(!nudgeOk()||$("sbl-ban")||$("sbl-veil"))return;
   const d=document.createElement("div");d.id="sbl-ban";d.className="sbl-ban";d.setAttribute("role","complementary");d.setAttribute("aria-label","Créer un compte");
   d.innerHTML='<span class="ic">'+icon("bell",20)+'</span><p><b>Ne ratez plus rien près de chez vous.</b> <span>Favoris, alertes et sélection de la semaine : c’est gratuit.</span></p><button type="button" class="sbl-btn go">Créer mon compte</button><button type="button" class="x" aria-label="Non merci">✕</button>';
-  d.querySelector(".go").onclick=()=>{d.remove();openCompte("semaine")};d.querySelector(".x").onclick=()=>{nudgeStop(7);d.remove();document.querySelectorAll(".sbl-accta").forEach(x=>x.remove())};ROOT.append(d);requestAnimationFrame(()=>d.classList.add("on"))}
+  d.querySelector(".go").onclick=()=>{d.remove();versOffres()};d.querySelector(".x").onclick=()=>{nudgeStop(7);d.remove();document.querySelectorAll(".sbl-accta").forEach(x=>x.remove())};ROOT.append(d);requestAnimationFrame(()=>d.classList.add("on"))}
 function accInit(H){
   ACC.apercu=APERCU_COMPTES||H.has("comptes")||lsGet("sbl-apercu-comptes")==="1";if(H.has("comptes"))lsSet("sbl-apercu-comptes","1");
-  const b=$("sbl-acc");if(b)b.onclick=()=>ACC.c?monCompte():openCompte("def");
+  const b=$("sbl-acc");if(b)b.onclick=()=>ACC.c?monCompte():versOffres();
   accUI();
   if(ACC.tok&&API)accCall("/compte").then(j=>{ACC.c=j.compte;FAV=[...new Set(FAV.concat(j.compte.fav||[]))];accSave();accUI();favBtns()}).catch(()=>{});
   const jt=H.get("connexion");if(jt){history.replaceState(null,"",location.pathname+location.search);connexion(jt)}
@@ -2070,7 +2073,7 @@ async function boot(){
   $("sbl-q").addEventListener("focus",()=>loadCommunes(),{once:true});
   $("sbl-prop").onclick=()=>proposeForm(st.day||"");$("sbl-home").onclick=e=>{e.preventDefault();goHome()};$("sbl-mod").onclick=()=>API?apiRefresh().then(modPanel,modPanel):modPanel();sourceForm();
   await initParticip();modBadge();
-  $("sbl-calacc").onclick=()=>openCompte("semaine");$("sbl-footacc").querySelector("[data-acc]").onclick=()=>openCompte("def");
+  $("sbl-calacc").onclick=versOffres;$("sbl-footacc").querySelector("[data-acc]").onclick=versOffres;
   accInit(H);if(accOn())setInterval(()=>{if(FICHES>=3)banniere()},4000);
   if(H.get("q")){setQ(H.get("q"));loadCommunes()}
   if(H.has("proposer"))proposeForm("");

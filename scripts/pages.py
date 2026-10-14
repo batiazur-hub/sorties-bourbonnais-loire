@@ -33,7 +33,7 @@ def mail():
 
 NAV = [("index.html", "Accueil"), ("plan-du-site.html", "Plan du site"), ("mentions-legales.html", "Mentions légales"),
        ("cgu.html", "Conditions d’utilisation"), ("confidentialite.html", "Confidentialité"),
-       ("intelligence-artificielle.html", "Intelligence artificielle"), ("accessibilite.html", "Accessibilité"), ("integrer.html", "Intégrer l’agenda"), ("api.html", "API")]
+       ("intelligence-artificielle.html", "Intelligence artificielle"), ("accessibilite.html", "Accessibilité"), ("integrer.html", "Intégrer l’agenda"), ("api.html", "API"), ("offres.html", "Offres")]
 
 TETE = {}
 def page(fichier, titre, intro, corps):
@@ -371,7 +371,6 @@ TETE["api.html"] = '\n<script src="config.js"></script>\n<script src="dlc.js"></
 P["api.html"] = ("API Trucs à faire", "Ajoutez les sorties et les lieux à visiter de toute la France à votre site ou à votre application : une ligne de script et votre clé, comme pour Google Maps.",
                  open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "api_page.html"), encoding="utf-8").read())
 
-TETE["offres.html"] = '\n<meta name="robots" content="noindex, nofollow">'  # maquette : non référencée tant que les comptes ne sont pas ouverts
 P["offres.html"] = ("Créer un compte", "Le site reste libre et gratuit. Un compte vous permet de garder vos sorties, de publier les vôtres ou d’intégrer l’agenda chez vous.",
                     open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "offres_page.html"), encoding="utf-8").read())
 
@@ -512,7 +511,7 @@ for f, (t, intro, corps) in P.items():
     with open(os.path.join(SORTIE, f), "w", encoding="utf-8") as h:
         h.write(page(f, t, intro, corps))
 
-urls = ["", "plan-du-site.html", "mentions-legales.html", "cgu.html", "confidentialite.html", "intelligence-artificielle.html", "accessibilite.html", "integrer.html", "api.html"]
+urls = ["", "offres.html", "plan-du-site.html", "mentions-legales.html", "cgu.html", "confidentialite.html", "intelligence-artificielle.html", "accessibilite.html", "integrer.html", "api.html"]
 jour = dt.date.today().isoformat()
 open(os.path.join(SORTIE, "sitemap.xml"), "w", encoding="utf-8").write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
     "".join(f"  <url><loc>{SITE}{u}</loc><lastmod>{jour}</lastmod><changefreq>{'daily' if not u else 'monthly'}</changefreq></url>\n" for u in urls) + "</urlset>\n")

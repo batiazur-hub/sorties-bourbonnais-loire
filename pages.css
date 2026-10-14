@@ -231,3 +231,10 @@ main:has(.offres)>.maj{display:none}
   .cmp thead th:first-child{width:132px;padding-left:12px;font-size:.72rem}
   .cmp thead th{width:85px}
 }
+/* Carte recommandée : dépasse en haut seulement (bas aligné avec les autres), lueur courte qui n'est jamais coupée */
+.carte.reco{transform:none;margin-top:-10px;box-shadow:0 12px 28px -14px color-mix(in srgb,var(--accent) 45%,transparent)}
+@media (max-width:1060px){.carte.reco{margin-top:0}}
+@media (max-width:640px){
+  .cartes{padding-bottom:30px;margin-bottom:-14px}
+  .carte.reco{box-shadow:0 8px 18px -10px color-mix(in srgb,var(--accent) 45%,transparent)}
+}

@@ -14,7 +14,7 @@
   "doublon": 1142,
   "sans commune ou hors zone": 118
  },
- "avec_horaires_osm": 6024,
+ "avec_horaires_osm": 6180,
  "avec_periodes": 0,
  "colonnes": [
   "Nom_du_POI",
@@ -1234,6 +1234,6 @@
    166
   ]
  ],
- "osm_en_cache": 15144,
- "osm_carreaux": "36/53"
+ "osm_en_cache": 16478,
+ "osm_carreaux": "50/53"
 }

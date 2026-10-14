@@ -1878,7 +1878,10 @@ function kioskQR(box,url,label){box.innerHTML='<div class="sbl-qr"><div class="q
 /* ---------- Comptes Trucophile : inscription, connexion par lien e-mail, favoris, préférences ----------
    Visible quand le serveur est relié (config.js → apiUrl), ou en aperçu avec l'adresse #comptes.
    Jamais en mode borne ni en mode intégré. Session : jeton dans le stockage local (strictement nécessaire, sans consentement). */
-const ACC={tok:null,c:null,apercu:false};
+/* Phase de développement : les comptes sont visibles même sans serveur (l'envoi affiche un message d'aperçu).
+   Passer APERCU_COMPTES à false avant l'ouverture au public si le serveur n'est pas encore relié. */
+const APERCU_COMPTES=true;
+const ACC={tok:null,c:null,apercu:APERCU_COMPTES};
 try{ACC.tok=localStorage.getItem("sbl-ses")||null;ACC.c=JSON.parse(localStorage.getItem("sbl-cpt")||"null")}catch(_){}
 if(!ACC.tok)ACC.c=null;
 let FAV=[];try{FAV=(JSON.parse(localStorage.getItem("sbl-fav")||"[]")||[]).filter(x=>typeof x==="string")}catch(_){}
@@ -1955,7 +1958,7 @@ function openCompte(raison,e){
         '<div class="sbl-btns"><button class="sbl-btn go" type="button" data-close>Compris</button></div>';
       M.el.querySelector(".sbl-acok b").textContent=email;M.el.querySelectorAll("[data-close]").forEach(b=>b.onclick=M.close);lsSet("sbl-nudge",String(Date.now()+864e5*30))}
     catch(x){go.disabled=false;go.textContent=login?"Recevoir mon lien de connexion":"Créer mon compte gratuit";const j=x.j||{};
-      err.textContent=j.erreur==="apercu"?"Aperçu : les comptes ouvriront dès que le serveur sera en ligne.":j.message||(j.erreur==="email_invalide"?"Vérifiez l’adresse e-mail.":"Impossible de joindre le serveur. Réessayez dans un instant.")}};
+      err.textContent=j.erreur==="apercu"?"Version de développement : le formulaire fonctionne, mais l’e-mail ne partira qu’une fois le serveur en ligne.":j.message||(j.erreur==="email_invalide"?"Vérifiez l’adresse e-mail.":"Impossible de joindre le serveur. Réessayez dans un instant.")}};
 }
 async function connexion(jeton){
   try{const j=await accCall("/compte/connexion",{jeton});ACC.tok=j.session;ACC.c=j.compte;
@@ -2015,7 +2018,7 @@ function banniere(){if(!nudgeOk()||$("sbl-ban")||$("sbl-veil"))return;
   d.innerHTML='<span class="ic">'+icon("bell",20)+'</span><p><b>Ne ratez plus rien près de chez vous.</b> <span>Favoris, alertes et sélection de la semaine : c’est gratuit.</span></p><button type="button" class="sbl-btn go">Créer mon compte</button><button type="button" class="x" aria-label="Non merci">✕</button>';
   d.querySelector(".go").onclick=()=>{d.remove();openCompte("semaine")};d.querySelector(".x").onclick=()=>{nudgeStop(7);d.remove();document.querySelectorAll(".sbl-accta").forEach(x=>x.remove())};ROOT.append(d);requestAnimationFrame(()=>d.classList.add("on"))}
 function accInit(H){
-  ACC.apercu=H.has("comptes")||lsGet("sbl-apercu-comptes")==="1";if(H.has("comptes"))lsSet("sbl-apercu-comptes","1");
+  ACC.apercu=APERCU_COMPTES||H.has("comptes")||lsGet("sbl-apercu-comptes")==="1";if(H.has("comptes"))lsSet("sbl-apercu-comptes","1");
   const b=$("sbl-acc");if(b)b.onclick=()=>ACC.c?monCompte():openCompte("def");
   accUI();
   if(ACC.tok&&API)accCall("/compte").then(j=>{ACC.c=j.compte;FAV=[...new Set(FAV.concat(j.compte.fav||[]))];accSave();accUI();favBtns()}).catch(()=>{});

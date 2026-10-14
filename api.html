@@ -248,6 +248,7 @@ for s in r.json()["resultats"]:
       "distance_km": 1.8,
       "gratuit": true,
       "lien": "https://…",
+      "billetterie": "https://…",
       "source": "DATAtourisme"
     }
   ],
@@ -289,7 +290,8 @@ for s in r.json()["resultats"]:
 <tr><td><code>commune</code>, <code>departement</code>, <code>lieu</code></td><td>texte</td><td>Où cela se passe.</td></tr>
 <tr><td><code>latitude</code>, <code>longitude</code>, <code>distance_km</code></td><td>nombre</td><td>Position, et distance au centre demandé.</td></tr>
 <tr><td><code>gratuit</code></td><td>booléen</td><td>Entrée gratuite.</td></tr>
-<tr><td><code>lien</code>, <code>image</code>, <code>source</code></td><td>texte</td><td>Page d’origine, image, producteur de la donnée.</td></tr>
+<tr><td><code>lien</code>, <code>image</code>, <code>source</code></td><td>texte</td><td>Site ou page de l’événement, image, producteur de la donnée.</td></tr>
+<tr><td><code>billetterie</code></td><td>texte</td><td>Page de billetterie ou de réservation quand il y a des places à acheter ou une inscription (vide sinon).</td></tr>
 </tbody></table></div>
 <h3>Lieu</h3>
 <div class="tbl"><table class="ref">

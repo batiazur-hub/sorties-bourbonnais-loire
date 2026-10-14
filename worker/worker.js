@@ -213,7 +213,7 @@ async function api(req, env, url, p, ctx) {
     E.sort((a, b) => (longue(a) - longue(b)) || (parDistance ? dist(a) - dist(b) : 0) || (deb(a) < deb(b) ? -1 : deb(a) > deb(b) ? 1 : (a.h || "99") < (b.h || "99") ? -1 : 1));
     const total = E.length; E = E.slice((page - 1) * limite, page * limite);
     return rep({ total, page, limite, du, au, resultats: E.map(e => ({ id: e.id, titre: e.t, type: e.cat, debut: e.s, fin: e.e || e.s, heure: e.h || "",
-      autres_dates: e.n || 0, commune: e.w, departement: e.z, lieu: e.lieu || "", description: e.d || "", lien: e.u || "", image: e.img || "",
+      autres_dates: e.n || 0, commune: e.w, departement: e.z, lieu: e.lieu || "", description: e.d || "", lien: e.u || "", billetterie: e.b || "", image: e.img || "",
       gratuit: !!e.g, latitude: e.lat, longitude: e.lon, distance_km: dist(e), source: e.src || "" })) });
   }
   return json({ erreur: "introuvable" }, 404, cors);
@@ -255,7 +255,7 @@ async function traiter(req, env, ctx) {
         await env.DLC.put("s:" + s.id, JSON.stringify(s)); return json({ ok: true }, 200, cors);
       }
       const x = { id: id(), t: texte(b.t, 90), cat: texte(b.cat, 20), s: texte(b.s, 10), e: texte(b.e, 10), h: texte(b.h, 5), w: texte(b.w, 80),
-                  z: texte(b.z, 3), lieu: texte(b.lieu, 90), d: texte(b.d, 400), u: texte(b.u, 300), img: texte(b.img, 400), org: texte(b.org, 60),
+                  z: texte(b.z, 3), lieu: texte(b.lieu, 90), d: texte(b.d, 400), u: texte(b.u, 300), b: texte(b.b, 300), img: texte(b.img, 400), org: texte(b.org, 60),
                   lat: +b.lat, lon: +b.lon, statut: "en_attente", envoye: ici };
       if (x.t.length < 4 || !/^\d{4}-\d{2}-\d{2}$/.test(x.s) || !x.w || !isFinite(x.lat) || !isFinite(x.lon)) return json({ erreur: "incomplet" }, 400, cors);
       await env.DLC.put("p:" + x.id, JSON.stringify(x), { expirationTtl: 60 * 60 * 24 * 120 });

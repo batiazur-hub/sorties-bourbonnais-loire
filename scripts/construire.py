@@ -8,7 +8,7 @@ Sorties :
   data/_stats.json          contrôle : répartition par type, classes rencontrées
 """
 import csv, io, json, os, re, unicodedata, urllib.parse, urllib.request, datetime as dt
-from qualite_donnees import assainir, zones
+from qualite_donnees import assainir, zones, ranger_liens, est_billetterie, lien_propre
 from collections import Counter, defaultdict
 
 AUJ = dt.date.today()
@@ -81,14 +81,9 @@ def periode_suivante(txt):
         return None
     return ps[0][0], ps[0][1], len(ps) - 1
 
-def premier_lien(contacts):
-    for x in re.split(r"[#|<>\s]+", contacts or ""):
-        x = x.strip()
-        if x.startswith("http"):
-            return x
-        if x.startswith("www."):
-            return "https://" + x
-    return ""
+def tous_liens(texte):
+    """Toutes les adresses web d'un champ libre (contacts DATAtourisme, inscription OpenAgenda…)."""
+    return [x.rstrip(".,;)]\"'") for x in re.findall(r"(?:https?://|www\.)[^\s#|<>\"']+", str(texte or ""))]
 
 def resume(d, n=300):
     d = re.sub(r"\s+", " ", d or "").strip()
@@ -156,6 +151,12 @@ def paris():
         if autres: ev["n"] = autres
         if r.get("cover_url"): ev["img"] = r["cover_url"]
         if (r.get("price_type") or "").startswith("gratuit"): ev["g"] = 1
+        acces = lien_propre(r.get("access_link"))  # lien de l'organisateur : réservation ou site
+        if acces:
+            if est_billetterie(acces) or re.search(r"r[ée]serv|billet|inscri", norm((r.get("access_type") or "") + " " + (r.get("access_link_text") or ""))):
+                ev["b"] = acces
+            else:
+                ev["u"] = acces
         out.append(ev)
     print("Que faire à Paris :", len(out), "sorties")
     return out
@@ -164,7 +165,7 @@ def paris():
 # --- OpenAgenda : événements publics de France (mairies, médiathèques, associations) ---
 OA = ("https://public.opendatasoft.com/api/explore/v2.1/catalog/datasets/evenements-publics-openagenda/exports/json?"
       + urllib.parse.urlencode({"select": "uid,title_fr,description_fr,conditions_fr,keywords_fr,image,thumbnail,timings,firstdate_begin,lastdate_end,"
-                                          "location_coordinates,location_name,location_postalcode,location_city,canonicalurl,originagenda_title,status",
+                                          "location_coordinates,location_name,location_postalcode,location_city,canonicalurl,originagenda_title,status,registration",
                                 "where": "lastdate_end >= now() and location_countrycode = 'FR'"}))
 # Agendas qui ne sont pas des sorties (emploi, recrutement, formations)
 AGENDAS_EXCLUS = re.compile(r"france\W*travail|pole\W*emploi|semaine de l.industrie|job ?dating|recrutement|mission\W*locale|apec\b", re.I)
@@ -172,8 +173,12 @@ TITRES_EXCLUS = re.compile(r"\bjob ?dating\b|\brecrute(nt)?\b|\bentretien d.emba
 def openagenda():
     try:
         rows = json.loads(get(OA))
-    except Exception as e:
-        print("OpenAgenda indisponible :", e); return []
+    except Exception as e:  # le champ « registration » absent du jeu de données ne doit pas priver de toute la source
+        print("OpenAgenda avec inscriptions indisponible :", e, "→ sans inscriptions")
+        try:
+            rows = json.loads(get(OA.replace("%2Cregistration", "")))
+        except Exception as e:
+            print("OpenAgenda indisponible :", e); return []
     out = []
     for r in rows:
         st = r.get("status") or ""
@@ -227,6 +232,8 @@ def openagenda():
             img = img.get("url") or img.get("filename")
         if isinstance(img, str) and img.startswith("http"): ev["img"] = img
         if "gratuit" in norm(r.get("conditions_fr") or ""): ev["g"] = 1
+        site, billet = ranger_liens(tous_liens(r.get("registration")))
+        if billet or site: ev["b"] = billet or site  # lien d'inscription ou de réservation donné par l'organisateur
         out.append(ev)
     print("OpenAgenda :", len(out), "sorties")
     return out
@@ -639,8 +646,10 @@ def main():
         stats[cat] += 1
         ev = {"id": "dt-" + r["URI_ID_du_POI"].rsplit("/", 1)[-1], "t": titre, "cat": cat, "z": dep,
               "w": commune, "lieu": ((r.get("Adresse_postale") or "").strip() or commune) + (f" ({arr.group(2)}e)" if arr else ""),
-              "s": a.isoformat(), "d": resume(r.get("Description")), "u": premier_lien(r.get("Contacts_du_POI")),
+              "s": a.isoformat(), "d": resume(r.get("Description")), "u": "",
               "src": (r.get("Createur_de_la_donnee") or "DATAtourisme").strip(), "lat": lat, "lon": lon, "o": "dt"}
+        ev["u"], billet = ranger_liens(tous_liens(r.get("Contacts_du_POI")))
+        if billet: ev["b"] = billet
         if b != a:
             ev["e"] = b.isoformat()
         if autres:

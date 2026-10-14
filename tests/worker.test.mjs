@@ -127,3 +127,13 @@ test("erreur interne : réponse JSON 500 avec CORS, jamais de page HTML", async 
   const r = await appel(e, "/v1/sorties?dep=03&key=dlc_x");
   assert.equal(r.statut, 500); assert.equal(r.j.erreur, "erreur_serveur"); assert.ok(r.h.get("Access-Control-Allow-Origin"));
 });
+
+test("sortie proposée avec billetterie : champ « billetterie » dans l'API", async () => {
+  const e = env(), k = await cle(e, {});
+  const ev = { t: "Concert de test", cat: "spectacle", s: "2099-06-01", w: "Moulins", z: "03", lat: 46.56, lon: 3.33, b: "https://www.billetweb.fr/test" };
+  await appel(e, "/propose", { headers: { "Content-Type": "application/json" }, body: ev });
+  const att = (await appel(e, "/admin/list", { headers: admin })).j.propositions;
+  assert.equal(att[0].b, "https://www.billetweb.fr/test");
+  const r = await appel(e, "/v1/sorties?dep=03&limite=3&key=" + k);
+  assert.ok(r.j.resultats.every(s => "billetterie" in s));
+});

@@ -157,7 +157,7 @@
         L.sort(function (a, b) { return (longue(a) - longue(b)) || (p.tri === "distance" ? dist(a) - dist(b) : 0) || (deb(a) < deb(b) ? -1 : deb(a) > deb(b) ? 1 : (a.h || "99") < (b.h || "99") ? -1 : 1); });
         var n = L.length; L = L.slice((page - 1) * limite, page * limite);
         return rep({ total: n, page: page, limite: limite, du: du, au: au, resultats: L.map(function (e) { return { id: e.id, titre: e.t, type: e.cat, debut: e.s, fin: e.e || e.s, heure: e.h || "",
-          autres_dates: e.n || 0, commune: e.w, departement: e.z, lieu: e.lieu || "", description: e.d || "", lien: e.u || "", image: e.img || "",
+          autres_dates: e.n || 0, commune: e.w, departement: e.z, lieu: e.lieu || "", description: e.d || "", lien: e.u || "", billetterie: e.b || "", image: e.img || "",
           gratuit: !!e.g, latitude: e.lat, longitude: e.lon, distance_km: dist(e), source: e.src || "" }; }) });
       });
     });

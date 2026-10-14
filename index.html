@@ -604,6 +604,10 @@ textarea.sbl-in{min-height:100px;resize:vertical}
 @media (max-width:600px){.sbl-tab.hm{display:flex}}
 
 /* ---------- Charte graphique Trucs à faire (v1.0) ---------- */
+.sbl-btn.lk{display:inline-flex;align-items:center;gap:7px}
+.sbl-btn.lk svg{flex:none}
+.sbl-lks{margin:4px 0 2px}
+.sbl-lks .sbl-btn{flex:1 1 200px;justify-content:center;min-height:48px}
 .sbl-brand{gap:10px}
 .sbl-brand .ico{flex:none;display:block}
 .sbl-brand .mk{font:700 1.42rem/1 var(--sbl-display);letter-spacing:-.03em;color:var(--sbl-ink)}
@@ -647,8 +651,8 @@ textarea.sbl-in{min-height:100px;resize:vertical}
 .sbl-evx .lu{display:flex;gap:6px;align-items:flex-start;font-size:.88rem;color:var(--sbl-muted)}
 .sbl-evx .lu svg{flex:none;margin-top:3px}
 .sbl-evx .ds{font-size:.92rem;line-height:1.45;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.sbl-evx .ac{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
-.sbl-evx .ac .sbl-btn{min-height:40px;padding:0 16px;text-decoration:none}
+.sbl-evx .ac{grid-column:1/-1;display:flex;gap:8px;margin-top:2px}
+.sbl-evx .ac .sbl-btn{flex:1 1 0;min-width:0;min-height:42px;padding:0 10px;justify-content:center;white-space:nowrap;text-decoration:none}
 .sbl-evx .ac .go{background:var(--sbl-accent);border-color:var(--sbl-accent);color:var(--sbl-accent-ink);font-weight:600}
 @media (hover:hover) and (pointer:fine){
   /* ordinateur : l'aperçu flotte par-dessus les lignes suivantes, sans les pousser */
@@ -999,6 +1003,8 @@ const ICONS={
   loisirs:'<path d="m12 3.5 2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/>',
   office:'<circle cx="12" cy="12" r="8.6"/><path d="M12 11v5.6M12 7.6v.2"/>',
   pin:'<path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',
+  ticket:'<path d="M3 8.5V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v1.5a2.5 2.5 0 0 0 0 5V17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1.5a2.5 2.5 0 0 0 0-5z"/><path d="M14 5.5v2M14 11v2M14 16.5v2"/>',
+  ext:'<path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"/>',
   pal:'<circle cx="12" cy="10" r="6.8"/><path d="M12 3.2v13.6M5.2 10h13.6M7.2 5.2l9.6 9.6M16.8 5.2l-9.6 9.6M8.6 21 12 10l3.4 11M7 21h10"/>'
 };
 const icon=(cat,s)=>'<svg class="sbl-ic" viewBox="0 0 24 24" width="'+(s||18)+'" height="'+(s||18)+'" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+ICONS[cat]+'</svg>';
@@ -1114,6 +1120,16 @@ function setOpen(w,on){
   if(on){if(OPEN&&OPEN!==w)setOpen(OPEN,false);fillEv(w);w.classList.add("open");w.firstChild.setAttribute("aria-expanded","true");OPEN=w}
   else{w.classList.remove("open");w.firstChild.setAttribute("aria-expanded","false");if(OPEN===w)OPEN=null}
 }
+/* Liens d'une sortie : billetterie (b) et site ou page de l'événement (u). Les anciennes données n'ont que u : on reconnaît alors les billetteries d'après l'adresse. */
+const TICKET=/billet|ticket|helloasso|weezevent|festik|yurplan|shotgun\.live|eventbrite|digitick|fnacspectacles|placeminute|tickandlive|mapado|ticketac|francebillet|billetreduc|seetickets|regiondo|rezdy|^boutique\.|\/boutique|reservation|reserver|\/booking|\/book\/|\/tickets?\b|\/inscription/i;
+function isTicket(u){const m=/^https?:\/\/([^\/?#]+)([^?#]*)/i.exec(u||"");return !!m&&(TICKET.test(m[1].toLowerCase().replace(/^www\./,""))||TICKET.test(m[2]))}
+function okUrl(u){return /^https?:\/\/[^\/\s]+\.[^\/\s]+/i.test(u||"")&&!/\.\.\.|…/.test(u)}
+function evLinks(e){let u=okUrl(e.u)?e.u:"",b=okUrl(e.b)?e.b:"";if(!b&&isTicket(u)){b=u;u=""}if(u===b)u="";return{u,b}}
+function siteLabel(u){const h=(/^https?:\/\/([^\/?#]+)/i.exec(u)||[])[1]||"";
+  if(/facebook\.com|fb\.me/i.test(h))return"Page Facebook";if(/instagram\.com/i.test(h))return"Instagram";
+  if(/openagenda\.com|paris\.fr$|datatourisme|apidae/i.test(h))return"Page de l’événement";return"Site de l’événement"}
+function linkBtn(href,label,ic,primary){const a=document.createElement("a");a.className="sbl-btn lk"+(primary?" go":"");a.href=href;a.target="_blank";a.rel="noopener";
+  a.innerHTML=icon(ic,16)+"<span></span>";a.lastChild.textContent=label;a.addEventListener("click",ev=>ev.stopPropagation());return a}
 function fillEv(w){if(w._ok)return;w._ok=1;const e=w._e,inn=w.querySelector(".sbl-evx .in");
   const th=thumb(e);
   const tx=document.createElement("div");tx.className="dx";
@@ -1122,7 +1138,9 @@ function fillEv(w){if(w._ok)return;w._ok=1;const e=w._e,inn=w.querySelector(".sb
   const ac=document.createElement("div");ac.className="ac";
   const go=document.createElement("button");go.type="button";go.className="sbl-btn go";go.textContent="Voir la fiche";go.onclick=ev=>{ev.stopPropagation();sheet(e)};
   const it=document.createElement("a");it.className="sbl-btn";it.textContent="Itinéraire";it.target="_blank";it.rel="noopener";it.href="https://www.google.com/maps/dir/?api=1&destination="+e.lat+","+e.lon;
-  ac.append(go,it);tx.append(lieu,d,ac);inn.append(th,tx)}
+  const L=evLinks(e);ac.append(go);
+  if(L.b&&!KIOSK)ac.append(linkBtn(L.b,"Billetterie","ticket",false));else if(L.u&&!KIOSK)ac.append(linkBtn(L.u,"Site","ext",false));
+  ac.append(it);tx.append(lieu,d);inn.append(th,tx,ac)}
 function evRow(e,ref){
   const w=document.createElement("div");w.className="sbl-evw";w._e=e;
   w.style.setProperty("--c","var(--sbl-c-"+e.cat+")");w.style.setProperty("--pc","var(--sbl-p-"+e.cat+")");
@@ -1335,7 +1353,7 @@ const pad=n=>String(n).padStart(2,"0");
 function span(e){if(e.h){const[a,b]=e.h.split(":").map(Number),s=new Date(e.S);s.setHours(a,b);const en=new Date(+e.E===+e.S?s:e.S);en.setHours(a+2,b);return{all:false,s,e:en}}return{all:true,s:e.S,e:add(e.E,1)}}
 const stamp=(d,all)=>d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+(all?"":"T"+pad(d.getHours())+pad(d.getMinutes())+"00");
 const RAPP=[["","Pas de rappel"],["PT1H","1 heure avant"],["PT3H","3 heures avant"],["P1D","La veille"],["P2D","2 jours avant"],["P7D","Une semaine avant"]];
-const notes=(e,r)=>e.d+"\n\n"+e.lieu+(e.lieu!==e.w?", "+e.w:"")+(e.u?"\nInfos : "+e.u:"")+(r?"\nRappel souhaité : "+RAPP.find(x=>x[0]===r)[1].toLowerCase():"");
+const notes=(e,r)=>e.d+"\n\n"+e.lieu+(e.lieu!==e.w?", "+e.w:"")+((L=>(L.b?"\nBilletterie : "+L.b:"")+(L.u?"\nInfos : "+L.u:""))(evLinks(e)))+(r?"\nRappel souhaité : "+RAPP.find(x=>x[0]===r)[1].toLowerCase():"");
 function gUrl(e,r){const T=span(e),p=new URLSearchParams({action:"TEMPLATE",text:e.t,dates:stamp(T.s,T.all)+"/"+stamp(T.e,T.all),details:notes(e,r),location:e.lieu+", "+e.w});if(!T.all)p.set("ctz","Europe/Paris");return"https://calendar.google.com/calendar/render?"+p}
 function oUrl(e,r){const T=span(e),f=d=>d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())+"T"+pad(d.getHours())+":"+pad(d.getMinutes())+":00";
   const p=new URLSearchParams({path:"/calendar/action/compose",rru:"addevent",subject:e.t,startdt:f(T.s),enddt:f(T.e),body:notes(e,r),location:e.lieu+", "+e.w});if(T.all)p.set("allday","true");return"https://outlook.live.com/calendar/0/action/compose?"+p}
@@ -1351,6 +1369,7 @@ function sheet(e){
   '<div class="sbl-hero" id="sbl-hero"><span class="fb">'+icon(e.cat,64)+'</span><span class="ich">'+icon(e.cat,20)+'</span><a class="cr" hidden target="_blank" rel="noopener">Photo : Wikipédia</a><button class="cl" id="sbl-x" aria-label="Fermer">✕</button></div>'+
   '<div class="top"><div><div class="kind"></div><h2 id="sbl-st"></h2></div></div>'+
   '<dl><dt>Quand</dt><dd id="sbl-sw"></dd><dt>Où</dt><dd id="sbl-sl"></dd><dt>Source</dt><dd><a id="sbl-su" target="_blank" rel="noopener"></a></dd></dl><p id="sbl-sd"></p>'+
+  '<div class="sbl-btns sbl-lks" id="sbl-lk" hidden></div>'+
   '<div class="sbl-add"><h3>Ajouter à mon agenda</h3><label for="sbl-r">Rappel</label><select id="sbl-r">'+RAPP.map(([v,l])=>'<option value="'+v+'"'+(v==="P1D"?" selected":"")+'>'+l+'</option>').join("")+'</select>'+
   '<div class="sbl-btns"><a class="sbl-btn go" id="sbl-g" target="_blank" rel="noopener">Google Agenda</a><a class="sbl-btn" id="sbl-o" target="_blank" rel="noopener">Outlook</a>'+(inViewer?'':'<button class="sbl-btn" id="sbl-i" type="button">iPhone, Android (.ics)</button>')+'</div>'+
   '<div class="sbl-hint" id="sbl-h"></div></div><div class="sbl-add"><h3>Y aller</h3><div class="sbl-btns" id="sbl-gps"></div></div></div></div>';
@@ -1362,6 +1381,9 @@ function sheet(e){
   else paint(hero,e.w,e.z,true);
   $("sbl-sw").textContent=when(e)+(e.n?" (et "+e.n+" autre"+(e.n>1?"s":"")+" date"+(e.n>1?"s":"")+")":"")+(e.g?" · Gratuit":"");$("sbl-sl").textContent=e.lieu+(e.lieu!==e.w?", "+e.w:"");$("sbl-sd").textContent=e.d;
   const u=$("sbl-su");if(e.u)u.href=e.u;else u.removeAttribute("href");u.textContent=e.src;
+  {const L=evLinks(e),lk=$("sbl-lk");
+    if(KIOSK){const q=L.b||L.u;if(q){lk.hidden=false;kioskQR(lk,q,L.b?"Scannez pour réserver vos places":"Scannez pour voir le site de l’événement")}}
+    else{if(L.b)lk.append(linkBtn(L.b,"Réserver · Billetterie","ticket",true));if(L.u)lk.append(linkBtn(L.u,siteLabel(L.u),"ext",!L.b));lk.hidden=!lk.children.length}}
   if(e.p&&PX.admin){const r=document.createElement("button");r.type="button";r.className="sbl-btn";r.textContent="Retirer de l’agenda";r.onclick=()=>unpublish(e,close);h.querySelector(".sbl-sheet").append(r)}
   $("sbl-gps").innerHTML=gps(e.lat,e.lon,(e.lieu&&e.lieu!==e.w?e.lieu+", ":"")+e.w);
   if(KIOSK){h.querySelector(".sbl-add").hidden=true;kioskQR($("sbl-gps"),"https://www.google.com/maps/dir/?api=1&destination="+e.lat+","+e.lon,"Scannez avec votre téléphone pour l’itinéraire")}
@@ -1670,6 +1692,7 @@ function proposeForm(day){loadCommunes();
    '<div class="sbl-f"><label for="pf-l">Lieu précis</label><input class="sbl-in" id="pf-l" maxlength="90" placeholder="Salle des fêtes, place du marché…"></div>'+
    '<div class="sbl-f"><label for="pf-d">Description *</label><textarea class="sbl-in" id="pf-d" maxlength="400" required placeholder="Ce qu’on y trouve, tarif, inscription…"></textarea></div>'+
    '<div class="sbl-2"><div class="sbl-f"><label for="pf-u">Lien (site, page Facebook)</label><input class="sbl-in" id="pf-u" type="url" maxlength="300" placeholder="https://"></div>'+
+   '<div class="sbl-f"><label for="pf-b">Billetterie ou réservation</label><input class="sbl-in" id="pf-b" type="url" maxlength="300" placeholder="https://"></div></div><div class="sbl-2">'+
    '<div class="sbl-f"><label for="pf-o">Organisateur</label><input class="sbl-in" id="pf-o" maxlength="60" placeholder="Association, mairie…"></div></div>'+
    '<div class="sbl-f"><label for="pf-img">Affiche ou photo (lien vers l’image)</label><input class="sbl-in" id="pf-img" type="url" maxlength="400" placeholder="https://…/affiche.jpg"></div>'+
    '<div class="sbl-hp" aria-hidden="true"><label for="pf-x">Ne pas remplir</label><input id="pf-x" tabindex="-1" autocomplete="off"></div>'+
@@ -1681,7 +1704,7 @@ function proposeForm(day){loadCommunes();
   $("sbl-pf").onsubmit=async ev=>{ev.preventDefault();const err=$("pf-err");err.textContent="";
     const v=id=>$(id).value.trim();
     if($("pf-x").value)return M.close();
-    const img=v("pf-img"),t=v("pf-t"),s=v("pf-s"),e=v("pf-e"),hr=v("pf-h"),wn=v("pf-w"),l=v("pf-l"),d=v("pf-d"),u=v("pf-u"),o=v("pf-o");
+    const img=v("pf-img"),t=v("pf-t"),s=v("pf-s"),e=v("pf-e"),hr=v("pf-h"),wn=v("pf-w"),l=v("pf-l"),d=v("pf-d"),u=v("pf-u"),bl=v("pf-b"),o=v("pf-o");
     const c=findCommune(wn);
     const fail=(m,f)=>{err.textContent=m;f&&$(f).focus()};
     if(t.length<4)return fail("Indiquez le nom de la sortie.","pf-t");
@@ -1691,10 +1714,11 @@ function proposeForm(day){loadCommunes();
     if(!c)return fail("Commune introuvable : vérifiez l’orthographe ou choisissez-la dans la liste.","pf-w");
     if(d.length<10)return fail("Ajoutez une courte description.","pf-d");
     if(u&&!/^https?:\/\/[^\s]+\.[^\s]+$/i.test(u))return fail("Le lien doit commencer par https://","pf-u");
+    if(bl&&!/^https?:\/\/[^\s]+\.[^\s]+$/i.test(bl))return fail("Le lien de billetterie doit commencer par https://","pf-b");
     if(img&&!/^https:\/\/[^\s]+\.[^\s]+$/i.test(img))return fail("Le lien de l’affiche doit commencer par https://","pf-img");
     if([t,l,d,o,u].some(rude))return fail("Un des textes contient un mot qui n’est pas accepté. Merci de le reformuler.");
     const item={id:uidGen(),t,cat:$("pf-c").value,z:c[1],w:c[0],lieu:l||c[0],s,d,u:u||"",org:o||"",lat:c[2],lon:c[3],statut:"en_attente",envoye:new Date().toISOString()};
-    if(e&&e!==s)item.e=e;if(hr)item.h=hr;if(img)item.img=img;
+    if(e&&e!==s)item.e=e;if(hr)item.h=hr;if(img)item.img=img;if(bl)item.b=bl;
     const go=$("pf-go");go.disabled=true;go.textContent="Envoi…";
     try{await pushItem("propositions",item);M.close();toast("Merci ! Votre sortie sera visible après relecture.")}
     catch(x){go.disabled=false;go.textContent="Envoyer la proposition";
@@ -1725,17 +1749,17 @@ function modPanel(){
   pend.forEach(({uid,i,x},n)=>{const r=document.createElement("form");r.className="sbl-mod ed";r.noValidate=true;const id=k=>"m"+n+k;
     const f=(k,l,type,full)=>'<div class="sbl-f'+(full?" full":"")+'"><label for="'+id(k)+'">'+l+'</label>'+(type==="ta"?'<textarea class="sbl-in" id="'+id(k)+'" maxlength="400"></textarea>':type==="sel"?'<select class="sbl-in" id="'+id(k)+'">'+opts+'</select>':'<input class="sbl-in" id="'+id(k)+'" type="'+type+'"'+(k==="w"?' list="sbl-cl" autocomplete="off"':"")+'>')+'</div>';
     r.innerHTML='<div class="mt"></div><div class="grid">'+f("t","Titre","text",1)+f("c","Type","sel")+f("w","Commune","text")+f("s","Date","date")+f("e","Jusqu’au","date")+f("h","Heure","time")+f("l","Lieu précis","text")+
-      f("d","Description","ta",1)+f("u","Lien","url",1)+f("i","Affiche (lien image)","url",1)+'</div><p class="sbl-err" role="alert"></p>'+
+      f("d","Description","ta",1)+f("u","Lien","url",1)+f("b","Billetterie","url",1)+f("i","Affiche (lien image)","url",1)+'</div><p class="sbl-err" role="alert"></p>'+
       '<div class="sbl-btns"><button class="sbl-btn go" type="submit">Publier</button><button class="sbl-btn" type="button" data-no>Refuser</button></div>';
     r.querySelector(".mt").textContent="Envoyée le "+(x.envoye?new Date(x.envoye).toLocaleDateString("fr-FR"):"?")+(x.org?" · organisateur : "+x.org:"");
-    const set=(k,v)=>{r.querySelector("#"+id(k)).value=v||""};set("t",x.t);set("c",x.cat);set("w",x.w);set("s",x.s);set("e",x.e);set("h",x.h);set("l",x.lieu);set("d",x.d);set("u",x.u);set("i",x.img);
+    const set=(k,v)=>{r.querySelector("#"+id(k)).value=v||""};set("t",x.t);set("c",x.cat);set("w",x.w);set("s",x.s);set("e",x.e);set("h",x.h);set("l",x.lieu);set("d",x.d);set("u",x.u);set("b",x.b);set("i",x.img);
     const val=k=>r.querySelector("#"+id(k)).value.trim(),err=r.querySelector(".sbl-err"),btns=r.querySelectorAll("button");
     r.onsubmit=async ev=>{ev.preventDefault();err.textContent="";
       const t=val("t"),cat=val("c"),w=val("w"),sd=val("s");if(t.length<4||!sd||!w){err.textContent="Titre, date et commune sont nécessaires.";return}
       let la=x.lat,lo=x.lon,z=x.z,wn=w;if(PKEY(w)!==PKEY(x.w||"")){await loadCommunes();PIDX=null;const c=placeIndex().m.get(PKEY(w));if(!c){err.textContent="Commune introuvable : choisissez-la dans la liste.";return}wn=c[0];z=c[1];la=c[2];lo=c[3]}
       btns.forEach(b=>b.disabled=true);
       try{const e={id:x.id,t,cat,z,w:wn,lieu:val("l")||wn,s:sd,d:val("d"),u:val("u"),src:x.org?"Proposé par "+x.org:"Proposé par un habitant",lat:la,lon:lo,p:1};
-        if(val("e")&&val("e")>sd)e.e=val("e");if(val("h"))e.h=val("h");if(val("i"))e.img=val("i");
+        if(val("e")&&val("e")>sd)e.e=val("e");if(val("h"))e.h=val("h");if(val("i"))e.img=val("i");if(val("b"))e.b=val("b");
         await BK.publish(uid,i,x,e);r.remove();toast("Sortie publiée")}
       catch(_){btns.forEach(b=>b.disabled=false);err.textContent="La publication a échoué. Réessayez."}};
     r.querySelector("[data-no]").onclick=async()=>{btns.forEach(b=>b.disabled=true);try{await BK.refuse(uid,i,x);r.remove();toast("Proposition refusée")}catch(_){btns.forEach(b=>b.disabled=false)}};

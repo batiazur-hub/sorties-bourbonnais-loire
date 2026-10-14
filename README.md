@@ -45,7 +45,7 @@ node --test tests/worker.test.mjs   # tests du serveur
 
 | Flux | Quand | Garde-fou |
 |---|---|---|
-| Sorties (`donnees.yml`) | chaque nuit 4 h 17 UTC | `verifier.py --donnees` avant d'enregistrer |
+| Sorties (`donnees.yml`) | chaque nuit 4 h 17 UTC (ou à la demande) | `verifier.py --donnees` avant d'enregistrer |
 | Lieux (`lieux.yml`) | dimanche 3 h 41 UTC | idem |
 | Horaires (`horaires.yml`) | chaque jour 2 h 23 UTC | idem |
 | Contrôle qualité (`qualite.yml`) | chaque modification du code | pyflakes, syntaxe JS, vérificateur, tests du serveur, empreintes SRI |

@@ -3,10 +3,10 @@ on:
   workflow_dispatch:
   schedule:
     - cron: "41 3 * * 0"
-  push:
-    paths: ["scripts/lieux.py", "scripts/qualite_donnees.py", ".github/workflows/lieux.yml"]
 permissions:
   contents: write
+# Un seul flux de données à la fois. Pas de déclenchement à chaque modification du code : GitHub ne garde
+# qu'une exécution en attente par groupe, trois flux lancés ensemble s'annuleraient. Le code est vérifié par qualite.yml.
 concurrency: { group: donnees, cancel-in-progress: false }
 jobs:
   lieux:

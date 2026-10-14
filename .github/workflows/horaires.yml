@@ -3,10 +3,10 @@ on:
   workflow_dispatch:
   schedule:
     - cron: "23 2 * * *"  # une fois par jour : 18 carreaux par passage, toute la France en 3 jours
-  push:
-    paths: ["scripts/horaires.py", ".github/workflows/horaires.yml"]
 permissions:
   contents: write
+# Un seul flux de données à la fois. Pas de déclenchement à chaque modification du code : GitHub ne garde
+# qu'une exécution en attente par groupe, trois flux lancés ensemble s'annuleraient. Le code est vérifié par qualite.yml.
 concurrency: { group: donnees, cancel-in-progress: false }
 jobs:
   horaires:

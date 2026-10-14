@@ -1,15 +1,15 @@
 {
  "maj": "2026-10-14",
  "par_type": {
-  "culture": 33732,
-  "fete": 29408,
-  "sport": 8674,
-  "famille": 7515,
-  "spectacle": 18529,
+  "culture": 33730,
+  "fete": 29360,
+  "sport": 8672,
+  "famille": 7516,
+  "spectacle": 18557,
   "brocante": 1225,
-  "(Paris open data)": 3064,
-  "(OpenAgenda)": 18661,
-  "(sources complémentaires)": 18120
+  "(Paris open data)": 3130,
+  "(OpenAgenda)": 18555,
+  "(sources complémentaires)": 18137
  },
  "ecartes": {
   "passé ou sans date": 12964,
@@ -19,19 +19,23 @@
   "sans commune": 8,
   "département inconnu": 3,
   "annulée ou reportée": 39,
+  "position replacée au centre de la commune": 12,
+  "identifiant rendu unique": 46,
+  "date de fin incohérente retirée": 6,
+  "position hors du département": 3,
   "coordonnées corrigées (centre de la commune)": 82
  },
  "classes": [
-  [
-   "EntertainmentAndEvent",
-   59238
-  ],
   [
    "Event",
    59238
   ],
   [
    "PointOfInterest",
+   59238
+  ],
+  [
+   "EntertainmentAndEvent",
    59238
   ],
   [
@@ -83,11 +87,11 @@
    4679
   ],
   [
-   "Exhibition",
+   "ExhibitionEvent",
    4167
   ],
   [
-   "ExhibitionEvent",
+   "Exhibition",
    4167
   ],
   [
@@ -167,11 +171,11 @@
    446
   ],
   [
-   "Cinema",
+   "MovieTheater",
    319
   ],
   [
-   "MovieTheater",
+   "Cinema",
    319
   ],
   [
@@ -215,11 +219,11 @@
    109
   ],
   [
-   "CircusPlace",
+   "Cirque",
    104
   ],
   [
-   "Cirque",
+   "CircusPlace",
    104
   ],
   [
@@ -251,15 +255,15 @@
    43
   ],
   [
-   "RentalAccommodation",
-   41
-  ],
-  [
    "Accommodation",
    41
   ],
   [
    "LodgingBusiness",
+   41
+  ],
+  [
+   "RentalAccommodation",
    41
   ],
   [
@@ -291,10 +295,6 @@
    16
   ],
   [
-   "OrderedList",
-   15
-  ],
-  [
    "WalkingTour",
    15
   ],
@@ -303,11 +303,11 @@
    15
   ],
   [
-   "LeisureComplex",
-   8
+   "OrderedList",
+   15
   ],
   [
-   "ServiceProvider",
+   "LeisureComplex",
    8
   ],
   [
@@ -315,11 +315,15 @@
    8
   ],
   [
+   "Rental",
+   8
+  ],
+  [
    "EquipmentRental",
    8
   ],
   [
-   "Rental",
+   "ServiceProvider",
    8
   ],
   [
@@ -343,7 +347,7 @@
    2
   ]
  ],
- "total": 99083,
+ "total": 99060,
  "rotation": {
   "paris-marches": {
    "rafraichi": "2026-10-14",
@@ -353,8 +357,8 @@
   },
   "62-pas-de-calais": {
    "rafraichi": "2026-10-14",
-   "n": 755,
-   "en_cache": 755,
+   "n": 779,
+   "en_cache": 779,
    "jour": "mardi"
   },
   "63-clermont": {

@@ -21,7 +21,7 @@ Article 30 du RGPD. Document interne, à tenir à jour à chaque nouveau traitem
 - [ ] Accepter l'accord de traitement des données de Cloudflare (Data Processing Addendum, dans le tableau de bord).
 - [ ] Créer les secrets du serveur : `BREVO_KEY`, `SIGNATURE_KEY` (texte aléatoire long).
 - [ ] Désactiver dans Brevo le suivi des ouvertures et des clics pour les e-mails de connexion (inutile au service).
-- [ ] Paiement : régler le prestataire pour **une seule nouvelle tentative** après un échec, puis **arrêt automatique** de l'abonnement au 2e échec (aucune relance, aucun recouvrement), et retour à l'offre gratuite. Résiliation en un clic depuis « Mon compte ».
+- [ ] Paiement : régler le prestataire pour **une seule nouvelle tentative** après un échec, puis **arrêt automatique** de l'abonnement au 2e échec (aucune relance, aucun recouvrement), et retour à l'offre gratuite. Résiliation en un clic depuis « Mon compte ». Pause en un clic (aucun prélèvement, temps restant conservé). Annuel : un paiement, renouvellement automatique, **e-mail de rappel au moins un mois avant** le renouvellement avec lien d'arrêt (obligation légale, art. L215-1 du code de la consommation).
 - [ ] Avant les offres payantes : conditions générales de vente, choix du prestataire de paiement, désignation d'un médiateur de la consommation (obligatoire pour la vente aux particuliers), mise à jour de ce registre.
 - [ ] Avant le premier envoi de newsletter : lien de désinscription dans chaque e-mail (déjà prévu côté serveur : `/newsletter/stop`), en-têtes `List-Unsubscribe`, adresse de l'expéditeur identifiable.
 

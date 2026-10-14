@@ -1921,7 +1921,7 @@ const RAISONS={
   fav:["Gardez toutes vos sorties","Sans compte, vous pouvez garder "+FAV_LIBRE+" sorties sur cet appareil. Avec un compte gratuit : favoris illimités, sur tous vos appareils."],
   alerte:["Soyez prévenu des prochaines","Dites-nous où vous êtes et ce que vous aimez : on vous prévient des nouvelles sorties autour de chez vous."],
   semaine:["Chaque semaine, les sorties près de chez vous","Choisissez votre commune et un rayon : on vous envoie la sélection avant le week-end."],
-  pro:["Truc Pro arrive bientôt","Créez d’abord votre compte gratuit : vous serez parmi les premiers prévenus à l’ouverture de Truc Pro."],
+  pro:["Truc & Co arrive bientôt","Créez d’abord votre compte gratuit : vous serez parmi les premiers prévenus à l’ouverture de Truc & Co."],
   login:["Se connecter","Indiquez l’adresse e-mail de votre compte : vous recevrez un lien de connexion, sans mot de passe."]};
 function openCompte(raison,e){
   if(ACC.c&&raison!=="login")return monCompte();
@@ -1978,7 +1978,7 @@ function monCompte(bienvenue){
       '<fieldset class="sbl-chips"><legend>Ce qui m’intéresse</legend>'+Object.keys(CATS).filter(k=>k!=="pal").map(k=>'<label><input type="checkbox" name="mc-c" value="'+k+'"'+(sel.has(k)?" checked":"")+'><span>'+icon(k,15)+CATS[k][1]+'</span></label>').join("")+'</fieldset>'+
       '<label class="sbl-nl"><input type="checkbox" id="mc-nl"'+(c.newsletter?" checked":"")+'><span>'+CONSENT_NL+'</span></label>'+
       '<p class="sbl-err" id="mc-err" role="alert"></p><div class="sbl-btns"><button class="sbl-btn go" type="submit">Enregistrer</button></div></form>'+
-    '<h3 class="sbl-ach">Aller plus loin</h3><p class="sbl-acm">Vous organisez des sorties ? <a href="offres.html">Découvrez Faiseur de trucs et Truc Pro</a>.</p>'+
+    '<h3 class="sbl-ach">Aller plus loin</h3><p class="sbl-acm">Vous organisez des sorties ? <a href="offres.html">Découvrez Faiseur de trucs et Truc &amp; Co</a>.</p>'+
     '<h3 class="sbl-ach">Mes données</h3><div class="sbl-btns"><button class="sbl-btn" type="button" id="mc-x">Télécharger mes données</button><button class="sbl-btn" type="button" id="mc-o">Se déconnecter</button><button class="sbl-btn dz" type="button" id="mc-d">Supprimer mon compte</button></div>');
   $("mc-e").textContent="Connecté avec "+c.email+(bienvenue?". Vos favoris sont maintenant enregistrés sur tous vos appareils.":"");
   if(p.commune)$("mc-w").value=p.commune.nom;

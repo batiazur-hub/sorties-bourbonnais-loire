@@ -13,7 +13,7 @@ Article 30 du RGPD. Document interne, à tenir à jour à chaque nouveau traitem
 | 3 | Limitation des abus | Empêcher les envois massifs | Tout visiteur utilisant les formulaires | Adresse IP, compteur horaire | Intérêt légitime (6.1.f) | Cloudflare | Cloudflare | 1 heure (expiration automatique) | Clé expirante |
 | 4 | Propositions de sorties et de sources | Compléter l'agenda | Visiteurs qui proposent | Contenu du formulaire (pas de nom ni de contact demandé) | Intérêt légitime | Cloudflare | Cloudflare | Refusées : 4 mois max (expiration automatique) ; publiées : jusqu'à la date de l'événement | Relecture humaine, filtre de mots |
 | 5 | Clés API | Fournir l'API aux intégrateurs | Contacts des intégrateurs | Nom, contact, sites autorisés, compteurs d'appels | Contrat | Cloudflare | Cloudflare | Durée de la relation ; compteurs : 40 jours | Code éditeur en secret, comparaison à durée constante |
-| 6 | Offres payantes (à ouvrir) | Abonnements Truc Pro / Truc & Co | Clients | Identité ou raison sociale, facturation, factures | Contrat + obligation légale | Prestataire de paiement (à choisir) | À documenter | Factures 10 ans | Carte jamais vue par l'éditeur |
+| 6 | Offres payantes (à ouvrir) | Abonnements Truc & Co / Truc Pro | Clients | Identité ou raison sociale, facturation, factures | Contrat + obligation légale | Prestataire de paiement (à choisir) | À documenter | Factures 10 ans | Carte jamais vue par l'éditeur |
 
 ## Ce qui reste à faire avant d'ouvrir les comptes au public
 

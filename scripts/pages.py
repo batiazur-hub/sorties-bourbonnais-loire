@@ -148,7 +148,7 @@ P["cgu.html"] = ("Conditions générales d’utilisation", "Les règles d’util
 </ul>
 
 <h2>4. Offres pour les organisateurs et les professionnels</h2>
-<p>Les offres Faiseur de trucs (gratuite), Truc Pro et Truc &amp; Co (payantes) sont présentées sur la page <a href="offres.html">Créer un compte</a>. Les offres payantes feront l’objet de conditions générales de vente propres, communiquées avant toute souscription (prix, durée, résiliation, droit de rétractation lorsqu’il s’applique).</p>
+<p>Les offres Faiseur de trucs (gratuite), Truc &amp; Co et Truc Pro (payantes) sont présentées sur la page <a href="offres.html">Créer un compte</a>. Les offres payantes feront l’objet de conditions générales de vente propres, communiquées avant toute souscription (prix, durée, résiliation, droit de rétractation lorsqu’il s’applique).</p>
 
 <h2>5. Fiabilité des informations</h2>
 <p>Les sorties proviennent de sources publiques et de propositions des visiteurs. Elles sont mises à jour chaque nuit, mais un organisateur peut modifier, reporter ou annuler un événement à tout moment. <strong>Vérifiez toujours la date, l’horaire et le lieu sur la fiche source avant de vous déplacer.</strong> L’éditeur n’organise aucun des événements présentés et n’en est pas responsable.</p>

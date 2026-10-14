@@ -33,5 +33,9 @@ documentée sur la page `api.html` du site. Chaque appel exige une clé.
 - **Créer, régler, révoquer les clés** : ouvrir `cles.html` sur le site, saisir l'adresse du serveur et le code éditeur.
 - **Réglages par clé** : départements autorisés, types de sorties ou de lieux, nombre d'appels par jour,
   sites autorisés (pour un usage depuis un navigateur), notes.
+- **Bibliothèque JavaScript** : le serveur sert aussi `/v1/dlc.js` (copie de `dlc.js` publiée sur le site,
+  avec son adresse déjà réglée). Les sites l'incluent comme Google Maps :
+  `<script src="https://dans-le-coin.<compte>.workers.dev/v1/dlc.js?key=dlc_…&callback=initCoin" async></script>`.
+  Pour une clé utilisée dans un navigateur, renseigner toujours les **sites autorisés**.
 - Le serveur lit les données publiées sur GitHub Pages (variable facultative `DATA_URL` pour en changer)
   et les garde 30 minutes en cache.

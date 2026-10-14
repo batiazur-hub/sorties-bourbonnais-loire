@@ -9,6 +9,7 @@
              GET  /v1/sorties?dep=03,58&type=brocante,fete&du=2026-10-14&au=2026-10-31&commune=Moulins&q=marché&gratuit=1&limite=100&page=1
              GET  /v1/lieux?dep=03&type=musee,office&commune=Moulins
              GET  /v1/departements · GET /v1/cle (réglages de sa clé)
+             GET  /v1/dlc.js?key=…&callback=…   → bibliothèque JavaScript (comme Google Maps), adresse du serveur injectée
              Position : lat, lon, rayon (km) et tri=distance ; une clé peut être limitée à une zone (centre + rayon).
              La clé se passe en en-tête « X-API-Key » ou en paramètre « cle ».
    Gestion des clés (éditeur) : GET /admin/cles · POST /admin/cles {nom, contact, deps, types, quota, origines, notes}
@@ -83,7 +84,16 @@ async function donnees(env, chemin) {
   if (!r.ok) return null;
   return r.json();
 }
+/* Bibliothèque JavaScript : copie de dlc.js publiée sur le site, avec l'adresse de ce serveur */
+async function bibliotheque(env, url) {
+  const site = env.SITE_URL || (env.DATA_URL || DATA_DEFAUT).replace(/data\/?$/, "");
+  const r = await fetch(site + "dlc.js", { cf: { cacheTtl: 3600, cacheEverything: true } });
+  if (!r.ok) return new Response("/* Dans le coin : bibliothèque indisponible */", { status: 503, headers: { "Content-Type": "application/javascript; charset=utf-8" } });
+  const js = (await r.text()).split("__DLC_API__").join(url.origin);
+  return new Response(js, { headers: { "Content-Type": "application/javascript; charset=utf-8", "Cache-Control": "public, max-age=3600", "Access-Control-Allow-Origin": "*" } });
+}
 async function api(req, env, url, p) {
+  if (p === "/v1/dlc.js") return bibliotheque(env, url);
   const ouvert = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "GET, OPTIONS", "Access-Control-Allow-Headers": "X-API-Key, Content-Type" };
   if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: ouvert });
   const cle = req.headers.get("X-API-Key") || url.searchParams.get("cle") || url.searchParams.get("key") || "";
@@ -119,7 +129,10 @@ async function api(req, env, url, p) {
     if (demandes && !deps.length) return json({ erreur: "departement_non_autorise", autorises: k.deps }, 403, cors);
     if (!demandes && deps.length > MAX_DEPS) deps = deps.slice(0, MAX_DEPS);
   }
-  if (!deps.length) return json({ erreur: "dep_requis", message: "Indiquez un ou plusieurs départements : dep=03,58" }, 400, cors);
+  // sans département ni clé limitée : on déduit les départements de la position demandée
+  const qlat0 = parseFloat(q.get("lat")), qlon0 = parseFloat(q.get("lon"));
+  if (!deps.length && isFinite(qlat0) && isFinite(qlon0)) deps = await depsDeZone(env, { lat: qlat0, lon: qlon0, rayon: Math.min(300, parseFloat(q.get("rayon")) || 20) });
+  if (!deps.length) return json({ erreur: "dep_requis", message: "Indiquez un ou plusieurs départements (dep=03,58) ou une position (lat, lon, rayon)." }, 400, cors);
   if (deps.length > MAX_DEPS) return json({ erreur: "trop_de_departements", max: MAX_DEPS }, 400, cors);
   let types = liste(q.get("type"));
   const limite = Math.max(1, Math.min(500, parseInt(q.get("limite") || "100", 10) || 100)), page = Math.max(1, parseInt(q.get("page") || "1", 10) || 1);

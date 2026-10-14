@@ -308,60 +308,10 @@ P["integrer.html"] = ("Intégrer l’agenda", "Ajoutez « Dans le coin » à vot
 </script>
 """)
 
-TETE["api.html"] = '\n<script src="config.js"></script>'
-P["api.html"] = ("API Dans le coin", "Récupérez les sorties et les lieux à visiter de « Dans le coin » dans votre site, votre application ou votre borne, avec votre propre clé.", """
-<h2>Obtenir une clé</h2>
-<p>Chaque clé est personnelle et réglée pour son usage : départements, types de sorties, nombre d’appels par jour et sites autorisés. Pour en demander une, écrivez à <a href="mailto:clementer@gmail.com?subject=Demande%20de%20cl%C3%A9%20API%20Dans%20le%20coin">clementer@gmail.com</a> en indiquant votre structure, votre site et les départements voulus.</p>
-
-<h2>Adresse</h2>
-<p><code id="api-base">https://dans-le-coin.&lt;compte&gt;.workers.dev</code></p>
-<p>La clé se transmet dans l’en-tête <code>X-API-Key</code> (recommandé) ou dans le paramètre <code>cle</code>.</p>
-
-<h2>Sorties</h2>
-<p><code>GET /v1/sorties</code></p>
-<div class="tbl"><table>
-<thead><tr><th scope="col">Paramètre</th><th scope="col">Exemple</th><th scope="col">Rôle</th></tr></thead>
-<tbody>
-<tr><td>dep</td><td>03,58</td><td>Départements (6 au plus). Facultatif si votre clé est réglée sur des départements.</td></tr>
-<tr><td>type</td><td>brocante,fete</td><td>brocante, fete, spectacle, culture, famille, sport</td></tr>
-<tr><td>du / au</td><td>2026-10-14</td><td>Période (par défaut : à partir d’aujourd’hui)</td></tr>
-<tr><td>commune</td><td>Moulins</td><td>Une seule commune</td></tr>
-<tr><td>q</td><td>marché</td><td>Mot recherché dans le titre, le lieu et la description</td></tr>
-<tr><td>lat / lon / rayon</td><td>46.83 / 3.46 / 15</td><td>Autour d’une position, rayon en km (20 par défaut) ; ajoute <code>distance_km</code> à chaque résultat</td></tr>
-<tr><td>tri</td><td>distance</td><td>Trier par distance plutôt que par date</td></tr>
-<tr><td>gratuit</td><td>1</td><td>Seulement les sorties gratuites</td></tr>
-<tr><td>limite / page</td><td>100 / 1</td><td>Pagination (500 au plus par page)</td></tr>
-</tbody></table></div>
-<p>Chaque sortie : id, titre, type, debut, fin, heure, autres_dates, commune, departement, lieu, description, lien, image, gratuit, latitude, longitude, source.</p>
-
-<h2>Lieux à visiter et offices de tourisme</h2>
-<p><code>GET /v1/lieux</code> — mêmes paramètres <code>dep</code>, <code>commune</code>, <code>q</code>, <code>limite</code>, <code>page</code> ; <code>type</code> parmi office, musee, patrimoine, nature, loisirs.</p>
-<p>Chaque lieu : id, nom, type, commune, departement, adresse, description, site, telephone, horaires_osm (format OpenStreetMap), label, principal, latitude, longitude, source.</p>
-
-<h2>Départements</h2>
-<p><code>GET /v1/departements</code> — liste des départements accessibles avec votre clé et leur nombre de sorties.</p>
-<p><code>GET /v1/cle</code> — réglages de votre clé : zone, départements, types, période, quota et appels du jour.</p>
-<p>Une clé peut être limitée à une zone (un point et un rayon) : seules les sorties et les lieux situés dans cette zone sont renvoyés, et les départements concernés sont choisis automatiquement.</p>
-
-<h2>Exemple</h2>
-<pre class="code" id="api-ex">fetch("https://dans-le-coin.&lt;compte&gt;.workers.dev/v1/sorties?dep=03&amp;type=brocante&amp;limite=20", {
-  headers: { "X-API-Key": "dlc_votre_cle" }
-}).then(r =&gt; r.json()).then(d =&gt; console.log(d.total, d.resultats));</pre>
-
-<h2>Erreurs</h2>
-<ul>
-<li><code>401 cle_invalide</code> : clé absente ou inconnue ; <code>403 cle_revoquee</code> ; <code>403 origine_refusee</code> : site non autorisé pour cette clé.</li>
-<li><code>403 departement_non_autorise</code> ; <code>403 type_non_autorise</code> ; <code>400 dep_requis</code> ; <code>429 quota_atteint</code> : nombre d’appels du jour dépassé (en-tête <code>X-Quota-Restant</code>).</li>
-</ul>
-
-<h2>Conditions</h2>
-<ul>
-<li>Données mises à jour chaque nuit ; réponses mises en cache 10 minutes.</li>
-<li>Affichez « Dans le coin » et la source de chaque fiche. Les données restent sous la licence de leurs producteurs (voir les <a href="mentions-legales.html">mentions légales</a>) ; les horaires viennent d’OpenStreetMap (ODbL).</li>
-<li>Une clé peut être suspendue en cas d’usage abusif.</li>
-</ul>
-<script>(function(){const c=window.SORTIES_CONFIG&&SORTIES_CONFIG.apiUrl;if(!c)return;const b=c.replace(/\\/+$/,"");document.getElementById("api-base").textContent=b;const ex=document.getElementById("api-ex");ex.textContent=ex.textContent.replace(/https:\\/\\/dans-le-coin\\.<compte>\\.workers\\.dev/,b)})();</script>
-""")
+import os
+TETE["api.html"] = '\n<script src="config.js"></script>\n<script src="dlc.js"></script>'
+P["api.html"] = ("API Dans le coin", "Ajoutez les sorties et les lieux à visiter de toute la France à votre site ou à votre application : une ligne de script et votre clé, comme pour Google Maps.",
+                 open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "api_page.html"), encoding="utf-8").read())
 
 TETE["cles.html"] = '\n<meta name="robots" content="noindex, nofollow">\n<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css">\n<script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>\n<script src="config.js"></script>'
 P["cles.html"] = ("Générateur de clés API", "Espace éditeur : choisissez la zone et les critères, vérifiez ce que la clé récupérera, puis générez-la.", """

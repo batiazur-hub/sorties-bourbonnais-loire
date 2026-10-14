@@ -1,0 +1,486 @@
+<div class="api">
+<nav class="api-nav" aria-label="Sommaire de l’API">
+<p class="api-nav-t">Guides</p>
+<a href="#presentation">Présentation</a>
+<a href="#demarrage">Démarrage rapide</a>
+<a href="#cles">Clés et restrictions</a>
+<a href="#bibliotheque">Bibliothèque JavaScript</a>
+<a href="#widgets">Widgets</a>
+<a href="#rest">API REST</a>
+<p class="api-nav-t">Référence</p>
+<a href="#options">Paramètres</a>
+<a href="#objets">Objets renvoyés</a>
+<a href="#erreurs">Erreurs et quotas</a>
+<a href="#essayer">Essayer l’API</a>
+<a href="#conditions">Conditions</a>
+</nav>
+
+<div class="api-doc">
+
+<section id="presentation" aria-labelledby="t-pres">
+<h2 id="t-pres" class="vh">Présentation</h2>
+<div class="api-cards">
+<a class="api-card" href="#bibliotheque"><span class="api-ic" aria-hidden="true">{ }</span><b>Bibliothèque JavaScript</b><span>Une ligne de script et votre clé, puis <code>DansLeCoin.sorties()</code> dans votre code.</span></a>
+<a class="api-card" href="#widgets"><span class="api-ic" aria-hidden="true">▦</span><b>Widgets prêts à l’emploi</b><span>Une liste d’événements ou une carte IGN, sans écrire de code.</span></a>
+<a class="api-card" href="#rest"><span class="api-ic" aria-hidden="true">⇄</span><b>API REST</b><span>Du JSON pour vos serveurs, applications mobiles et bornes : PHP, Python, curl…</span></a>
+</div>
+<p>Plus de 40 000 sorties (brocantes, fêtes, concerts, expos, sport, sorties en famille) et des milliers de lieux à visiter et d’offices de tourisme, partout en France, mis à jour chaque nuit.</p>
+<p class="api-cta"><a class="btn" href="mailto:clementer@gmail.com?subject=Demande%20de%20cl%C3%A9%20API%20Dans%20le%20coin&amp;body=Structure%20%3A%0ASite%20ou%20application%20%3A%0AZone%20voulue%20(commune%2C%20rayon%20ou%20d%C3%A9partements)%20%3A%0AUsage%20pr%C3%A9vu%20%3A">Obtenir une clé</a> <a class="btn btn-2" href="#essayer">Essayer sans clé</a></p>
+</section>
+
+<section id="demarrage" aria-labelledby="t-dem">
+<h2 id="t-dem">Démarrage rapide</h2>
+<ol class="api-steps">
+<li><b>Obtenez une clé.</b> Elle commence par <code>dlc_</code> et est réglée pour votre usage : sites autorisés, zone, types d’événements.</li>
+<li><b>Ajoutez le script</b> avec votre clé dans l’adresse, comme pour Google Maps.</li>
+<li><b>Appelez l’API</b> dans la fonction de rappel, ou posez directement un widget.</li>
+</ol>
+<div class="tabs" data-tabs>
+<div class="tabs-bar" role="tablist" aria-label="Langage">
+<button type="button" role="tab" data-lang="html">HTML + JavaScript</button>
+<button type="button" role="tab" data-lang="decl">HTML seul</button>
+<button type="button" role="tab" data-lang="js">JavaScript moderne</button>
+</div>
+<pre role="tabpanel" data-lang="html"><code>&lt;div id="agenda"&gt;&lt;/div&gt;
+
+&lt;script&gt;
+  function initCoin() {
+    new DansLeCoin.Liste("#agenda", {
+      autour: { lat: 46.566, lon: 3.333 },  // Moulins
+      rayon: 25,                            // en km
+      periode: "weekend",
+      limite: 6
+    });
+  }
+&lt;/script&gt;
+&lt;script src="https://VOTRE-SERVEUR/v1/dlc.js?key=VOTRE_CLE&amp;callback=initCoin" async&gt;&lt;/script&gt;</code></pre>
+<pre role="tabpanel" data-lang="decl"><code>&lt;!-- Aucun code à écrire : les réglages se lisent sur l’élément --&gt;
+&lt;div data-dlc="liste" data-lat="46.566" data-lon="3.333" data-rayon="25"
+     data-periode="weekend" data-limite="6"&gt;&lt;/div&gt;
+
+&lt;div data-dlc="carte" data-lat="46.566" data-lon="3.333" data-rayon="25"
+     style="height:420px"&gt;&lt;/div&gt;
+
+&lt;script src="https://VOTRE-SERVEUR/v1/dlc.js?key=VOTRE_CLE" async&gt;&lt;/script&gt;</code></pre>
+<pre role="tabpanel" data-lang="js"><code>// Après le chargement du script
+await DansLeCoin.pret;
+
+const { total, resultats } = await DansLeCoin.sorties({
+  dep: "03",
+  types: ["brocante", "fete"],
+  periode: "semaine"
+});
+
+console.log(total + " sorties cette semaine dans l’Allier");
+for (const s of resultats) {
+  console.log(s.debut, s.titre, s.commune);
+}</code></pre>
+</div>
+</section>
+
+<section id="cles" aria-labelledby="t-cles">
+<h2 id="t-cles">Clés et restrictions</h2>
+<p>Chaque appel exige une clé. Comme une clé Google Maps, une clé utilisée dans une page web est visible par les visiteurs : c’est la <b>restriction par site</b> qui la protège. Chaque clé est réglée à sa création :</p>
+<div class="tbl"><table>
+<thead><tr><th scope="col">Restriction</th><th scope="col">Effet</th><th scope="col">Exemple</th></tr></thead>
+<tbody>
+<tr><td>Sites autorisés</td><td>La clé ne répond qu’aux pages de ces adresses. Indispensable pour une clé utilisée dans un navigateur.</td><td><code>https://www.ville-moulins.fr</code></td></tr>
+<tr><td>Zone</td><td>Seuls les événements et lieux situés dans le cercle sont renvoyés.</td><td>25 km autour de Moulins</td></tr>
+<tr><td>Départements</td><td>Liste des départements accessibles.</td><td><code>03, 58, 71</code></td></tr>
+<tr><td>Types</td><td>Catégories d’événements ou de lieux accessibles.</td><td><code>brocante, musee</code></td></tr>
+<tr><td>Période</td><td>Nombre de jours à venir au plus.</td><td>30 jours</td></tr>
+<tr><td>Quota</td><td>Nombre d’appels par jour (5 000 par défaut).</td><td>5 000</td></tr>
+</tbody></table></div>
+<div class="note"><b>Depuis un serveur</b> (PHP, Python, application mobile) : ne publiez pas la clé, passez-la dans l’en-tête <code>X-API-Key</code> et gardez-la dans une variable d’environnement.</div>
+<p>Pour vérifier les réglages d’une clé : <code>DansLeCoin.cle()</code> ou <code>GET /v1/cle</code>.</p>
+</section>
+
+<section id="bibliotheque" aria-labelledby="t-bib">
+<h2 id="t-bib">Bibliothèque JavaScript</h2>
+<h3>Charger la bibliothèque</h3>
+<pre class="cb"><code>&lt;script src="https://VOTRE-SERVEUR/v1/dlc.js?key=VOTRE_CLE&amp;callback=initCoin" async&gt;&lt;/script&gt;</code></pre>
+<div class="tbl"><table>
+<thead><tr><th scope="col">Paramètre du script</th><th scope="col">Rôle</th></tr></thead>
+<tbody>
+<tr><td><code>key</code></td><td>Votre clé API (obligatoire).</td></tr>
+<tr><td><code>callback</code></td><td>Nom d’une fonction globale appelée quand la bibliothèque est prête. Sinon : <code>await DansLeCoin.pret</code> ou l’événement <code>dansLeCoin:pret</code> sur <code>document</code>.</td></tr>
+</tbody></table></div>
+<h3>Méthodes</h3>
+<div class="tbl"><table class="ref">
+<thead><tr><th scope="col">Méthode</th><th scope="col">Renvoie</th><th scope="col">Description</th></tr></thead>
+<tbody>
+<tr><td><code>DansLeCoin.sorties(options)</code></td><td>Promise&lt;Réponse&gt;</td><td>Événements à venir correspondant aux <a href="#options">options</a>.</td></tr>
+<tr><td><code>DansLeCoin.lieux(options)</code></td><td>Promise&lt;Réponse&gt;</td><td>Lieux à visiter et offices de tourisme.</td></tr>
+<tr><td><code>DansLeCoin.autourDeMoi(options)</code></td><td>Promise&lt;Réponse&gt;</td><td>Demande la position du visiteur, puis renvoie les sorties (ou les lieux avec <code>quoi: "lieux"</code>) les plus proches.</td></tr>
+<tr><td><code>DansLeCoin.departements()</code></td><td>Promise&lt;Réponse&gt;</td><td>Départements accessibles et nombre de sorties.</td></tr>
+<tr><td><code>DansLeCoin.cle()</code></td><td>Promise&lt;Objet&gt;</td><td>Réglages et consommation de la clé.</td></tr>
+<tr><td><code>DansLeCoin.position()</code></td><td>Promise&lt;{lat, lon}&gt;</td><td>Position du visiteur (avec son accord).</td></tr>
+<tr><td><code>DansLeCoin.url(chemin, options)</code></td><td>Texte</td><td>Adresse REST équivalente, utile pour déboguer.</td></tr>
+<tr><td><code>DansLeCoin.configurer({ cle, serveur })</code></td><td>Objet</td><td>Change la clé ou le serveur après chargement.</td></tr>
+<tr><td><code>reponse.suivante()</code></td><td>Promise&lt;Réponse&gt;</td><td>Page suivante, présente seulement s’il reste des résultats.</td></tr>
+</tbody></table></div>
+<h3>Gérer les erreurs</h3>
+<pre class="cb"><code>try {
+  const r = await DansLeCoin.sorties({ commune: "Nevers", dep: "58" });
+} catch (e) {
+  if (e instanceof DansLeCoin.Erreur) {
+    console.warn(e.code, e.statut, e.message);  // ex. "quota_atteint", 429
+  }
+}</code></pre>
+</section>
+
+<section id="widgets" aria-labelledby="t-wid">
+<h2 id="t-wid">Widgets</h2>
+<p>Deux composants prêts à l’emploi, qui suivent la couleur du texte de votre page et s’adaptent à toutes les largeurs.</p>
+<form class="demo-f" id="demo-f" aria-label="Réglages de la démonstration">
+<label>Ville <select id="demo-v">
+<option value="46.566,3.333,Moulins">Moulins</option><option value="46.990,3.159,Nevers">Nevers</option><option value="45.764,4.836,Lyon">Lyon</option>
+<option value="48.857,2.352,Paris">Paris</option><option value="44.838,-0.579,Bordeaux">Bordeaux</option><option value="43.611,3.877,Montpellier">Montpellier</option>
+</select></label>
+<label>Quoi <select id="demo-t"><option value="">Toutes les sorties</option><option value="brocante">Brocantes</option><option value="fete">Fêtes, marchés</option><option value="spectacle">Concerts, spectacles</option><option value="culture">Expos, visites</option><option value="famille">En famille</option><option value="sport">Sport</option></select></label>
+<label>Quand <select id="demo-p"><option value="semaine">7 prochains jours</option><option value="weekend">Ce week-end</option><option value="mois">Ce mois-ci</option></select></label>
+</form>
+<h3><code>DansLeCoin.Liste</code></h3>
+<div class="demo" id="demo-liste" aria-live="polite"></div>
+<pre class="cb"><code id="demo-code-l"></code></pre>
+<h3><code>DansLeCoin.Carte</code></h3>
+<p>Fond Plan IGN ou photo satellite, points regroupés, fiche au clic. La carte (MapLibre) n’est chargée que si vous l’utilisez.</p>
+<div class="demo demo-map" id="demo-carte"></div>
+<pre class="cb"><code id="demo-code-c"></code></pre>
+<h3>Options des widgets</h3>
+<div class="tbl"><table class="ref">
+<thead><tr><th scope="col">Option</th><th scope="col">Valeurs</th><th scope="col">Rôle</th></tr></thead>
+<tbody>
+<tr><td><code>quoi</code></td><td>"sorties", "lieux", "tout" (carte)</td><td>Contenu affiché.</td></tr>
+<tr><td><code>disposition</code></td><td>"grille", "liste"</td><td>Cartes avec image ou liste compacte.</td></tr>
+<tr><td><code>couleur</code></td><td>"#f07d00"</td><td>Couleur des dates, aux couleurs de votre charte.</td></tr>
+<tr><td><code>autourDeMoi</code></td><td>true</td><td>Centre sur la position du visiteur, s’il l’accepte.</td></tr>
+<tr><td><code>fond</code></td><td>"plan", "satellite"</td><td>Fond de carte au départ.</td></tr>
+<tr><td><code>auClic</code></td><td>function (fiche, evenement)</td><td>Appelée au clic ; renvoyer <code>false</code> empêche l’ouverture du lien.</td></tr>
+<tr><td><code>messageVide</code></td><td>texte</td><td>Message quand rien ne correspond.</td></tr>
+<tr><td><code>credit</code></td><td>false</td><td>Masque la mention sous la liste (la citer ailleurs sur la page).</td></tr>
+</tbody></table></div>
+<p>Toutes les <a href="#options">options de recherche</a> s’appliquent aussi. Pour changer les critères : <code>widget.actualiser({ periode: "mois" })</code>.</p>
+</section>
+
+<section id="rest" aria-labelledby="t-rest">
+<h2 id="t-rest">API REST</h2>
+<p>Pour un serveur, une application mobile ou une borne : des requêtes <code>GET</code> qui renvoient du JSON.</p>
+<div class="kv2"><span class="verb">GET</span><code>https://VOTRE-SERVEUR/v1/sorties</code><span class="verb">GET</span><code>https://VOTRE-SERVEUR/v1/lieux</code><span class="verb">GET</span><code>https://VOTRE-SERVEUR/v1/departements</code><span class="verb">GET</span><code>https://VOTRE-SERVEUR/v1/cle</code></div>
+<p>Clé dans l’en-tête <code>X-API-Key</code> (recommandé côté serveur) ou dans le paramètre <code>key</code>.</p>
+<div class="tabs" data-tabs>
+<div class="tabs-bar" role="tablist" aria-label="Langage">
+<button type="button" role="tab" data-lang="curl">curl</button>
+<button type="button" role="tab" data-lang="js">JavaScript</button>
+<button type="button" role="tab" data-lang="php">PHP</button>
+<button type="button" role="tab" data-lang="py">Python</button>
+</div>
+<pre role="tabpanel" data-lang="curl"><code>curl -H "X-API-Key: VOTRE_CLE" \
+  "https://VOTRE-SERVEUR/v1/sorties?lat=46.566&amp;lon=3.333&amp;rayon=25&amp;type=brocante&amp;tri=distance"</code></pre>
+<pre role="tabpanel" data-lang="js"><code>const url = new URL("https://VOTRE-SERVEUR/v1/sorties");
+url.search = new URLSearchParams({ dep: "03", type: "brocante,fete", limite: 20 });
+
+const r = await fetch(url, { headers: { "X-API-Key": process.env.DLC_CLE } });
+const { total, resultats } = await r.json();</code></pre>
+<pre role="tabpanel" data-lang="php"><code>&lt;?php
+$url = "https://VOTRE-SERVEUR/v1/sorties?" . http_build_query([
+  "dep" =&gt; "03", "type" =&gt; "brocante,fete", "limite" =&gt; 20,
+]);
+$ctx = stream_context_create(["http" =&gt; ["header" =&gt; "X-API-Key: " . getenv("DLC_CLE")]]);
+$data = json_decode(file_get_contents($url, false, $ctx), true);
+
+foreach ($data["resultats"] as $s) {
+  echo $s["debut"] . " · " . $s["titre"] . " · " . $s["commune"] . "\n";
+}</code></pre>
+<pre role="tabpanel" data-lang="py"><code>import os, requests
+
+r = requests.get(
+    "https://VOTRE-SERVEUR/v1/sorties",
+    params={"dep": "03", "type": "brocante,fete", "limite": 20},
+    headers={"X-API-Key": os.environ["DLC_CLE"]},
+    timeout=10,
+)
+r.raise_for_status()
+for s in r.json()["resultats"]:
+    print(s["debut"], s["titre"], s["commune"])</code></pre>
+</div>
+<h3>Réponse</h3>
+<pre class="cb"><code>{
+  "total": 37,
+  "page": 1,
+  "limite": 20,
+  "du": "2026-10-14",
+  "au": "9999-12-31",
+  "resultats": [
+    {
+      "id": "dt-3f9a…",
+      "titre": "Vide-greniers d’automne",
+      "type": "brocante",
+      "debut": "2026-10-18",
+      "fin": "2026-10-18",
+      "heure": "07:00",
+      "commune": "Yzeure",
+      "departement": "03",
+      "latitude": 46.565,
+      "longitude": 3.356,
+      "distance_km": 1.8,
+      "gratuit": true,
+      "lien": "https://…",
+      "source": "DATAtourisme"
+    }
+  ],
+  "licence": "Données agrégées par Dans le coin…"
+}</code></pre>
+</section>
+
+<section id="options" aria-labelledby="t-opt">
+<h2 id="t-opt">Paramètres</h2>
+<p>Mêmes noms dans la bibliothèque (objet d’options) et dans l’API REST (paramètres d’adresse), sauf mention.</p>
+<div class="tbl"><table class="ref">
+<thead><tr><th scope="col">Bibliothèque</th><th scope="col">REST</th><th scope="col">Exemple</th><th scope="col">Rôle</th></tr></thead>
+<tbody>
+<tr><td><code>dep</code></td><td><code>dep</code></td><td>"03,58" ou ["03","58"]</td><td>Départements, 8 au plus. Facultatif avec une position ou une clé réglée sur une zone.</td></tr>
+<tr><td><code>types</code></td><td><code>type</code></td><td>["brocante","fete"]</td><td>Sorties : brocante, fete, spectacle, culture, famille, sport, pal. Lieux : office, musee, patrimoine, nature, loisirs.</td></tr>
+<tr><td><code>autour</code></td><td><code>lat</code>, <code>lon</code></td><td>{ lat: 46.566, lon: 3.333 }</td><td>Centre de recherche ; ajoute <code>distance_km</code> à chaque résultat.</td></tr>
+<tr><td><code>rayon</code></td><td><code>rayon</code></td><td>25</td><td>Rayon en km autour du centre (20 par défaut, 300 au plus).</td></tr>
+<tr><td><code>periode</code></td><td>—</td><td>"weekend"</td><td>Raccourci : aujourdhui, demain, weekend, semaine, mois, ou un nombre de jours.</td></tr>
+<tr><td><code>du</code>, <code>au</code></td><td><code>du</code>, <code>au</code></td><td>"2026-10-18" ou une Date</td><td>Période (par défaut, à partir d’aujourd’hui).</td></tr>
+<tr><td><code>tri</code></td><td><code>tri</code></td><td>"distance"</td><td>Plus proches d’abord (sinon par date).</td></tr>
+<tr><td><code>commune</code></td><td><code>commune</code></td><td>"Moulins"</td><td>Une seule commune.</td></tr>
+<tr><td><code>recherche</code></td><td><code>q</code></td><td>"marché de Noël"</td><td>Mot cherché dans le titre, le lieu et la description.</td></tr>
+<tr><td><code>gratuit</code></td><td><code>gratuit=1</code></td><td>true</td><td>Seulement les sorties gratuites.</td></tr>
+<tr><td><code>limite</code>, <code>page</code></td><td><code>limite</code>, <code>page</code></td><td>20, 1</td><td>Pagination : 100 par défaut, 500 au plus.</td></tr>
+</tbody></table></div>
+</section>
+
+<section id="objets" aria-labelledby="t-obj">
+<h2 id="t-obj">Objets renvoyés</h2>
+<p>Chaque réponse contient <code>total</code>, <code>page</code>, <code>limite</code>, <code>resultats</code> et <code>licence</code>.</p>
+<h3>Sortie</h3>
+<div class="tbl"><table class="ref">
+<thead><tr><th scope="col">Champ</th><th scope="col">Type</th><th scope="col">Description</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td>texte</td><td>Identifiant stable.</td></tr>
+<tr><td><code>titre</code>, <code>description</code></td><td>texte</td><td>Nom et présentation.</td></tr>
+<tr><td><code>type</code></td><td>texte</td><td>Catégorie (voir <code>types</code>).</td></tr>
+<tr><td><code>debut</code>, <code>fin</code>, <code>heure</code></td><td>AAAA-MM-JJ, HH:MM</td><td>Dates et heure de début ; <code>autres_dates</code> : nombre d’autres dates.</td></tr>
+<tr><td><code>commune</code>, <code>departement</code>, <code>lieu</code></td><td>texte</td><td>Où cela se passe.</td></tr>
+<tr><td><code>latitude</code>, <code>longitude</code>, <code>distance_km</code></td><td>nombre</td><td>Position, et distance au centre demandé.</td></tr>
+<tr><td><code>gratuit</code></td><td>booléen</td><td>Entrée gratuite.</td></tr>
+<tr><td><code>lien</code>, <code>image</code>, <code>source</code></td><td>texte</td><td>Page d’origine, image, producteur de la donnée.</td></tr>
+</tbody></table></div>
+<h3>Lieu</h3>
+<div class="tbl"><table class="ref">
+<thead><tr><th scope="col">Champ</th><th scope="col">Type</th><th scope="col">Description</th></tr></thead>
+<tbody>
+<tr><td><code>id</code>, <code>nom</code>, <code>type</code>, <code>description</code></td><td>texte</td><td>Identité du lieu.</td></tr>
+<tr><td><code>adresse</code>, <code>commune</code>, <code>departement</code></td><td>texte</td><td>Adresse.</td></tr>
+<tr><td><code>site</code>, <code>telephone</code></td><td>texte</td><td>Contact.</td></tr>
+<tr><td><code>horaires_osm</code></td><td>texte</td><td>Horaires au format OpenStreetMap, par exemple <code>Tu-Su 10:00-18:00</code>.</td></tr>
+<tr><td><code>label</code>, <code>principal</code></td><td>texte, booléen</td><td>Label (Musée de France…) et lieu majeur.</td></tr>
+<tr><td><code>latitude</code>, <code>longitude</code>, <code>distance_km</code></td><td>nombre</td><td>Position.</td></tr>
+</tbody></table></div>
+</section>
+
+<section id="erreurs" aria-labelledby="t-err">
+<h2 id="t-err">Erreurs et quotas</h2>
+<div class="tbl"><table class="ref">
+<thead><tr><th scope="col">Statut</th><th scope="col">Code</th><th scope="col">Signification</th></tr></thead>
+<tbody>
+<tr><td>400</td><td><code>dep_requis</code></td><td>Ni département, ni position, ni zone réglée sur la clé.</td></tr>
+<tr><td>400</td><td><code>trop_de_departements</code></td><td>Plus de 8 départements en un appel.</td></tr>
+<tr><td>401</td><td><code>cle_invalide</code></td><td>Clé absente ou inconnue.</td></tr>
+<tr><td>403</td><td><code>cle_revoquee</code></td><td>Clé désactivée.</td></tr>
+<tr><td>403</td><td><code>origine_refusee</code></td><td>Page appelante non autorisée pour cette clé.</td></tr>
+<tr><td>403</td><td><code>departement_non_autorise</code>, <code>type_non_autorise</code></td><td>Hors des réglages de la clé ; la réponse liste ce qui est autorisé.</td></tr>
+<tr><td>429</td><td><code>quota_atteint</code></td><td>Quota du jour atteint ; il se renouvelle à minuit (UTC).</td></tr>
+</tbody></table></div>
+<p>Chaque réponse porte l’en-tête <code>X-Quota-Restant</code>. Les réponses sont mises en cache 10 minutes : inutile d’appeler plus souvent.</p>
+</section>
+
+<section id="essayer" aria-labelledby="t-ess">
+<h2 id="t-ess">Essayer l’API</h2>
+<p>Composez une requête et lancez-la. Sans clé, la console interroge les données publiques en mode démonstration, avec le même format de réponse.</p>
+<form class="ex" id="ex">
+<div class="ex-g">
+<label>Méthode<select id="ex-m"><option value="/v1/sorties">sorties</option><option value="/v1/lieux">lieux</option><option value="/v1/departements">departements</option><option value="/v1/cle">cle</option></select></label>
+<label>Clé API<input id="ex-cle" type="text" placeholder="dlc_… (facultatif)" autocomplete="off" spellcheck="false"></label>
+<label>Départements<input id="ex-dep" type="text" placeholder="03,58"></label>
+<label>Types<input id="ex-ty" type="text" placeholder="brocante,fete" list="ex-tl"></label>
+<label>Période<select id="ex-p"><option value="">À venir</option><option value="aujourdhui">Aujourd’hui</option><option value="demain">Demain</option><option value="weekend" selected>Ce week-end</option><option value="semaine">7 jours</option><option value="mois">30 jours</option></select></label>
+<label>Commune<input id="ex-com" type="text" placeholder="Moulins"></label>
+<label>Latitude<input id="ex-lat" type="text" inputmode="decimal" value="46.566"></label>
+<label>Longitude<input id="ex-lon" type="text" inputmode="decimal" value="3.333"></label>
+<label>Rayon (km)<input id="ex-r" type="number" min="1" max="300" value="25"></label>
+<label>Recherche<input id="ex-q" type="text" placeholder="marché"></label>
+<label>Tri<select id="ex-tri"><option value="">Date</option><option value="distance">Distance</option></select></label>
+<label>Limite<input id="ex-lim" type="number" min="1" max="500" value="5"></label>
+</div>
+<datalist id="ex-tl"><option value="brocante"><option value="fete"><option value="spectacle"><option value="culture"><option value="famille"><option value="sport"><option value="musee"><option value="office"><option value="patrimoine"><option value="nature"><option value="loisirs"></datalist>
+<p class="ex-act"><button class="btn" type="submit">Exécuter</button> <label class="ck"><input type="checkbox" id="ex-g"> Gratuit seulement</label></p>
+</form>
+<div class="ex-out" id="ex-out" hidden>
+<p class="ex-st"><span id="ex-s"></span> <span id="ex-ms"></span></p>
+<div class="tabs" data-tabs>
+<div class="tabs-bar" role="tablist" aria-label="Forme de la requête">
+<button type="button" role="tab" data-lang="rep">Réponse</button>
+<button type="button" role="tab" data-lang="js">JavaScript</button>
+<button type="button" role="tab" data-lang="curl">curl</button>
+</div>
+<pre role="tabpanel" data-lang="rep"><code id="ex-json"></code></pre>
+<pre role="tabpanel" data-lang="js"><code id="ex-js"></code></pre>
+<pre role="tabpanel" data-lang="curl"><code id="ex-curl"></code></pre>
+</div>
+</div>
+</section>
+
+<section id="conditions" aria-labelledby="t-cond">
+<h2 id="t-cond">Conditions</h2>
+<ul>
+<li>Données mises à jour chaque nuit ; les horaires des lieux viennent d’OpenStreetMap (ODbL).</li>
+<li>Affichez « Dans le coin » et la source de chaque fiche (les widgets le font pour vous). Les données restent sous la licence de leurs producteurs : voir les <a href="mentions-legales.html">mentions légales</a>.</li>
+<li>Une clé peut être suspendue en cas d’usage abusif ou de revente des données.</li>
+<li>Questions, demande de clé ou de quota plus élevé : <a href="mailto:clementer@gmail.com">clementer@gmail.com</a>.</li>
+</ul>
+</section>
+
+</div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+  var API = (window.SORTIES_CONFIG && SORTIES_CONFIG.apiUrl || "").replace(/\/+$/, "");
+  var DLC = window.DansLeCoin;
+  /* Sur cette page, les démonstrations utilisent toujours les données publiques (sans clé). */
+  if (DLC) DLC.configurer({ serveur: null, donnees: "data/" });
+
+  /* ---- Coloration simple et remplacement de l'adresse et de la clé dans les exemples ---- */
+  var esc = function (s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); };
+  function colorer(t) {
+    return esc(t).replace(/(&lt;!--[\s\S]*?--&gt;)|(\/\/[^\n]*|^\s*#[^\n!]*$)|("(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*')|\b(const|let|var|function|new|await|async|return|for|of|if|try|catch|import|foreach|as|echo|print|true|false|null)\b/gm,
+      function (m, c1, c2, s, k) { return c1 || c2 ? '<span class="tk-c">' + m + "</span>" : s ? '<span class="tk-s">' + m + "</span>" : '<span class="tk-k">' + m + "</span>"; });
+  }
+  var cleSaisie = "";
+  function rendre(code) {
+    if (code.dataset.orig == null) code.dataset.orig = code.textContent;
+    var t = code.dataset.orig;
+    if (API) t = t.split("https://VOTRE-SERVEUR").join(API);
+    if (cleSaisie) t = t.split("VOTRE_CLE").join(cleSaisie);
+    code.innerHTML = colorer(t);
+  }
+  function tout() { document.querySelectorAll(".api pre:not(.no-hl) code").forEach(rendre); }
+
+  /* ---- Onglets de code (le langage choisi est retenu pour toute la page) et bouton Copier ---- */
+  var prefere = null; try { prefere = localStorage.getItem("dlc-lang"); } catch (e) {}
+  function choisir(box, lang, focus) {
+    var tabs = box.querySelectorAll("[role=tab]"), pans = box.querySelectorAll("[role=tabpanel]"), ok = false;
+    tabs.forEach(function (t) { if (t.dataset.lang === lang) ok = true; });
+    if (!ok) lang = tabs[0].dataset.lang;
+    tabs.forEach(function (t) { var on = t.dataset.lang === lang; t.setAttribute("aria-selected", on); t.tabIndex = on ? 0 : -1; if (on && focus) t.focus(); });
+    pans.forEach(function (p) { p.hidden = p.dataset.lang !== lang; });
+  }
+  var n = 0;
+  document.querySelectorAll("[data-tabs]").forEach(function (box) {
+    var tabs = [].slice.call(box.querySelectorAll("[role=tab]")), pans = box.querySelectorAll("[role=tabpanel]");
+    tabs.forEach(function (t) { var id = "tb" + (++n); t.id = id; pans.forEach(function (p) { if (p.dataset.lang === t.dataset.lang) { p.setAttribute("aria-labelledby", id); p.tabIndex = 0; } }); });
+    box.addEventListener("click", function (e) { var t = e.target.closest("[role=tab]"); if (!t) return; choisir(box, t.dataset.lang);
+      if (box.closest("#essayer")) return; prefere = t.dataset.lang; try { localStorage.setItem("dlc-lang", prefere); } catch (er) {}
+      document.querySelectorAll("[data-tabs]").forEach(function (b) { if (b !== box && !b.closest("#essayer")) choisir(b, prefere); }); });
+    box.querySelector(".tabs-bar").addEventListener("keydown", function (e) {
+      var i = tabs.indexOf(document.activeElement); if (i < 0) return;
+      if (e.key === "ArrowRight" || e.key === "ArrowLeft") { e.preventDefault(); choisir(box, tabs[(i + (e.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length].dataset.lang, true); }
+    });
+    choisir(box, box.closest("#essayer") ? "rep" : prefere);
+  });
+  /* Bouton Copier dans la barre du bloc (barre ajoutée aux blocs isolés) */
+  document.querySelectorAll(".api pre").forEach(function (pre) {
+    if (pre.closest("[data-tabs]")) return;
+    var box = document.createElement("div"); box.className = "tabs"; var bar = document.createElement("div"); bar.className = "tabs-bar";
+    pre.parentNode.insertBefore(box, pre); box.append(bar, pre);
+  });
+  document.querySelectorAll(".api .tabs").forEach(function (box) {
+    var b = document.createElement("button"); b.type = "button"; b.className = "cp"; b.textContent = "Copier"; b.setAttribute("aria-label", "Copier le code");
+    b.onclick = function () { var pre = [].slice.call(box.querySelectorAll("pre")).filter(function (x) { return !x.hidden; })[0], code = pre.querySelector("code"), t = code.textContent;
+      (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function () { b.textContent = "Copié ✓"; }, function () {
+        var r = document.createRange(); r.selectNodeContents(code); var s = getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = "Ctrl+C"; });
+      setTimeout(function () { b.textContent = "Copier"; }, 1600); };
+    box.querySelector(".tabs-bar").append(b);
+  });
+
+  /* ---- Sommaire : section courante surlignée ---- */
+  var liens = [].slice.call(document.querySelectorAll(".api-nav a"));
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (!e.isIntersecting) return;
+      liens.forEach(function (a) { var on = a.getAttribute("href") === "#" + e.target.id; a.classList.toggle("on", on); if (on && a.scrollIntoView && window.innerWidth < 900) { var nav = a.parentNode; nav.scrollTo({ left: a.offsetLeft - 16, behavior: "smooth" }); } }); }); },
+      { rootMargin: "-20% 0px -70% 0px" });
+    document.querySelectorAll(".api-doc section").forEach(function (s) { io.observe(s); });
+  }
+
+  /* ---- Démonstration des widgets ---- */
+  var liste = null, carte = null;
+  function demo() {
+    var v = $("demo-v").value.split(","), t = $("demo-t").value, p = $("demo-p").value;
+    var o = { autour: { lat: +v[0], lon: +v[1] }, rayon: 25, periode: p, tri: "distance" }; if (t) o.types = [t];
+    var opts = '{\n  autour: { lat: ' + v[0] + ', lon: ' + v[1] + ' },  // ' + v[2] + '\n  rayon: 25,\n  periode: "' + p + '",' + (t ? '\n  types: ["' + t + '"],' : "");
+    $("demo-code-l").dataset.orig = 'new DansLeCoin.Liste("#agenda", ' + opts + '\n  limite: 6\n});';
+    $("demo-code-c").dataset.orig = 'new DansLeCoin.Carte("#carte", ' + opts + '\n  zoom: 10\n});';
+    rendre($("demo-code-l")); rendre($("demo-code-c"));
+    if (!DLC) return;
+    var ol = Object.assign({ limite: 6 }, o), oc = Object.assign({ limite: 300, zoom: 9.5 }, o);
+    if (!liste) liste = new DLC.Liste("#demo-liste", ol); else liste.actualiser(ol);
+    if (!carte) carte = new DLC.Carte("#demo-carte", oc);
+    else carte.pret.then(function () { carte.map.jumpTo({ center: [o.autour.lon, o.autour.lat], zoom: 9.5 }); return carte.actualiser(oc); });
+  }
+  $("demo-f").addEventListener("change", demo);
+
+  /* ---- Console « Essayer » ---- */
+  function options() {
+    var o = {}, val = function (id) { return $(id).value.trim(); };
+    if (val("ex-dep")) o.dep = val("ex-dep");
+    if (val("ex-ty")) o.types = val("ex-ty").split(",").map(function (x) { return x.trim(); });
+    if (val("ex-p")) o.periode = val("ex-p");
+    if (val("ex-com")) o.commune = val("ex-com");
+    var la = parseFloat(val("ex-lat").replace(",", ".")), lo = parseFloat(val("ex-lon").replace(",", "."));
+    if (isFinite(la) && isFinite(lo)) { o.autour = { lat: la, lon: lo }; o.rayon = +val("ex-r") || 20; }
+    if (val("ex-q")) o.recherche = val("ex-q");
+    if (val("ex-tri")) o.tri = val("ex-tri");
+    if ($("ex-g").checked) o.gratuit = true;
+    o.limite = +val("ex-lim") || 5;
+    return o;
+  }
+  function ecrireOptions(o) {
+    var lignes = Object.keys(o).map(function (k) { return "  " + k + ": " + JSON.stringify(o[k]).replace(/,"/g, ', "').replace(/"(lat|lon)":/g, "$1: ").replace(/^\{/, "{ ").replace(/\}$/, " }"); });
+    return lignes.length ? "{\n" + lignes.join(",\n") + "\n}" : "";
+  }
+  $("ex").addEventListener("submit", function (e) {
+    e.preventDefault(); if (!DLC) return;
+    var m = $("ex-m").value, o = /sorties|lieux/.test(m) ? options() : {}, cle = $("ex-cle").value.trim();
+    cleSaisie = cle; tout();
+    var reel = !!(cle && API);
+    DLC.configurer(reel ? { cle: cle, serveur: API } : { cle: cle || null, serveur: null });
+    var url = DLC.url(m, o).replace(/[?&]key=[^&]*/, ""), avecCle = url + (url.indexOf("?") < 0 ? "?" : "&") + "key=" + (cle || "VOTRE_CLE");
+    var nom = { "/v1/sorties": "sorties", "/v1/lieux": "lieux", "/v1/departements": "departements", "/v1/cle": "cle" }[m];
+    $("ex-js").dataset.orig = "const r = await DansLeCoin." + nom + "(" + ecrireOptions(o) + ");\nconsole.log(r.total, r.resultats);";
+    $("ex-curl").dataset.orig = 'curl "' + avecCle.replace(/^https:\/\/VOTRE-SERVEUR/, API || "https://VOTRE-SERVEUR") + '"';
+    rendre($("ex-js")); rendre($("ex-curl"));
+    $("ex-out").hidden = false; $("ex-s").className = ""; $("ex-s").textContent = "Requête en cours…"; $("ex-ms").textContent = "";
+    var t0 = performance.now();
+    var appel = { "/v1/sorties": DLC.sorties, "/v1/lieux": DLC.lieux, "/v1/departements": DLC.departements, "/v1/cle": DLC.cle }[m];
+    appel(o).then(function (r) {
+      var copie = Object.assign({}, r); delete copie.suivante;
+      if (copie.resultats && copie.resultats.length > 3 && m === "/v1/departements") copie.resultats = copie.resultats.slice(0, 5).concat(["… " + (r.resultats.length - 5) + " de plus"]);
+      $("ex-s").className = "ok"; $("ex-s").textContent = "200 OK" + (r.demo ? " · mode démonstration (données publiques, sans clé)" : "");
+      $("ex-ms").textContent = Math.round(performance.now() - t0) + " ms" + (r.total != null ? " · " + r.total.toLocaleString("fr-FR") + " résultat" + (r.total > 1 ? "s" : "") : "");
+      $("ex-json").dataset.orig = JSON.stringify(copie, null, 2); rendre($("ex-json"));
+    }, function (er) {
+      $("ex-s").className = "ko"; $("ex-s").textContent = (er.statut || "Erreur") + " " + er.code; $("ex-ms").textContent = er.message;
+      $("ex-json").dataset.orig = JSON.stringify(er.details || { erreur: er.code, message: er.message }, null, 2); rendre($("ex-json"));
+    }).then(function () { DLC.configurer({ serveur: null }); });
+  });
+
+  tout();
+  if (DLC) DLC.pret.then(demo); else { $("demo-liste").textContent = "Bibliothèque indisponible."; demo(); }
+})();
+</script>

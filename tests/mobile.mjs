@@ -26,7 +26,7 @@ async function audit(p,label){
         if(va&&vc&&!cache)out.overlap.push(a.t+'  ⟂  '+c.t+' ['+Math.round(w)+'x'+Math.round(h)+']')}}
     // textes coupés (overflow caché sans ellipse voulue) et éléments plus larges que l'écran
     document.querySelectorAll('body *').forEach(el=>{if(!vis(el))return;const s=getComputedStyle(el);const r=el.getBoundingClientRect();
-      if(r.right>vw+2&&!el.closest('.sbl-rail,.sbl-mh .mc,.maplibregl-map,.tbl,.sbl-tabs,.seg'))out.clipped.push('déborde: '+(el.id||el.className||el.tagName)+' '+Math.round(r.right));
+      if(r.right>vw+2&&!el.closest('.sbl-rail,.sbl-mh .mc,.maplibregl-map,.tbl,.sbl-tabs,.seg,.api pre,.api-nav,.tabs-bar,.dlc-map'))out.clipped.push('déborde: '+(el.id||el.className||el.tagName)+' '+Math.round(r.right));
       if([...el.childNodes].some(x=>x.nodeType===3&&x.textContent.trim())){const fs=parseFloat(s.fontSize);if(fs<11.5)out.tiny.push((el.className||el.tagName)+'='+fs);
         if((s.overflow==='hidden'||s.overflowX==='hidden')&&s.textOverflow!=='ellipsis'&&el.scrollWidth>el.clientWidth+2)out.clipped.push('coupé: '+(el.className||el.tagName)+' «'+el.textContent.trim().slice(0,30)+'»')}
       if(el.matches('button,a,input,select,[role=tab]')&&!el.closest('p,li,dd,.sbl-fine')){if(r.height<32||r.width<32)out.smallTap.push((el.id||el.className||el.tagName)+' '+Math.round(r.width)+'x'+Math.round(r.height))}});
@@ -57,6 +57,11 @@ for(const [name,dev] of PHONES){ if(only&&name!==only)continue;
   const day=await p.$('#sbl-cal button .n'); if(day){await (await day.evaluateHandle(e=>e.closest('button'))).tap(); await p.waitForTimeout(800); await audit(p,name+' jour'); await shot('10-jour')}
   await p.tap('.sbl-tab[data-v="list"]'); await p.evaluate(()=>scrollTo(0,0)); await p.tap('#sbl-prop'); await p.waitForTimeout(800); await audit(p,name+' proposer'); await shot('11-proposer');
   await p.keyboard.press('Escape'); await p.waitForTimeout(300); await p.tap('#sbl-reg'); await p.waitForTimeout(800); await audit(p,name+' départements'); await shot('12-region');
+  // page API (documentation, widgets en direct, console « Essayer »)
+  await p.goto(BASE+'/api.html'); await p.waitForTimeout(LOCAL?3000:7000); await audit(p,name+' api haut'); await shot('13-api');
+  for(const [id,n] of [['widgets','14-api-widgets'],['rest','15-api-rest']]){await p.evaluate(i=>document.getElementById(i).scrollIntoView(),id); await p.waitForTimeout(700); await audit(p,name+' api '+id); await shot(n)}
+  await p.evaluate(()=>document.getElementById('essayer').scrollIntoView()); await p.tap('#ex button[type=submit]'); await p.waitForTimeout(1500);
+  await p.evaluate(()=>document.getElementById('ex-out').scrollIntoView({block:'start'})); await p.waitForTimeout(400); await audit(p,name+' api essayer'); await shot('16-api-essayer');
   report.push({label:name+' erreurs JS',errs});
   await ctx.close();
 }

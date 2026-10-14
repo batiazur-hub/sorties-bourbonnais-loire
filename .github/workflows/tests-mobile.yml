@@ -3,6 +3,8 @@ on:
   workflow_dispatch:
   push:
     paths: ["index.html", "*.html", "pages.css", "tests/**", ".github/workflows/tests-mobile.yml"]
+permissions:
+  contents: write
 jobs:
   mobile:
     runs-on: ubuntu-latest
@@ -19,3 +21,15 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with: { name: captures-mobile, path: captures/, retention-days: 14 }
+      - name: Planches de contrôle sur la branche « captures »
+        if: always()
+        run: |
+          pip install --quiet pillow
+          python3 tests/planche.py captures planches
+          cp captures/rapport.json planches/ 2>/dev/null || true
+          cd planches
+          git init -q && git checkout -q -b captures
+          git config user.name "github-actions[bot]"
+          git config user.email "41898299+github-actions[bot]@users.noreply.github.com"
+          git add . && git commit -qm "Captures des tests mobiles ($(date +%F\ %H:%M))"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" captures

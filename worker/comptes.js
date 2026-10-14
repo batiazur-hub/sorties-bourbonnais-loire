@@ -13,8 +13,8 @@
    Secrets : BREVO_KEY (envoi des e-mails, prestataire français, données hébergées dans l'UE), SIGNATURE_KEY (liens de désinscription).
    Variables : MAIL_FROM (expéditeur, ex. bonjour@trucsafaire.fr), SITE_URL (adresse du site, pour les liens). */
 
-export const VERSION_CONSENTEMENT = "newsletter-v1-2026-10";
-export const TEXTE_CONSENTEMENT = "J’accepte de recevoir par e-mail une sélection hebdomadaire des sorties autour de chez moi, selon mes préférences. Désinscription en un clic dans chaque e-mail.";
+export const VERSION_CONSENTEMENT = "newsletter-v2-2026-10";
+export const TEXTE_CONSENTEMENT = "Oui, je veux recevoir « Le Truc de la semaine » : chaque semaine par e-mail, une sélection des sorties autour de chez moi, selon mes préférences. Désinscription en un clic dans chaque e-mail.";
 const CATS = ["brocante", "fete", "spectacle", "culture", "famille", "sport", "pal"];
 const SESSION_JOURS = 90, JETON_MIN = 30, INACTIF_ANS = 3;
 const SITE_DEFAUT = "https://batiazur-hub.github.io/sorties-bourbonnais-loire/";
@@ -68,7 +68,7 @@ async function limite(env, cle, max, secondes) {
 }
 
 async function envoyerLien(env, email, lien, nouveau) {
-  const sujet = nouveau ? "Confirmez votre compte Trucs à faire" : "Votre lien de connexion à Trucs à faire";
+  const sujet = nouveau ? "Bienvenue chez les Trucophiles : confirmez votre compte" : "Votre lien pour retrouver vos trucs";
   const intro = nouveau ? "Bienvenue ! Cliquez sur le bouton pour confirmer votre adresse et activer votre compte Trucophile." : "Cliquez sur le bouton pour vous connecter.";
   const html = `<!doctype html><html lang="fr"><body style="margin:0;background:#f1f3f8;font-family:Arial,sans-serif;color:#141a33">
 <div style="max-width:520px;margin:0 auto;padding:32px 20px"><p style="font-size:22px;font-weight:700;margin:0 0 18px;color:#2546d8">trucs à faire</p>
@@ -106,7 +106,7 @@ export async function comptes(req, env, url, p, cors, json) {
     const c = /^[0-9a-f]{24}$/.test(id) && await env.DLC.get("cpt:" + id, "json");
     if (!c || sig !== await signature(env, id)) return page("Lien invalide", "Ce lien de désinscription n’est pas valide. Vous pouvez aussi vous désinscrire depuis « Mon compte ».", env);
     consentir(c, false, "lien de désinscription"); await enregistrer(env, c);
-    return page("Vous êtes désinscrit", "Vous ne recevrez plus la sélection hebdomadaire. Votre compte et vos favoris sont conservés.", env);
+    return page("Vous êtes désinscrit", "Vous ne recevrez plus « Le Truc de la semaine ». Votre compte et vos favoris sont conservés.", env);
   }
   if (!p.startsWith("/compte")) return null;
 
@@ -135,7 +135,7 @@ export async function comptes(req, env, url, p, cors, json) {
     const jeton = t(b.jeton, 80);
     if (!/^[0-9a-f]{64}$/.test(jeton)) return json({ erreur: "lien_invalide" }, 400, cors);
     const kj = "jet:" + await empreinte(jeton), j = await env.DLC.get(kj, "json");
-    if (!j) return json({ erreur: "lien_expire", message: "Ce lien a expiré ou a déjà servi. Demandez-en un nouveau." }, 400, cors);
+    if (!j) return json({ erreur: "lien_expire", message: "Ce lien a fait son temps (il a expiré ou a déjà servi). On vous en renvoie un ?" }, 400, cors);
     await env.DLC.delete(kj);
     let c = await env.DLC.get("cpt:" + j.id, "json");
     if (!c) {

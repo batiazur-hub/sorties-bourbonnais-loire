@@ -760,7 +760,7 @@ textarea.sbl-in{min-height:100px;resize:vertical}
 <div class="sbl" id="sbl">
 <header class="sbl-top"><div class="in">
   <a class="sbl-brand" href="#" id="sbl-home" aria-label="Trucs à faire, accueil"><svg class="ico" viewBox="0 0 64 64" width="34" height="34" aria-hidden="true"><path d="M32 0C52.5 0 64 4.6 64 32S52.5 64 32 64 0 59.4 0 32 11.5 0 32 0Z" fill="#2546D8"/><path d="M29.5 13.5V38c0 7.5 4.2 12 11.6 12h2.4" fill="none" stroke="#fff" stroke-width="6.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M17.5 27.6 24.6 34C31.5 26.9 38 22.2 46.4 18.6" fill="none" stroke="#fff" stroke-width="6.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="48.6" cy="46.4" r="4.3" fill="#FF8A3D"/></svg><span class="mk">trucs à faire</span></a>
-  <div class="sbl-acts"><button class="sbl-hb alt" type="button" id="sbl-mod" hidden>À valider</button><button class="sbl-hb" type="button" id="sbl-prop" aria-label="Proposer une sortie">Proposer<span class="lg"> une sortie</span></button><button class="sbl-hb acc" type="button" id="sbl-acc" hidden></button></div>
+  <div class="sbl-acts"><button class="sbl-hb alt" type="button" id="sbl-mod" hidden>À valider</button><button class="sbl-hb" type="button" id="sbl-prop" aria-label="Proposer un truc">Proposer<span class="lg"> un truc</span></button><button class="sbl-hb acc" type="button" id="sbl-acc" hidden></button></div>
 </div></header>
 <section class="sbl-intro" aria-label="Présentation"><h1>Que faire autour de chez vous&nbsp;?</h1><p id="sbl-sub"></p><button type="button" class="sbl-reg" id="sbl-reg"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg><span id="sbl-regl"></span><span class="ch">Changer</span></button></section>
 <div class="sbl-sbar" role="search"><div class="sbl-sbox" id="sbl-sbox">
@@ -806,7 +806,7 @@ textarea.sbl-in{min-height:100px;resize:vertical}
 </main>
 
 <footer class="sbl-foot">
-  <details class="sbl-srcd" id="sbl-srcd"><summary>Vous connaissez une source d’événements ? Proposez-la</summary>
+  <details class="sbl-srcd" id="sbl-srcd"><summary>Vous connaissez un bon truc ? Proposez une source d’événements</summary>
   <form class="sbl-src" id="sbl-sf" novalidate>
         <p>Agenda de mairie, page d’association, office de tourisme, groupe Facebook… Indiquez-la ici, elle sera étudiée pour alimenter l’outil.</p>
     <div class="row"><label class="vh" for="sf-u">Adresse ou nom de la source</label><input class="sbl-in" id="sf-u" maxlength="200" placeholder="https://… ou « Comité des fêtes de Cercy-la-Tour »">
@@ -815,7 +815,7 @@ textarea.sbl-in{min-height:100px;resize:vertical}
     <p class="sbl-sfm" id="sf-msg" role="status"></p>
   </form>
   </details>
-  <p class="sbl-footacc" id="sbl-footacc" hidden><b>Trucophile, c’est gratuit.</b> Favoris illimités, alertes près de chez vous, sélection de la semaine. <button type="button" class="lnk" data-acc>Créer mon compte</button> · <a href="offres.html">Toutes les offres</a></p>
+  <p class="sbl-footacc" id="sbl-footacc" hidden><b>Trucophile, c’est gratuit.</b> Favoris illimités, alertes près de chez vous et « Le Truc de la semaine » par e-mail. <button type="button" class="lnk" data-acc>Rejoindre les Trucophiles</button> · <a href="offres.html">Toutes les offres</a></p>
   <p class="sbl-fine">Mis à jour chaque nuit. Un organisateur peut changer une date&nbsp;: vérifiez sur la fiche source avant de vous déplacer. Fonds de carte © IGN, via cartes.gouv.fr. Photos de communes&nbsp;: Wikipédia et Wikimedia Commons.</p>
   <nav class="sbl-legal" aria-label="Informations légales">
     <a href="plan-du-site.html">Plan du site</a><a href="mentions-legales.html">Mentions légales</a><a href="cgu.html">Conditions d’utilisation</a><a href="confidentialite.html">Confidentialité</a><a href="intelligence-artificielle.html">Intelligence artificielle</a><a href="accessibilite.html">Accessibilité</a><a href="integrer.html">Intégrer l’agenda</a><a href="api.html">API</a><span class="by">Conçu par Saryn Digital</span>
@@ -1142,9 +1142,9 @@ function list(items){
   if(home){
     $("sbl-sum").textContent="";$("sbl-info").textContent="";
     const sec=(titre,items,mk,tout)=>{if(!items.length)return;const h=document.createElement("div");h.className="sbl-wkh";h.innerHTML='<h2></h2>';h.firstChild.textContent=titre;
-      if(tout){const b=document.createElement("button");b.type="button";b.textContent="Tout voir";b.onclick=tout;h.append(b)}
+      if(tout){const b=document.createElement("button");b.type="button";b.textContent="Tous les trucs";b.onclick=tout;h.append(b)}
       const rail=document.createElement("div");rail.className="sbl-rail";items.forEach(x=>rail.append(mk(x)));wk.append(h,rail)};
-    sec("Ce week-end",weekendPicks(),card,()=>setQ("ce week-end"));
+    sec("Les trucs du week-end",weekendPicks(),card,()=>setQ("ce week-end"));
     const t=today(),fin=add(t,7),sem=EVENTS.filter(e=>!e.long&&e.S>=t&&e.S<=fin&&matchBase(e)&&e.img).slice(0,12);
     if(sem.length>=4)sec("Cette semaine, en images",sem,card,()=>setQ("cette semaine"));
     sec("À visiter près d’ici",homeLieux(),lieuCard,()=>setQ("à visiter "+(REGION.length===1?dansDep(REGION[0]):"")));
@@ -1154,12 +1154,12 @@ function list(items){
   }
   if(!st.day&&!st.q){
     const picks=weekendPicks();
-    if(picks.length){const h=document.createElement("div");h.className="sbl-wkh";h.innerHTML='<h2>Ce week-end</h2>';
-      const all=document.createElement("button");all.type="button";all.textContent="Tout voir";all.onclick=()=>setQ("ce week-end");h.append(all);
+    if(picks.length){const h=document.createElement("div");h.className="sbl-wkh";h.innerHTML='<h2>Les trucs du week-end</h2>';
+      const all=document.createElement("button");all.type="button";all.textContent="Tous les trucs";all.onclick=()=>setQ("ce week-end");h.append(all);
       const rail=document.createElement("div");rail.className="sbl-rail";picks.forEach(e=>rail.append(card(e)));wk.append(h,rail)}
   }
   {const lr=lieuxRail();if(lr)wk.append(lr)}
-  if(!n){box.innerHTML='<p class="sbl-none">Rien ne correspond à ces critères. Élargissez la période ou retirez un filtre.</p>';return}
+  if(!n){box.innerHTML='<p class="sbl-none">Pas de truc par ici… Élargissez la période ou la zone, ou retirez un filtre.</p>';return}
   const t=today(),a0=st.day?P(st.day):t;let key=null,cnt=0,hd=null,grp=null,vus=0;
   const all=items;items=items.slice(0,st.lim||LIM0);
   items.forEach(e=>{
@@ -1171,9 +1171,9 @@ function list(items){
       const s=document.createElement("span");hd.append(h,s);grp=document.createElement("div");grp.className="sbl-grp";box.append(hd,grp);cnt=0}
     cnt++;hd.lastChild.textContent=cnt+(cnt>1?" sorties":" sortie");
     grp.append(evRow(e,ref));
-    if(++vus===8&&nudgeOk())box.append(ctaCard("semaine","Recevez ces sorties avant tout le monde","Compte gratuit : vos favoris sur tous vos appareils et une sélection chaque semaine autour de chez vous.","Créer mon compte gratuit"));
+    if(++vus===8&&nudgeOk())box.append(ctaCard("semaine","Recevez ces sorties avant tout le monde","Compte gratuit : vos favoris sur tous vos appareils et une sélection chaque semaine autour de chez vous.","Rejoindre les Trucophiles"));
   });
-  if(all.length>items.length){const m=document.createElement("button");m.type="button";m.className="sbl-btn sbl-moreall";m.textContent="Afficher plus de sorties ("+(all.length-items.length).toLocaleString("fr-FR")+" restantes)";m.onclick=()=>{st.lim=(st.lim||LIM0)+LIM0;list(pick())};box.append(m)}
+  if(all.length>items.length){const m=document.createElement("button");m.type="button";m.className="sbl-btn sbl-moreall";m.textContent="Encore des trucs ("+(all.length-items.length).toLocaleString("fr-FR")+" restantes)";m.onclick=()=>{st.lim=(st.lim||LIM0)+LIM0;list(pick())};box.append(m)}
 }
 function meta(e){const bits=[];if(e.g)bits.push("Gratuit");if(e.h)bits.push(hh(e.h));bits.push(e.w);if(!e.long&&+e.S!==+e.E)bits.push("jusqu’au "+e.E.getDate()+" "+MO[e.E.getMonth()]);if(e.long)bits.push("jusqu’au "+e.E.getDate()+" "+MO[e.E.getMonth()]);return bits.join(" · ")}
 /* Ligne compacte d'une sortie : heure, catégorie, titre, commune.
@@ -1440,7 +1440,7 @@ function sheet(e){
   '<div class="sbl-hint" id="sbl-h"></div></div><div class="sbl-add"><h3>Y aller</h3><div class="sbl-btns" id="sbl-gps"></div></div></div></div>';
   $("sbl-st").textContent=e.t;h.querySelector(".kind").textContent=CATS[e.cat][0]+" · "+depName(e.z);
   if(accOn()){FICHES++;h.querySelector(".top").append(favBtn(e,true));
-    if(!ACC.c){const a=document.createElement("button");a.type="button";a.className="sbl-alrt";a.innerHTML=icon("bell",18)+"<span></span>";a.lastChild.textContent="Être prévenu des prochaines sorties « "+CATS[e.cat][1].toLowerCase()+" » près de chez moi";a.onclick=()=>openCompte("alerte",e);$("sbl-lk").after(a)}}
+    if(!ACC.c){const a=document.createElement("button");a.type="button";a.className="sbl-alrt";a.innerHTML=icon("bell",18)+"<span></span>";a.lastChild.textContent="Me prévenir des prochains trucs comme ça près de chez moi";a.onclick=()=>openCompte("alerte",e);$("sbl-lk").after(a)}}
   {const bd=badge(e);if(bd){bd.classList.add("lg");$("sbl-st").after(bd)}}
   const hero=$("sbl-hero");hero.style.setProperty("--pc","var(--sbl-p-"+e.cat+")");
   if(e.img){const im=new Image();im.onload=()=>{hero.classList.add("ph","poster");hero.style.setProperty("--img",'url("'+im.src+'")');const p=document.createElement("img");p.className="pst";p.src=im.src;p.alt="Affiche : "+e.t;hero.prepend(p);
@@ -1908,7 +1908,7 @@ try{ACC.tok=localStorage.getItem("sbl-ses")||null;ACC.c=JSON.parse(localStorage.
 if(!ACC.tok)ACC.c=null;
 let FAV=[];try{FAV=(JSON.parse(localStorage.getItem("sbl-fav")||"[]")||[]).filter(x=>typeof x==="string")}catch(_){}
 const FAV_LIBRE=5,RAYONS=[10,20,40,80];
-const CONSENT_NL="Oui, je veux recevoir chaque semaine par e-mail une sélection des sorties autour de chez moi, selon mes préférences. Désinscription en un clic dans chaque e-mail.";
+const CONSENT_NL="Oui, je veux recevoir « Le Truc de la semaine » : chaque semaine par e-mail, une sélection des sorties autour de chez moi, selon mes préférences. Désinscription en un clic dans chaque e-mail.";
 const accOn=()=>(API||ACC.apercu)&&!KIOSK&&!ROOT.classList.contains("embed");
 function lsSet(k,v){try{if(v==null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(_){}}
 function lsGet(k){try{return localStorage.getItem(k)}catch(_){return null}}
@@ -1923,9 +1923,9 @@ const isFav=id=>FAV.includes(id);
 let favT;function favSync(){if(!ACC.tok)return;clearTimeout(favT);favT=setTimeout(()=>accCall("/compte",{fav:FAV}).then(j=>{ACC.c=j.compte;accSave()}).catch(()=>{}),700)}
 function favBtns(){document.querySelectorAll("[data-fav]").forEach(b=>{const on=isFav(b.dataset.fav);b.setAttribute("aria-pressed",on);b.setAttribute("aria-label",on?"Retirer des favoris":"Ajouter aux favoris");const l=b.querySelector(".l");if(l)l.textContent=on?"Gardée":"Garder"})}
 function toggleFav(e){
-  if(isFav(e.id))FAV=FAV.filter(x=>x!==e.id);
+  if(isFav(e.id)){FAV=FAV.filter(x=>x!==e.id);toast("Truc retiré")}
   else{if(accOn()&&!ACC.c&&FAV.length>=FAV_LIBRE){openCompte("fav",e);return}
-    FAV.push(e.id);toast(ACC.c||!accOn()?"Ajoutée à vos favoris":"Ajoutée à vos favoris ("+FAV.length+"/"+FAV_LIBRE+" sans compte)")}
+    FAV.push(e.id);toast(ACC.c||!accOn()?"Truc gardé !":"Truc gardé ! ("+FAV.length+"/"+FAV_LIBRE+" sans compte)")}
   accSave();favSync();favBtns()}
 function favBtn(e,label){const b=document.createElement("button");b.type="button";b.className="sbl-fav"+(label?" wl":"");b.dataset.fav=e.id;
   b.innerHTML='<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>'+(label?'<span class="l"></span>':"");
@@ -1934,7 +1934,7 @@ function favBtn(e,label){const b=document.createElement("button");b.type="button
 /* En-tête : « Créer un compte » ou « Mon compte » */
 function accUI(){const b=$("sbl-acc");if(!b)return;b.hidden=!accOn();
   if(ACC.c){b.classList.add("in");b.innerHTML='<span class="av" aria-hidden="true"></span><span class="lg">Mon compte</span>';b.firstChild.textContent=(ACC.c.email||"?")[0].toUpperCase();b.setAttribute("aria-label","Mon compte")}
-  else{b.classList.remove("in");b.innerHTML=icon("user",18)+'<span>Créer un compte</span>';b.setAttribute("aria-label","Créer un compte gratuit")}
+  else{b.classList.remove("in");b.innerHTML=icon("user",18)+'<span>Rejoindre les Trucophiles</span>';b.setAttribute("aria-label","Rejoindre les Trucophiles : compte gratuit")}
   const pv=$("sbl-pourvous");if(pv)pourVous(pv);
   {const v=accOn()&&!ACC.c,ca=$("sbl-calacc"),fa=$("sbl-footacc");if(ca)ca.hidden=!v;if(fa)fa.hidden=!v}}
 
@@ -1944,7 +1944,7 @@ const RAISONS={
   alerte:["Soyez prévenu des prochaines","Dites-nous où vous êtes et ce que vous aimez : on vous prévient des nouvelles sorties autour de chez vous."],
   semaine:["Chaque semaine, les sorties près de chez vous","Choisissez votre commune et un rayon : on vous envoie la sélection avant le week-end."],
   pro:["Truc & Co arrive bientôt","Créez d’abord votre compte gratuit : vous serez parmi les premiers prévenus à l’ouverture de Truc & Co."],
-  login:["Se connecter","Indiquez l’adresse e-mail de votre compte : vous recevrez un lien de connexion, sans mot de passe."]};
+  login:["Retrouver mes trucs","Indiquez l’adresse e-mail de votre compte : vous recevrez un lien de connexion, sans mot de passe."]};
 function openCompte(raison,e){
   if(ACC.c&&raison!=="login")return monCompte();
   loadCommunes();const login=raison==="login",R=RAISONS[raison]||RAISONS.def;
@@ -1958,10 +1958,10 @@ function openCompte(raison,e){
       '<fieldset class="sbl-chips"><legend>Ce qui m’intéresse <span class="opt">(facultatif)</span></legend>'+Object.keys(CATS).filter(k=>k!=="pal").map(k=>'<label><input type="checkbox" name="ac-c" value="'+k+'"'+(cats.has(k)?" checked":"")+'><span>'+icon(k,15)+CATS[k][1]+'</span></label>').join("")+'</fieldset>'+
       '<label class="sbl-nl"><input type="checkbox" id="ac-nl"><span>'+CONSENT_NL+'</span></label>')+
     '<p class="sbl-err" id="ac-err" role="alert"></p>'+
-    '<div class="sbl-btns"><button class="sbl-btn go" type="submit" id="ac-go">'+(login?"Recevoir mon lien de connexion":"Créer mon compte gratuit")+'</button></div>'+
+    '<div class="sbl-btns"><button class="sbl-btn go" type="submit" id="ac-go">'+(login?"Recevoir mon lien de connexion":"Rejoindre les Trucophiles")+'</button></div>'+
     (login?'':'<p class="sbl-acm">En créant un compte, vous acceptez les <a href="cgu.html" target="_blank" rel="noopener">conditions d’utilisation</a>. Vos données servent uniquement à votre compte, ne sont jamais revendues et peuvent être supprimées en un clic : <a href="confidentialite.html" target="_blank" rel="noopener">confidentialité</a>.</p>')+
     (login?'':'<p class="sbl-acm alt"><a href="offres.html">Voir toutes les offres</a> · organisateurs, professionnels</p>')+
-    '<p class="sbl-acm alt"><button type="button" class="lnk" id="ac-sw">'+(login?"Pas encore de compte ? En créer un":"Déjà un compte ? Se connecter")+'</button></p></form>');
+    '<p class="sbl-acm alt"><button type="button" class="lnk" id="ac-sw">'+(login?"Pas encore de compte ? Rejoindre les Trucophiles":"Déjà un compte ? Retrouver mes trucs")+'</button></p></form>');
   $("ac-h").textContent=R[0]+(raison==="alerte"&&e?" sorties « "+CATS[e.cat][1].toLowerCase()+" »":"");$("ac-p").textContent=R[1];
   $("ac-sw").onclick=()=>openCompte(login?"def":"login",e);
   {const w=$("ac-w");if(w&&REGION.length===1&&st.place)w.value=st.place}
@@ -1980,20 +1980,20 @@ function openCompte(raison,e){
         '<div class="sbl-acok">'+icon("mail",36)+'<p>Un lien vient de partir à <b></b>. Ouvrez-le sur cet appareil pour '+(login?"vous connecter":"activer votre compte")+'. Il est valable 30 minutes.</p><p class="sbl-acm">Rien reçu ? Regardez dans les indésirables, ou réessayez dans quelques minutes.</p></div>'+
         '<div class="sbl-btns"><button class="sbl-btn go" type="button" data-close>Compris</button></div>';
       M.el.querySelector(".sbl-acok b").textContent=email;M.el.querySelectorAll("[data-close]").forEach(b=>b.onclick=M.close);lsSet("sbl-nudge",String(Date.now()+864e5*30))}
-    catch(x){go.disabled=false;go.textContent=login?"Recevoir mon lien de connexion":"Créer mon compte gratuit";const j=x.j||{};
+    catch(x){go.disabled=false;go.textContent=login?"Recevoir mon lien de connexion":"Rejoindre les Trucophiles";const j=x.j||{};
       err.textContent=j.erreur==="apercu"?"Version de développement : le formulaire fonctionne, mais l’e-mail ne partira qu’une fois le serveur en ligne.":j.message||(j.erreur==="email_invalide"?"Vérifiez l’adresse e-mail.":"Impossible de joindre le serveur. Réessayez dans un instant.")}};
 }
 async function connexion(jeton){
   try{const j=await accCall("/compte/connexion",{jeton});ACC.tok=j.session;ACC.c=j.compte;
     FAV=[...new Set(FAV.concat(j.compte.fav||[]))];accSave();favSync();accUI();favBtns();
-    toast(j.nouveau?"Bienvenue ! Votre compte Trucophile est actif.":"Vous êtes connecté.");if(j.nouveau)monCompte(true)}
-  catch(x){toast((x.j&&x.j.message)||"Ce lien de connexion n’est plus valable.");openCompte("login")}}
+    toast(j.nouveau?"Bienvenue chez les Trucophiles !":"Content de vous revoir !");if(j.nouveau)monCompte(true)}
+  catch(x){toast((x.j&&x.j.message)||"Ce lien a fait son temps. Demandez-en un nouveau.");openCompte("login")}}
 function monCompte(bienvenue){
   if(!ACC.c)return openCompte("def");
   const c=ACC.c,p=c.prefs||{},sel=new Set(p.cats||[]);loadCommunes();
   const M=modal('<div class="top"><div><div class="kind">Trucophile</div><h2>'+(bienvenue?"Bienvenue !":"Mon compte")+'</h2></div><button class="cl" type="button" data-close aria-label="Fermer">✕</button></div>'+
     '<p class="sbl-acl" id="mc-e"></p>'+
-    '<h3 class="sbl-ach">Mes favoris</h3><div class="sbl-acfav" id="mc-f"></div>'+
+    '<h3 class="sbl-ach">Mes trucs à faire</h3><div class="sbl-acfav" id="mc-f"></div>'+
     '<h3 class="sbl-ach">Autour de chez moi</h3><form id="mc-p" novalidate>'+
       '<div class="sbl-f"><label for="mc-w">Ma commune</label><input class="sbl-in" id="mc-w" list="sbl-cl" autocomplete="address-level2"></div>'+
       '<fieldset class="sbl-chips"><legend>Distance</legend>'+RAYONS.map(r=>'<label><input type="radio" name="mc-r" value="'+r+'"'+(r===(p.rayon||20)?" checked":"")+'><span>'+r+' km</span></label>').join("")+'</fieldset>'+
@@ -2006,7 +2006,7 @@ function monCompte(bienvenue){
   if(p.commune)$("mc-w").value=p.commune.nom;
   const fl=$("mc-f"),remplir=()=>{if(!fl.isConnected)return;fl.textContent="";
   const favs=FAV.map(id=>EVENTS.find(e=>e.id===id)).filter(Boolean),ailleurs=FAV.length-favs.length;
-  if(!FAV.length)fl.innerHTML='<p class="sbl-acm">Touchez le cœur d’une sortie pour la retrouver ici.</p>';
+  if(!FAV.length)fl.innerHTML='<p class="sbl-acm">Rien de gardé pour l’instant. Touchez ♥ sur un truc qui vous plaît.</p>';
   favs.forEach(e=>{const r=document.createElement("button");r.type="button";r.className="sbl-acfr";r.innerHTML='<span class="ci">'+icon(e.cat,15)+'</span><span class="tx"><b></b><small></small></span>';
     r.querySelector("b").textContent=e.t;r.querySelector("small").textContent=when(e)+" · "+e.w;r.style.setProperty("--c","var(--sbl-c-"+e.cat+")");r.style.setProperty("--pc","var(--sbl-p-"+e.cat+")");r.onclick=()=>sheet(e);fl.append(r)});
   if(ailleurs>0){const s=document.createElement("p");s.className="sbl-acm";s.textContent=ailleurs+(ailleurs>1?" autres favoris sont dans des départements non affichés ou déjà passés.":" autre favori est dans un département non affiché ou déjà passé.");fl.append(s)}};
@@ -2033,14 +2033,14 @@ function ctaCard(raison,titre,texte,bouton){const d=document.createElement("div"
 function pourVous(pv){pv.textContent="";if(!accOn())return;
   if(ACC.c&&ACC.c.prefs&&ACC.c.prefs.commune){const p=ACC.c.prefs,t=today(),fin=add(t,10);
     const it=EVENTS.filter(e=>!e.long&&e.S>=t&&e.S<=fin&&e.lat&&kmd(p.commune.lat,p.commune.lon,e.lat,e.lon)<=p.rayon&&(!p.cats.length||p.cats.includes(e.cat))).slice(0,12);
-    if(!it.length)return;const h=document.createElement("div");h.className="sbl-wkh";h.innerHTML="<h2></h2>";h.firstChild.textContent="Pour vous, autour de "+p.commune.nom;
+    if(!it.length)return;const h=document.createElement("div");h.className="sbl-wkh";h.innerHTML="<h2></h2>";h.firstChild.textContent="Vos trucs autour de "+p.commune.nom;
     const rail=document.createElement("div");rail.className="sbl-rail";it.forEach(e=>rail.append(card(e)));pv.append(h,rail);return}
-  if(!ACC.c&&nudgeOk())pv.append(ctaCard("semaine","Les sorties autour de chez vous, chaque semaine","Créez votre compte gratuit : choisissez votre commune et ce que vous aimez, on s’occupe du reste.","Créer mon compte gratuit"))}
+  if(!ACC.c&&nudgeOk())pv.append(ctaCard("semaine","Les sorties autour de chez vous, chaque semaine","Créez votre compte gratuit : choisissez votre commune et ce que vous aimez, on s’occupe du reste.","Rejoindre les Trucophiles"))}
 const kmd=(a,b,c,d)=>Math.hypot((d-b)*Math.cos((a+c)/2*Math.PI/180)*111.32,(c-a)*110.57);
 let FICHES=0;
 function banniere(){if(!nudgeOk()||$("sbl-ban")||$("sbl-veil"))return;
   const d=document.createElement("div");d.id="sbl-ban";d.className="sbl-ban";d.setAttribute("role","complementary");d.setAttribute("aria-label","Créer un compte");
-  d.innerHTML='<span class="ic">'+icon("bell",20)+'</span><p><b>Ne ratez plus rien près de chez vous.</b> <span>Favoris, alertes et sélection de la semaine : c’est gratuit.</span></p><button type="button" class="sbl-btn go">Créer mon compte</button><button type="button" class="x" aria-label="Non merci">✕</button>';
+  d.innerHTML='<span class="ic">'+icon("bell",20)+'</span><p><b>Ne ratez plus rien près de chez vous.</b> <span>Favoris, alertes et « Le Truc de la semaine » : c’est gratuit.</span></p><button type="button" class="sbl-btn go">Rejoindre les Trucophiles</button><button type="button" class="x" aria-label="Non merci">✕</button>';
   d.querySelector(".go").onclick=()=>{d.remove();versOffres()};d.querySelector(".x").onclick=()=>{nudgeStop(7);d.remove();document.querySelectorAll(".sbl-accta").forEach(x=>x.remove())};ROOT.append(d);requestAnimationFrame(()=>d.classList.add("on"))}
 function accInit(H){
   ACC.apercu=APERCU_COMPTES||H.has("comptes")||lsGet("sbl-apercu-comptes")==="1";if(H.has("comptes"))lsSet("sbl-apercu-comptes","1");

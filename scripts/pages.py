@@ -33,7 +33,7 @@ def mail():
 
 NAV = [("index.html", "Accueil"), ("plan-du-site.html", "Plan du site"), ("mentions-legales.html", "Mentions légales"),
        ("cgu.html", "Conditions d’utilisation"), ("confidentialite.html", "Confidentialité"),
-       ("intelligence-artificielle.html", "Intelligence artificielle"), ("accessibilite.html", "Accessibilité"), ("integrer.html", "Intégrer l’agenda"), ("api.html", "API"), ("offres.html", "Offres")]
+       ("intelligence-artificielle.html", "Intelligence artificielle"), ("accessibilite.html", "Accessibilité"), ("integrer.html", "Intégrer l’agenda"), ("api.html", "API"), ("offres.html", "Choisissez votre truc")]
 
 TETE = {}
 def page(fichier, titre, intro, corps):
@@ -148,7 +148,7 @@ P["cgu.html"] = ("Conditions générales d’utilisation", "Les règles d’util
 </ul>
 
 <h2>4. Offres pour les organisateurs et les professionnels</h2>
-<p>Les offres Faiseur de trucs (gratuite), Truc &amp; Co et Truc Pro (payantes) sont présentées sur la page <a href="offres.html">Créer un compte</a>. Les offres payantes feront l’objet de conditions générales de vente propres, communiquées avant toute souscription (prix, durée, droit de rétractation lorsqu’il s’applique). Elles respectent dans tous les cas les principes suivants :</p>
+<p>Les offres Faiseur de trucs (gratuite), Truc &amp; Co et Truc Pro (payantes) sont présentées sur la page <a href="offres.html">Choisissez votre truc</a>. Les offres payantes feront l’objet de conditions générales de vente propres, communiquées avant toute souscription (prix, durée, droit de rétractation lorsqu’il s’applique). Elles respectent dans tous les cas les principes suivants :</p>
 <ul>
 <li><strong>Sans engagement</strong> : l’abonnement s’arrête à tout moment, en un clic depuis « Mon compte », sans justification ni frais ; l’offre reste active jusqu’à la fin de la période déjà payée.</li>
 <li><strong>Pause</strong> : l’abonnement peut être mis en pause à tout moment, en un clic depuis « Mon compte ». Pendant la pause, aucun paiement n’est prélevé, le temps restant est conservé et le compte fonctionne comme l’offre gratuite ; la reprise se fait en un clic.</li>
@@ -378,7 +378,7 @@ TETE["api.html"] = '\n<script src="config.js"></script>\n<script src="dlc.js"></
 P["api.html"] = ("API Trucs à faire", "Ajoutez les sorties et les lieux à visiter de toute la France à votre site ou à votre application : une ligne de script et votre clé, comme pour Google Maps.",
                  open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "api_page.html"), encoding="utf-8").read())
 
-P["offres.html"] = ("Créer un compte", "Le site reste libre et gratuit. Un compte vous permet de garder vos sorties, de publier les vôtres ou d’intégrer l’agenda chez vous.",
+P["offres.html"] = ("Choisissez votre truc", "Le site reste libre et gratuit. Un compte vous permet de garder vos sorties, de publier les vôtres ou d’intégrer l’agenda chez vous.",
                     open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "offres_page.html"), encoding="utf-8").read())
 
 TETE["cles.html"] = '\n<meta name="robots" content="noindex, nofollow">\n<link rel="stylesheet" href="vendor/maplibre-gl-4.7.1/maplibre-gl.css">\n<script src="vendor/maplibre-gl-4.7.1/maplibre-gl.js"></script>\n<script src="config.js"></script>'

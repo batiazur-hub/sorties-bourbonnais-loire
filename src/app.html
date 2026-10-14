@@ -1760,9 +1760,10 @@ async function unpublish(e,close){try{await BK.unpublish(e);close();toast("Sorti
 
 /* ---------- Vues ---------- */
 function syncTabs(){const v=st.view||"list",hm=isHome()&&v==="list";document.querySelectorAll("#sbl-mt button").forEach(b=>b.setAttribute("aria-selected",b.dataset.v==="home"?hm:(!hm&&b.dataset.v===v)))}
-function view(v){{const mp=$("sbl-mpop");if(mp)mp.hidden=true}st.view=v;ROOT.dataset.v=v;$("sbl-main").dataset.v=v;syncTabs();if(v==="map"&&map)setTimeout(()=>map.resize(),30)}
+/* Changer d’onglet (liste, carte, calendrier) repart toujours du haut de la page. */
+function view(v){{const mp=$("sbl-mpop");if(mp)mp.hidden=true}const neuf=st.view!==v;st.view=v;if(neuf)scrollTo({top:0,behavior:"instant"});ROOT.dataset.v=v;$("sbl-main").dataset.v=v;syncTabs();if(v==="map"&&map)setTimeout(()=>map.resize(),30)}
 document.querySelectorAll("#sbl-mt button").forEach(b=>b.onclick=()=>{if(b.dataset.v==="home")return goHome();if(isHome())explore(b.dataset.v);else view(b.dataset.v)});
-document.querySelectorAll("#sbl-dt button").forEach(b=>b.onclick=()=>{st.side=b.dataset.s;$("sbl-side").dataset.s=st.side;document.querySelectorAll("#sbl-dt button").forEach(x=>x.setAttribute("aria-selected",x===b));if(st.side==="map"&&map)setTimeout(()=>map.resize(),30)});
+document.querySelectorAll("#sbl-dt button").forEach(b=>b.onclick=()=>{st.side=b.dataset.s;{const sd=$("sbl-side");if(sd&&sd.getBoundingClientRect().top<0)sd.scrollIntoView({block:"start",behavior:"instant"})}$("sbl-side").dataset.s=st.side;document.querySelectorAll("#sbl-dt button").forEach(x=>x.setAttribute("aria-selected",x===b));if(st.side==="map"&&map)setTimeout(()=>map.resize(),30)});
 $("sbl-pm").onclick=()=>{st.month=new Date(st.month.getFullYear(),st.month.getMonth()-1,1);cal()};
 $("sbl-nm").onclick=()=>{st.month=new Date(st.month.getFullYear(),st.month.getMonth()+1,1);cal()};
 const sk=$("sbl-skins");if(!inViewer)sk.hidden=true;SKINS.forEach(([n,t],i)=>{const b=btn(n,i===0,()=>{setTheme(t);sk.querySelectorAll(".sbl-b").forEach(x=>x.setAttribute("aria-pressed",x===b?"true":"false"))});sk.append(b)});

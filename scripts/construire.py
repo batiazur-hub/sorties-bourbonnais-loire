@@ -36,13 +36,13 @@ MOTS = [
 ]
 MOTS = [(c, re.compile(r)) for c, r in MOTS]
 CLASSES = [
-    ("brocante", ("SaleEvent", "BricABrac", "GarageSale", "FleaMarket")),
+    ("brocante", ("BricABrac", "GarageSale", "FleaMarket")),
     ("culture", ("Practice", "Traineeship", "Game", "OpenDay")),
     ("sport", ("SportsEvent", "SportsCompetition", "SportsDisplay", "Rambling")),
     ("spectacle", ("ShowEvent", "Concert", "TheaterEvent", "DanceEvent", "Opera", "CircusEvent")),
     ("famille", ("ChildrensEvent",)),
     ("culture", ("Exhibition", "Visit", "Conference", "CulturalEvent", "ScreeningEvent", "Reading")),
-    ("fete", ("Market", "LocalAnimation", "TraditionalCelebration", "Carnival", "FairOrShow", "SocialEvent", "BusinessEvent", "Festival")),
+    ("fete", ("SaleEvent", "Market", "LocalAnimation", "TraditionalCelebration", "Carnival", "FairOrShow", "SocialEvent", "BusinessEvent", "Festival")),
 ]
 def categorie(titre, classes):
     t = norm(titre)

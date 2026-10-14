@@ -123,12 +123,12 @@ body{background:var(--sbl-bg);color:var(--sbl-ink);margin:0}
 .sbl-card h3{margin:0;font:600 1rem/1.25 var(--sbl-body);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .sbl-card .m{color:var(--sbl-muted);font-size:.85rem}
 .sbl-card:hover h3{text-decoration:underline;text-underline-offset:3px}
-.sbl-hero{position:relative;margin:-18px -20px 14px;aspect-ratio:16/8;max-width:calc(100% + 40px);background:color-mix(in srgb,var(--pc) 16%,var(--sbl-surface)) center/cover no-repeat;color:var(--pc)}
+.sbl-hero{position:relative;overflow:hidden;margin:-18px -20px 14px;aspect-ratio:16/8;max-width:calc(100% + 40px);background:color-mix(in srgb,var(--pc) 16%,var(--sbl-surface)) center/cover no-repeat;color:var(--pc)}
 .sbl-hero .fb{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
 .sbl-hero.ph .fb{display:none}
 .sbl-hero .ich{left:16px;right:auto;top:auto;bottom:14px;width:40px;height:40px}
 .sbl-hero .cl.cl{color:var(--sbl-ink);position:absolute;right:12px;top:12px;z-index:2;border-radius:50%;border:0;background:var(--sbl-surface);box-shadow:0 1px 4px rgb(0 0 0 / .3)}
-.sbl-hero .cr{position:absolute;right:10px;bottom:8px;z-index:1;font-size:.72rem;color:#fff;text-shadow:0 0 4px #000;text-decoration:none}
+.sbl-hero .cr{position:absolute;right:10px;bottom:8px;z-index:1;max-width:calc(100% - 84px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:.72rem;color:#fff;text-shadow:0 0 4px #000;text-decoration:none}
 .sbl-hero.ph::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgb(0 0 0 / .15),transparent 40%,rgb(0 0 0 / .35))}
 .sbl-sheet.ev{border-top:0}
 .sbl-hero.poster{background:#111}
@@ -520,6 +520,56 @@ textarea.sbl-in{min-height:100px;resize:vertical}
 .sbl-st{display:block;font-weight:700}
 .sbl-ohd{display:block;white-space:pre-line;color:var(--sbl-ink)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .sbl-pop .when.ok,:root:not([data-theme="light"]) .sbl-st.ok{color:#5fc98a}}
+
+/* ===== Téléphone : en-tête compact, navigation en bas, carte plein écran ===== */
+.sbl-mpop{position:fixed;left:8px;right:8px;bottom:calc(72px + env(safe-area-inset-bottom,0px));z-index:1500;max-height:min(58vh,460px);overflow:auto;background:var(--sbl-surface);color:var(--sbl-ink);border-radius:20px;box-shadow:0 8px 30px rgb(0 0 0 / .28);padding:14px 16px 12px}
+.sbl-mpop[hidden]{display:none}
+.sbl-mpop .x{position:sticky;top:0;float:right;width:36px;height:36px;border-radius:50%;border:1px solid var(--sbl-line);background:var(--sbl-surface);margin:-4px -6px 0 8px}
+.sbl-mpop .sbl-pop{padding:0}
+.sbl-mpop ul.evl{max-height:none}
+.sbl-tab svg{display:none}
+@media (max-width:600px){
+  .sbl-top{padding:8px 12px}
+  .sbl .sbl-hb{min-height:38px;padding:0 14px;font-size:.88rem}
+  .sbl-hb .lg{display:none}
+  .sbl-intro{padding:6px 14px 4px}
+  .sbl-intro h1{font-size:1.5rem;line-height:1.15}
+  .sbl-intro p{display:none}
+  .sbl-reg{margin-top:8px;min-height:36px;font-size:.92rem}
+  .sbl-sbar{padding:6px 12px 8px}
+  .sbl-sw{height:50px}
+  .sbl-sw input{font-size:1rem}
+  /* navigation fixe en bas */
+  .sbl-navw{position:fixed;left:0;right:0;bottom:0;z-index:1400;background:var(--sbl-surface);border-top:1px solid var(--sbl-line);padding:4px 6px calc(4px + env(safe-area-inset-bottom,0px));box-shadow:0 -2px 12px rgb(0 0 0 / .06)}
+  .sbl-navw .sbl-tabs{display:flex!important;width:100%;max-width:none;margin:0;background:none;padding:0;gap:0;border-radius:0}
+  .sbl-navw .sbl-tab{flex:1;height:auto;min-height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:0!important;background:none!important;border-radius:12px;font-size:.78rem;font-weight:600;color:var(--sbl-muted);box-shadow:none!important}
+  .sbl-navw .sbl-tab svg{display:block}
+  .sbl-navw .sbl-tab[aria-selected="true"]{color:var(--sbl-ink)}
+  .sbl-navw .sbl-tab[aria-selected="true"] svg{color:var(--sbl-p-brocante)}
+  .sbl{padding-bottom:calc(72px + env(safe-area-inset-bottom,0px))}
+  .sbl-main{padding-top:4px}
+  /* carte : toute la hauteur disponible */
+  .sbl-main[data-v="map"] #sbl-map{height:calc(100dvh - 330px);min-height:320px}
+  .sbl-main[data-v="map"] .sbl-mapnote{display:none}
+  .sbl-mh{padding:6px 8px;gap:6px}
+  .sbl-mh .l{font-size:.82rem}
+  /* calendrier : nombre de sorties en pastille */
+  .sbl-cal button{min-height:48px;padding:4px 3px;align-items:center}
+  .sbl-cal .n{display:flex;justify-content:center;width:100%}
+  .sbl-cal .n b{font-size:.72rem;min-width:20px;padding:1px 5px;border-radius:999px;background:color-mix(in srgb,var(--sbl-p-brocante) 18%,var(--sbl-surface));color:var(--sbl-ink);text-align:center}
+  .sbl-cal button[aria-pressed="true"] .n b{background:var(--sbl-bg);color:var(--sbl-ink)}
+  /* fenêtres : pleine largeur, boutons d'action toujours visibles */
+  .sbl-veil{padding:0;align-items:flex-end}
+  .sbl-sheet{max-height:92dvh;width:100%;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px))}
+  .sbl-sheet h2{font-size:1.45rem}
+  .sbl-sheet dl{grid-template-columns:84px minmax(0,1fr)}
+  .sbl-rgl{max-height:calc(92dvh - 330px)}
+  .sbl-hero{aspect-ratio:16/9;margin:-16px -16px 12px}
+  .sbl-toast{bottom:calc(84px + env(safe-area-inset-bottom,0px))!important}
+}
+@media (max-width:600px){.sbl .maplibregl-ctrl-group button{width:38px;height:38px}.sbl-lvm{width:40px;height:40px}.sbl[data-v="map"] .sbl-intro,.sbl[data-v="cal"] .sbl-intro{display:none}.sbl-sug{max-height:calc(100dvh - 250px);overflow:auto}}
+@media (max-width:600px) and (max-height:700px){.sbl-intro h1{font-size:1.3rem}.sbl-main[data-v="map"] #sbl-map{height:calc(100dvh - 300px)}}
+.sbl.kiosk .sbl-navw{position:static}
 </style>
 
 <div class="sbl" id="sbl">
@@ -536,10 +586,10 @@ textarea.sbl-in{min-height:100px;resize:vertical}
   <div class="sbl-sug" id="sbl-sug" role="listbox" aria-label="Suggestions" hidden></div>
 </div></div>
 
-<section aria-label="Choix de l’affichage"><div class="sbl-tabs" role="tablist" id="sbl-mt">
-  <button class="sbl-tab" role="tab" data-v="list" aria-selected="true">Liste</button>
-  <button class="sbl-tab" role="tab" data-v="map" aria-selected="false">Carte</button>
-  <button class="sbl-tab" role="tab" data-v="cal" aria-selected="false">Calendrier</button>
+<section aria-label="Choix de l’affichage" class="sbl-navw"><div class="sbl-tabs" role="tablist" id="sbl-mt">
+  <button class="sbl-tab" role="tab" data-v="list" aria-selected="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg><span>Liste</span></button>
+  <button class="sbl-tab" role="tab" data-v="map" aria-selected="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4 3 6.5v13.5l6-2.5 6 2.5 6-2.5V4l-6 2.5z"/><path d="M9 4v13.5M15 6.5V20"/></svg><span>Carte</span></button>
+  <button class="sbl-tab" role="tab" data-v="cal" aria-selected="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><span>Calendrier</span></button>
 </div></section>
 
 <main class="sbl-main" id="sbl-main" data-v="list">
@@ -810,7 +860,7 @@ function initSearch(){
     else if(ev.key==="Escape"){closeSug();q.blur()}});
   q.addEventListener("blur",()=>setTimeout(closeSug,120));
   $("sbl-qx").onclick=()=>{setQ("",true);q.focus()};
-  const ex=["Brocantes ce week-end à Moulins","Que faire en famille pendant les vacances ?","Concerts en novembre","Marchés de Noël autour de Decize","Expos dans l’Allier"];let k=0;
+  const ex=innerWidth<=600?["Brocantes ce week-end","En famille cette semaine","Concerts en novembre","Marchés autour de Decize","Expos dans l’Allier"]:["Brocantes ce week-end à Moulins","Que faire en famille pendant les vacances ?","Concerts en novembre","Marchés de Noël autour de Decize","Expos dans l’Allier"];let k=0;
   setInterval(()=>{if(document.activeElement!==q&&!q.value){k=(k+1)%ex.length;q.placeholder=ex[k]}},3500);q.placeholder=ex[0];
 }
 function summary(n){
@@ -965,7 +1015,7 @@ function initMap(){
     map.on("error",()=>{if(!baseOk&&!fallback&&!map.isStyleLoaded())goDrawn()});
     setTimeout(()=>{if(!baseOk&&!fallback&&!map.isStyleLoaded())goDrawn()},9000);
   }
-  const f=$("sbl-fonds");
+  const f=$("sbl-fonds");$("sbl-map").append(f);
   Object.entries(FONDS).forEach(([k,[n]])=>{const b=document.createElement("button");b.type="button";b.textContent=n;b.dataset.f=k;b.setAttribute("aria-pressed",k===fond?"true":"false");
     b.onclick=()=>{if(fallback)return;fond=k;f.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b?"true":"false"));
       map.setStyle(k==="photo"?photoStyle():FONDS[k][1]);$("sbl-attr").textContent=(k==="photo"?"Photographies aériennes":"Plan IGN")+" © IGN – cartes.gouv.fr";try{localStorage.setItem("sbl-fond",k)}catch(_){}};f.append(b)});
@@ -1005,14 +1055,26 @@ function pinSvg(n,cat,mix){if(mix)return '<svg viewBox="0 0 34 46" width="34" he
   '<g transform="translate(9.5 9.4) scale(.625)" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">'+ICONS[cat]+'</g>'+
   (n>1?'<circle class="nb" cx="27" cy="7" r="7"/><text x="27" y="10.2" text-anchor="middle">'+(n>9?"9+":n)+'</text>':'')+'</svg>'}
 let PIN_ITEMS=[],pinTm=null,ZSAVE=null;
+/* Téléphone : la bulle d'un repère s'ouvre en carte posée en bas de l'écran, au-dessus de la barre de navigation */
+const PHONE=()=>matchMedia("(max-width:600px)").matches;
+function mobilePop(pop){
+  let box=$("sbl-mpop");if(!box){box=document.createElement("div");box.id="sbl-mpop";box.className="sbl-mpop";box.setAttribute("role","dialog");box.setAttribute("aria-label","Détail du repère");ROOT.append(box)}
+  const html=pop._content?pop._content.innerHTML:"";box.innerHTML='<button type="button" class="x" aria-label="Fermer">✕</button>'+html;box.hidden=false;
+  box.querySelectorAll(".maplibregl-popup-close-button").forEach(b=>b.remove());
+  box.querySelector(".x").onclick=()=>{box.hidden=true};
+  /* même comportement que la bulle : on rejoue ses gestionnaires sur la copie */
+  pop.getElement=()=>box;pop.remove=()=>{box.hidden=true;return pop};
+  (pop._listeners&&pop._listeners.open||[]).slice().forEach(fn=>{try{fn.call(pop)}catch(_){}});
+}
+
 /* Un clic sur la carte, hors des repères et des bulles, ramène à la vue d'avant le zoom sur un groupe */
 function hookZoomBack(){if(hookZoomBack.done||!map)return;hookZoomBack.done=1;
-  map.on("click",e=>{const t=e.originalEvent&&e.originalEvent.target;if(t&&t.closest&&t.closest(".maplibregl-marker,.maplibregl-popup,.maplibregl-ctrl"))return;
+  map.on("click",e=>{const t=e.originalEvent&&e.originalEvent.target;if(t&&t.closest&&t.closest(".maplibregl-marker,.maplibregl-popup,.maplibregl-ctrl"))return;{const mp=$("sbl-mpop");if(mp)mp.hidden=true}
     if(ZSAVE&&!popOpen()){const v=ZSAVE;ZSAVE=null;map.flyTo({center:v.c,zoom:v.z,duration:650})}})}
 /* Une bulle ouverte reste entière dans la carte : la carte glisse si besoin */
 const popOpen=()=>pins.concat(lvMarks).some(m=>{const p=m.getPopup&&m.getPopup();return p&&p.isOpen()});
 function popClosed(){clearTimeout(pinTm);pinTm=setTimeout(()=>{if(popOpen())return;renderPins();renderLieux()},80)}
-function fitPopup(pop){pop.once("close",popClosed);requestAnimationFrame(()=>{const el=pop.getElement();if(!el||!map)return;const pr=el.getBoundingClientRect(),mr=map.getContainer().getBoundingClientRect(),m=12;
+function fitPopup(pop){if(PHONE())return;pop.once("close",popClosed);requestAnimationFrame(()=>{const el=pop.getElement();if(!el||!map)return;const pr=el.getBoundingClientRect(),mr=map.getContainer().getBoundingClientRect(),m=12;
   let dx=0,dy=0;if(pr.bottom>mr.bottom-m)dy=pr.bottom-mr.bottom+m;if(pr.top-dy<mr.top+m)dy=pr.top-mr.top-m;if(pr.right>mr.right-m)dx=pr.right-mr.right+m;if(pr.left-dx<mr.left+m)dx=pr.left-mr.left-m;
   if(dx||dy)map.panBy([dx,dy],{duration:300})})}
 function popDate(e){const t=today();if(e.S<t)return "jusqu’au "+e.E.getDate()+" "+MO[e.E.getMonth()];return JL[e.S.getDay()].slice(0,3)+". "+e.S.getDate()+" "+MO[e.S.getMonth()]+(e.h?" · "+hh(e.h):"")}
@@ -1047,7 +1109,8 @@ function renderPins(){
     if(n>1&&!one){let a=90,b=180,c=-90,d=-180;g.ev.forEach(e=>{a=Math.min(a,e.lat);c=Math.max(c,e.lat);b=Math.min(b,e.lon);d=Math.max(d,e.lon)});
       if(c-a>0.0004||d-b>0.0006){el.addEventListener("click",ev=>{ev.stopPropagation();ev.preventDefault();
         if(!ZSAVE)ZSAVE={c:map.getCenter(),z:map.getZoom()};map.fitBounds([[b,a],[d,c]],{padding:{top:70,bottom:40,left:50,right:50},maxZoom:16,duration:650})},true)}}
-    pins.push(new maplibregl.Marker({element:el,anchor:"bottom",offset:[g.dx,g.dy]}).setLngLat([g.lo,g.la]).setPopup(pop).addTo(map));el.removeAttribute("tabindex");el.removeAttribute("aria-label");el.removeAttribute("role");
+    if(PHONE())el.addEventListener("click",ev=>{if(ev.defaultPrevented)return;ev.stopPropagation();mobilePop(pop)},false);
+    pins.push(new maplibregl.Marker({element:el,anchor:"bottom",offset:[g.dx,g.dy]}).setLngLat([g.lo,g.la]).setPopup(PHONE()?null:pop).addTo(map));el.removeAttribute("tabindex");el.removeAttribute("aria-label");el.removeAttribute("role");
   });
 }
 function pinLegend(){const l=$("sbl-leg");if(!l)return;l.innerHTML="";l.append(lvToggle());const n=document.createElement("span");n.className="sbl-lvn";n.id="sbl-lvn";n.setAttribute("role","status");l.append(n)}
@@ -1206,7 +1269,8 @@ function renderLieux(){
       (x.l?'<p class="lb">'+escH(x.l)+'</p>':'')+'<p>'+escH(x.w)+'</p>'+(()=>{const st=lieuStatut(x);return st&&st.txt?'<p class="when '+(st.open?"ok":"ko")+'">'+escH(st.txt)+'</p>':''})()+
       (x.tel?'<p><a href="tel:'+x.tel.replace(/\s/g,"")+'">'+escH(x.tel)+'</a></p>':'')+'<button type="button" class="sbl-btn go" data-see="1">Voir '+(x.k==="office"?"l’office":"le lieu")+'</button></div>');
     pop.on("open",()=>{fitPopup(pop);const s=pop.getElement().querySelector("[data-see]");if(s)s.onclick=()=>{pop.remove();lieuSheet(x)}});
-    lvMarks.push(new maplibregl.Marker({element:el,anchor:"center"}).setLngLat([x.lon,x.lat]).setPopup(pop).addTo(map));el.removeAttribute("tabindex");el.removeAttribute("aria-label");el.removeAttribute("role")});
+    if(PHONE())el.addEventListener("click",ev=>{ev.stopPropagation();mobilePop(pop)});
+    lvMarks.push(new maplibregl.Marker({element:el,anchor:"center"}).setLngLat([x.lon,x.lat]).setPopup(PHONE()?null:pop).addTo(map));el.removeAttribute("tabindex");el.removeAttribute("aria-label");el.removeAttribute("role")});
 }
 function lieuPhoto(x){
   const k="lv|"+x.id;if(IMG.has(k))return IMG.get(k);
@@ -1517,7 +1581,7 @@ async function unpublish(e,close){try{await BK.unpublish(e);close();toast("Sorti
 
 
 /* ---------- Vues ---------- */
-function view(v){st.view=v;$("sbl-main").dataset.v=v;document.querySelectorAll("#sbl-mt button").forEach(b=>b.setAttribute("aria-selected",b.dataset.v===v));if(v==="map"&&map)setTimeout(()=>map.resize(),30)}
+function view(v){{const mp=$("sbl-mpop");if(mp)mp.hidden=true}st.view=v;ROOT.dataset.v=v;$("sbl-main").dataset.v=v;document.querySelectorAll("#sbl-mt button").forEach(b=>b.setAttribute("aria-selected",b.dataset.v===v));if(v==="map"&&map)setTimeout(()=>map.resize(),30)}
 document.querySelectorAll("#sbl-mt button").forEach(b=>b.onclick=()=>view(b.dataset.v));
 document.querySelectorAll("#sbl-dt button").forEach(b=>b.onclick=()=>{st.side=b.dataset.s;$("sbl-side").dataset.s=st.side;document.querySelectorAll("#sbl-dt button").forEach(x=>x.setAttribute("aria-selected",x===b));if(st.side==="map"&&map)setTimeout(()=>map.resize(),30)});
 $("sbl-pm").onclick=()=>{st.month=new Date(st.month.getFullYear(),st.month.getMonth()-1,1);cal()};

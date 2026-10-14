@@ -1,0 +1,21 @@
+name: Tests mobile (iPhone Safari et Android Chrome)
+on:
+  workflow_dispatch:
+  push:
+    paths: ["index.html", "*.html", "pages.css", "tests/**", ".github/workflows/tests-mobile.yml"]
+jobs:
+  mobile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "22" }
+      - run: npm install --no-save playwright@1.56.1
+      - run: npx playwright install --with-deps chromium webkit
+      - run: python3 -m http.server 8765 >/dev/null 2>&1 &
+      - run: sleep 2 && node tests/mobile.mjs
+        env: { OUT: captures }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: captures-mobile, path: captures/, retention-days: 14 }

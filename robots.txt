@@ -1,5 +1,5 @@
 User-agent: *
 Allow: /
 Disallow: /data/enrich/
-Sitemap: https://batiazur-hub.github.io/sorties-bourbonnais-loire/sitemap.xml
-Sitemap: https://batiazur-hub.github.io/sorties-bourbonnais-loire/sitemap-villes.xml
+Sitemap: https://trucsafaire.fr/sitemap.xml
+Sitemap: https://trucsafaire.fr/sitemap-villes.xml

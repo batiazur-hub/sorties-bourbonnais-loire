@@ -1,6 +1,6 @@
 /*! Trucs à faire — bibliothèque JavaScript v1
  *  Sorties, fêtes, brocantes, concerts et lieux à visiter partout en France.
- *  Documentation : https://batiazur-hub.github.io/sorties-bourbonnais-loire/api.html
+ *  Documentation : https://trucsafaire.fr/api.html
  *
  *  <script src="https://VOTRE-SERVEUR/v1/dlc.js?key=VOTRE_CLE&callback=initCoin" async></script>
  *
@@ -18,7 +18,7 @@
 
   var VERSION = "1.0.0";
   var API_INJECTEE = "__DLC_API__"; // remplacé par l'adresse du serveur quand le fichier est servi par /v1/dlc.js
-  var SITE = "https://batiazur-hub.github.io/sorties-bourbonnais-loire/";
+  var SITE = "https://trucsafaire.fr/";
   var LICENCE = "Données agrégées par Trucs à faire (Saryn Digital) depuis DATAtourisme (Licence Ouverte), OpenAgenda, open data des collectivités et OpenStreetMap (ODbL, horaires). Citer « Trucs à faire » et la source de chaque fiche.";
   var TYPES_SORTIES = ["brocante", "fete", "spectacle", "culture", "famille", "sport", "pal"];
   var TYPES_LIEUX = ["office", "musee", "patrimoine", "nature", "loisirs"];

@@ -18,7 +18,7 @@ const CATS = { brocante: ["Brocante", "#A85A12"], fete: ["Fête", "#C2255C"], sp
                famille: ["En famille", "#8A6100"], sport: ["Sport", "#1971C2"], pal: ["Le Pal", "#4D7C0F"] };
 const JOURS = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"];
 const MOIS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
-const SITE_DEFAUT = "https://batiazur-hub.github.io/sorties-bourbonnais-loire/";
+const SITE_DEFAUT = "https://trucsafaire.fr/";
 const esc = s => String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const km = (a, b, c, d) => Math.hypot((d - b) * Math.cos((a + c) / 2 * Math.PI / 180) * 111.32, (c - a) * 110.57);
 const iso = d => d.toISOString().slice(0, 10);

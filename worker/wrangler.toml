@@ -22,7 +22,7 @@ crons = ["17 3 * * 1", "*/15 5-9 * * 4"]
 
 [vars]
 ORIGINS = "https://trucsafaire.fr,https://www.trucsafaire.fr,https://batiazur-hub.github.io"
-SITE_URL = "https://batiazur-hub.github.io/sorties-bourbonnais-loire/"
+SITE_URL = "https://trucsafaire.fr/"
 MAIL_FROM = "bonjour@trucsafaire.fr"
 # Adresse publique de ce serveur (liens de désinscription dans les e-mails envoyés par la tâche planifiée)
 API_URL = "https://api.trucsafaire.fr"

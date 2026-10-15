@@ -22,7 +22,7 @@ export const VERSION_CONSENTEMENT = "newsletter-v2-2026-10";
 export const TEXTE_CONSENTEMENT = "Oui, je veux recevoir « Le Truc de la semaine » : chaque semaine par e-mail, une sélection des sorties autour de chez moi, selon mes préférences. Désinscription en un clic dans chaque e-mail.";
 const CATS = ["brocante", "fete", "spectacle", "culture", "famille", "sport", "pal"];
 const SESSION_JOURS = 90, JETON_MIN = 30, INACTIF_ANS = 3;
-const SITE_DEFAUT = "https://batiazur-hub.github.io/sorties-bourbonnais-loire/";
+const SITE_DEFAUT = "https://trucsafaire.fr/";
 
 const enc = new TextEncoder();
 const hex = b => [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, "0")).join("");

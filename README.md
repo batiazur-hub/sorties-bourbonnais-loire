@@ -2,7 +2,7 @@
 
 Que faire autour de chez vous ? Agenda des sorties partout en France (brocantes, fêtes, marchés, concerts, expositions,
 sport, sorties en famille) et lieux à visiter, sur liste, carte et calendrier. Données mises à jour chaque nuit.
-Éditeur : Clément Monteiro EI (Saryn Digital). Charte graphique : dossier `marque/` (logos, icônes) et polices `fonts/trucs.css` (Outfit, DM Sans). Site : https://batiazur-hub.github.io/sorties-bourbonnais-loire/
+Éditeur : Clément Monteiro EI (Saryn Digital). Charte graphique : dossier `marque/` (logos, icônes) et polices `fonts/trucs.css` (Outfit, DM Sans). Site : https://trucsafaire.fr/
 
 ## Organisation du dépôt
 

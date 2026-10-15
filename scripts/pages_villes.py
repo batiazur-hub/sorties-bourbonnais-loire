@@ -21,6 +21,9 @@ CATS = {"brocante": ("Brocantes et vide-greniers", "Brocante", "#A85A12"), "fete
         "spectacle": ("Concerts et spectacles", "Spectacle", "#6741D9"), "culture": ("Expos et visites", "Expo, visite", "#0B7A5E"),
         "famille": ("Sorties en famille", "En famille", "#8A6100"), "sport": ("Sport et randonnées", "Sport", "#1971C2"), "pal": ("Le Pal", "Le Pal", "#4D7C0F")}
 Q_CAT = {"brocante": "brocantes", "fete": "fêtes", "spectacle": "concerts", "culture": "expos", "famille": "en famille", "sport": "sport", "pal": "le pal"}
+TYPES = {"brocante": ("brocantes", "Brocantes et vide-greniers"), "fete": ("fetes-et-marches", "Fêtes, foires et marchés"),
+         "spectacle": ("concerts-et-spectacles", "Concerts et spectacles"), "culture": ("expos-et-visites", "Expos et visites"),
+         "famille": ("en-famille", "Sorties en famille"), "sport": ("sport-et-randonnees", "Sport et randonnées")}
 JOURS = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"]
 MOIS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"]
 PLUR = {"Ardennes", "Bouches-du-Rhône", "Côtes-d'Armor", "Deux-Sèvres", "Hautes-Alpes", "Alpes-de-Haute-Provence", "Alpes-Maritimes", "Hautes-Pyrénées",
@@ -167,6 +170,30 @@ def main():
                                                              {"@type": "ListItem", "position": 3, "name": w, "item": SITE + url_c[(w, z)]}]},
             {"@type": "ItemList", "name": f"Sorties à {w}", "itemListElement": [{"@type": "ListItem", "position": i + 1, "item": event_ld(e)} for i, e in enumerate(evs[:MAX_LD])]}]}
         ecrire(url_c[(w, z)], page(titre, desc, url_c[(w, z)], 2, corps, ld))
+    # Pages type × département (au moins MIN_SORTIES sorties)
+    url_t = {}
+    for z, d in deps.items():
+        for cat, (sl, lib) in TYPES.items():
+            evs = trier([e for e in par_dep.get(z, []) if e["cat"] == cat]); n = len(evs)
+            if n < MIN_SORTIES: continue
+            url_t[(z, cat)] = f"{url_d[z]}{sl}/"; nom = d["nom"]
+            parw = defaultdict(int)
+            for e in evs: parw[(e["w"], e["z"])] += 1
+            top = [k for k, _ in sorted(parw.items(), key=lambda x: -x[1]) if k in url_c][:12]
+            titre = f"{lib} {dans(nom)} : {n} à venir · Trucs à faire"
+            desc = f"{lib} {dans(nom)} ({z}) : {n} rendez-vous à venir, dates, lieux et horaires, mis à jour chaque nuit. Gratuit, sans inscription."
+            corps = (f'<nav class="fil" aria-label="Fil d’Ariane"><a href="../../index.html">Que faire ?</a> › <a href="../index.html">{e_(nom)}</a> › {e_(lib)}</nav>'
+                     f'<h1>{e_(lib)} {e_(dans(nom))}</h1><p class="lead"><b>{n}</b> à venir {e_(dans(nom))}. Mis à jour le {maj}.</p>'
+                     f'<p class="qcta"><a class="qbtn" href="../../../index.html#dep={z}&amp;q={quote(Q_CAT[cat])}">Voir sur la carte et le calendrier</a></p>'
+                     f'<ul class="evl">{"".join(ligne(e, "../../../") for e in evs[:MAX_LISTE])}</ul>'
+                     + (f'<p class="plus">… et {n - MAX_LISTE} autres dans <a href="../../../index.html#dep={z}&amp;q={quote(Q_CAT[cat])}">l’agenda complet</a>.</p>' if n > MAX_LISTE else "")
+                     + (f'<h2>Par commune</h2><ul class="vois">{"".join(f"<li><a href=\"../../../{url_c[k]}\">{e_(k[0])} <span>{parw[k]}</span></a></li>" for k in top)}</ul>' if top else ""))
+            ld = {"@context": "https://schema.org", "@graph": [
+                {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Que faire ?", "item": SITE + "que-faire/"},
+                                                                 {"@type": "ListItem", "position": 2, "name": nom, "item": SITE + url_d[z]},
+                                                                 {"@type": "ListItem", "position": 3, "name": lib, "item": SITE + url_t[(z, cat)]}]},
+                {"@type": "ItemList", "name": f"{lib} {dans(nom)}", "itemListElement": [{"@type": "ListItem", "position": i + 1, "item": event_ld(e)} for i, e in enumerate(evs[:MAX_LD])]}]}
+            ecrire(url_t[(z, cat)], page(titre, desc, url_t[(z, cat)], 3, corps, ld))
     # Pages départements
     for z, d in deps.items():
         evs = trier(par_dep.get(z, [])); n = len(evs); nom = d["nom"]
@@ -179,7 +206,7 @@ def main():
         corps = (f'<nav class="fil" aria-label="Fil d’Ariane"><a href="../index.html">Que faire ?</a> › {e_(nom)}</nav>'
                  f'<h1>Que faire {e_(dans(nom))}&nbsp;?</h1><p class="lead"><b>{n}</b> sorties à venir {e_(dans(nom))}. Mis à jour le {maj}.</p>'
                  f'<p class="qcta"><a class="qbtn" href="../../index.html#dep={z}">Ouvrir l’agenda {e_(dans(nom))}</a></p>'
-                 f'<ul class="cats">{"".join(f"<li style=\"--c:{CATS[k][2]}\"><a href=\"../../index.html#dep={z}&amp;q={quote(Q_CAT[k])}\"><b>{v}</b> {e_(CATS[k][0])}</a></li>" for k, v in sorted(cats.items(), key=lambda x: -x[1]) if k in CATS)}</ul>'
+                 f'<ul class="cats">{"".join(f"<li style=\"--c:{CATS[k][2]}\"><a href=\"{(url_t[(z, k)][len(url_d[z]):] if (z, k) in url_t else "../../index.html#dep=" + z + "&amp;q=" + quote(Q_CAT[k]))}\"><b>{v}</b> {e_(CATS[k][0])}</a></li>" for k, v in sorted(cats.items(), key=lambda x: -x[1]) if k in CATS)}</ul>'
                  + (f'<h2>Cette semaine</h2><ul class="evl">{"".join(ligne(e, "../../") for e in semaine)}</ul>' if semaine else "")
                  + (f'<h2>Par commune</h2><ul class="vois">{"".join(f"<li><a href=\"../../{url_c[k]}\">{e_(k[0])} <span>{len(communes[k])}</span></a></li>" for k in sorted(cs, key=lambda k: slug(k[0])))}</ul>' if cs else ""))
         ld = {"@context": "https://schema.org", "@graph": [
@@ -198,7 +225,7 @@ def main():
     open(os.path.join(SORTIE, "sitemap-villes.xml"), "w", encoding="utf-8").write(
         '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
         "".join(f"  <url><loc>{SITE}{u}</loc><lastmod>{jour}</lastmod><changefreq>daily</changefreq></url>\n" for u in urls) + "</urlset>\n")
-    print(f"Pages villes : {len(communes)} communes, {len(deps)} départements, sommaire ; sitemap-villes.xml ({len(urls)} adresses).")
+    print(f"Pages villes : {len(communes)} communes, {len(deps)} départements, {len(url_t)} pages par type, sommaire ; sitemap-villes.xml ({len(urls)} adresses).")
 
 
 if __name__ == "__main__":

@@ -60,6 +60,7 @@ def site():
 <meta property="og:site_name" content="Trucs à faire">
 <meta name="twitter:card" content="summary_large_image">
 <meta property="og:description" content="{DESC}">
+<script type="application/ld+json">{{"@context":"https://schema.org","@graph":[{{"@type":"WebSite","@id":"{SITE}#site","name":"Trucs à faire","url":"{SITE}","inLanguage":"fr-FR","description":"{DESC}","publisher":{{"@id":"{SITE}#editeur"}}}},{{"@type":"Organization","@id":"{SITE}#editeur","name":"Trucs à faire","alternateName":"Saryn Digital","url":"{SITE}","logo":"{SITE}marque/icone-512.png","email":"clementer@gmail.com","address":{{"@type":"PostalAddress","addressLocality":"Decize","postalCode":"58300","addressCountry":"FR"}}}}]}}</script>
 <meta property="og:url" content="{SITE}">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0e1226" media="(prefers-color-scheme: dark)">

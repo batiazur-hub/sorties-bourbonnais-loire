@@ -1,0 +1,23 @@
+# Trucs à faire
+
+> Agenda gratuit des sorties partout en France : brocantes et vide-greniers, fêtes et marchés, concerts et spectacles, expositions et visites, sorties en famille, sport et randonnées, ainsi que les lieux à visiter et offices de tourisme. Données mises à jour chaque nuit depuis les agendas publics (DATAtourisme, OpenAgenda, collectivités) et les organisateurs.
+
+Le site s’adresse aux habitants et aux visiteurs qui se demandent « que faire autour de chez moi ? ». Chaque sortie indique la date, l’horaire, le lieu, la commune, le caractère gratuit ou non, et un lien vers la source, le site ou la billetterie de l’organisateur. Les informations peuvent changer : renvoyer vers la fiche ou l’organisateur pour confirmation.
+
+## Pages principales
+
+- [Agenda (liste, carte, calendrier)](https://batiazur-hub.github.io/sorties-bourbonnais-loire/index.html) : recherche en langage naturel, par exemple « brocantes ce week-end autour de Moulins »
+- [Que faire près de chez vous](https://batiazur-hub.github.io/sorties-bourbonnais-loire/que-faire/) : une page par département, par commune (au moins 3 sorties à venir) et par type de sortie, régénérées chaque nuit avec des données structurées schema.org Event
+- [Choisissez votre truc](https://batiazur-hub.github.io/sorties-bourbonnais-loire/offres.html) : comptes gratuits (Trucophile, Faiseur de trucs) et offres pour organisateurs et professionnels (Truc & Co, Truc Pro)
+
+## Données et réutilisation
+
+- [API et widgets](https://batiazur-hub.github.io/sorties-bourbonnais-loire/api.html) : sorties et lieux en JSON, avec clé
+- [Mentions légales et sources](https://batiazur-hub.github.io/sorties-bourbonnais-loire/mentions-legales.html#sources) : chaque donnée reste sous la licence de son producteur (Licence Ouverte, ODbL…)
+- [Intelligence artificielle](https://batiazur-hub.github.io/sorties-bourbonnais-loire/intelligence-artificielle.html) : transparence sur l’usage de l’IA
+
+## Optional
+
+- [Conditions d’utilisation](https://batiazur-hub.github.io/sorties-bourbonnais-loire/cgu.html)
+- [Politique de confidentialité](https://batiazur-hub.github.io/sorties-bourbonnais-loire/confidentialite.html)
+- [Kit de communication](https://batiazur-hub.github.io/sorties-bourbonnais-loire/kit.html)

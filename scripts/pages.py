@@ -388,6 +388,10 @@ P["offres.html"] = ("Choisissez votre truc", "Le site reste libre et gratuit. Un
 P["kit.html"] = ("Kit de communication", "Affiches avec QR code, badge pour votre site et logos : faites connaître vos trucs à faire.",
                  open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "kit_page.html"), encoding="utf-8").read())
 
+TETE["cgv.html"] = '\n<meta name="robots" content="noindex, nofollow">'  # brouillon : publié après relecture juridique
+P["cgv.html"] = ("Conditions générales de vente", "Les règles des offres payantes Truc & Co et Truc Pro : sans engagement, pause, arrêt automatique en cas d’échec de paiement.",
+                 open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "cgv_page.html"), encoding="utf-8").read())
+
 TETE["cles.html"] = '\n<meta name="robots" content="noindex, nofollow">\n<link rel="stylesheet" href="vendor/maplibre-gl-4.7.1/maplibre-gl.css">\n<script src="vendor/maplibre-gl-4.7.1/maplibre-gl.js"></script>\n<script src="config.js"></script>'
 P["cles.html"] = ("Générateur de clés API", "Espace éditeur : choisissez la zone et les critères, vérifiez ce que la clé récupérera, puis générez-la.", """
 <form class="gen" id="cx" autocomplete="on">
@@ -524,6 +528,32 @@ P["cles.html"] = ("Générateur de clés API", "Espace éditeur : choisissez la 
 for f, (t, intro, corps) in P.items():
     with open(os.path.join(SORTIE, f), "w", encoding="utf-8") as h:
         h.write(page(f, t, intro, corps))
+
+LLMS = f"""# Trucs à faire
+
+> Agenda gratuit des sorties partout en France : brocantes et vide-greniers, fêtes et marchés, concerts et spectacles, expositions et visites, sorties en famille, sport et randonnées, ainsi que les lieux à visiter et offices de tourisme. Données mises à jour chaque nuit depuis les agendas publics (DATAtourisme, OpenAgenda, collectivités) et les organisateurs.
+
+Le site s’adresse aux habitants et aux visiteurs qui se demandent « que faire autour de chez moi ? ». Chaque sortie indique la date, l’horaire, le lieu, la commune, le caractère gratuit ou non, et un lien vers la source, le site ou la billetterie de l’organisateur. Les informations peuvent changer : renvoyer vers la fiche ou l’organisateur pour confirmation.
+
+## Pages principales
+
+- [Agenda (liste, carte, calendrier)]({SITE}index.html) : recherche en langage naturel, par exemple « brocantes ce week-end autour de Moulins »
+- [Que faire près de chez vous]({SITE}que-faire/) : une page par département, par commune (au moins 3 sorties à venir) et par type de sortie, régénérées chaque nuit avec des données structurées schema.org Event
+- [Choisissez votre truc]({SITE}offres.html) : comptes gratuits (Trucophile, Faiseur de trucs) et offres pour organisateurs et professionnels (Truc & Co, Truc Pro)
+
+## Données et réutilisation
+
+- [API et widgets]({SITE}api.html) : sorties et lieux en JSON, avec clé
+- [Mentions légales et sources]({SITE}mentions-legales.html#sources) : chaque donnée reste sous la licence de son producteur (Licence Ouverte, ODbL…)
+- [Intelligence artificielle]({SITE}intelligence-artificielle.html) : transparence sur l’usage de l’IA
+
+## Optional
+
+- [Conditions d’utilisation]({SITE}cgu.html)
+- [Politique de confidentialité]({SITE}confidentialite.html)
+- [Kit de communication]({SITE}kit.html)
+"""
+open(os.path.join(SORTIE, "llms.txt"), "w", encoding="utf-8").write(LLMS)
 
 urls = ["", "offres.html", "plan-du-site.html", "mentions-legales.html", "cgu.html", "confidentialite.html", "intelligence-artificielle.html", "accessibilite.html", "integrer.html", "api.html", "kit.html"]
 jour = dt.date.today().isoformat()

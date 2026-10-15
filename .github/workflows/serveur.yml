@@ -1,0 +1,56 @@
+name: Déploiement du serveur (Cloudflare Worker)
+# Publie le dossier worker/ sur Cloudflare à chaque modification, après les tests.
+# Prérequis (une fois), dans Settings → Secrets and variables → Actions du dépôt :
+#   - CLOUDFLARE_API_TOKEN : jeton Cloudflare créé avec le modèle « Edit Cloudflare Workers » (obligatoire) ;
+#   - ADMIN_TOKEN, BREVO_KEY, SIGNATURE_KEY : secrets du serveur (voir worker/LISEZMOI.md).
+#     Chacun n'est envoyé à Cloudflare que s'il est renseigné ; un secret absent reste tel quel côté Cloudflare.
+on:
+  push:
+    branches: [main]
+    paths: ["worker/**", ".github/workflows/serveur.yml"]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency: { group: serveur, cancel-in-progress: false }
+jobs:
+  deployer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      CLOUDFLARE_ACCOUNT_ID: 5e60e1af0bf1f6bc19cb672db3af1863
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "22" }
+      - name: Jeton Cloudflare présent
+        env: { CLOUDFLARE_API_TOKEN: "${{ secrets.CLOUDFLARE_API_TOKEN }}" }
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "::error::Secret CLOUDFLARE_API_TOKEN manquant (Settings → Secrets and variables → Actions)."; exit 1
+          fi
+      - name: Tests du serveur
+        run: node --test tests/worker.test.mjs
+      - name: Publication sur Cloudflare
+        working-directory: worker
+        env: { CLOUDFLARE_API_TOKEN: "${{ secrets.CLOUDFLARE_API_TOKEN }}" }
+        run: npx --yes wrangler@4 deploy
+      - name: Secrets du serveur
+        working-directory: worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          ADMIN_TOKEN: ${{ secrets.ADMIN_TOKEN }}
+          BREVO_KEY: ${{ secrets.BREVO_KEY }}
+          SIGNATURE_KEY: ${{ secrets.SIGNATURE_KEY }}
+        run: |
+          for n in ADMIN_TOKEN BREVO_KEY SIGNATURE_KEY; do
+            v="${!n}"
+            if [ -n "$v" ]; then printf '%s' "$v" | npx --yes wrangler@4 secret put "$n" >/dev/null && echo "$n : envoyé"; else echo "$n : non renseigné, inchangé"; fi
+          done
+      - name: Le serveur répond
+        run: |
+          for i in 1 2 3 4 5 6; do
+            c2=$(curl -s -o /dev/null -w '%{http_code}' https://api.trucsafaire.fr/agenda || true)
+            echo "api.trucsafaire.fr/agenda : $c2"
+            [ "$c2" = "200" ] && exit 0; sleep 10
+          done
+          echo "::warning::api.trucsafaire.fr ne répond pas encore (domaine en cours d'activation ?)"

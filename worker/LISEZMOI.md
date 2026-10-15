@@ -4,7 +4,19 @@ Ce petit serveur reçoit les sorties et les sources proposées par les visiteurs
 les garde en attente, et publie celles que l'éditeur valide. Il est gratuit dans les limites
 de l'offre Workers gratuite de Cloudflare.
 
-## Mise en place depuis le tableau de bord Cloudflare (10 minutes, sans ligne de commande)
+## Déploiement automatique (en place)
+
+Le serveur est publié par GitHub Actions (`.github/workflows/serveur.yml`) à chaque modification du dossier `worker/` sur `main`,
+après les tests, sur le compte Cloudflare `5e60e1af0bf1f6bc19cb672db3af1863`, à l'adresse **https://api.trucsafaire.fr**.
+Stockage : espace KV `TRUCS_A_FAIRE_DLC` (juridiction UE).
+
+Secrets du dépôt (Settings → Secrets and variables → Actions) :
+- `CLOUDFLARE_API_TOKEN` : jeton Cloudflare, modèle « Edit Cloudflare Workers » (My Profile → API Tokens) ;
+- `ADMIN_TOKEN`, `BREVO_KEY`, `SIGNATURE_KEY` : recopiés vers le serveur à chaque déploiement, s'ils sont renseignés.
+
+Relancer un déploiement à la main : onglet Actions → « Déploiement du serveur » → Run workflow.
+
+## Mise en place manuelle depuis le tableau de bord Cloudflare (ancienne méthode)
 
 1. **Créer le stockage** : *Storage & Databases → KV → Create* ; nom : `DLC`.
 2. **Créer le Worker** : *Workers & Pages → Create → Worker* ; nom : `trucs-a-faire` ; *Deploy*.

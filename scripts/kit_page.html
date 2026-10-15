@@ -1,0 +1,78 @@
+<div class="kit">
+
+<p class="kit-intro">Faites savoir que vos sorties sont sur Trucs à faire, ou aidez les gens de passage à trouver quoi faire autour de chez vous. Tout est gratuit, à imprimer ou à coller sur votre site.</p>
+
+<h2>1. Une affiche avec QR code</h2>
+<form class="kit-f" id="kf" onsubmit="return false">
+  <fieldset class="kit-ch"><legend>Pour qui ?</legend>
+    <label><input type="radio" name="kf-t" value="orga" checked><span>Je suis organisateur ou association</span></label>
+    <label><input type="radio" name="kf-t" value="lieu"><span>Je tiens un lieu : mairie, commerce, camping, gîte</span></label>
+  </fieldset>
+  <div class="kit-row">
+    <div><label for="kf-n">Votre nom <span class="opt">(facultatif)</span></label><input id="kf-n" maxlength="60" placeholder="Comité des fêtes de Decize"></div>
+    <div><label for="kf-c">Commune</label><input id="kf-c" maxlength="60" placeholder="Decize"></div>
+  </div>
+  <fieldset class="kit-ch"><legend>Format</legend>
+    <label><input type="radio" name="kf-f" value="a4" checked><span>A4</span></label>
+    <label><input type="radio" name="kf-f" value="a5"><span>A5 (comptoir, vitrine)</span></label>
+  </fieldset>
+  <p><button type="button" class="btn go" id="kf-p">Imprimer ou enregistrer en PDF</button></p>
+</form>
+
+<div class="kit-aper" aria-label="Aperçu de l’affiche"><div class="aff a4" id="aff">
+  <div class="aff-top"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 0C52.5 0 64 4.6 64 32S52.5 64 32 64 0 59.4 0 32 11.5 0 32 0Z" fill="#2546D8"/><path d="M29.5 13.5V38c0 7.5 4.2 12 11.6 12h2.4" fill="none" stroke="#fff" stroke-width="6.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M17.5 27.6 24.6 34C31.5 26.9 38 22.2 46.4 18.6" fill="none" stroke="#fff" stroke-width="6.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="48.6" cy="46.4" r="4.3" fill="#FF8A3D"/></svg><span>trucs à faire</span></div>
+  <p class="aff-k" id="aff-k">Nos prochains trucs</p>
+  <h3 class="aff-h" id="aff-h">Retrouvez toutes nos sorties ici&nbsp;!</h3>
+  <div class="aff-qr" id="aff-qr" aria-hidden="true"></div>
+  <p class="aff-s">Scannez avec l’appareil photo de votre téléphone</p>
+  <p class="aff-u" id="aff-u">trucsafaire.fr</p>
+  <p class="aff-n" id="aff-n"></p>
+  <p class="aff-b">Brocantes, fêtes, concerts, expos, sorties en famille : gratuit, sans inscription.</p>
+</div></div>
+
+<h2>2. Un badge pour votre site</h2>
+<p>Collez ce code dans votre site (WordPress, Wix, Jimdo… bloc « HTML personnalisé ») : un petit bouton mène vers vos sorties.</p>
+<div class="kit-badge-aper"><a class="tf-badge" id="kb-prev" href="index.html" target="_blank" rel="noopener"><svg viewBox="0 0 64 64" width="22" height="22" aria-hidden="true"><path d="M32 0C52.5 0 64 4.6 64 32S52.5 64 32 64 0 59.4 0 32 11.5 0 32 0Z" fill="#fff"/><path d="M29.5 13.5V38c0 7.5 4.2 12 11.6 12h2.4" fill="none" stroke="#2546D8" stroke-width="6.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M17.5 27.6 24.6 34C31.5 26.9 38 22.2 46.4 18.6" fill="none" stroke="#2546D8" stroke-width="6.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="48.6" cy="46.4" r="4.3" fill="#FF8A3D"/></svg>Nos trucs à faire</a></div>
+<textarea class="kit-code" id="kb-code" rows="4" readonly aria-label="Code du badge"></textarea>
+<p><button type="button" class="btn" id="kb-cp">Copier le code</button> <span id="kb-ok" role="status"></span></p>
+<p>Pour afficher directement l’agenda dans votre page, voir <a href="integrer.html">Intégrer l’agenda</a>.</p>
+
+<h2>3. Logos et visuels</h2>
+<ul class="kit-dl">
+  <li><a href="marque/logo-horizontal.svg" download>Logo horizontal (SVG)</a></li>
+  <li><a href="marque/logo-horizontal-2000.png" download>Logo horizontal (PNG, 2000 px)</a></li>
+  <li><a href="marque/logo-horizontal-blanc.svg" download>Logo blanc, pour fond foncé (SVG)</a></li>
+  <li><a href="marque/logo-empile.svg" download>Logo empilé (SVG)</a></li>
+  <li><a href="marque/icone-512.png" download>Icône seule (PNG, 512 px)</a></li>
+  <li><a href="marque/partage-1200x630.png" download>Visuel pour les réseaux sociaux (1200 × 630)</a></li>
+</ul>
+<p class="kit-note">Merci de ne pas déformer ni recolorer le logo. Ces fichiers servent uniquement à signaler votre présence sur Trucs à faire.</p>
+
+</div>
+
+<script src="vendor/qrcode.js"></script>
+<script>
+(function(){
+  var $=function(i){return document.getElementById(i)};
+  var SITE=location.href.replace(/kit\.html.*$/,"");
+  function val(n){var x=document.querySelector('[name="'+n+'"]:checked');return x?x.value:""}
+  function lien(){var c=$("kf-c").value.trim();return SITE+(c?"#q="+encodeURIComponent("que faire à "+c):"")}
+  function maj(){
+    var t=val("kf-t"),n=$("kf-n").value.trim(),c=$("kf-c").value.trim(),f=val("kf-f");
+    $("aff").className="aff "+f;
+    $("aff-k").textContent=t==="orga"?"Nos prochains trucs":"Envie d’un truc à faire ?";
+    $("aff-h").textContent=t==="orga"?"Retrouvez toutes nos sorties ici !":(c?"Que faire autour de "+c+" ?":"Que faire autour d’ici ?");
+    $("aff-n").textContent=n;
+    $("aff-u").textContent=SITE.replace(/^https?:\/\//,"").replace(/\/$/,"");
+    var q=$("aff-qr");q.textContent="";
+    if(window.qrcode){var g=qrcode(0,"M");g.addData(lien());g.make();q.innerHTML=g.createSvgTag({cellSize:6,margin:0,scalable:true})}
+    var lb=n?"Nos trucs à faire · "+n:"Nos trucs à faire";$("kb-prev").lastChild.textContent=lb;$("kb-prev").href=lien();
+    $("kb-code").value='<a href="'+lien()+'" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:999px;background:#2546D8;color:#fff;font:600 15px/1 system-ui,sans-serif;text-decoration:none">'+lb.replace(/</g,"&lt;")+' →</a>';
+  }
+  ["kf-n","kf-c"].forEach(function(i){$(i).addEventListener("input",maj)});
+  document.querySelectorAll('#kf input[type="radio"]').forEach(function(r){r.addEventListener("change",maj)});
+  $("kf-p").onclick=function(){document.documentElement.dataset.format=val("kf-f");window.print()};
+  $("kb-cp").onclick=function(){var t=$("kb-code");(navigator.clipboard?navigator.clipboard.writeText(t.value):Promise.reject()).then(function(){$("kb-ok").textContent="Copié."},function(){t.select();$("kb-ok").textContent="Sélectionné : copiez avec Ctrl+C."})};
+  maj();
+})();
+</script>

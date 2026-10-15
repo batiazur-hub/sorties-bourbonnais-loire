@@ -640,6 +640,34 @@ textarea.sbl-in{min-height:100px;resize:vertical}
 .sbl.kiosk .sbl-hb.acc,.sbl.embed .sbl-hb.acc{display:none}
 .sbl-chips legend .opt{display:inline;border:0;padding:0;background:none;min-height:0;font-weight:400}
 @media (max-width:480px){.sbl-evx .ac{gap:6px}.sbl-evx .ac .sbl-btn{padding:0 8px;font-size:.9rem}.sbl-evx .ac .sbl-btn.lk{flex:0 0 42px;padding:0}.sbl-evx .ac .sbl-btn.lk span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}}
+
+/* ---------- Barre de navigation flottante (téléphone) ---------- */
+@media (max-width:600px){
+  .sbl .sbl-navw{left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom,0px));padding:6px;border:1px solid color-mix(in srgb,var(--sbl-line) 80%,transparent);border-radius:999px;
+    background:color-mix(in srgb,var(--sbl-surface) 84%,transparent);-webkit-backdrop-filter:blur(16px) saturate(1.6);backdrop-filter:blur(16px) saturate(1.6);
+    box-shadow:0 14px 34px -12px rgb(20 26 51 / .38),0 2px 6px rgb(20 26 51 / .08)}
+  .sbl .sbl-navw .sbl-tabs{position:relative;gap:2px}
+  .sbl .sbl-navw .sbl-tab{position:relative;z-index:1;flex:1 1 0;min-width:0;min-height:50px;flex-direction:row;gap:0;padding:0 10px;border-radius:999px;font-size:.86rem;color:var(--sbl-muted);
+    transition:flex-grow .38s cubic-bezier(.3,1.25,.5,1),color .25s}
+  .sbl .sbl-navw .sbl-tab span{display:inline-block;max-width:0;opacity:0;overflow:hidden;white-space:nowrap;transition:max-width .38s cubic-bezier(.3,1.25,.5,1),opacity .2s,margin .38s}
+  .sbl .sbl-navw .sbl-tab[aria-selected="true"]{flex-grow:2.3;color:var(--sbl-accent-ink)!important;background:none!important}
+  .sbl .sbl-navw .sbl-tab[aria-selected="true"] svg{color:currentColor}
+  .sbl .sbl-navw .sbl-tab[aria-selected="true"] span{max-width:9em;opacity:1;margin-left:7px}
+  .sbl .sbl-navw .sbl-tab:active svg{transform:scale(.88)}
+  .sbl .sbl-navw .sbl-tab svg{transition:transform .15s}
+  .sbl-ind{position:absolute;top:0;bottom:0;left:0;width:0;z-index:0;border-radius:999px;background:var(--sbl-accent);box-shadow:0 6px 16px -6px color-mix(in srgb,var(--sbl-accent) 70%,transparent);
+    transition:transform .38s cubic-bezier(.3,1.25,.5,1),width .38s cubic-bezier(.3,1.25,.5,1),opacity .2s;pointer-events:none;opacity:0}
+  .sbl{padding-bottom:calc(92px + env(safe-area-inset-bottom,0px))!important}
+  .sbl-toast{bottom:calc(92px + env(safe-area-inset-bottom,0px))!important}
+  .sbl-ban{bottom:calc(88px + env(safe-area-inset-bottom,0px))!important}
+  .sbl-mpop{bottom:calc(88px + env(safe-area-inset-bottom,0px))!important}
+}
+.sbl-ind{display:none}
+@media (max-width:600px){.sbl-navw .sbl-ind{display:block}}
+.sbl-tab.kt{display:none}
+@media (max-width:600px){.sbl-tab.kt:not([hidden]){display:flex}}
+@media (prefers-reduced-motion:reduce){.sbl .sbl-navw .sbl-tab,.sbl .sbl-navw .sbl-tab span,.sbl-ind{transition:none}}
+.sbl.kiosk .sbl-ind{display:none}
 /* ---------- Charte graphique Trucs à faire (v1.0) ---------- */
 .sbl-btn.lk{display:inline-flex;align-items:center;gap:7px}
 .sbl-btn.lk svg{flex:none}
@@ -754,6 +782,8 @@ textarea.sbl-in{min-height:100px;resize:vertical}
   <button class="sbl-tab" role="tab" data-v="list" aria-selected="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg><span>Liste</span></button>
   <button class="sbl-tab" role="tab" data-v="map" aria-selected="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4 3 6.5v13.5l6-2.5 6 2.5 6-2.5V4l-6 2.5z"/><path d="M9 4v13.5M15 6.5V20"/></svg><span>Carte</span></button>
   <button class="sbl-tab" role="tab" data-v="cal" aria-selected="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><span>Calendrier</span></button>
+  <button class="sbl-tab kt" type="button" data-v="kit" aria-selected="false" hidden><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10v4h3l7 4V6L7 10zM17 9.5a3.5 3.5 0 0 1 0 5"/></svg><span>Kit</span></button>
+  <span class="sbl-ind" aria-hidden="true"></span>
 </div></section>
 
 <main class="sbl-main" id="sbl-main" data-v="list">
@@ -796,7 +826,7 @@ textarea.sbl-in{min-height:100px;resize:vertical}
   <p class="sbl-footacc" id="sbl-footacc" hidden><b>Trucophile, c’est gratuit.</b> Favoris illimités, alertes près de chez vous et « Le Truc de la semaine » par e-mail. <button type="button" class="lnk" data-acc>Rejoindre les Trucophiles</button> · <a href="offres.html">Toutes les offres</a></p>
   <p class="sbl-fine">Mis à jour chaque nuit. Un organisateur peut changer une date&nbsp;: vérifiez sur la fiche source avant de vous déplacer. Fonds de carte © IGN, via cartes.gouv.fr. Photos de communes&nbsp;: Wikipédia et Wikimedia Commons.</p>
   <nav class="sbl-legal" aria-label="Informations légales">
-    <a href="plan-du-site.html">Plan du site</a><a href="mentions-legales.html">Mentions légales</a><a href="cgu.html">Conditions d’utilisation</a><a href="confidentialite.html">Confidentialité</a><a href="intelligence-artificielle.html">Intelligence artificielle</a><a href="accessibilite.html">Accessibilité</a><a href="integrer.html">Intégrer l’agenda</a><a href="api.html">API</a><span class="by">Conçu par Saryn Digital</span>
+    <a href="plan-du-site.html">Plan du site</a><a href="kit.html">Kit de communication</a><a href="mentions-legales.html">Mentions légales</a><a href="cgu.html">Conditions d’utilisation</a><a href="confidentialite.html">Confidentialité</a><a href="intelligence-artificielle.html">Intelligence artificielle</a><a href="accessibilite.html">Accessibilité</a><a href="integrer.html">Intégrer l’agenda</a><a href="api.html">API</a><span class="by">Conçu par Saryn Digital</span>
   </nav>
   <div class="sbl-skins" id="sbl-skins"><span>Aperçu dans la charte d’un autre site :</span></div>
 </footer>
@@ -1826,10 +1856,19 @@ async function unpublish(e,close){try{await BK.unpublish(e);close();toast("Sorti
 
 
 /* ---------- Vues ---------- */
-function syncTabs(){const v=st.view||"list",hm=isHome()&&v==="list";document.querySelectorAll("#sbl-mt button").forEach(b=>b.setAttribute("aria-selected",b.dataset.v==="home"?hm:(!hm&&b.dataset.v===v)))}
+/* Barre du bas (téléphone) : une bulle de couleur glisse sous l'onglet actif, qui s'élargit pour afficher son nom */
+let indRaf=0;
+function bulle(){const t=$("sbl-mt"),ind=t&&t.querySelector(".sbl-ind");if(!ind)return;cancelAnimationFrame(indRaf);const t0=performance.now();
+  const suivre=()=>{const a=t.querySelector('.sbl-tab[aria-selected="true"]:not([hidden])');
+    if(a&&a.offsetParent){ind.style.opacity=1;ind.style.transform="translateX("+a.offsetLeft+"px)";ind.style.width=a.offsetWidth+"px"}else ind.style.opacity=0;
+    if(performance.now()-t0<450)indRaf=requestAnimationFrame(suivre)};suivre()}
+addEventListener("resize",()=>bulle(),{passive:true});
+if(window.ResizeObserver){const ro=new ResizeObserver(()=>{const t=$("sbl-mt"),ind=t&&t.querySelector(".sbl-ind"),x=t&&t.querySelector('.sbl-tab[aria-selected="true"]:not([hidden])');if(ind&&x&&x.offsetParent){ind.style.transform="translateX("+x.offsetLeft+"px)";ind.style.width=x.offsetWidth+"px"}});
+  setTimeout(()=>document.querySelectorAll("#sbl-mt .sbl-tab").forEach(b=>ro.observe(b)),0)}
+function syncTabs(){const v=st.view||"list",hm=isHome()&&v==="list";document.querySelectorAll("#sbl-mt button").forEach(b=>b.setAttribute("aria-selected",b.dataset.v==="home"?hm:(!hm&&b.dataset.v===v)));bulle()}
 /* Changer d’onglet (liste, carte, calendrier) repart toujours du haut de la page. */
 function view(v){{const mp=$("sbl-mpop");if(mp)mp.hidden=true}const neuf=st.view!==v;st.view=v;if(neuf)scrollTo({top:0,behavior:"instant"});ROOT.dataset.v=v;$("sbl-main").dataset.v=v;syncTabs();if(v==="map"&&map)setTimeout(()=>map.resize(),30)}
-document.querySelectorAll("#sbl-mt button").forEach(b=>b.onclick=()=>{if(b.dataset.v==="home")return goHome();if(isHome())explore(b.dataset.v);else view(b.dataset.v)});
+document.querySelectorAll("#sbl-mt button").forEach(b=>b.onclick=()=>{if(b.dataset.v==="kit")return void(location.href="kit.html");if(b.dataset.v==="home")return goHome();if(isHome())explore(b.dataset.v);else view(b.dataset.v)});
 document.querySelectorAll("#sbl-dt button").forEach(b=>b.onclick=()=>{st.side=b.dataset.s;{const sd=$("sbl-side");if(sd&&sd.getBoundingClientRect().top<0)sd.scrollIntoView({block:"start",behavior:"instant"})}$("sbl-side").dataset.s=st.side;document.querySelectorAll("#sbl-dt button").forEach(x=>x.setAttribute("aria-selected",x===b));if(st.side==="map"&&map)setTimeout(()=>map.resize(),30)});
 $("sbl-pm").onclick=()=>{st.month=new Date(st.month.getFullYear(),st.month.getMonth()-1,1);cal()};
 $("sbl-nm").onclick=()=>{st.month=new Date(st.month.getFullYear(),st.month.getMonth()+1,1);cal()};
@@ -1914,7 +1953,8 @@ function accUI(){const b=$("sbl-acc");if(!b)return;b.hidden=!accOn();
   if(ACC.c){b.classList.add("in");b.innerHTML='<span class="av" aria-hidden="true"></span><span class="lg">Mon compte</span>';b.firstChild.textContent=(ACC.c.email||"?")[0].toUpperCase();b.setAttribute("aria-label","Mon compte")}
   else{b.classList.remove("in");b.innerHTML=icon("user",18)+'<span>Rejoindre les Trucophiles</span>';b.setAttribute("aria-label","Rejoindre les Trucophiles : compte gratuit")}
   const pv=$("sbl-pourvous");if(pv)pourVous(pv);
-  {const v=accOn()&&!ACC.c,ca=$("sbl-calacc"),fa=$("sbl-footacc");if(ca)ca.hidden=!v;if(fa)fa.hidden=!v}}
+  {const v=accOn()&&!ACC.c,ca=$("sbl-calacc"),fa=$("sbl-footacc");if(ca)ca.hidden=!v;if(fa)fa.hidden=!v}
+  {const k=document.querySelector("#sbl-mt .kt");if(k){k.hidden=!(accOn()&&ACC.c);bulle()}}}
 
 const RAISONS={
   def:["Ne ratez plus rien près de chez vous","Un compte gratuit pour garder vos sorties, être prévenu et recevoir les bons plans autour de chez vous."],
@@ -1978,7 +2018,7 @@ function monCompte(bienvenue){
       '<fieldset class="sbl-chips"><legend>Ce qui m’intéresse</legend>'+Object.keys(CATS).filter(k=>k!=="pal").map(k=>'<label><input type="checkbox" name="mc-c" value="'+k+'"'+(sel.has(k)?" checked":"")+'><span>'+icon(k,15)+CATS[k][1]+'</span></label>').join("")+'</fieldset>'+
       '<label class="sbl-nl"><input type="checkbox" id="mc-nl"'+(c.newsletter?" checked":"")+'><span>'+CONSENT_NL+'</span></label>'+
       '<p class="sbl-err" id="mc-err" role="alert"></p><div class="sbl-btns"><button class="sbl-btn go" type="submit">Enregistrer</button></div></form>'+
-    '<h3 class="sbl-ach">Aller plus loin</h3><p class="sbl-acm">Vous organisez des sorties ? <a href="offres.html">Découvrez Faiseur de trucs et Truc &amp; Co</a>.</p>'+
+    '<h3 class="sbl-ach">Aller plus loin</h3><p class="sbl-acm">Vous organisez des sorties ? <a href="offres.html">Découvrez Faiseur de trucs et Truc &amp; Co</a>. Affiches et QR codes : <a href="kit.html">le kit de communication</a>.</p>'+
     '<h3 class="sbl-ach">Mes données</h3><div class="sbl-btns"><button class="sbl-btn" type="button" id="mc-x">Télécharger mes données</button><button class="sbl-btn" type="button" id="mc-o">Se déconnecter</button><button class="sbl-btn dz" type="button" id="mc-d">Supprimer mon compte</button></div>');
   $("mc-e").textContent="Connecté avec "+c.email+(bienvenue?". Vos favoris sont maintenant enregistrés sur tous vos appareils.":"");
   if(p.commune)$("mc-w").value=p.commune.nom;

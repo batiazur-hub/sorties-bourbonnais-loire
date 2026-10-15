@@ -33,7 +33,7 @@ def mail():
 
 NAV = [("index.html", "Accueil"), ("plan-du-site.html", "Plan du site"), ("mentions-legales.html", "Mentions légales"),
        ("cgu.html", "Conditions d’utilisation"), ("confidentialite.html", "Confidentialité"),
-       ("intelligence-artificielle.html", "Intelligence artificielle"), ("accessibilite.html", "Accessibilité"), ("integrer.html", "Intégrer l’agenda"), ("api.html", "API"), ("offres.html", "Choisissez votre truc")]
+       ("intelligence-artificielle.html", "Intelligence artificielle"), ("accessibilite.html", "Accessibilité"), ("integrer.html", "Intégrer l’agenda"), ("api.html", "API"), ("offres.html", "Choisissez votre truc"), ("kit.html", "Kit de communication")]
 
 TETE = {}
 def page(fichier, titre, intro, corps):
@@ -381,6 +381,9 @@ P["api.html"] = ("API Trucs à faire", "Ajoutez les sorties et les lieux à visi
 P["offres.html"] = ("Choisissez votre truc", "Le site reste libre et gratuit. Un compte vous permet de garder vos sorties, de publier les vôtres ou d’intégrer l’agenda chez vous.",
                     open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "offres_page.html"), encoding="utf-8").read())
 
+P["kit.html"] = ("Kit de communication", "Affiches avec QR code, badge pour votre site et logos : faites connaître vos trucs à faire.",
+                 open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "kit_page.html"), encoding="utf-8").read())
+
 TETE["cles.html"] = '\n<meta name="robots" content="noindex, nofollow">\n<link rel="stylesheet" href="vendor/maplibre-gl-4.7.1/maplibre-gl.css">\n<script src="vendor/maplibre-gl-4.7.1/maplibre-gl.js"></script>\n<script src="config.js"></script>'
 P["cles.html"] = ("Générateur de clés API", "Espace éditeur : choisissez la zone et les critères, vérifiez ce que la clé récupérera, puis générez-la.", """
 <form class="gen" id="cx" autocomplete="on">
@@ -518,7 +521,7 @@ for f, (t, intro, corps) in P.items():
     with open(os.path.join(SORTIE, f), "w", encoding="utf-8") as h:
         h.write(page(f, t, intro, corps))
 
-urls = ["", "offres.html", "plan-du-site.html", "mentions-legales.html", "cgu.html", "confidentialite.html", "intelligence-artificielle.html", "accessibilite.html", "integrer.html", "api.html"]
+urls = ["", "offres.html", "plan-du-site.html", "mentions-legales.html", "cgu.html", "confidentialite.html", "intelligence-artificielle.html", "accessibilite.html", "integrer.html", "api.html", "kit.html"]
 jour = dt.date.today().isoformat()
 open(os.path.join(SORTIE, "sitemap.xml"), "w", encoding="utf-8").write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
     "".join(f"  <url><loc>{SITE}{u}</loc><lastmod>{jour}</lastmod><changefreq>{'daily' if not u else 'monthly'}</changefreq></url>\n" for u in urls) + "</urlset>\n")

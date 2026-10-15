@@ -732,6 +732,10 @@ textarea.sbl-in{min-height:100px;resize:vertical}
 .sbl-veille .cd .sbl-card{background:#fff;color:#141a33;border-radius:22px;padding:10px;box-shadow:0 30px 60px -20px rgb(0 0 0 / .45);pointer-events:none;width:100%}
 .sbl-veille .go{margin:0;font-size:1.25rem;animation:sbl-pulse 2.4s ease-in-out infinite}
 @media (prefers-reduced-motion:reduce){.sbl-veille .cd{transition:none}.sbl-veille .go{animation:none}}
+
+.sbl-pfl{padding:12px 14px;margin-bottom:14px;border-radius:14px;background:var(--sbl-accent-tint);}
+.sbl-pfl label{display:block;font-weight:600;font-size:.88rem;margin-bottom:6px}
+.sbl-pfl .row{display:flex;gap:8px}.sbl-pfl .row .sbl-in{flex:1;min-width:0}
 /* ---------- Charte graphique Trucs à faire (v1.0) ---------- */
 .sbl-btn.lk{display:inline-flex;align-items:center;gap:7px}
 .sbl-btn.lk svg{flex:none}
@@ -1235,6 +1239,7 @@ function list(items){
   {const lr=lieuxRail();if(lr)wk.append(lr)}
   if(!n){box.innerHTML='<p class="sbl-none">Pas de truc par ici… Élargissez la période ou la zone, ou retirez un filtre.</p>';return}
   const t=today(),a0=st.day?P(st.day):t;let key=null,cnt=0,hd=null,grp=null,vus=0;
+  if(!st.day){const vu=new Map(),g=[];items.forEach(e=>{if(e.long){g.push(e);return}const k=norm(e.t)+"|"+e.w;const f=vu.get(k);if(f){f._rep=(f._rep||0)+1;return}e._rep=0;vu.set(k,e);g.push(e)});items=g}
   const all=items;items=items.slice(0,st.lim||LIM0);
   items.forEach(e=>{
     const ref=e.long?null:(e.S<a0?a0:e.S),k=e.long?"L":iso(ref);
@@ -1288,7 +1293,7 @@ function evRow(e,ref){
   m.innerHTML='<span class="hr"><b></b><small></small></span><span class="ci">'+icon(e.cat,16)+'</span><span class="tx"><span class="t"></span><span class="m"></span></span><svg class="chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
   m.querySelector(".hr b").textContent=quand;m.querySelector(".hr small").textContent=sous;
   m.querySelector(".t").textContent=e.t;
-  const bits=[CATS[e.cat][1],e.w];if(e.g)bits.push("Gratuit");m.querySelector(".m").textContent=bits.join(" · ");
+  const bits=[CATS[e.cat][1],e.w];if(e.g)bits.push("Gratuit");if(e._rep)bits.push("+ "+e._rep+(e._rep>1?" autres dates":" autre date"));m.querySelector(".m").textContent=bits.join(" · ");
   {const o=orgDe(e);if(o){const s=document.createElement("span");s.className="og";s.textContent=o.nom;if(o.verifie)s.insertAdjacentHTML("beforeend",CHECK);m.querySelector(".m").prepend(s,document.createTextNode(" · "))}}
   const bd=badge(e);if(bd)m.querySelector(".tx").append(bd);
   const x=document.createElement("div");x.className="sbl-evx";x.id=id;x.innerHTML='<div class="in"></div>';
@@ -1830,6 +1835,7 @@ function proposeForm(day,opt){loadCommunes();
    (PX.mode==="none"&&!ORG?'<p class="sbl-note"></p><div class="sbl-btns"><button class="sbl-btn" data-close type="button">Fermer</button></div>':
    (ORG?'<p class="sbl-hint">Publié tout de suite sous le nom de votre page.</p>':'<p class="sbl-hint">Votre proposition sera relue avant d’apparaître dans l’agenda.</p>')+
    '<form class="sbl-form" id="sbl-pf" novalidate>'+
+   (ORG?'<div class="sbl-pfl"><label for="pf-lk">Gagnez du temps : collez le lien de l’événement (HelloAsso, Billetweb, votre site…)</label><div class="row"><input class="sbl-in" id="pf-lk" type="url" placeholder="https://"><button type="button" class="sbl-btn" id="pf-lkb">Remplir</button></div><p class="sbl-acm" id="pf-lkm" role="status"></p></div>':'')+
    '<div class="sbl-f"><label for="pf-t">Nom de la sortie *</label><input class="sbl-in" id="pf-t" maxlength="90" required placeholder="Brocante du comité des fêtes"></div>'+
    '<div class="sbl-f"><label for="pf-c">Type *</label><select class="sbl-in" id="pf-c">'+Object.entries(CATS).filter(([k])=>k!=="pal").map(([k,v])=>'<option value="'+k+'">'+v[0]+'</option>').join("")+'</select></div>'+
    '<div class="sbl-2"><div class="sbl-f"><label for="pf-s">Date *</label><input class="sbl-in" id="pf-s" type="date" required min="'+today0+'" value="'+(day||"")+'"></div>'+
@@ -1846,6 +1852,11 @@ function proposeForm(day,opt){loadCommunes();
    '<p class="sbl-err" id="pf-err" role="alert"></p>'+
    '<div class="sbl-btns"><button class="sbl-btn go" type="submit" id="pf-go">'+(ORG?"Publier":"Envoyer la proposition")+'</button><button class="sbl-btn" type="button" data-close>Annuler</button></div></form>'));
   if(ORG){const bo=blocOrg({org:ORG.slug});if(bo){bo.disabled=true;M.el.querySelector(".top").after(bo)}
+    $("pf-lkb").onclick=async()=>{const u=$("pf-lk").value.trim(),msg=$("pf-lkm");if(!/^https:\/\//.test(u)){msg.textContent="Le lien doit commencer par https://";return}
+      msg.textContent="Lecture de la page…";try{const j=await accCall("/compte/apercu?url="+encodeURIComponent(u));const x=j.sortie,f=(i,v)=>{const el=$(i);if(el&&v&&!el.value)el.value=v};
+        f("pf-t",x.t);f("pf-s",x.s);f("pf-e",x.e);f("pf-h",x.h);f("pf-w",x.w);f("pf-l",x.lieu);f("pf-d",x.d);f("pf-u",x.u);f("pf-b",x.b);f("pf-img",x.img);
+        msg.textContent="C’est rempli : vérifiez chaque champ avant de publier."+(x.w?"":" Indiquez la commune.")}
+      catch(x){msg.textContent=(x.j&&x.j.erreur==="apercu")?"Version de développement : disponible une fois le serveur en ligne.":(x.j&&x.j.message)||"Impossible de lire cette page."}};
     const B=opt.base;if(B){const f=(i,v)=>{const x=$(i);if(x&&v)x.value=v};f("pf-t",B.t);f("pf-c",B.cat);f("pf-h",B.h);f("pf-w",B.w);f("pf-l",B.lieu!==B.w?B.lieu:"");f("pf-d",B.d);f("pf-u",B.u);f("pf-b",B.b);f("pf-img",B.img);
       M.el.querySelector(".sbl-hint").textContent="Copie de « "+B.t+" » : choisissez la nouvelle date, puis publiez."}}
   if(PX.mode==="none"&&!ORG){M.el.querySelector(".sbl-note").textContent=PX.why;M.el.querySelector("[data-close]").focus();return}
@@ -2207,8 +2218,11 @@ function espaceOrg(box){
     $("eo-c").onclick=()=>formOrg();return}
   const top=document.createElement("div");top.className="sbl-orgme";top.append(avatar(o,56));const tx=document.createElement("div");tx.innerHTML="<b></b><small></small>";
   tx.querySelector("b").textContent=o.nom;tx.querySelector("small").textContent=o.verifie?"Page vérifiée":"Pastille vérifiée avec l’offre Truc & Co";top.append(tx);box.append(top);
-  const bt=document.createElement("div");bt.className="sbl-btns";bt.innerHTML='<button type="button" class="sbl-btn go" id="eo-p">Publier un truc</button><button type="button" class="sbl-btn" id="eo-v">Voir ma page</button><button type="button" class="sbl-btn" id="eo-m">Modifier</button>';box.append(bt);
+  const bt=document.createElement("div");bt.className="sbl-btns";bt.innerHTML='<button type="button" class="sbl-btn go" id="eo-p">Publier un truc</button><button type="button" class="sbl-btn" id="eo-v">Voir ma page</button><button type="button" class="sbl-btn" id="eo-m">Modifier</button><button type="button" class="sbl-btn" id="eo-w">Code pour mon site</button>';box.append(bt);
   $("eo-p").onclick=()=>proposeForm(st.day||"",{org:true});$("eo-v").onclick=()=>ouvrirOrg(o.slug);$("eo-m").onclick=()=>formOrg();
+  $("eo-w").onclick=()=>{const u=location.href.split("#")[0]+"#integre&org="+o.slug,code='<iframe src="'+u+'" title="Nos trucs à faire" style="width:100%;height:720px;border:0;border-radius:16px" loading="lazy"></iframe>';
+    const M=modal('<div class="top"><div><div class="kind">Sur votre site</div><h2>Nos prochains trucs</h2></div><button class="cl" data-close aria-label="Fermer">✕</button></div><p class="sbl-acl">Collez ce code dans votre site (bloc « HTML personnalisé ») : vos sorties s’y affichent et se mettent à jour toutes seules. Affiches et badge : <a href="kit.html">kit de communication</a>.</p><textarea class="sbl-in" id="eo-code" rows="4" readonly></textarea><div class="sbl-btns"><button class="sbl-btn go" type="button" id="eo-cp">Copier le code</button></div>');
+    $("eo-code").value=code;$("eo-cp").onclick=()=>navigator.clipboard.writeText(code).then(()=>toast("Code copié"),()=>$("eo-code").select())};
   const l=document.createElement("div");l.className="sbl-acfav";box.append(l);
   accCall("/compte/sorties").then(j=>{j.sorties.forEach(e=>{const r=document.createElement("div");r.className="sbl-acfr";r.innerHTML='<span class="ci">'+icon(e.cat||"fete",15)+'</span><span class="tx"><b></b><small></small></span><span class="ac2"><button type="button" class="lnk dp">Dupliquer</button> <button type="button" class="lnk rt">Retirer</button></span>';
     r.style.gridTemplateColumns="32px minmax(0,1fr) auto";r.style.setProperty("--c","var(--sbl-c-"+(e.cat||"fete")+")");r.querySelector("b").textContent=e.t;r.querySelector("small").textContent=e.s.split("-").reverse().join("/")+" · "+e.w;

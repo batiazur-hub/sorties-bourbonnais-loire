@@ -246,6 +246,12 @@ export async function comptes(req, env, url, p, cors, json, outils) {
     c.org = orgPublic(o); await enregistrer(env, c); await majIndexOrgs(env);
     return json({ ok: true, compte: vuePublique(c) }, 200, cors);
   }
+  if (req.method === "GET" && p === "/compte/apercu") {
+    if (!c.org) return json({ erreur: "pas_de_profil" }, 400, cors);
+    if (!await limite(env, "rla:" + c.id + ":" + jour, 60, 90000)) return json({ erreur: "trop_de_demandes" }, 429, cors);
+    const r = await apercuLien(url.searchParams.get("url") || "");
+    return r ? json({ ok: true, sortie: r }, 200, cors) : json({ erreur: "lien_illisible", message: "Impossible de lire cette page. Remplissez les champs à la main." }, 422, cors);
+  }
   if (p === "/compte/sorties") {
     if (!c.org) return json({ erreur: "pas_de_profil", message: "Créez d’abord votre page organisateur." }, 400, cors);
     const ag = (await env.DLC.get("agenda", "json")) || [];
@@ -303,4 +309,46 @@ export async function verifierOrg(env, slug, verifie) {
   o.verifie = !!verifie; await env.DLC.put("org:" + slug, JSON.stringify(o));
   const c = await env.DLC.get("cpt:" + o.id, "json"); if (c) { c.org = orgPublic(o); await env.DLC.put("cpt:" + c.id, JSON.stringify(c)); }
   await majIndexOrgs(env); return orgPublic(o);
+}
+
+/* Pré-remplissage depuis le lien d'un événement (HelloAsso, Billetweb, site d'association…) :
+   données structurées schema.org Event si présentes, sinon balises Open Graph. Seules les pages https publiques sont lues. */
+const ent = x => String(x || "").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#0?39;|&apos;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&#(\d+);/g, (_, n) => String.fromCharCode(+n)).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+export async function apercuLien(u) {
+  let x; try { x = new URL(String(u).trim()); } catch { return null; }
+  if (x.protocol !== "https:" || /^(localhost|\d+\.\d+\.\d+\.\d+|\[.*\])$/i.test(x.hostname) || !x.hostname.includes(".")) return null;
+  let html;
+  try {
+    const r = await fetch(x.href, { headers: { "User-Agent": "TrucsAFaire/1.0 (+https://trucsafaire.fr)", "Accept": "text/html" }, redirect: "follow", signal: AbortSignal.timeout(8000) });
+    if (!r.ok || !/html/i.test(r.headers.get("Content-Type") || "")) return null;
+    html = (await r.text()).slice(0, 1500000);
+  } catch { return null; }
+  const meta = k => { const m = html.match(new RegExp('<meta[^>]+(?:property|name)=["\']' + k + '["\'][^>]*content=["\']([^"\']*)', "i")) || html.match(new RegExp('<meta[^>]+content=["\']([^"\']*)["\'][^>]*(?:property|name)=["\']' + k + '["\']', "i")); return m ? ent(m[1]) : ""; };
+  let ev = null;
+  for (const m of html.matchAll(/<script[^>]+application\/ld\+json[^>]*>([\s\S]*?)<\/script>/gi)) {
+    try {
+      const j = JSON.parse(m[1].trim()); const pile = [].concat(j, j && j["@graph"] || []);
+      ev = pile.find(o => o && /Event$/.test([].concat(o["@type"] || "").join(" "))); if (ev) break;
+    } catch {}
+  }
+  const out = { u: x.href };
+  if (ev) {
+    out.t = ent(ev.name); out.d = ent(ev.description).slice(0, 400);
+    const sd = String(ev.startDate || ""), ed = String(ev.endDate || "");
+    if (/^\d{4}-\d{2}-\d{2}/.test(sd)) { out.s = sd.slice(0, 10); const h = sd.match(/T(\d{2}:\d{2})/); if (h && h[1] !== "00:00") out.h = h[1]; }
+    if (/^\d{4}-\d{2}-\d{2}/.test(ed) && ed.slice(0, 10) > (out.s || "")) out.e = ed.slice(0, 10);
+    const loc = [].concat(ev.location || [])[0] || {}, adr = loc.address || {};
+    if (loc.name) out.lieu = ent(loc.name);
+    out.w = ent(typeof adr === "string" ? "" : adr.addressLocality);
+    const img = [].concat(ev.image || [])[0]; out.img = typeof img === "string" ? img : img && img.url || "";
+    const of = [].concat(ev.offers || [])[0]; if (of && of.url) out.b = String(of.url);
+  }
+  out.t = out.t || meta("og:title") || ent((html.match(/<title>([^<]*)/i) || [])[1]);
+  out.d = out.d || meta("og:description") || meta("description");
+  out.img = out.img || meta("og:image");
+  if (!/^https:\/\//.test(out.img || "")) delete out.img;
+  if (out.b && !/^https?:\/\//.test(out.b)) delete out.b;
+  for (const k of Object.keys(out)) if (!out[k]) delete out[k];
+  if (out.t) out.t = out.t.slice(0, 90);
+  return out.t ? out : null;
 }

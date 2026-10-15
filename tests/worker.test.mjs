@@ -230,3 +230,17 @@ test("signalements : envoi par un visiteur, visible par l'éditeur, puis traité
   await appel(e, "/admin/signalement", { headers: admin, body: { id: l[0].id } });
   assert.equal((await appel(e, "/admin/list", { headers: admin })).j.signalements.length, 0);
 });
+
+test("pré-remplissage depuis un lien : données schema.org Event, puis Open Graph", async () => {
+  const { apercuLien } = await import(path.join(RACINE, "worker/comptes.js"));
+  const vrai = globalThis.fetch;
+  globalThis.fetch = async u => new Response(String(u).includes("ld") ?
+    '<html><script type="application/ld+json">{"@context":"https://schema.org","@type":"Event","name":"Brocante d&#039;automne","startDate":"2099-10-25T07:00:00+02:00","location":{"@type":"Place","name":"Quai de Loire","address":{"addressLocality":"Decize"}},"offers":{"url":"https://www.billetweb.fr/x"},"description":"200 exposants"}</script></html>' :
+    '<html><head><meta property="og:title" content="Concert au kiosque"><meta property="og:image" content="https://ex.fr/a.jpg"></head></html>', { headers: { "Content-Type": "text/html" } });
+  try {
+    const a = await apercuLien("https://exemple.fr/ld");
+    assert.equal(a.t, "Brocante d'automne"); assert.equal(a.s, "2099-10-25"); assert.equal(a.h, "07:00"); assert.equal(a.w, "Decize"); assert.equal(a.lieu, "Quai de Loire"); assert.equal(a.b, "https://www.billetweb.fr/x");
+    const b = await apercuLien("https://exemple.fr/og"); assert.equal(b.t, "Concert au kiosque"); assert.equal(b.img, "https://ex.fr/a.jpg");
+    assert.equal(await apercuLien("http://exemple.fr/"), null); assert.equal(await apercuLien("https://127.0.0.1/"), null);
+  } finally { globalThis.fetch = vrai; }
+});

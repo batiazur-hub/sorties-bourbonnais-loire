@@ -35,7 +35,7 @@ def telecharger(bb):
     for url in SERVEURS:
         try:
             req = urllib.request.Request(url, data=urllib.parse.urlencode({"data": requete(bb)}).encode(),
-                                         headers={"User-Agent": "dans-le-coin (GitHub Actions; contact clementer@gmail.com)"})
+                                         headers={"User-Agent": "TrucsAFaire/1.0 (GitHub Actions; +https://trucsafaire.fr; contact clementer@gmail.com)"})
             return json.loads(urllib.request.urlopen(req, timeout=150).read())
         except Exception as ex:
             print("  ", url.split("/")[2], str(ex)[:100]); time.sleep(5)

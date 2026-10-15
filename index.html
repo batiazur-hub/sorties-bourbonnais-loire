@@ -1254,7 +1254,8 @@ function homeCTA(n){const d=document.createElement("div");d.className="sbl-cta";
   d.firstChild.textContent="Voir les "+n.toLocaleString("fr-FR")+" sorties";d.querySelectorAll("[data-x]").forEach(b=>b.onclick=()=>explore(b.dataset.x));return d}
 function weekendPicks(){
   const t=today(),d=t.getDay(),sat=d===0?add(t,-1):add(t,(6-d)%7),sun=add(sat,1),from=d===0||d===6?t:add(sat,-1);
-  const all=EVENTS.filter(e=>!e.long&&e.S>=from&&e.S<=sun&&matchBase(e)).sort((a,b)=>(!!b.img-!!a.img)||(a.S-b.S)||((a.h||"99")<(b.h||"99")?-1:1));
+  const ven=d===0||d===6?null:add(sat,-1),soir=e=>!ven||+e.S!==+ven||(!!e.h&&e.h>="18:00");
+  const all=EVENTS.filter(e=>!e.long&&e.S>=from&&e.S<=sun&&soir(e)&&matchBase(e)).sort((a,b)=>(!!b.img-!!a.img)||(a.S-b.S)||((a.h||"99")<(b.h||"99")?-1:1));
   const par={};all.forEach(e=>(par[e.cat]=par[e.cat]||[]).push(e));const out=[];
   for(let i=0;out.length<12&&i<12;i++)Object.keys(par).forEach(c=>{if(par[c][i]&&out.length<12)out.push(par[c][i])});
   return out.sort((a,b)=>(a.S-b.S)||((a.h||"99")<(b.h||"99")?-1:1));
@@ -1516,17 +1517,25 @@ function dayPanel(d){
     b.querySelector(".tm").innerHTML=icon(e.cat,15)+"<span></span>";b.querySelector(".tm span").textContent=e.long?"en cours":(e.h?hh(e.h):CATS[e.cat][1]);
     b.querySelector("b").textContent=e.t;b.querySelector("small").textContent=e.w+(e.lieu&&e.lieu!==e.w?" · "+e.lieu:"");
     b.onclick=()=>sheet(e);return b};
-  evs.filter(e=>!e.long).forEach(e=>box.append(evRow(e,d)));
+  const courts=evs.filter(e=>!e.long),PAS=30;let vus=0;
+  const suite=document.createElement("button");suite.type="button";suite.className="sbl-btn sbl-more";
+  const montrer=()=>{courts.slice(vus,vus+PAS).forEach(e=>box.insertBefore(evRow(e,d),suite));vus=Math.min(courts.length,vus+PAS);
+    const r=courts.length-vus;suite.hidden=!r;suite.textContent="Voir "+(r>PAS?"30 trucs de plus":r>1?"les "+r+" autres trucs":"le dernier truc")+" ce jour-là"};
+  suite.onclick=montrer;box.append(suite);montrer();
   if(longs.length){const more=document.createElement("button");more.type="button";more.className="sbl-btn sbl-more";more.setAttribute("aria-expanded","false");
     more.textContent="+ "+longs.length+(longs.length>1?" expositions et visites en cours":" exposition ou visite en cours");
-    const wrap=document.createElement("div");wrap.className="sbl-longs";wrap.hidden=true;longs.forEach(e=>wrap.append(evRow(e,d)));
-    more.onclick=()=>{wrap.hidden=!wrap.hidden;more.setAttribute("aria-expanded",String(!wrap.hidden))};box.append(more,wrap)}
+    const wrap=document.createElement("div");wrap.className="sbl-longs";wrap.hidden=true;
+    more.onclick=()=>{if(!wrap.childElementCount)longs.forEach(e=>wrap.append(evRow(e,d)));wrap.hidden=!wrap.hidden;more.setAttribute("aria-expanded",String(!wrap.hidden))};box.append(more,wrap)}
   const add=document.createElement("button");add.type="button";add.className="sbl-btn sbl-dayadd";add.textContent="Proposer une sortie ce jour-là";add.onclick=()=>proposeForm(iso(d));box.append(add);
   return box;
 }
 /* Calendrier : semaine sur téléphone (7 jours lisibles + les sorties de la semaine), mois sur ordinateur */
 const CAL_SEM=matchMedia("(max-width:600px)");
-CAL_SEM.addEventListener&&CAL_SEM.addEventListener("change",()=>{try{cal()}catch(_){}});
+/* Le calendrier n'est construit que s'il est affiché (sinon : marqué « à refaire », construit à l'ouverture) */
+let CAL_SALE=true;
+function calSiVisible(){const g=$("sbl-cal");if(g&&g.getClientRects().length){CAL_SALE=false;cal()}else CAL_SALE=true}
+const calPlusTard=()=>{if(CAL_SALE)requestAnimationFrame(()=>{try{calSiVisible()}catch(_){}})};
+[CAL_SEM,matchMedia("(max-width:900px)")].forEach(q=>q.addEventListener&&q.addEventListener("change",()=>{CAL_SALE=true;calPlusTard()}));
 const lundi=d=>add(new Date(d.getFullYear(),d.getMonth(),d.getDate()),-((d.getDay()+6)%7));
 function calSemaine(){
   if(!st.week)st.week=lundi(st.day?P(st.day):today());
@@ -1775,9 +1784,10 @@ async function ensureDeps(codes){codes=[...new Set(codes.filter(Boolean))];codes
 function loadCommunes(){if(NATCOM||loadCommunes.p)return loadCommunes.p;loadCommunes.p=fetch(DATA+"communes-fr.json").then(r=>r.ok?r.json():null).then(a=>{if(a){NATCOM=a;NATMAP=new Map(a.map(c=>[norm(c[0]).replace(/[-']/g," "),c]));PIDX=null;fillCommuneList();if(st.q){applyQ(st.q);draw()}}}).catch(()=>{});return loadCommunes.p}
 function rebuild(){
   const seen=new Set(),out=[],key=e=>norm(e.t).replace(/[^a-z0-9]/g,"").slice(0,22)+"|"+norm(e.w)+"|"+e.s;
-  MANUAL.forEach(e=>{seen.add(key(e));out.push(e)});
+  const enLigne=[...DTEV.values()].some(v=>Array.isArray(v)&&v.length);
+  if(!enLigne)MANUAL.forEach(e=>{seen.add(key(e));out.push(e)});  // échantillon de secours : seulement hors ligne
   for(const v of DTEV.values())if(Array.isArray(v))v.forEach(e=>{const k=key(e);if(!seen.has(k)){seen.add(k);out.push(e)}});
-  BASE=out;merge();
+  BASE=out;merge();if(typeof marquerDemo==="function")marquerDemo();
 }
 function subtitle(extra){
   const tot=DEPIDX?DEPIDX.departements.reduce((s,d)=>s+d.n,0):EVENTS.length;
@@ -1823,7 +1833,7 @@ async function needFor(o){
 const COMMUNES=JSON.parse($("sbl-communes").textContent);
 const CMAP=new Map(COMMUNES.map(c=>[norm(c[0]).replace(/[-']/g," "),c]));
 const findCommune=v=>{const k=norm(v.trim()).replace(/[-']/g," ");return(NATMAP&&NATMAP.get(k))||CMAP.get(k)};
-const BADS=new Set(["con","cons","conne","connes","connard","connards","connasse","salope","salopes","salaud","salauds","pute","putes","putain","merde","merdes","merdique","encule","enculer","encules","nique","niquer","niquez","ntm","fdp","tg","batard","batards","couille","couilles","bite","bites","chier","emmerde","emmerder","pd","pede","pedes","tapette","enfoire","enfoires","branleur","branleurs","foutre","nazi","nazis","negre","negres","bougnoule","youpin","gouine","pouffiasse","grognasse","trouduc","abruti","abrutis","debile","debiles","cretin","cretins","bordel","chiotte","chiottes","zizi","teub","schneck","cul"]);
+const BADS=new Set(["conne","connes","connard","connards","connasse","salope","salopes","salaud","salauds","pute","putes","putain","merde","merdes","merdique","encule","enculer","encules","niquer","ntm","fdp","tg","batard","batards","couille","couilles","bite","bites","chier","emmerde","emmerder","pd","pede","pedes","tapette","enfoire","enfoires","branleur","branleurs","foutre","negre","negres","bougnoule","youpin","gouine","pouffiasse","grognasse","trouduc","chiotte","chiottes","teub","schneck"]);
 function rude(s){if(!s)return false;const t=norm(s).replace(/0|@/g,"o").replace(/1|!/g,"i").replace(/3/g,"e").replace(/4/g,"a").replace(/5|\$/g,"s").replace(/\*/g,"");
   return t.split(/[^a-z]+/).some(w=>BADS.has(w))||/fils de p|ta mere|nique ta/.test(t)}
 const PX={mode:"none",db:null,user:null,uid:null,admin:false,why:""};
@@ -1979,7 +1989,21 @@ function modPanel(){
     '<p class="sbl-hint">Corrigez directement les champs si besoin, puis publiez. La sortie apparaît aussitôt pour tous les visiteurs.</p>'+
     '<h3 class="sbl-modh">Sorties proposées ('+pend.length+')</h3><div id="mod-ev"></div><h3 class="sbl-modh">Sources suggérées ('+srcs.length+')</h3><div id="mod-src"></div>'+
     '<h3 class="sbl-modh">Signalements ('+(API_LIST.signalements||[]).length+')</h3><div id="mod-sg"></div>'+
-    '<h3 class="sbl-modh">Sorties publiées ('+pub.length+')</h3><div id="mod-pub"></div>');
+    '<h3 class="sbl-modh">Sorties publiées ('+pub.length+')</h3><div id="mod-pub"></div>'+(API?'<h3 class="sbl-modh">Pages organisateurs</h3><div id="mod-org"><p class="sbl-hint">Chargement…</p></div>':''));
+  /* Pages organisateurs : pastille vérifiée, suspension (usurpation, contenu illicite : retrait rapide), suppression */
+  if(API)apiCall("/admin/orgs").then(j=>{const ob=$("mod-org");if(!ob)return;ob.textContent="";const L=(j.orgs||[]).sort((a,b)=>(b.suspendu-a.suspendu)||(a.cree<b.cree?1:-1));
+    if(!L.length)ob.innerHTML='<p class="sbl-hint">Aucune page organisateur.</p>';
+    L.forEach(o=>{const r=document.createElement("div");r.className="sbl-mod";
+      const maj=()=>{r.innerHTML='<p><b></b><br><span class="rs"></span></p><div class="sbl-btns"><a class="sbl-btn" target="_blank" rel="noopener">Voir la page</a><button class="sbl-btn" type="button" data-v></button><button class="sbl-btn" type="button" data-s></button><button class="sbl-btn dz" type="button" data-d>Supprimer</button></div>';
+        r.querySelector("b").textContent=o.nom;r.querySelector(".rs").textContent=(o.suspendu?"Suspendue"+(o.motif?" ("+o.motif+")":""):o.verifie?"Vérifiée":"Non vérifiée")+" · créée le "+new Date(o.cree).toLocaleDateString("fr-FR");
+        r.querySelector("a").href="#org="+encodeURIComponent(o.slug);r.querySelector("a").onclick=ev=>{ev.preventDefault();M.close();ouvrirOrg(o.slug)};
+        r.querySelector("[data-v]").textContent=o.verifie?"Retirer la pastille":"Vérifier";r.querySelector("[data-s]").textContent=o.suspendu?"Rétablir":"Suspendre";
+        r.querySelector("[data-v]").onclick=async()=>{try{const x=await apiCall("/admin/org/verifier",{slug:o.slug,verifie:!o.verifie});o.verifie=x.org.verifie;maj();chargerOrgs()}catch(_){toast("Échec, réessayez.")}};
+        r.querySelector("[data-s]").onclick=async()=>{const motif=o.suspendu?"":prompt("Motif de la suspension (gardé pour l’éditeur) :","usurpation d’identité");if(motif===null)return;
+          try{const x=await apiCall("/admin/org/suspendre",{slug:o.slug,suspendu:!o.suspendu,motif});o.suspendu=x.org.suspendu;o.motif=motif;maj();chargerOrgs()}catch(_){toast("Échec, réessayez.")}};
+        r.querySelector("[data-d]").onclick=async()=>{if(!confirm("Supprimer la page « "+o.nom+" », son logo et toutes ses sorties ? Le compte de la personne est conservé."))return;
+          try{await apiCall("/admin/org/supprimer",{slug:o.slug});r.remove();chargerOrgs()}catch(_){toast("Échec, réessayez.")}}};
+      maj();ob.append(r)})}).catch(()=>{const ob=$("mod-org");if(ob)ob.innerHTML='<p class="sbl-hint">Liste indisponible.</p>'});
   {const RS={annule:"Annulé ou reporté",date:"Date ou horaire faux",lieu:"Lieu faux",doublon:"En double",inapproprie:"Contenu inapproprié",autre:"Autre"},sb=$("mod-sg"),L=API_LIST.signalements||[];
     if(!L.length)sb.innerHTML='<p class="sbl-hint">Aucun signalement.</p>';
     L.forEach(x=>{const r=document.createElement("div");r.className="sbl-mod";r.innerHTML='<p><b></b><br><span class="rs"></span></p><p class="nt"></p><div class="sbl-btns"><button class="sbl-btn" type="button" data-v>Voir la fiche</button><button class="sbl-btn go" type="button" data-t>Traité</button></div>';
@@ -2035,9 +2059,9 @@ if(window.ResizeObserver){const ro=new ResizeObserver(()=>{const t=$("sbl-mt"),i
   setTimeout(()=>document.querySelectorAll("#sbl-mt .sbl-tab").forEach(b=>ro.observe(b)),0)}
 function syncTabs(){const v=st.view||"list",hm=isHome()&&v==="list";document.querySelectorAll("#sbl-mt button").forEach(b=>b.setAttribute("aria-selected",b.dataset.v==="home"?hm:(!hm&&b.dataset.v===v)));bulle()}
 /* Changer d’onglet (liste, carte, calendrier) repart toujours du haut de la page. */
-function view(v){{const mp=$("sbl-mpop");if(mp)mp.hidden=true}const neuf=st.view!==v;st.view=v;if(neuf)scrollTo({top:0,behavior:"instant"});ROOT.dataset.v=v;$("sbl-main").dataset.v=v;syncTabs();if(v==="map"&&map)setTimeout(()=>map.resize(),30)}
+function view(v){{const mp=$("sbl-mpop");if(mp)mp.hidden=true}const neuf=st.view!==v;st.view=v;if(neuf)scrollTo({top:0,behavior:"instant"});ROOT.dataset.v=v;$("sbl-main").dataset.v=v;syncTabs();calPlusTard();if(v==="map"&&map)setTimeout(()=>map.resize(),30)}
 document.querySelectorAll("#sbl-mt button").forEach(b=>b.onclick=()=>{if(b.dataset.v==="kit")return void(location.href="kit.html");if(b.dataset.v==="home")return goHome();if(isHome())explore(b.dataset.v);else view(b.dataset.v)});
-document.querySelectorAll("#sbl-dt button").forEach(b=>b.onclick=()=>{st.side=b.dataset.s;{const sd=$("sbl-side");if(sd&&sd.getBoundingClientRect().top<0)sd.scrollIntoView({block:"start",behavior:"instant"})}$("sbl-side").dataset.s=st.side;document.querySelectorAll("#sbl-dt button").forEach(x=>x.setAttribute("aria-selected",x===b));if(st.side==="map"&&map)setTimeout(()=>map.resize(),30)});
+document.querySelectorAll("#sbl-dt button").forEach(b=>b.onclick=()=>{st.side=b.dataset.s;{const sd=$("sbl-side");if(sd&&sd.getBoundingClientRect().top<0)sd.scrollIntoView({block:"start",behavior:"instant"})}$("sbl-side").dataset.s=st.side;document.querySelectorAll("#sbl-dt button").forEach(x=>x.setAttribute("aria-selected",x===b));calPlusTard();if(st.side==="map"&&map)setTimeout(()=>map.resize(),30)});
 $("sbl-pm").onclick=()=>{if(CAL_SEM.matches){st.week=add(st.week||lundi(today()),-7);st.day="";draw();return}st.month=new Date(st.month.getFullYear(),st.month.getMonth()-1,1);cal()};
 $("sbl-nm").onclick=()=>{if(CAL_SEM.matches){st.week=add(st.week||lundi(today()),7);st.day="";draw();return}st.month=new Date(st.month.getFullYear(),st.month.getMonth()+1,1);cal()};
 const sk=$("sbl-skins");if(!inViewer)sk.hidden=true;SKINS.forEach(([n,t],i)=>{const b=btn(n,i===0,()=>{setTheme(t);sk.querySelectorAll(".sbl-b").forEach(x=>x.setAttribute("aria-pressed",x===b?"true":"false"))});sk.append(b)});
@@ -2067,7 +2091,7 @@ function mhBar(own,n){const g=$("sbl-mh");if(!g)return;g.textContent="";
   const w=document.createElement("span");w.className="seg";
   MH.forEach(([v,t])=>{const b=document.createElement("button");b.type="button";b.textContent=t;b.setAttribute("aria-pressed",v===MAPH?"true":"false");
     b.onclick=()=>{MAPH=v;try{localStorage.setItem("sbl-mh",v)}catch(_){}drawPins(mapItems(pick()))};w.append(b)});g.append(w,mcRow())}
-function draw(){const items=pick();filters();list(items);drawPins(mapItems(items));cal()}
+function draw(){const items=pick();filters();list(items);drawPins(mapItems(items));calSiVisible()}
 
 /* Mode borne : adresse terminée par #borne */
 /* Mode borne (#borne) : gros boutons, pas de saisie de propositions, QR code pour emporter l'itinéraire, retour à l'accueil après 90 s */
@@ -2189,7 +2213,7 @@ function monCompte(bienvenue){
       '<p class="sbl-err" id="mc-err" role="alert"></p><div class="sbl-btns"><button class="sbl-btn go" type="submit">Enregistrer</button></div></form>'+
     '<h3 class="sbl-ach">Mon espace organisateur</h3><div id="mc-org"></div>'+
     '<h3 class="sbl-ach">Aller plus loin</h3><p class="sbl-acm">Vous organisez des sorties ? <a href="offres.html">Découvrez Faiseur de trucs et Truc &amp; Co</a>. Affiches et QR codes : <a href="kit.html">le kit de communication</a>.</p>'+
-    '<h3 class="sbl-ach">Mes données</h3><div class="sbl-btns"><button class="sbl-btn" type="button" id="mc-x">Télécharger mes données</button><button class="sbl-btn" type="button" id="mc-o">Se déconnecter</button><button class="sbl-btn dz" type="button" id="mc-d">Supprimer mon compte</button></div>');
+    '<h3 class="sbl-ach">Mes données</h3><div class="sbl-btns"><button class="sbl-btn" type="button" id="mc-x">Télécharger mes données</button><button class="sbl-btn" type="button" id="mc-o">Se déconnecter</button><button class="sbl-btn" type="button" id="mc-p">Se déconnecter partout</button><button class="sbl-btn dz" type="button" id="mc-d">Supprimer mon compte</button></div>');
   $("mc-e").textContent="Connecté avec "+c.email+(bienvenue?". Vos favoris sont maintenant enregistrés sur tous vos appareils.":"");
   if(p.commune)$("mc-w").value=p.commune.nom;
   const fl=$("mc-f"),remplir=()=>{if(!fl.isConnected)return;fl.textContent="";
@@ -2209,7 +2233,9 @@ function monCompte(bienvenue){
       const u=URL.createObjectURL(new Blob([await r.text()],{type:"text/html"}));window.open(u,"_blank","noopener");setTimeout(()=>URL.revokeObjectURL(u),6e4)}
     catch(j){toast((j&&j.message)||"Aperçu indisponible pour le moment.")}};
   $("mc-x").onclick=async()=>{try{const r=await fetch(API+"/compte/export",{headers:{Authorization:"Bearer "+ACC.tok}});if(!r.ok)throw 0;const u=URL.createObjectURL(await r.blob()),a=document.createElement("a");a.href=u;a.download="trucs-a-faire-mes-donnees.json";a.click();setTimeout(()=>URL.revokeObjectURL(u),2e3)}catch(_){toast("Téléchargement impossible pour le moment.")}};
-  $("mc-o").onclick=async()=>{try{await accCall("/compte/deconnexion",{})}catch(_){}ACC.tok=null;ACC.c=null;accSave();accUI();M.close();toast("Vous êtes déconnecté.")};
+  const sortir=partout=>async()=>{if(partout&&!confirm("Fermer la session sur tous vos appareils (téléphone perdu, ordinateur partagé…) ?"))return;
+    try{await accCall("/compte/deconnexion",partout?{partout:true}:{})}catch(_){}ACC.tok=null;ACC.c=null;accSave();accUI();M.close();toast(partout?"Vous êtes déconnecté de tous vos appareils.":"Vous êtes déconnecté.")};
+  $("mc-o").onclick=sortir(false);$("mc-p").onclick=sortir(true);
   $("mc-d").onclick=async()=>{if(!confirm("Supprimer définitivement votre compte, vos préférences et vos favoris enregistrés ? Cette action est immédiate et ne peut pas être annulée."))return;
     try{await accCall("/compte/supprimer",{});ACC.tok=null;ACC.c=null;accSave();accUI();M.close();toast("Votre compte a été supprimé.")}catch(_){toast("La suppression a échoué. Réessayez.")}};
 }
@@ -2241,7 +2267,7 @@ function accInit(H){
   accUI();
   if(ACC.tok&&API)accCall("/compte").then(j=>{ACC.c=j.compte;FAV=[...new Set(FAV.concat(j.compte.fav||[]))];accSave();accUI();favBtns()}).catch(()=>{});
   const jt=H.get("connexion");if(jt){history.replaceState(null,"",location.pathname+location.search);connexion(jt)}
-  else if(H.has("compte"))setTimeout(()=>openCompte(H.get("compte")==="pro"?"pro":H.get("compte")==="connexion"?"login":"def"),300);
+  else if(H.has("compte"))setTimeout(()=>openCompte(/^(co|pro)$/.test(H.get("compte"))?"pro":H.get("compte")==="connexion"?"login":"def"),300);
   if(accOn()&&!ACC.c)setTimeout(banniere,75000);
 }
 /* ---------- Profils organisateurs : page publique, logo, pastille « vérifié » ----------
@@ -2261,7 +2287,10 @@ async function chargerOrgs(){
   const svg='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="#C2255C"/><path d="M20 44 32 18l12 26z" fill="#fff"/><circle cx="46" cy="18" r="5" fill="#FF8A3D"/></svg>';
   ORG_DEMO={slug:"exemple-comite",nom:"Comité des fêtes (exemple)",bio:"Profil de démonstration : voici à quoi ressemblera la page publique d’un organisateur sur Trucs à faire.",site:"https://exemple.fr",insta:"comite_exemple",fb:"comiteexemple",logo:1,verifie:true,demo:true,logoData:"data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svg)};
   ORGS[ORG_DEMO.slug]=ORG_DEMO;
-  const t=today();EVENTS.filter(e=>!e.long&&e.S>=t&&(e.cat==="fete"||e.cat==="brocante")).slice(0,4).forEach(e=>e.org=ORG_DEMO.slug);draw()}
+  marquerDemo();draw()}
+/* Aperçu : quatre fêtes ou brocantes à venir « publiées » par l'organisateur d'exemple (refait quand les données changent) */
+function marquerDemo(){if(!ORG_DEMO||EVENTS.some(e=>e.org===ORG_DEMO.slug))return;const t=today();
+  EVENTS.filter(e=>!e.long&&e.S>=t&&(e.cat==="fete"||e.cat==="brocante")).slice(0,4).forEach(e=>e.org=ORG_DEMO.slug)}
 async function ouvrirOrg(slug){
   let o=ORGS[slug],sorties=[];
   if(o&&o.demo){sorties=EVENTS.filter(e=>e.org===slug)}
@@ -2379,7 +2408,7 @@ async function meteoWeekend(box){
   if(KIOSK||!box)return;let c=null;
   if(st.near)c=[st.near.la,st.near.lo];else{const pts=EVENTS.filter(e=>REGION.includes(e.z)&&e.lat);if(pts.length)c=[pts.reduce((a,e)=>a+e.lat,0)/pts.length,pts.reduce((a,e)=>a+e.lon,0)/pts.length]}
   if(!c)return;const k="sbl-meteo:"+c.map(x=>x.toFixed(1)).join(",");let m=null;try{m=JSON.parse(sessionStorage.getItem(k)||"null")}catch(_){}
-  if(!m){try{const r=await fetch("https://api.open-meteo.com/v1/forecast?latitude="+c[0].toFixed(2)+"&longitude="+c[1].toFixed(2)+"&daily=precipitation_probability_max,weathercode&timezone=Europe%2FParis&forecast_days=7");
+  if(!m){try{const r=await fetch("https://api.open-meteo.com/v1/forecast?latitude="+c[0].toFixed(1)+"&longitude="+c[1].toFixed(1)+"&daily=precipitation_probability_max,weathercode&timezone=Europe%2FParis&forecast_days=7");
       if(!r.ok)return;m=(await r.json()).daily;try{sessionStorage.setItem(k,JSON.stringify(m))}catch(_){}}catch(_){return}}
   const t=today(),d=t.getDay(),sat=add(t,d===0?-1:(6-d)%7),jours=[sat,add(sat,1)].filter(x=>x>=t);
   const pluie=jours.map(j=>{const i=m.time.indexOf(iso(j));return i>=0?{j,p:m.precipitation_probability_max[i]}:null}).filter(x=>x&&x.p>=60);

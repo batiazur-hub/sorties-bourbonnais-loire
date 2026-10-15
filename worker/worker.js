@@ -15,12 +15,15 @@
    Gestion des clés (éditeur) : GET /admin/cles · POST /admin/cles {nom, contact, deps, types, quota, origines, notes}
              POST /admin/cles/maj {cle, ...} · POST /admin/cles/revoquer {cle} · POST /admin/cles/reactiver {cle}
    Signalements : POST /signaler { sortie, titre, dep, raison, note } · éditeur : POST /admin/signalement { id } (traité)
+   Organisateurs (éditeur) : POST /admin/org/verifier { slug, verifie } · POST /admin/org/suspendre { slug, suspendu, motif }
+             POST /admin/org/supprimer { slug } · GET /admin/orgs (toutes les pages, suspendues comprises)
    Comptes (voir comptes.js) : /compte/lien, /compte/connexion, /compte, /compte/export, /compte/supprimer, /newsletter/stop
    Variables : KV « DLC », secret « ADMIN_TOKEN », variable « ORIGINS » (origines autorisées, séparées par des virgules),
                variable « DATA_URL » (adresse des données publiées, par défaut le site GitHub Pages). */
 
-import { comptes, purgerInactifs, verifierOrg, signature } from "./comptes.js";
+import { comptes, purgerInactifs, verifierOrg, suspendreOrg, supprimerOrgAdmin, signatureValide } from "./comptes.js";
 import { envoyerLot, pourCompte, semaine } from "./newsletter.js";
+import { motRefuse, egal, limite, epuise, tout, agenda, publier, retirer } from "./commun.js";
 
 const DATA_DEFAUT = "https://batiazur-hub.github.io/sorties-bourbonnais-loire/data/";
 const TYPES_SORTIES = ["brocante", "fete", "spectacle", "culture", "famille", "sport", "pal"];
@@ -29,7 +32,6 @@ const MAX_DEPS = 8;
 const LICENCE = "Données agrégées par Trucs à faire (Saryn Digital) depuis DATAtourisme (Licence Ouverte), OpenAgenda, open data des collectivités et OpenStreetMap (ODbL, horaires). Citer « Trucs à faire » et la source de chaque fiche. Détail : /mentions-legales.html";
 
 const MAX_PAR_HEURE = 20;
-const MOTS = /(encul|connard|connass|salop|pute\b|putain|merde|fdp|ntm|nique|batard|bâtard|pd\b|tafiole|negro|bougnoul|youpin)/i;
 
 const json = (data, status, cors) => new Response(JSON.stringify(data), { status: status || 200, headers: { "Content-Type": "application/json; charset=utf-8", ...cors } });
 const texte = (v, n) => String(v == null ? "" : v).replace(/[\u0000-\u001f]/g, " ").trim().slice(0, n);
@@ -38,18 +40,11 @@ const id = () => "p-" + Date.now().toString(36) + Math.random().toString(36).sli
 function corsPour(req, env) {
   const o = req.headers.get("Origin") || "";
   const ok = (env.ORIGINS || "").split(",").map(s => s.trim()).filter(Boolean);
-  const allow = ok.includes(o) ? o : ok[0] || "*";
+  const allow = ok.includes(o) ? o : ok[0] || "null";  // jamais « * » : sans ORIGINS, aucun site tiers n'est autorisé
   return { "Access-Control-Allow-Origin": allow, "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
            "Access-Control-Allow-Headers": "Content-Type, Authorization", "Vary": "Origin" };
 }
 
-/* Comparaison à durée constante (évite de deviner le code éditeur caractère par caractère) */
-function egal(a, b) {
-  const x = new TextEncoder().encode(String(a)), y = new TextEncoder().encode(String(b));
-  if (x.length !== y.length) return false;
-  if (crypto.subtle && crypto.subtle.timingSafeEqual) return crypto.subtle.timingSafeEqual(x, y);
-  let d = 0; for (let i = 0; i < x.length; i++) d |= x[i] ^ y[i]; return d === 0;
-}
 
 /* Compteurs d'appels par clé et par jour, regroupés en mémoire : l'offre gratuite de KV limite les écritures
    (1 000 par jour), on n'écrit donc qu'une fois toutes les 25 requêtes ou toutes les 60 secondes par instance. */
@@ -73,23 +68,7 @@ async function compter(env, cu, ctx) {
 }
 async function aConsommer(env, cu) { const c = COMPTEURS.get(cu); return c ? c.kv + c.attente : +(await env.DLC.get(cu) || 0); }
 
-/* Sorties publiées : un seul enregistrement « agenda » (une lecture par visite au lieu d'une liste + N lectures) */
-async function agenda(env) {
-  let a = await env.DLC.get("agenda", "json");
-  if (!a) { a = await tout(env, "a:"); await env.DLC.put("agenda", JSON.stringify(a)); }
-  return a;
-}
-async function majAgenda(env) { await env.DLC.put("agenda", JSON.stringify(await tout(env, "a:"))); }
-
-async function tout(env, prefix) {
-  const out = []; let cursor;
-  do {
-    const r = await env.DLC.list({ prefix, cursor });
-    for (const k of r.keys) { const v = await env.DLC.get(k.name, "json"); if (v) out.push(v); }
-    cursor = r.list_complete ? null : r.cursor;
-  } while (cursor);
-  return out;
-}
+/* Sorties publiées : un seul enregistrement « agenda » (voir commun.js) */
 
 
 /* ---------- API à clés ---------- */
@@ -242,12 +221,13 @@ async function traiter(req, env, ctx) {
 
     /* « Le Truc de la semaine » vu dans le navigateur (lien signé), et aperçu pour le titulaire du compte */
     if (req.method === "GET" && p === "/newsletter/apercu") {
-      const id = texte(url.searchParams.get("c"), 40), c = /^[0-9a-f]{24}$/.test(id) && await env.DLC.get("cpt:" + id, "json");
-      if (!c || texte(url.searchParams.get("s"), 64) !== await signature(env, id)) return new Response("Lien invalide", { status: 403 });
+      const id = texte(url.searchParams.get("c"), 40);
+      const c = await signatureValide(env, id, texte(url.searchParams.get("s"), 64), "vue") && await env.DLC.get("cpt:" + id, "json");
+      if (!c) return new Response("Lien invalide", { status: 403 });
       const m = await pourCompte(Object.assign({ API_URL: url.origin }, env), c, semaine(), new Map());
       return new Response(m ? m.html : "Indiquez votre commune dans « Mon compte ».", { headers: { "Content-Type": "text/html; charset=utf-8" } });
     }
-    const rc = await comptes(req, env, url, p, cors, json, { majAgenda, apercuNl: async c => pourCompte(Object.assign({ API_URL: url.origin }, env), c, semaine(), new Map()) });
+    const rc = await comptes(req, env, url, p, cors, json, { apercuNl: async c => pourCompte(Object.assign({ API_URL: url.origin }, env), c, semaine(), new Map()) });
     if (rc) return rc;
 
     if (req.method === "GET" && p === "/agenda") {
@@ -258,13 +238,9 @@ async function traiter(req, env, ctx) {
 
     if (req.method === "POST" && p === "/propose") {
       const ip = req.headers.get("CF-Connecting-IP") || "?";
-      const cle = "rl:" + ip + ":" + new Date().toISOString().slice(0, 13);
-      const n = +(await env.DLC.get(cle) || 0);
-      if (n >= MAX_PAR_HEURE) return json({ erreur: "trop_de_demandes" }, 429, cors);
-      await env.DLC.put(cle, String(n + 1), { expirationTtl: 3700 });
+      if (!limite("rl:" + ip, MAX_PAR_HEURE, 3600)) return json({ erreur: "trop_de_demandes" }, 429, cors);
       let b; try { b = await req.json(); } catch { return json({ erreur: "format" }, 400, cors); }
-      const tous = Object.values(b || {}).join(" ");
-      if (MOTS.test(tous)) return json({ erreur: "mot_refuse" }, 422, cors);
+      if (motRefuse(...Object.values(b || {}).map(String))) return json({ erreur: "mot_refuse", message: "Un mot n’est pas accepté. Reformulez, s’il vous plaît." }, 422, cors);
       const ici = new Date().toISOString();
       if (b.type === "sources") {
         const s = { id: id(), url: texte(b.url, 200), note: texte(b.note, 200), statut: "nouvelle", envoye: ici };
@@ -281,21 +257,21 @@ async function traiter(req, env, ctx) {
 
     /* Signalement d'une fiche par un visiteur (annulée, date fausse, doublon…) : file à traiter par l'éditeur */
     if (req.method === "POST" && p === "/signaler") {
-      const ip = req.headers.get("CF-Connecting-IP") || "?", rl = "rls:" + ip + ":" + new Date().toISOString().slice(0, 13);
-      const n = +(await env.DLC.get(rl) || 0); if (n >= 15) return json({ erreur: "trop_de_demandes" }, 429, cors);
-      await env.DLC.put(rl, String(n + 1), { expirationTtl: 3700 });
+      const ip = req.headers.get("CF-Connecting-IP") || "?";
+      if (!limite("rls:" + ip, 15, 3600)) return json({ erreur: "trop_de_demandes" }, 429, cors);
       let b; try { b = await req.json(); } catch { return json({ erreur: "format" }, 400, cors); }
       const RAISONS = ["annule", "date", "lieu", "doublon", "inapproprie", "autre"];
       const sg = { id: id(), sortie: texte(b.sortie, 80), titre: texte(b.titre, 120), dep: texte(b.dep, 3), raison: RAISONS.includes(b.raison) ? b.raison : "autre", note: texte(b.note, 400), envoye: new Date().toISOString() };
       if (!sg.sortie) return json({ erreur: "incomplet" }, 400, cors);
-      if (MOTS.test(sg.note)) sg.note = "";
+      if (motRefuse(sg.note)) sg.note = "";
       await env.DLC.put("sg:" + sg.id, JSON.stringify(sg), { expirationTtl: 60 * 60 * 24 * 90 });
       return json({ ok: true }, 200, cors);
     }
 
     if (p.startsWith("/admin/")) {
-      const tok = (req.headers.get("Authorization") || "").replace(/^Bearer\s+/i, "");
-      if (!env.ADMIN_TOKEN || !egal(tok, env.ADMIN_TOKEN)) return json({ erreur: "non_autorise" }, 401, cors);
+      const tok = (req.headers.get("Authorization") || "").replace(/^Bearer\s+/i, ""), ip = req.headers.get("CF-Connecting-IP") || "?";
+      if (epuise("rlx-echec:" + ip, 10)) return json({ erreur: "trop_de_demandes" }, 429, cors);  // 10 essais ratés par heure et par adresse IP
+      if (!env.ADMIN_TOKEN || !egal(tok, env.ADMIN_TOKEN)) { limite("rlx-echec:" + ip, 10, 3600); return json({ erreur: "non_autorise" }, 401, cors); }
       if (req.method === "GET" && p === "/admin/cles") {
         const out = []; let cursor;
         const jour = new Date().toISOString().slice(0, 10);
@@ -306,6 +282,7 @@ async function traiter(req, env, ctx) {
         } while (cursor);
         return json({ cles: out }, 200, cors);
       }
+      if (req.method === "GET" && p === "/admin/orgs") return json({ orgs: (await tout(env, "org:")).map(o => ({ slug: o.slug, nom: o.nom, verifie: !!o.verifie, suspendu: !!o.suspendu, motif: o.motif || "", cree: o.cree })) }, 200, cors);
       if (req.method === "GET" && p === "/admin/list") {
         const [props, srcs, pub, sigs] = await Promise.all([tout(env, "p:"), tout(env, "s:"), tout(env, "a:"), tout(env, "sg:")]);
         return json({ propositions: props.filter(x => x.statut === "en_attente"), sources: srcs.filter(x => x.statut !== "traitee"), publiees: pub, signalements: sigs.sort((a, b) => a.envoye < b.envoye ? 1 : -1) }, 200, cors);
@@ -314,14 +291,16 @@ async function traiter(req, env, ctx) {
       const k = texte(b.id, 40);
       if (p === "/admin/publish" && b.event) {
         const e = b.event; e.id = k; e.p = 1;
-        await env.DLC.put("a:" + k, JSON.stringify(e));
-        await env.DLC.delete("p:" + k); await majAgenda(env); return json({ ok: true }, 200, cors);
+        await publier(env, e);
+        await env.DLC.delete("p:" + k); return json({ ok: true }, 200, cors);
       }
       if (p === "/admin/org/verifier") { const o = await verifierOrg(env, texte(b.slug, 40), b.verifie !== false); return o ? json({ ok: true, org: o }, 200, cors) : json({ erreur: "introuvable" }, 404, cors); }
+      if (p === "/admin/org/suspendre") { const o = await suspendreOrg(env, texte(b.slug, 40), b.suspendu !== false, b.motif); return o ? json({ ok: true, org: o }, 200, cors) : json({ erreur: "introuvable" }, 404, cors); }
+      if (p === "/admin/org/supprimer") return (await supprimerOrgAdmin(env, texte(b.slug, 40))) ? json({ ok: true }, 200, cors) : json({ erreur: "introuvable" }, 404, cors);
       if (p === "/admin/signalement") { await env.DLC.delete("sg:" + k); return json({ ok: true }, 200, cors); }
       if (p === "/admin/refuse") { await env.DLC.delete("p:" + k); return json({ ok: true }, 200, cors); }
       if (p === "/admin/source") { await env.DLC.delete("s:" + k); return json({ ok: true }, 200, cors); }
-      if (p === "/admin/unpublish") { await env.DLC.delete("a:" + k); await majAgenda(env); return json({ ok: true }, 200, cors); }
+      if (p === "/admin/unpublish") { await retirer(env, [k]); return json({ ok: true }, 200, cors); }
       if (p === "/admin/cles" && req.method === "POST") {
         const cle = nouvelleCle(), r = reglages(b, { active: true, cree: new Date().toISOString(), quota: 5000, lieux: true });
         if (!r.nom) return json({ erreur: "nom_requis" }, 400, cors);

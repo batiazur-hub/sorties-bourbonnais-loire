@@ -2,11 +2,17 @@
 
    - Sélection : sorties du vendredi au jeudi suivant, dans le rayon choisi autour de la commune, selon les centres d'intérêt ;
      les sorties du week-end passent en premier, puis celles publiées par des organisateurs, puis celles avec une affiche.
-   - Envoi par lots (NL_LOT comptes par exécution, 35 par défaut) : l'offre gratuite de Cloudflare limite à 50 les requêtes
-     sortantes par exécution. La tâche planifiée tourne toutes les 15 minutes le jeudi matin et reprend où elle s'était arrêtée.
+   - Envoi par lots (NL_LOT comptes par exécution, 30 par défaut) : l'offre gratuite de Cloudflare limite à 50 les requêtes
+     sortantes par exécution. Le lot compte ses requêtes (index des départements lu une fois, un fichier par département,
+     un envoi Brevo par compte) et s'arrête avant 48. La tâche planifiée tourne toutes les 15 minutes le jeudi matin
+     et reprend où elle s'était arrêtée.
+   - Écritures KV limitées : la liste des comptes servis est gardée dans UNE clé par édition (« nl:fait:<édition> »),
+     écrite une fois par lot (le quota gratuit est de 1 000 écritures par jour).
    - Chaque e-mail porte un lien de désinscription signé et les en-têtes List-Unsubscribe (désinscription en un clic).
    - Personne ne reçoit deux fois la même édition (date d'envoi gardée sur le compte). */
 import { signature } from "./comptes.js";
+import { agenda } from "./commun.js";
+export const BUDGET_REQUETES = 48;
 
 const CATS = { brocante: ["Brocante", "#A85A12"], fete: ["Fête", "#C2255C"], spectacle: ["Spectacle", "#6741D9"], culture: ["Expo, visite", "#0B7A5E"],
                famille: ["En famille", "#8A6100"], sport: ["Sport", "#1971C2"], pal: ["Le Pal", "#4D7C0F"] };
@@ -89,13 +95,17 @@ Trucs à faire · Saryn Digital (Clément Monteiro EI), Decize. Vérifiez les in
   return { sujet: items.length ? `${titre.replace(/&amp;/g, "&")} 🎉` : "Le Truc de la semaine", html, texte };
 }
 
-async function donneesDep(env, code, cache) {
-  if (!cache.has(code)) {
+/* Lectures mises en cache pour tout le lot ; cache.requetes compte les requêtes sortantes */
+function lire(env, cache, cle, chemin, defaut) {
+  if (!cache.has(cle)) {
+    cache.requetes = (cache.requetes || 0) + 1;
     const base = env.DATA_URL || SITE_DEFAUT + "data/";
-    cache.set(code, fetch(base + "dep/" + code + ".json", { cf: { cacheTtl: 3600, cacheEverything: true } }).then(r => r.ok ? r.json() : []).catch(() => []));
+    cache.set(cle, fetch(base + chemin, { cf: { cacheTtl: 3600, cacheEverything: true } }).then(r => r.ok ? r.json() : defaut).catch(() => defaut));
   }
-  return cache.get(code);
+  return cache.get(cle);
 }
+const donneesDep = (env, code, cache) => lire(env, cache, "dep:" + code, "dep/" + code + ".json", []);
+const indexDeps = (env, cache) => lire(env, cache, "idx", "departements.json", { departements: [] });
 
 async function liensDe(env, c) {
   const site = siteUrl(env), stop = new URL(env.API_URL || "https://api.trucsafaire.fr");
@@ -103,39 +113,54 @@ async function liensDe(env, c) {
   return { site, stop: stop.href, prefs: site + "index.html#compte" };
 }
 
-/* Composition pour un compte (aperçu ou envoi) */
+/* Départements nécessaires à un compte (sans rien lire d'autre que l'index) */
+async function depsDe(env, c, cache) {
+  const idx = await indexDeps(env, cache);
+  return depsProches(idx.departements || [], c.prefs.commune.lat, c.prefs.commune.lon, c.prefs.rayon || 20);
+}
+
+/* Composition pour un compte (aperçu ou envoi) ; renvoie aussi les liens (désinscription) pour les en-têtes */
 export async function pourCompte(env, c, sem, cache) {
   if (!c.prefs || !c.prefs.commune) return null;
-  const idx = await (await fetch((env.DATA_URL || SITE_DEFAUT + "data/") + "departements.json", { cf: { cacheTtl: 3600, cacheEverything: true } })).json().catch(() => ({ departements: [] }));
-  const deps = depsProches(idx.departements || [], c.prefs.commune.lat, c.prefs.commune.lon, c.prefs.rayon || 20);
-  const ag = (await env.DLC.get("agenda", "json")) || [];
+  if (!cache.has("agenda")) cache.set("agenda", agenda(env).catch(() => []));
+  const deps = await depsDe(env, c, cache), ag = await cache.get("agenda");
   const sorties = ag.concat(...(await Promise.all(deps.map(d => donneesDep(env, d, cache)))));
-  return courriel(c, selection(sorties, c.prefs, sem), sem, await liensDe(env, c));
+  const liens = await liensDe(env, c);
+  return Object.assign(courriel(c, selection(sorties, c.prefs, sem), sem, liens), { liens });
 }
 
 /* Tâche planifiée : un lot d'envois ; renvoie le nombre d'e-mails partis */
-export async function envoyerLot(env, maintenant = new Date()) {
-  if (!env.BREVO_KEY) return 0;
-  const sem = semaine(maintenant), lot = +(env.NL_LOT || 35), cache = new Map();
+export async function envoyerLot(env, maintenant = new Date(), cache = new Map()) {
+  if (!env.BREVO_KEY || !env.SIGNATURE_KEY) return 0;  // pas de lien de désinscription signé : pas d'envoi
+  const sem = semaine(maintenant), lot = +(env.NL_LOT || 30), cleFait = "nl:fait:" + sem.edition;
+  const fait = new Set((await env.DLC.get(cleFait, "json")) || []), avant = fait.size;
   let curseur = await env.DLC.get("nl:curseur:" + sem.edition), n = 0, fini = false, coupe = false;
-  while (n < lot && !fini) {
-    const r = await env.DLC.list({ prefix: "cpt:", cursor: curseur || undefined, limit: 50 });
-    for (const k of r.keys) {
-      if (n >= lot) { coupe = true; break; }  // page incomplète : on la reprendra (les comptes déjà servis sont sautés)
-      const c = await env.DLC.get(k.name, "json");
-      if (!c || !c.newsletter || !c.newsletter.actif || c.nl_edition === sem.edition) continue;
-      const m = await pourCompte(env, c, sem, cache); if (!m) continue;
-      const liens = await liensDe(env, c);
-      const rep = await fetch("https://api.brevo.com/v3/smtp/email", { method: "POST",
-        headers: { "api-key": env.BREVO_KEY, "Content-Type": "application/json", "Accept": "application/json" },
-        body: JSON.stringify({ sender: { name: "Trucs à faire", email: env.MAIL_FROM || "bonjour@trucsafaire.fr" }, to: [{ email: c.email }],
-          subject: m.sujet, htmlContent: m.html, textContent: m.texte, tags: ["truc-de-la-semaine"],
-          headers: { "List-Unsubscribe": "<" + liens.stop + ">", "List-Unsubscribe-Post": "List-Unsubscribe=One-Click" } }) }).catch(() => null);
-      if (rep && rep.ok) { c.nl_edition = sem.edition; await env.DLC.put(k.name, JSON.stringify(c)); n++; }
+  try {
+    while (n < lot && !fini) {
+      const r = await env.DLC.list({ prefix: "cpt:", cursor: curseur || undefined, limit: 50 });
+      for (const k of r.keys) {
+        if (n >= lot) { coupe = true; break; }  // page incomplète : on la reprendra (les comptes déjà servis sont sautés)
+        const id = k.name.slice(4); if (fait.has(id)) continue;
+        const c = await env.DLC.get(k.name, "json");  // relu juste avant l'envoi : préférences et consentement à jour
+        if (!c || !c.newsletter || !c.newsletter.actif || !c.prefs || !c.prefs.commune) continue;
+        // budget de requêtes sortantes : fichiers de départements pas encore lus + l'envoi Brevo
+        const nouveaux = (cache.has("idx") ? 0 : 1) + (await depsDe(env, c, cache)).filter(d => !cache.has("dep:" + d)).length;
+        if ((cache.requetes || 0) + nouveaux + 1 > BUDGET_REQUETES) { coupe = true; break; }
+        const m = await pourCompte(env, c, sem, cache); if (!m) continue;
+        cache.requetes = (cache.requetes || 0) + 1;
+        const rep = await fetch("https://api.brevo.com/v3/smtp/email", { method: "POST",
+          headers: { "api-key": env.BREVO_KEY, "Content-Type": "application/json", "Accept": "application/json" },
+          body: JSON.stringify({ sender: { name: "Trucs à faire", email: env.MAIL_FROM || "bonjour@trucsafaire.fr" }, to: [{ email: c.email }],
+            subject: m.sujet, htmlContent: m.html, textContent: m.texte, tags: ["truc-de-la-semaine"],
+            headers: { "List-Unsubscribe": "<" + m.liens.stop + ">", "List-Unsubscribe-Post": "List-Unsubscribe=One-Click" } }) }).catch(() => null);
+        if (rep && rep.ok) { fait.add(id); n++; }  // en échec : retenté au passage suivant (le compte n'est pas marqué)
+      }
+      if (coupe) break;
+      curseur = r.list_complete ? null : r.cursor; fini = r.list_complete;
+      if (!fini) await env.DLC.put("nl:curseur:" + sem.edition, curseur, { expirationTtl: 7 * 86400 });
     }
-    if (coupe) break;
-    curseur = r.list_complete ? null : r.cursor; fini = r.list_complete;
-    if (!fini) await env.DLC.put("nl:curseur:" + sem.edition, curseur, { expirationTtl: 7 * 86400 });
+  } finally {
+    if (fait.size > avant) await env.DLC.put(cleFait, JSON.stringify([...fait]), { expirationTtl: 8 * 86400 });  // une écriture par lot
   }
   return n;
 }

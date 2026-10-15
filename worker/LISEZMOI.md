@@ -58,8 +58,9 @@ Le code est dans `comptes.js`. Pour l'activer :
 2. Secrets du serveur :
    ```sh
    npx wrangler secret put BREVO_KEY       # la clé API Brevo
-   npx wrangler secret put SIGNATURE_KEY   # un long texte aléatoire (liens de désinscription)
+   npx wrangler secret put SIGNATURE_KEY   # OBLIGATOIRE : un long texte aléatoire (32 caractères ou plus), différent du code éditeur
    ```
+   Sans `SIGNATURE_KEY`, la désinscription par lien répond 503 et la newsletter ne part pas (aucune valeur par défaut).
 3. Dans `wrangler.toml`, vérifier `SITE_URL` (adresse du site, où arrivent les liens de connexion) et `MAIL_FROM` (expéditeur, sur le domaine vérifié chez Brevo).
 4. Déployer : `npx wrangler deploy`. La tâche planifiée (`[triggers]`) supprime chaque semaine les comptes sans connexion depuis 3 ans.
 
@@ -73,7 +74,23 @@ Registre des traitements et liste des démarches RGPD : `docs/rgpd/registre-des-
 Code : `newsletter.js`. Envoi automatique le jeudi matin (tâche planifiée `*/15 5-9 * * 4`), par lots de `NL_LOT` comptes,
 uniquement aux Trucophiles qui ont coché la case et confirmé leur adresse. Sélection : du vendredi au jeudi suivant, dans le rayon
 choisi autour de leur commune, selon leurs centres d'intérêt (pas de doublon, 4 sorties par commune et 5 par type au plus).
-- Variables : `API_URL` (adresse publique de ce serveur, pour les liens de désinscription), `NL_LOT` (35 sur l'offre gratuite Cloudflare,
-  jusqu'à 900 avec l'offre payante), `BREVO_KEY` (secret).
+- Variables : `API_URL` (adresse publique de ce serveur, pour les liens de désinscription), `NL_LOT` (30 sur l'offre gratuite Cloudflare,
+  jusqu'à 900 avec l'offre payante), `BREVO_KEY` et `SIGNATURE_KEY` (secrets). Le lot compte ses requêtes sortantes et s'arrête
+  avant 48 (limite gratuite : 50) ; la liste des comptes servis tient dans une seule clé KV par édition.
+- Capacité de l'offre gratuite : 20 passages × 30 = 600 e-mails par jeudi, et Brevo gratuit plafonne à 300 e-mails par jour.
+  Au-delà de ~250 abonnés : offre Brevo payante, ou étaler l'envoi (ajouter des créneaux le vendredi).
 - Aperçu : « Mon compte » → « Voir un exemple de Le Truc de la semaine » (route `/compte/newsletter`).
-- Dans Brevo, désactiver le suivi des ouvertures et des clics si l'on veut s'en tenir à la politique de confidentialité actuelle.
+- Dans Brevo, **désactiver le suivi des ouvertures et des clics** : la politique de confidentialité annonce qu'il est désactivé.
+
+## Limites de l'offre gratuite et protections
+
+- **Limitation de débit** (connexion, propositions, signalements, code éditeur) : en mémoire du serveur, sans écriture KV.
+  Un robot ne peut donc plus épuiser le quota de 1 000 écritures KV par jour. Pour une limite stricte sur tout le réseau,
+  ajouter dans Cloudflare une règle « Rate limiting » (Sécurité → WAF, une règle gratuite) sur `/compte/lien`, `/propose` et `/signaler`.
+- **Code éditeur** : 10 essais ratés par heure et par adresse IP, puis 429. Choisir un code de 32 caractères ou plus.
+- **Pages organisateurs** : le panneau « À valider » permet de vérifier, **suspendre** (page en 404, sorties retirées,
+  publication bloquée) ou **supprimer** une page (usurpation, contenu illicite : retrait rapide exigé par la LCEN).
+- **Sorties publiées** : effacées automatiquement 30 jours après leur fin (`expirationTtl`).
+- **Récapitulatif `agenda`** : mis à jour par ajout ou retrait de la sortie concernée (KV.list n'est pas cohérent tout de suite).
+  Si le trafic grandit (publications simultanées fréquentes), passer les sorties sur D1 (SQL, gratuit jusqu'à 5 M de lectures par jour).
+- Quand le domaine `trucsafaire.fr` sera branché, ajouter `https://trucsafaire.fr` à `ORIGINS`. Sans `ORIGINS`, aucun site tiers n'est autorisé (plus de repli sur « * »).

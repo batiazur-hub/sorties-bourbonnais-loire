@@ -16,7 +16,7 @@ HORIZON = AUJ + dt.timedelta(days=130)
 API = "https://www.data.gouv.fr/api/1/datasets/5b598be088ee387c0c353714/"
 
 def get(url):
-    req = urllib.request.Request(url, headers={"User-Agent": "dans-le-coin (GitHub Actions)", "Accept-Encoding": "identity"})
+    req = urllib.request.Request(url, headers={"User-Agent": "TrucsAFaire/1.0 (GitHub Actions; +https://trucsafaire.fr)", "Accept-Encoding": "identity"})
     data = urllib.request.urlopen(req, timeout=600).read()
     if data[:2] == b"\x1f\x8b":
         import gzip

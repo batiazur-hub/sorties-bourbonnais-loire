@@ -206,8 +206,9 @@ P["confidentialite.html"] = ("Politique de confidentialité", "Ce que le site en
 <tr><td>Sélection des sorties par e-mail (newsletter et alertes)</td><td>Adresse e-mail, préférences ; preuve du consentement (date, texte accepté, origine)</td><td>Consentement, art. 6.1.a, retirable à tout moment</td><td>Jusqu’au retrait du consentement ; la preuve est conservée tant que le compte existe</td></tr>
 <tr><td>Page organisateur publique (Faiseur de trucs)</td><td>Nom de l’organisation, logo, présentation, site et comptes de réseaux sociaux, sorties publiées : <strong>visibles par tous</strong>, c’est leur but</td><td>Exécution du contrat</td><td>Jusqu’à la suppression de la page ou du compte (la page, le logo et les sorties publiées sont alors effacés)</td></tr>
 <tr><td>Lien de connexion</td><td>Adresse e-mail et empreinte du lien</td><td>Exécution du contrat</td><td>30 minutes, ou jusqu’à son utilisation</td></tr>
-<tr><td>Sécurité et prévention des abus</td><td>Adresse IP (nombre de demandes par heure)</td><td>Intérêt légitime : protéger le service</td><td>Une heure</td></tr>
-<tr><td>Propositions de sorties et de sources</td><td>Contenu du formulaire (aucun nom ni contact demandé)</td><td>Intérêt légitime : publier un agenda complet</td><td>Propositions refusées : quatre mois au plus ; sorties publiées : jusqu’à leur date</td></tr>
+<tr><td>Sécurité et prévention des abus</td><td>Adresse IP (nombre de demandes par heure, gardé en mémoire vive du serveur, jamais enregistré)</td><td>Intérêt légitime : protéger le service</td><td>Une heure</td></tr>
+<tr><td>Signalement d’une fiche (annulée, date fausse, contenu inapproprié…)</td><td>Fiche concernée, raison choisie, note libre facultative (n’y mettez pas de données personnelles)</td><td>Intérêt légitime : corriger l’agenda et retirer les contenus illicites</td><td>Jusqu’au traitement par l’éditeur, 90 jours au plus</td></tr>
+<tr><td>Propositions de sorties et de sources</td><td>Contenu du formulaire (aucun nom ni contact demandé)</td><td>Intérêt légitime : publier un agenda complet</td><td>Propositions refusées : quatre mois au plus ; sorties publiées : 30 jours après leur date (effacement automatique)</td></tr>
 <tr><td>Offres payantes (à leur ouverture)</td><td>Identité ou raison sociale, adresse de facturation, historique des factures. Les données de carte sont traitées par le prestataire de paiement, jamais par l’éditeur</td><td>Contrat et obligation légale (comptabilité)</td><td>Durée de l’abonnement ; factures : dix ans (Code de commerce)</td></tr>
 </tbody></table></div>
 <p>Aucune décision produisant des effets juridiques n’est prise automatiquement à votre sujet. La sélection de sorties envoyée par e-mail est un simple filtre selon la commune, la distance et les centres d’intérêt que vous avez choisis.</p>
@@ -228,7 +229,7 @@ P["confidentialite.html"] = ("Politique de confidentialité", "Ce que le site en
 <thead><tr><th scope="col">Prestataire</th><th scope="col">Rôle</th><th scope="col">Localisation et garanties</th></tr></thead>
 <tbody>
 <tr><td>Cloudflare, Inc.</td><td>Serveur et stockage des comptes, des propositions et de l’API</td><td>États-Unis et réseau mondial ; certifié Data Privacy Framework UE–États-Unis, clauses contractuelles types</td></tr>
-<tr><td>Brevo (Sendinblue SAS)</td><td>Envoi des liens de connexion et de la sélection par e-mail</td><td>France, données hébergées dans l’Union européenne</td></tr>
+<tr><td>Brevo (Sendinblue SAS)</td><td>Envoi des liens de connexion et de la sélection par e-mail. Le suivi des ouvertures et des clics (pixels, liens de redirection) est <strong>désactivé</strong> : nous ne savons pas si vous ouvrez nos e-mails</td><td>France, données hébergées dans l’Union européenne</td></tr>
 <tr><td>GitHub, Inc.</td><td>Hébergement des pages du site (journaux techniques)</td><td>États-Unis ; certifié Data Privacy Framework UE–États-Unis</td></tr>
 <tr><td>Prestataire de paiement (à l’ouverture des offres payantes)</td><td>Paiement par carte</td><td>Précisé ici avant toute souscription</td></tr>
 </tbody></table></div>
@@ -248,8 +249,8 @@ P["confidentialite.html"] = ("Politique de confidentialité", "Ce que le site en
 <tr><td>GitHub Pages (hébergeur, États-Unis)</td><td>Héberge le site. Conserve des journaux techniques pour la sécurité.</td></tr>
 <tr><td>Cloudflare (États-Unis)</td><td>Serveur des comptes, des propositions et des sorties ajoutées par les visiteurs.</td></tr>
 <tr><td>Géoplateforme de l’IGN (France)</td><td>Fonds de carte.</td></tr>
-<tr><td>Wikipédia / Wikimedia</td><td>Photos des communes.</td></tr>
-<tr><td>Open-Meteo (Suisse)</td><td>Prévisions météo du week-end pour le secteur affiché (position approximative du secteur, jamais la vôtre).</td></tr>
+<tr><td>Wikipédia / Wikimedia</td><td>Photos des communes et des lieux à visiter.</td></tr>
+<tr><td>Open-Meteo (Suisse)</td><td>Prévisions météo du week-end pour le secteur affiché : seul le centre du secteur ou de la commune choisie est transmis, arrondi à une dizaine de kilomètres, jamais votre position exacte.</td></tr>
 <tr><td>Cloudflare Web Analytics (si activé)</td><td>Mesure d’audience <strong>sans cookie</strong> ni identifiant : pages vues et pays, agrégés, sans suivi d’une visite à l’autre. Exemptée de consentement selon les recommandations de la CNIL.</td></tr>
 <tr><td>Sites des organisateurs</td><td>Affiches des événements, chargées depuis la source.</td></tr>
 </tbody></table></div>

@@ -5,13 +5,18 @@
    GET  /compte                                                   → profil           (en-tête Authorization: Bearer <session>)
    POST /compte             { prefs?, newsletter?, fav? }         → profil mis à jour
    GET  /compte/export                                            → toutes les données du compte (droit à la portabilité)
-   POST /compte/deconnexion · POST /compte/supprimer              → suppression immédiate et définitive
-   GET|POST /newsletter/stop?c=<id>&s=<signature>                 → désinscription en un clic (lien présent dans chaque envoi)
+   POST /compte/deconnexion { partout? }                          → déconnexion (de cet appareil, ou de tous)
+   POST /compte/supprimer                                         → suppression immédiate et définitive (page organisateur et sorties comprises)
+   GET  /newsletter/stop?c=<id>&s=<signature>                     → page de confirmation (les antivirus de messagerie ouvrent les liens : un GET ne désinscrit pas)
+   POST /newsletter/stop?c=<id>&s=<signature>                     → désinscription (bouton de la page, ou en un clic depuis la messagerie, RFC 8058)
 
    Stockage KV : « cpt:<id> » compte, « ses:<empreinte> » session (90 jours), « jet:<empreinte> » lien de connexion (30 min).
    Les jetons ne sont jamais stockés en clair : seule leur empreinte SHA-256 l'est.
-   Secrets : BREVO_KEY (envoi des e-mails, prestataire français, données hébergées dans l'UE), SIGNATURE_KEY (liens de désinscription).
+   Chaque session porte la « génération » du compte : supprimer le compte ou « se déconnecter partout » invalide toutes les sessions.
+   Secrets : BREVO_KEY (envoi des e-mails, prestataire français, données hébergées dans l'UE), SIGNATURE_KEY (liens signés, obligatoire).
    Variables : MAIL_FROM (expéditeur, ex. bonjour@trucsafaire.fr), SITE_URL (adresse du site, pour les liens). */
+
+import { motRefuse, egal, limite, agenda, majAgenda, publier, retirer } from "./commun.js";
 
 export const VERSION_CONSENTEMENT = "newsletter-v2-2026-10";
 export const TEXTE_CONSENTEMENT = "Oui, je veux recevoir « Le Truc de la semaine » : chaque semaine par e-mail, une sélection des sorties autour de chez moi, selon mes préférences. Désinscription en un clic dans chaque e-mail.";
@@ -28,9 +33,15 @@ const t = (v, n) => String(v == null ? "" : v).replace(/[\u0000-\u001f<>]/g, " "
 export const emailValide = e => /^[^\s@"<>,;]{1,64}@[^\s@"<>,;]{1,180}\.[a-z]{2,24}$/i.test(e);
 const siteUrl = env => (env.SITE_URL || SITE_DEFAUT).replace(/\/?$/, "/");
 
-export async function signature(env, id) {
-  const k = await crypto.subtle.importKey("raw", enc.encode(env.SIGNATURE_KEY || env.ADMIN_TOKEN || "cle-de-test"), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
-  return hex(await crypto.subtle.sign("HMAC", k, enc.encode("stop:" + id))).slice(0, 32);
+/* Liens signés (désinscription « stop », lecture dans le navigateur « vue ») : clé dédiée obligatoire, jamais de valeur par défaut */
+export async function signature(env, id, usage = "stop") {
+  if (!env.SIGNATURE_KEY || String(env.SIGNATURE_KEY).length < 16) throw new Error("SIGNATURE_KEY manquante");
+  const k = await crypto.subtle.importKey("raw", enc.encode(env.SIGNATURE_KEY), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+  return hex(await crypto.subtle.sign("HMAC", k, enc.encode(usage + ":" + id))).slice(0, 32);
+}
+export async function signatureValide(env, id, sig, usage = "stop") {
+  if (!env.SIGNATURE_KEY || !/^[0-9a-f]{24}$/.test(id) || !/^[0-9a-f]{32}$/.test(sig || "")) return false;
+  return egal(sig, await signature(env, id, usage));
 }
 
 /* Préférences : seules les informations utiles aux alertes sont gardées (minimisation) */
@@ -61,16 +72,16 @@ const slugDe = s => String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g,
 const lienWeb = u => { u = t(u, 200); if (/^www\./i.test(u)) u = "https://" + u; return /^https?:\/\/[^\s/]+\.[^\s]+$/i.test(u) ? u : ""; };
 const pseudo = v => t(v, 80).replace(/^https?:\/\/(www\.)?(instagram|facebook)\.com\//i, "").replace(/^@/, "").replace(/[^\w.\-]/g, "").slice(0, 60);
 export const orgPublic = o => o && { slug: o.slug, nom: o.nom, bio: o.bio || "", site: o.site || "", insta: o.insta || "", fb: o.fb || "", logo: o.logo || 0, verifie: !!o.verifie };
-async function majIndexOrgs(env) {
-  const out = []; let cursor;
-  do { const r = await env.DLC.list({ prefix: "org:", cursor });
-    for (const k of r.keys) { const o = await env.DLC.get(k.name, "json"); if (o) out.push({ slug: o.slug, nom: o.nom, logo: o.logo || 0, verifie: !!o.verifie }); }
-    cursor = r.list_complete ? null : r.cursor; } while (cursor);
+/* Index public « orgs » : mis à jour élément par élément (KV.list n'est pas cohérent tout de suite) ; les pages suspendues n'y figurent pas */
+async function majIndexOrgs(env, o, retirerSlug) {
+  const idx = (await env.DLC.get("orgs", "json")) || [];
+  const slug = o ? o.slug : retirerSlug, out = idx.filter(x => x.slug !== slug);
+  if (o && !o.suspendu) out.push({ slug: o.slug, nom: o.nom, logo: o.logo || 0, verifie: !!o.verifie });
   await env.DLC.put("orgs", JSON.stringify(out));
 }
-const MOTS_ORG = /(encul|connard|connass|salop|pute\b|putain|merde|fdp|ntm|nique|batard|bâtard|negro|bougnoul|youpin)/i;
+const DEP_OK = /^(\d{2}|2A|2B|97[1-6])$/;
 function sortieOrg(b, o, id) {
-  const e = { id, t: t(b.t, 90), cat: t(b.cat, 20), s: t(b.s, 10), w: t(b.w, 80), z: t(b.z, 3).toUpperCase(), lieu: t(b.lieu, 90), d: t(b.d, 600),
+  const e = { id, t: t(b.t, 90), cat: CATS.includes(b.cat) ? b.cat : "", s: t(b.s, 10), w: t(b.w, 80), z: t(b.z, 3).toUpperCase(), lieu: t(b.lieu, 90), d: t(b.d, 600),
               u: lienWeb(b.u), b: lienWeb(b.b), img: /^https:\/\//.test(b.img || "") ? t(b.img, 400) : "", lat: +b.lat, lon: +b.lon,
               src: "Publié par " + o.nom, org: o.slug, p: 1, publie: maintenant() };
   if (b.e && /^\d{4}-\d{2}-\d{2}$/.test(b.e) && b.e > e.s) e.e = t(b.e, 10);
@@ -87,12 +98,6 @@ function consentir(c, actif, source) {
   c.consentements = (c.consentements || []).concat([{ date: c.newsletter.date, action: actif ? "accord" : "retrait", version: VERSION_CONSENTEMENT, source }]).slice(-30);
 }
 
-async function limite(env, cle, max, secondes) {
-  const n = +(await env.DLC.get(cle) || 0);
-  if (n >= max) return false;
-  await env.DLC.put(cle, String(n + 1), { expirationTtl: Math.max(60, secondes) });
-  return true;
-}
 
 async function envoyerLien(env, email, lien, nouveau) {
   const sujet = nouveau ? "Bienvenue chez les Trucophiles : confirmez votre compte" : "Votre lien pour retrouver vos trucs";
@@ -116,22 +121,42 @@ async function compteDeSession(req, env) {
   const h = await empreinte(tok), s = await env.DLC.get("ses:" + h, "json");
   if (!s) return null;
   const c = await env.DLC.get("cpt:" + s.id, "json");
-  return c ? { c, h } : null;
+  if (!c || (c.gen || "") !== (s.gen || "")) return null;  // compte supprimé, recréé, ou « déconnecté partout »
+  return { c, h };
+}
+
+/* Suppression en cascade : sessions, page organisateur, logo, sorties publiées, puis le compte (utilisée par
+   « Supprimer mon compte » et par la purge des comptes inactifs) */
+export async function supprimerCompte(env, c) {
+  for (const h of c.sessions || []) await env.DLC.delete("ses:" + h);
+  if (c.org && c.org.slug) { const o = await env.DLC.get("org:" + c.org.slug, "json"); if (!o || o.id === c.id) await effacerOrg(env, c.org.slug); }
+  await env.DLC.delete("cpt:" + c.id);
+}
+async function effacerOrg(env, slug) {
+  const ids = (await agenda(env)).filter(x => x.org === slug).map(x => x.id);
+  const lst = await env.DLC.list({ prefix: "a:o-" });  // y compris les sorties retirées de l'agenda par une suspension
+  for (const k of lst.keys) { const e = await env.DLC.get(k.name, "json"); if (e && e.org === slug && !ids.includes(e.id)) ids.push(e.id); }
+  if (ids.length) await retirer(env, ids);
+  await env.DLC.delete("org:" + slug); await env.DLC.delete("logo:" + slug); await majIndexOrgs(env, null, slug);
 }
 async function enregistrer(env, c) { await env.DLC.put("cpt:" + c.id, JSON.stringify(c)); }
 
-function page(titre, texte, env) {
-  return new Response(`<!doctype html><html lang="fr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${titre}</title>
-<body style="font-family:system-ui,sans-serif;max-width:520px;margin:12vh auto;padding:0 20px;color:#141a33"><h1 style="font-size:1.5rem">${titre}</h1><p>${texte}</p>
-<p><a href="${siteUrl(env)}" style="color:#2546d8">Retour aux sorties</a></p></body></html>`, { headers: { "Content-Type": "text/html; charset=utf-8" } });
+function page(titre, texte, env, statut, suite) {
+  return new Response(`<!doctype html><html lang="fr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>${titre}</title>
+<body style="font-family:system-ui,sans-serif;max-width:520px;margin:12vh auto;padding:0 20px;color:#141a33"><h1 style="font-size:1.5rem">${titre}</h1><p>${texte}</p>${suite || ""}
+<p><a href="${siteUrl(env)}" style="color:#2546d8">Retour aux sorties</a></p></body></html>`, { status: statut || 200, headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store" } });
 }
 
 /* Renvoie une réponse si la route concerne les comptes, sinon null */
 export async function comptes(req, env, url, p, cors, json, outils) {
   if (p === "/newsletter/stop") {
+    if (!env.SIGNATURE_KEY) return page("Service indisponible", "La désinscription par lien est momentanément indisponible. Désinscrivez-vous depuis « Mon compte ».", env, 503);
     const id = t(url.searchParams.get("c"), 40), sig = t(url.searchParams.get("s"), 64);
-    const c = /^[0-9a-f]{24}$/.test(id) && await env.DLC.get("cpt:" + id, "json");
-    if (!c || sig !== await signature(env, id)) return page("Lien invalide", "Ce lien de désinscription n’est pas valide. Vous pouvez aussi vous désinscrire depuis « Mon compte ».", env);
+    const c = await signatureValide(env, id, sig) && await env.DLC.get("cpt:" + id, "json");
+    if (!c) return page("Lien invalide", "Ce lien de désinscription n’est pas valide. Vous pouvez aussi vous désinscrire depuis « Mon compte ».", env, 400);
+    if (req.method !== "POST")  // GET : confirmation (les antivirus de messagerie ouvrent les liens tout seuls)
+      return page("Se désinscrire ?", "Vous ne recevrez plus « Le Truc de la semaine ». Votre compte et vos favoris sont conservés.", env, 200,
+        `<form method="post"><button style="font:inherit;font-weight:700;background:#2546d8;color:#fff;border:0;border-radius:999px;padding:12px 22px;cursor:pointer">Me désinscrire</button></form>`);
     consentir(c, false, "lien de désinscription"); await enregistrer(env, c);
     return page("Vous êtes désinscrit", "Vous ne recevrez plus « Le Truc de la semaine ». Votre compte et vos favoris sont conservés.", env);
   }
@@ -141,7 +166,7 @@ export async function comptes(req, env, url, p, cors, json, outils) {
   let m = p.match(/^\/org\/([a-z0-9-]{1,40})(\/logo)?$/);
   if (req.method === "GET" && m) {
     const o = await env.DLC.get("org:" + m[1], "json");
-    if (!o) return json({ erreur: "introuvable" }, 404, cors);
+    if (!o || o.suspendu) return json({ erreur: "introuvable" }, 404, cors);
     if (m[2]) {
       const d = await env.DLC.get("logo:" + o.slug); const mm = d && d.match(/^data:(image\/(?:png|jpeg|webp));base64,(.+)$/);
       if (!mm) return new Response("", { status: 404, headers: cors });
@@ -156,11 +181,12 @@ export async function comptes(req, env, url, p, cors, json, outils) {
     let b; try { b = await req.json(); } catch { return json({ erreur: "format" }, 400, cors); }
     const email = t(b.email, 200).toLowerCase();
     if (!emailValide(email)) return json({ erreur: "email_invalide" }, 400, cors);
-    const ip = req.headers.get("CF-Connecting-IP") || "?", heure = new Date().toISOString().slice(0, 13);
-    if (!await limite(env, "rlc:" + ip + ":" + heure, 10, 3700) || !await limite(env, "rle:" + (await empreinte(email)).slice(0, 24) + ":" + heure, 4, 3700))
+    const ip = req.headers.get("CF-Connecting-IP") || "?", id = (await empreinte(email)).slice(0, 24);
+    if (!limite("rlc:" + ip, 10, 3600) || !limite("rle:" + id, 4, 3600))
       return json({ erreur: "trop_de_demandes", message: "Trop de demandes. Réessayez dans une heure." }, 429, cors);
-    const id = (await empreinte(email)).slice(0, 24), existe = !!(await env.DLC.get("cpt:" + id));
-    if (!existe && b.cgu !== true) return json({ erreur: "cgu_requises" }, 400, cors);
+    const existe = !!(await env.DLC.get("cpt:" + id));
+    // Réponse identique que l'adresse ait un compte ou non : sans CGU acceptées, rien n'est envoyé à une adresse inconnue
+    if (!existe && b.cgu !== true) return json({ ok: true }, 200, cors);
     const jeton = aleatoire(32);
     await env.DLC.put("jet:" + await empreinte(jeton), JSON.stringify({ email, id, nouveau: !existe, prefs: prefsPropres(b.prefs), newsletter: b.newsletter === true, fav: favPropres(b.fav), cree: maintenant() }), { expirationTtl: JETON_MIN * 60 });
     const lien = siteUrl(env) + "#connexion=" + jeton;
@@ -168,7 +194,7 @@ export async function comptes(req, env, url, p, cors, json, outils) {
       try { await envoyerLien(env, email, lien, !existe); } catch { return json({ erreur: "envoi_impossible", message: "L’e-mail n’a pas pu partir. Réessayez dans un instant." }, 502, cors); }
       return json({ ok: true }, 200, cors);
     }
-    if (env.MODE_TEST === "1") return json({ ok: true, lien }, 200, cors);  // tests automatiques uniquement
+    if (env.MODE_TEST === "1" && /^(localhost|127\.0\.0\.1|[a-z0-9.-]+\.test)$/.test(url.hostname)) return json({ ok: true, lien }, 200, cors);  // tests automatiques, jamais en ligne
     return json({ erreur: "envoi_indisponible", message: "L’envoi des e-mails n’est pas encore configuré." }, 503, cors);
   }
 
@@ -181,15 +207,16 @@ export async function comptes(req, env, url, p, cors, json, outils) {
     await env.DLC.delete(kj);
     let c = await env.DLC.get("cpt:" + j.id, "json");
     if (!c) {
-      c = { id: j.id, email: j.email, cree: maintenant(), offre: "trucophile", prefs: j.prefs, fav: j.fav || [], cgu: { date: maintenant(), version: "cgu-2026-10" }, sessions: [] };
+      c = { id: j.id, email: j.email, cree: maintenant(), offre: "trucophile", prefs: j.prefs, fav: j.fav || [], cgu: { date: maintenant(), version: "cgu-2026-10" }, sessions: [], gen: aleatoire(6) };
       consentir(c, j.newsletter, "inscription");  // double opt-in : actif seulement après clic sur le lien reçu par e-mail
     } else {
       c.fav = favPropres((c.fav || []).concat(j.fav || []));
       if (j.newsletter) consentir(c, true, "formulaire de connexion");
     }
     const session = aleatoire(32), hs = await empreinte(session);
-    await env.DLC.put("ses:" + hs, JSON.stringify({ id: c.id, cree: maintenant() }), { expirationTtl: SESSION_JOURS * 86400 });
-    c.sessions = (c.sessions || []).concat([hs]).slice(-10);
+    await env.DLC.put("ses:" + hs, JSON.stringify({ id: c.id, gen: c.gen || "", cree: maintenant() }), { expirationTtl: SESSION_JOURS * 86400 });
+    c.sessions = (c.sessions || []).concat([hs]);
+    while (c.sessions.length > 10) await env.DLC.delete("ses:" + c.sessions.shift());  // 10 appareils au plus : la plus ancienne session est fermée
     c.vu = maintenant().slice(0, 10);
     await enregistrer(env, c);
     return json({ ok: true, session, nouveau: !!j.nouveau, compte: vuePublique(c) }, 200, cors);
@@ -209,8 +236,13 @@ export async function comptes(req, env, url, p, cors, json, outils) {
     return m ? new Response(m.html, { headers: { "Content-Type": "text/html; charset=utf-8", ...cors } }) : json({ erreur: "indisponible" }, 503, cors);
   }
   if (req.method === "GET" && p === "/compte/export") {
-    const { sessions, ...donnees } = c;
-    return new Response(JSON.stringify({ exporte: maintenant(), service: "Trucs à faire", compte: donnees }, null, 2),
+    const { sessions, gen, ...donnees } = c, out = { exporte: maintenant(), service: "Trucs à faire", compte: donnees };
+    if (c.org) {  // page organisateur et sorties publiées (droit à la portabilité)
+      const o = await env.DLC.get("org:" + c.org.slug, "json");
+      if (o) { const { id, ...page } = o; out.page_organisateur = Object.assign(page, { logo: o.logo ? await env.DLC.get("logo:" + o.slug) : null }); }
+      out.sorties_publiees = (await agenda(env)).filter(e => e.org === c.org.slug);
+    }
+    return new Response(JSON.stringify(out, null, 2),
       { headers: { "Content-Type": "application/json; charset=utf-8", "Content-Disposition": "attachment; filename=\"trucs-a-faire-mes-donnees.json\"", ...cors } });
   }
   if (req.method === "POST" && p === "/compte") {
@@ -222,23 +254,28 @@ export async function comptes(req, env, url, p, cors, json, outils) {
     return json({ ok: true, compte: vuePublique(c) }, 200, cors);
   }
   if (req.method === "POST" && p === "/compte/deconnexion") {
-    await env.DLC.delete("ses:" + s.h);
-    c.sessions = (c.sessions || []).filter(x => x !== s.h); await enregistrer(env, c);
+    let b = {}; try { b = await req.json(); } catch {}
+    if (b && b.partout) {  // « Se déconnecter partout » : toutes les sessions, même celles d'un appareil perdu
+      for (const h of c.sessions || []) await env.DLC.delete("ses:" + h);
+      c.sessions = []; c.gen = aleatoire(6);
+    } else { await env.DLC.delete("ses:" + s.h); c.sessions = (c.sessions || []).filter(x => x !== s.h); }
+    await enregistrer(env, c);
     return json({ ok: true }, 200, cors);
   }
   if (req.method === "POST" && p === "/compte/org") {
     let b; try { b = await req.json(); } catch { return json({ erreur: "format" }, 400, cors); }
     const nom = t(b.nom, 60);
     if (nom.length < 2) return json({ erreur: "nom_requis", message: "Indiquez le nom de votre organisation." }, 400, cors);
-    if (MOTS_ORG.test([nom, b.bio].join(" "))) return json({ erreur: "mot_refuse" }, 422, cors);
+    if (motRefuse(nom, b.bio)) return json({ erreur: "mot_refuse", message: "Un mot n’est pas accepté. Reformulez, s’il vous plaît." }, 422, cors);
     let o = c.org && await env.DLC.get("org:" + c.org.slug, "json");
+    if (o && o.suspendu) return json({ erreur: "suspendu", message: "Votre page est suspendue. Écrivez-nous : contact@trucsafaire.fr" }, 403, cors);
     if (!o) {
       let slug = slugDe(nom), n = 2; while (await env.DLC.get("org:" + slug)) slug = slugDe(nom).slice(0, 36) + "-" + n++;
       o = { slug, id: c.id, logo: 0, verifie: false, cree: maintenant() };
     }
     Object.assign(o, { nom, bio: t(b.bio, 300), site: lienWeb(b.site), insta: pseudo(b.insta), fb: pseudo(b.fb) });
     await env.DLC.put("org:" + o.slug, JSON.stringify(o));
-    c.org = orgPublic(o); if (!c.offre || c.offre === "trucophile") c.offre = "faiseur"; await enregistrer(env, c); await majIndexOrgs(env);
+    c.org = orgPublic(o); if (!c.offre || c.offre === "trucophile") c.offre = "faiseur"; await enregistrer(env, c); await majIndexOrgs(env, o);
     return json({ ok: true, compte: vuePublique(c) }, 200, cors);
   }
   if (req.method === "POST" && p === "/compte/org/logo") {
@@ -246,45 +283,44 @@ export async function comptes(req, env, url, p, cors, json, outils) {
     let b; try { b = await req.json(); } catch { return json({ erreur: "format" }, 400, cors); }
     const img = String(b.image || "");
     if (!/^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(img) || img.length > 270000) return json({ erreur: "image_invalide", message: "Image PNG, JPEG ou WebP de 200 Ko maximum." }, 400, cors);
-    const o = await env.DLC.get("org:" + c.org.slug, "json"); o.logo = (o.logo || 0) + 1;
+    const o = await env.DLC.get("org:" + c.org.slug, "json");
+    if (!o || o.suspendu) return json({ erreur: "suspendu" }, 403, cors);
+    o.logo = (o.logo || 0) + 1;
     await env.DLC.put("logo:" + o.slug, img); await env.DLC.put("org:" + o.slug, JSON.stringify(o));
-    c.org = orgPublic(o); await enregistrer(env, c); await majIndexOrgs(env);
+    c.org = orgPublic(o); await enregistrer(env, c); await majIndexOrgs(env, o);
     return json({ ok: true, compte: vuePublique(c) }, 200, cors);
   }
   if (req.method === "GET" && p === "/compte/apercu") {
     if (!c.org) return json({ erreur: "pas_de_profil" }, 400, cors);
-    if (!await limite(env, "rla:" + c.id + ":" + jour, 60, 90000)) return json({ erreur: "trop_de_demandes" }, 429, cors);
+    if (!limite("rla:" + c.id, 60, 86400)) return json({ erreur: "trop_de_demandes" }, 429, cors);
     const r = await apercuLien(url.searchParams.get("url") || "");
     return r ? json({ ok: true, sortie: r }, 200, cors) : json({ erreur: "lien_illisible", message: "Impossible de lire cette page. Remplissez les champs à la main." }, 422, cors);
   }
   if (p === "/compte/sorties") {
     if (!c.org) return json({ erreur: "pas_de_profil", message: "Créez d’abord votre page organisateur." }, 400, cors);
-    const ag = (await env.DLC.get("agenda", "json")) || [];
+    const ag = await agenda(env);
     if (req.method === "GET") return json({ ok: true, sorties: ag.filter(e => e.org === c.org.slug) }, 200, cors);
+    const o = await env.DLC.get("org:" + c.org.slug, "json");
+    if (!o || o.suspendu) return json({ erreur: "suspendu", message: "Votre page est suspendue : la publication est bloquée. Écrivez-nous : contact@trucsafaire.fr" }, 403, cors);
     let b; try { b = await req.json(); } catch { return json({ erreur: "format" }, 400, cors); }
     if (b.supprimer) {
       const id = t(b.supprimer, 40), e = ag.find(x => x.id === id && x.org === c.org.slug);
       if (!e) return json({ erreur: "introuvable" }, 404, cors);
-      await env.DLC.delete("a:" + id); if (outils && outils.majAgenda) await outils.majAgenda(env);
+      await retirer(env, [id]);
       return json({ ok: true }, 200, cors);
     }
-    if (!await limite(env, "rlo:" + c.id + ":" + jour, 40, 90000)) return json({ erreur: "trop_de_demandes", message: "40 sorties par jour au maximum." }, 429, cors);
+    if (!limite("rlo:" + c.id, 40, 86400)) return json({ erreur: "trop_de_demandes", message: "40 sorties par jour au maximum." }, 429, cors);
     const ex = b.id && ag.find(x => x.id === b.id && x.org === c.org.slug);
     const e = sortieOrg(b, c.org, ex ? ex.id : "o-" + Date.now().toString(36) + aleatoire(3));
-    if (e.t.length < 4 || !/^\d{4}-\d{2}-\d{2}$/.test(e.s) || !e.w || !isFinite(e.lat) || !isFinite(e.lon)) return json({ erreur: "incomplet" }, 400, cors);
-    if (MOTS_ORG.test([e.t, e.d, e.lieu].join(" "))) return json({ erreur: "mot_refuse" }, 422, cors);
-    await env.DLC.put("a:" + e.id, JSON.stringify(e)); if (outils && outils.majAgenda) await outils.majAgenda(env);
+    if (e.t.length < 4 || !/^\d{4}-\d{2}-\d{2}$/.test(e.s) || !e.w || !e.cat || !DEP_OK.test(e.z)
+        || !isFinite(e.lat) || !isFinite(e.lon) || Math.abs(e.lat) > 90 || Math.abs(e.lon) > 180 || (!e.lat && !e.lon))
+      return json({ erreur: "incomplet", message: "Titre, type, date, commune et position sont nécessaires." }, 400, cors);
+    if (motRefuse(e.t, e.d, e.lieu)) return json({ erreur: "mot_refuse", message: "Un mot n’est pas accepté. Reformulez, s’il vous plaît." }, 422, cors);
+    await publier(env, e);
     return json({ ok: true, sortie: e }, 200, cors);
   }
   if (req.method === "POST" && p === "/compte/supprimer") {
-    for (const h of c.sessions || []) await env.DLC.delete("ses:" + h);
-    if (c.org) {  // la page organisateur, son logo et ses sorties publiées partent avec le compte
-      const ag = (await env.DLC.get("agenda", "json")) || [];
-      for (const e of ag.filter(x => x.org === c.org.slug)) await env.DLC.delete("a:" + e.id);
-      await env.DLC.delete("org:" + c.org.slug); await env.DLC.delete("logo:" + c.org.slug);
-      await majIndexOrgs(env); if (outils && outils.majAgenda) await outils.majAgenda(env);
-    }
-    await env.DLC.delete("cpt:" + c.id);
+    await supprimerCompte(env, c);
     return json({ ok: true }, 200, cors);
   }
   return json({ erreur: "introuvable" }, 404, cors);
@@ -298,10 +334,7 @@ export async function purgerInactifs(env) {
     const r = await env.DLC.list({ prefix: "cpt:", cursor });
     for (const k of r.keys) {
       const c = await env.DLC.get(k.name, "json");
-      if (c && (c.vu || c.cree.slice(0, 10)) < limiteDate) {
-        for (const h of c.sessions || []) await env.DLC.delete("ses:" + h);
-        await env.DLC.delete(k.name); n++;
-      }
+      if (c && (c.vu || c.cree.slice(0, 10)) < limiteDate) { await supprimerCompte(env, c); n++; }
     }
     cursor = r.list_complete ? null : r.cursor;
   } while (cursor);
@@ -313,20 +346,57 @@ export async function verifierOrg(env, slug, verifie) {
   const o = await env.DLC.get("org:" + slug, "json"); if (!o) return null;
   o.verifie = !!verifie; await env.DLC.put("org:" + slug, JSON.stringify(o));
   const c = await env.DLC.get("cpt:" + o.id, "json"); if (c) { c.org = orgPublic(o); await env.DLC.put("cpt:" + c.id, JSON.stringify(c)); }
-  await majIndexOrgs(env); return orgPublic(o);
+  await majIndexOrgs(env, o); return orgPublic(o);
+}
+
+/* Éditeur : suspendre une page abusive (usurpation, contenu illicite : retrait prompt, LCEN) ou la rétablir.
+   Suspendue : page publique en 404, absente de l'index, sorties retirées de l'agenda, publication bloquée. */
+export async function suspendreOrg(env, slug, suspendu, motif) {
+  const o = await env.DLC.get("org:" + slug, "json"); if (!o) return null;
+  o.suspendu = !!suspendu; if (suspendu) o.motif = t(motif, 200); else delete o.motif;
+  await env.DLC.put("org:" + slug, JSON.stringify(o)); await majIndexOrgs(env, o);
+  const c = await env.DLC.get("cpt:" + o.id, "json"); if (c) { c.org = Object.assign(orgPublic(o), { suspendu: !!o.suspendu }); await env.DLC.put("cpt:" + c.id, JSON.stringify(c)); }
+  if (suspendu) { const ids = (await agenda(env)).filter(e => e.org === slug).map(e => e.id); if (ids.length) await majAgenda(env, { retrait: ids }); }
+  else { const lst = await env.DLC.list({ prefix: "a:o-" }); const ajout = [];
+    for (const k of lst.keys) { const e = await env.DLC.get(k.name, "json"); if (e && e.org === slug) ajout.push(e); }
+    if (ajout.length) await majAgenda(env, { ajout }); }
+  return Object.assign(orgPublic(o), { suspendu: !!o.suspendu });
+}
+/* Éditeur : supprimer une page organisateur (le compte Trucophile est conservé) */
+export async function supprimerOrgAdmin(env, slug) {
+  const o = await env.DLC.get("org:" + slug, "json"); if (!o) return false;
+  await effacerOrg(env, slug);
+  const c = await env.DLC.get("cpt:" + o.id, "json");
+  if (c) { delete c.org; if (c.offre === "faiseur") c.offre = "trucophile"; await env.DLC.put("cpt:" + c.id, JSON.stringify(c)); }
+  return true;
 }
 
 /* Pré-remplissage depuis le lien d'un événement (HelloAsso, Billetweb, site d'association…) :
    données structurées schema.org Event si présentes, sinon balises Open Graph. Seules les pages https publiques sont lues. */
 const ent = x => String(x || "").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#0?39;|&apos;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&#(\d+);/g, (_, n) => String.fromCharCode(+n)).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+const adressePublique = x => x.protocol === "https:" && !x.port && x.hostname.includes(".") && !x.username
+  && !/^(localhost|.*\.local|.*\.internal|\d+\.\d+\.\d+\.\d+|\[.*\])$/i.test(x.hostname);
+async function lireLimite(r, max) {  // lecture en flux, arrêtée à max octets
+  if (!r.body || !r.body.getReader) return (await r.text()).slice(0, max);
+  const lect = r.body.getReader(), dec = new TextDecoder(); let out = "";
+  while (out.length < max) { const { done, value } = await lect.read(); if (done) break; out += dec.decode(value, { stream: true }); }
+  try { lect.cancel(); } catch {}
+  return out.slice(0, max);
+}
 export async function apercuLien(u) {
   let x; try { x = new URL(String(u).trim()); } catch { return null; }
-  if (x.protocol !== "https:" || /^(localhost|\d+\.\d+\.\d+\.\d+|\[.*\])$/i.test(x.hostname) || !x.hostname.includes(".")) return null;
+  if (!adressePublique(x)) return null;
   let html;
   try {
-    const r = await fetch(x.href, { headers: { "User-Agent": "TrucsAFaire/1.0 (+https://trucsafaire.fr)", "Accept": "text/html" }, redirect: "follow", signal: AbortSignal.timeout(8000) });
+    let r;
+    for (let saut = 0; ; saut++) {  // redirections suivies à la main (3 au plus), chacune revérifiée
+      r = await fetch(x.href, { headers: { "User-Agent": "TrucsAFaire/1.0 (+https://trucsafaire.fr)", "Accept": "text/html" }, redirect: "manual", signal: AbortSignal.timeout(8000) });
+      if (r.status < 300 || r.status > 399) break;
+      const loc = r.headers.get("Location"); if (!loc || saut >= 3) return null;
+      x = new URL(loc, x); if (!adressePublique(x)) return null;
+    }
     if (!r.ok || !/html/i.test(r.headers.get("Content-Type") || "")) return null;
-    html = (await r.text()).slice(0, 1500000);
+    html = await lireLimite(r, 1500000);
   } catch { return null; }
   const meta = k => { const m = html.match(new RegExp('<meta[^>]+(?:property|name)=["\']' + k + '["\'][^>]*content=["\']([^"\']*)', "i")) || html.match(new RegExp('<meta[^>]+content=["\']([^"\']*)["\'][^>]*(?:property|name)=["\']' + k + '["\']', "i")); return m ? ent(m[1]) : ""; };
   let ev = null;

@@ -13,10 +13,11 @@ permissions:
   contents: read
   pages: write
   id-token: write
-concurrency: { group: pages, cancel-in-progress: true }
+concurrency: { group: pages, cancel-in-progress: false }  # ne jamais interrompre un déploiement en cours
 jobs:
   publier:
     runs-on: ubuntu-latest
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion != 'cancelled'
     environment:
       name: github-pages
       url: ${{ steps.deploiement.outputs.page_url }}
@@ -25,12 +26,21 @@ jobs:
         with: { ref: main }
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
+      - uses: actions/setup-node@v4
+        with: { node-version: "22" }
+      - name: Contrôles avant publication (un site cassé ne part pas en ligne)
+        run: |
+          python scripts/construire_app.py --verifier
+          python scripts/verifier.py
+          node --test tests/worker.test.mjs
       - name: Assembler le site
         run: |
           mkdir _site
           # tout ce qui est public, sans les outils internes (scripts, tests, serveur, documents de travail)
           git ls-files -z | grep -zv -E '^(\.github/|scripts/|tests/|worker/|docs/|README\.md$|\.gitignore$)' | xargs -0 cp --parents -t _site
           touch _site/.nojekyll
+          # version du cache hors ligne = empreinte de la page : chaque publication renouvelle l'appli installée
+          v=$(sha1sum _site/index.html | cut -c1-10); sed -i "s/^const VERSION = \"[^\"]*\"/const VERSION = \"taf-$v\"/" _site/sw.js; grep -q "taf-$v" _site/sw.js
       - name: Pages par commune et par département
         run: PAGES_SORTIE=_site python scripts/pages_villes.py
       - name: Contrôle des pages générées

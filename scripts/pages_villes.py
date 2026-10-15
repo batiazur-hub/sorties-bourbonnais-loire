@@ -107,14 +107,28 @@ def ligne(e, r):
             f'<span class="t">{e_(e["t"])}</span><span class="m">{e_(c[1])} · {e_(lieu)}{gr}</span></a></li>')
 
 
+FUSEAUX = {"971": "America/Guadeloupe", "972": "America/Martinique", "973": "America/Cayenne", "974": "Indian/Reunion", "976": "Indian/Mayotte"}
+
+
+def debut_ld(e):
+    """Date de début avec fuseau horaire (heure d'été ou d'hiver), comme le demande Google pour les événements."""
+    if not e.get("h"): return e["s"]
+    try:
+        from zoneinfo import ZoneInfo
+        d = dt.datetime.fromisoformat(e["s"] + "T" + e["h"]).replace(tzinfo=ZoneInfo(FUSEAUX.get(e["z"], "Europe/Paris")))
+        return d.isoformat(timespec="minutes")
+    except Exception:
+        return e["s"] + "T" + e["h"]
+
+
 def event_ld(e):
-    x = {"@type": "Event", "name": e["t"], "startDate": e["s"] + (("T" + e["h"]) if e.get("h") else ""),
+    x = {"@type": "Event", "name": e["t"], "startDate": debut_ld(e),
          "endDate": e.get("e") or e["s"], "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
          "eventStatus": "https://schema.org/EventScheduled",
          "location": {"@type": "Place", "name": e.get("lieu") or e["w"],
                       "address": {"@type": "PostalAddress", "addressLocality": e["w"], "addressCountry": "FR"},
                       "geo": {"@type": "GeoCoordinates", "latitude": e["lat"], "longitude": e["lon"]}},
-         "url": f'{SITE}index.html#dep={e["z"]}&sortie={e["id"]}'}
+         "url": f'{SITE}index.html?sortie={quote(e["id"])}#dep={e["z"]}&sortie={quote(e["id"])}'}  # adresse distincte par sortie (Google ignore le fragment)
     if e.get("d"): x["description"] = e["d"][:300]
     if e.get("img"): x["image"] = e["img"]
     if e.get("g"): x["isAccessibleForFree"] = True
@@ -130,10 +144,16 @@ def trier(evs):
 def main():
     deps = {d["code"]: d for d in json.load(open(os.path.join(RACINE, "data/departements.json"), encoding="utf-8"))["departements"]}
     par_commune, par_dep = defaultdict(list), defaultdict(list)
-    for f in glob.glob(os.path.join(RACINE, "data/dep/*.json")):
-        for e in json.load(open(f, encoding="utf-8")):
-            if (e.get("e") or e["s"]) < AUJ.isoformat(): continue
-            par_commune[(e["w"], e["z"])].append(e); par_dep[e["z"]].append(e)
+    tous = [e for f in sorted(glob.glob(os.path.join(RACINE, "data/dep/*.json"))) for e in json.load(open(f, encoding="utf-8"))
+            if (e.get("e") or e["s"]) >= AUJ.isoformat()]
+    # Une commune, une page : « STRASBOURG » et « Strasbourg », « Chemillé-en-Anjou » et « Chemille-en-Anjou » sont regroupées
+    # sous l'écriture la plus fréquente (à égalité : celle qui n'est pas en capitales et qui porte des accents).
+    ecritures = defaultdict(lambda: defaultdict(int))
+    for e in tous: ecritures[(slug(e["w"]), e["z"])][e["w"]] += 1
+    nom_de = {k: max(v.items(), key=lambda x: (x[1], not x[0].isupper(), sum(ord(c) > 127 for c in x[0]), x[0]))[0] for k, v in ecritures.items()}
+    for e in tous:
+        e["w"] = nom_de[(slug(e["w"]), e["z"])]
+        par_commune[(e["w"], e["z"])].append(e); par_dep[e["z"]].append(e)
     communes = {k: v for k, v in par_commune.items() if len(v) >= MIN_SORTIES and k[1] in deps and re.search(r"[A-Za-zÀ-ÿ]{2}", k[0])}
     url_c = {k: f"que-faire/{slug(k[0])}-{k[1].lower()}/" for k in communes}
     url_d = {c: f"que-faire/{slug(d['nom'])}/" for c, d in deps.items()}
@@ -222,6 +242,8 @@ def main():
     ecrire("que-faire/", page("Que faire près de chez vous ? Sorties par département · Trucs à faire",
                               "Toutes les sorties de France par département et par commune : brocantes, fêtes, concerts, expos, sorties en famille.", "que-faire/", 1, corps, ld))
     jour = AUJ.isoformat()
+    doubles = sorted({u for u in urls if urls.count(u) > 1}) if len(set(urls)) != len(urls) else []
+    if doubles: raise SystemExit(f"Adresses en double dans le plan du site : {doubles[:10]}")
     open(os.path.join(SORTIE, "sitemap-villes.xml"), "w", encoding="utf-8").write(
         '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
         "".join(f"  <url><loc>{SITE}{u}</loc><lastmod>{jour}</lastmod><changefreq>daily</changefreq></url>\n" for u in urls) + "</urlset>\n")

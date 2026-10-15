@@ -19,7 +19,7 @@ MAIL_FROM = "bonjour@trucsafaire.fr"
 # Adresse publique de ce serveur (liens de désinscription dans les e-mails envoyés par la tâche planifiée)
 API_URL = "https://api.trucsafaire.fr"
 # Nombre d'e-mails par exécution (offre gratuite Cloudflare : 50 requêtes sortantes au plus par exécution)
-NL_LOT = "35"
+NL_LOT = "30"
 # Secret à créer une fois : npx wrangler secret put ADMIN_TOKEN
 # Comptes : npx wrangler secret put BREVO_KEY      (clé API Brevo, envoi des liens de connexion)
 #          npx wrangler secret put SIGNATURE_KEY  (texte aléatoire long, signe les liens de désinscription)

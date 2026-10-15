@@ -8,6 +8,7 @@ import { fileURLToPath } from "node:url";
 
 const RACINE = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const w = (await import(path.join(RACINE, "worker/worker.js"))).default;
+const { viderLimites, motRefuse } = await import(path.join(RACINE, "worker/commun.js"));
 
 const SITE = "https://site.test/";
 globalThis.fetch = async (u) => {
@@ -25,9 +26,9 @@ function kv() {
     async list({ prefix }) { return { keys: [...m.keys()].filter(k => k.startsWith(prefix)).map(name => ({ name })), list_complete: true }; } };
 }
 const CODE_TEST = "code-editeur-de-test";
-const env = () => ({ DLC: kv(), ADMIN_TOKEN: CODE_TEST, ORIGINS: "https://site.test", DATA_URL: SITE + "data/", SITE_URL: SITE });
+const env = () => (viderLimites(), { DLC: kv(), ADMIN_TOKEN: CODE_TEST, SIGNATURE_KEY: "cle-de-signature-des-tests", ORIGINS: "https://site.test", DATA_URL: SITE + "data/", SITE_URL: SITE });
 const appel = async (e, chemin, o = {}) => {
-  const r = await w.fetch(new Request("https://api.test" + chemin, { method: o.body ? "POST" : "GET", headers: o.headers || {}, body: o.body ? JSON.stringify(o.body) : undefined }), e, { waitUntil() {} });
+  const r = await w.fetch(new Request("https://api.test" + chemin, { method: o.method || (o.body ? "POST" : "GET"), headers: o.headers || {}, body: o.body ? JSON.stringify(o.body) : undefined }), e, { waitUntil() {} });
   const t = await r.text(); let j = null; try { j = JSON.parse(t); } catch (_) {}
   return { statut: r.status, j, t, h: r.headers };
 };
@@ -148,8 +149,9 @@ async function inscrire(e, email, extra) {
   return (await appel(e, "/compte/connexion", { headers: jsonH, body: { jeton } })).j;
 }
 
-test("comptes : CGU obligatoires, e-mail vérifié, sans service d'envoi = 503 propre", async () => {
-  assert.equal((await appel(envC(), "/compte/lien", { headers: jsonH, body: { email: "a@b.fr" } })).j.erreur, "cgu_requises");
+test("comptes : sans CGU rien n'est envoyé, e-mail vérifié, sans service d'envoi = 503 propre", async () => {
+  const e0 = envC(), r0 = await appel(e0, "/compte/lien", { headers: jsonH, body: { email: "a@b.fr" } });
+  assert.deepEqual(r0.j, { ok: true }); assert.ok(![...e0.DLC.m.keys()].some(k => k.startsWith("jet:")), "aucun lien créé sans CGU");
   assert.equal((await appel(envC(), "/compte/lien", { headers: jsonH, body: { email: "pas-un-mail", cgu: true } })).j.erreur, "email_invalide");
   assert.equal((await appel(env(), "/compte/lien", { headers: jsonH, body: { email: "a@b.fr", cgu: true } })).statut, 503);
 });
@@ -179,7 +181,10 @@ test("comptes : profil, retrait du consentement tracé, export, désinscription 
   await appel(e, "/compte", { headers: auth, body: { newsletter: true } });
   const id = x.j.compte.id;
   assert.match((await appel(e, "/newsletter/stop?c=" + id + "&s=faux")).t, /invalide/);
-  assert.match((await appel(e, "/newsletter/stop?c=" + id + "&s=" + await signature(e, id))).t, /désinscrit/);
+  const stop = "/newsletter/stop?c=" + id + "&s=" + await signature(e, id);
+  assert.match((await appel(e, stop)).t, /<form method="post"/, "GET : simple confirmation");
+  assert.equal((await appel(e, "/compte", { headers: auth })).j.compte.newsletter, true, "un GET (antivirus de messagerie) ne désinscrit pas");
+  assert.match((await appel(e, stop, { method: "POST" })).t, /désinscrit/);
   assert.equal((await appel(e, "/compte", { headers: auth })).j.compte.newsletter, false);
   await appel(e, "/compte/supprimer", { headers: auth, body: {} });
   assert.equal((await appel(e, "/compte", { headers: auth })).statut, 401);
@@ -273,4 +278,108 @@ test("Le Truc de la semaine : sélection autour de la commune, e-mail, envoi par
   assert.equal(envoyes[0].headers["List-Unsubscribe-Post"], "List-Unsubscribe=One-Click");
   const ap = await appel(e, "/compte/newsletter", { headers: { Authorization: "Bearer " + a.session } });
   assert.equal(ap.statut, 200); assert.match(ap.t, /Le Truc de la semaine/);
+});
+
+/* ---------- Corrections de l'audit (octobre 2026) ---------- */
+test("filtre de mots : mots entiers seulement (pique-nique, musique, technique passent)", () => {
+  for (const ok of ["Pique-nique au bord de l'eau", "Soirée musique électronique", "Visite technique", "Concert unique à la Martinique",
+                    "Fête de la Saint-Dominique", "Atelier salopettes", "La dispute des marmottes", "Computer club", "Spécial PDF"]) assert.equal(motRefuse(ok), false, ok);
+  for (const ko of ["Soirée putain", "SALOPE", "bande de connards", "Merde alors", "nique ta mère", "Bâtard"]) assert.equal(motRefuse(ko), true, ko);
+});
+
+test("/compte/lien : même réponse que l'adresse ait un compte ou non", async () => {
+  const e = envC(); await inscrire(e, "deja@exemple.fr");
+  const a = await appel(e, "/compte/lien", { headers: jsonH, body: { email: "deja@exemple.fr" } });
+  const b = await appel(e, "/compte/lien", { headers: jsonH, body: { email: "inconnu@exemple.fr" } });
+  assert.equal(a.statut, b.statut); assert.equal(Object.keys(a.j).filter(k => k !== "lien").join(), Object.keys(b.j).join());
+  const hors = Object.assign(envC(), {}); const r = await w.fetch(new Request("https://api.trucsafaire.fr/compte/lien", { method: "POST", headers: jsonH, body: JSON.stringify({ email: "z@exemple.fr", cgu: true }) }), hors, {});
+  assert.ok(!(await r.json()).lien, "MODE_TEST sans effet hors d'une adresse de test");
+});
+
+test("sessions : aucune ne survit à la suppression du compte, « se déconnecter partout »", async () => {
+  const e = envC(), sessions = [];
+  for (let i = 0; i < 12; i++) { viderLimites(); sessions.push((await inscrire(e, "x@ex.fr")).session); }
+  assert.ok([...e.DLC.m.keys()].filter(k => k.startsWith("ses:")).length <= 10, "les sessions évincées sont effacées");
+  const auth = s => ({ Authorization: "Bearer " + s, "Content-Type": "application/json" });
+  await appel(e, "/compte/supprimer", { headers: auth(sessions[11]), body: {} });
+  viderLimites(); await inscrire(e, "x@ex.fr");  // même adresse, compte recréé
+  for (const s of sessions) assert.equal((await appel(e, "/compte", { headers: auth(s) })).statut, 401);
+  viderLimites(); const a = await inscrire(e, "x@ex.fr"); viderLimites(); const b = await inscrire(e, "x@ex.fr");
+  await appel(e, "/compte/deconnexion", { headers: auth(a.session), body: { partout: true } });
+  assert.equal((await appel(e, "/compte", { headers: auth(b.session) })).statut, 401);
+});
+
+async function organisateur(e, email, nom) {
+  const c = await inscrire(e, email), auth = { Authorization: "Bearer " + c.session, "Content-Type": "application/json" };
+  const o = (await appel(e, "/compte/org", { headers: auth, body: { nom } })).j.compte.org;
+  const pub = await appel(e, "/compte/sorties", { headers: auth, body: { t: "Fête de " + nom, cat: "fete", s: "2099-05-01", w: "Decize", z: "58", lat: 46.83, lon: 3.46 } });
+  return { auth, slug: o.slug, sortie: pub.j.sortie };
+}
+
+test("purge des comptes inactifs : page organisateur, logo et sorties effacés aussi", async () => {
+  const { purgerInactifs } = await import(path.join(RACINE, "worker/comptes.js"));
+  const e = envC(), o = await organisateur(e, "vieux@exemple.fr", "Comité test");
+  for (const [k, v] of e.DLC.m) if (k.startsWith("cpt:")) { const c = JSON.parse(v); c.vu = "2020-01-01"; e.DLC.m.set(k, JSON.stringify(c)); }
+  assert.equal(await purgerInactifs(e), 1);
+  assert.deepEqual([...e.DLC.m.keys()].filter(k => /^(cpt|ses|org|logo|a):/.test(k)), []);
+  assert.equal((await appel(e, "/org/" + o.slug)).statut, 404); assert.deepEqual((await appel(e, "/orgs")).j, []); assert.equal((await appel(e, "/agenda")).j.length, 0);
+});
+
+test("agenda mis à jour sans KV.list (cohérence) et sorties d'organisateur validées", async () => {
+  const e = envC(), o = await organisateur(e, "a@exemple.fr", "Asso A");
+  e.DLC.list = async () => ({ keys: [], list_complete: true });  // list() en retard : ne doit plus rien changer
+  const p2 = await appel(e, "/compte/sorties", { headers: o.auth, body: { t: "Deuxième fête", cat: "fete", s: "2099-05-02", w: "Decize", z: "58", lat: 46.83, lon: 3.46 } });
+  assert.equal(p2.statut, 200); assert.equal((await appel(e, "/agenda")).j.length, 2);
+  for (const faux of [{ cat: "fete\" onmouseover=\"x" }, { z: "ZZZ" }, { lat: 999 }])
+    assert.equal((await appel(e, "/compte/sorties", { headers: o.auth, body: Object.assign({ t: "Fête piégée", cat: "fete", s: "2099-05-02", w: "Decize", z: "58", lat: 46.83, lon: 3.46 }, faux) })).statut, 400, JSON.stringify(faux));
+  assert.equal((await appel(e, "/compte/sorties", { headers: o.auth, body: { t: "Grand pique-nique", cat: "famille", s: "2099-05-03", w: "Decize", z: "58", lat: 46.83, lon: 3.46 } })).statut, 200);
+  const x = await appel(e, "/compte/export", { headers: o.auth });
+  assert.equal(x.j.page_organisateur.nom, "Asso A"); assert.equal(x.j.sorties_publiees.length, 3);
+});
+
+test("éditeur : suspendre puis rétablir, supprimer une page organisateur", async () => {
+  const e = envC(), o = await organisateur(e, "abus@exemple.fr", "Mairie de Moulins");
+  assert.equal((await appel(e, "/admin/org/suspendre", { headers: admin, body: { slug: o.slug, motif: "usurpation" } })).j.org.suspendu, true);
+  assert.equal((await appel(e, "/org/" + o.slug)).statut, 404); assert.deepEqual((await appel(e, "/orgs")).j, []); assert.equal((await appel(e, "/agenda")).j.length, 0);
+  assert.equal((await appel(e, "/compte/sorties", { headers: o.auth, body: { t: "Encore une", cat: "fete", s: "2099-05-02", w: "Decize", z: "58", lat: 46.83, lon: 3.46 } })).statut, 403);
+  assert.equal((await appel(e, "/admin/orgs", { headers: admin })).j.orgs[0].suspendu, true);
+  await appel(e, "/admin/org/suspendre", { headers: admin, body: { slug: o.slug, suspendu: false } });
+  assert.equal((await appel(e, "/org/" + o.slug)).statut, 200); assert.equal((await appel(e, "/agenda")).j.length, 1);
+  assert.equal((await appel(e, "/admin/org/supprimer", { headers: admin, body: { slug: o.slug } })).statut, 200);
+  assert.equal((await appel(e, "/org/" + o.slug)).statut, 404); assert.equal((await appel(e, "/agenda")).j.length, 0);
+  assert.equal((await appel(e, "/compte", { headers: o.auth })).j.compte.org, null, "le compte Trucophile reste, sans page");
+});
+
+test("liens signés : clé obligatoire, aperçu signé à part, code éditeur limité en essais", async () => {
+  const e = envC(), c = await inscrire(e, "sig@exemple.fr"), id = (await appel(e, "/compte/export", { headers: { Authorization: "Bearer " + c.session } })).j.compte.id;
+  const stop = "/newsletter/stop?c=" + id + "&s=" + await signature(e, id);
+  assert.equal((await appel(e, "/newsletter/apercu?c=" + id + "&s=" + await signature(e, id))).statut, 403, "la signature de désinscription n'ouvre pas l'aperçu");
+  assert.equal((await appel(e, "/newsletter/apercu?c=" + id + "&s=" + await signature(e, id, "vue"))).statut, 200);
+  delete e.SIGNATURE_KEY;
+  assert.equal((await appel(e, stop, { method: "POST" })).statut, 503);
+  for (let i = 0; i < 10; i++) await appel(e, "/admin/list", { headers: { Authorization: "Bearer faux" } });
+  assert.equal((await appel(e, "/admin/list", { headers: admin })).statut, 429, "bloqué après 10 essais ratés");
+});
+
+test("écritures KV : la limitation de débit n'écrit rien", async () => {
+  const e = env(), h = { "Content-Type": "application/json" }, avant = e.DLC.ecritures;
+  for (let i = 0; i < 20; i++) await appel(e, "/signaler", { headers: h, body: { raison: "autre" } });  // refusés (incomplets)
+  assert.equal(e.DLC.ecritures - avant, 0);
+});
+
+test("Le Truc de la semaine : au plus 48 requêtes sortantes par lot, une écriture KV par lot, titres échappés", async () => {
+  const nl = await import(path.join(RACINE, "worker/newsletter.js"));
+  const e = Object.assign(envC(), { API_URL: "https://api.test" });
+  const villes = [[46.566, 3.333], [48.857, 2.352], [43.296, 5.37], [45.764, 4.835], [47.218, -1.553], [43.604, 1.444], [50.629, 3.057], [48.573, 7.752], [44.837, -0.579], [47.322, 5.041]];
+  for (let i = 0; i < 40; i++) { viderLimites(); const v = villes[i % villes.length];
+    await inscrire(e, "n" + i + "@exemple.fr", { newsletter: true, prefs: { commune: { nom: "Ville" + i, dep: "03", lat: v[0], lon: v[1] }, rayon: 100 } }); }
+  await appel(e, "/admin/publish", { headers: admin, body: { id: "x1", event: { t: "<img src=x onerror=alert(1)>", cat: "fete", s: new Date(Date.now() + 2 * 864e5).toISOString().slice(0, 10), w: "Moulins", z: "03", lat: 46.566, lon: 3.333 } } });
+  e.BREVO_KEY = "k"; let requetes = 0; const envoyes = [], vrai = globalThis.fetch;
+  globalThis.fetch = async (u, o) => { requetes++; if (String(u).includes("brevo")) { envoyes.push(JSON.parse(o.body)); return new Response("{}", { status: 201 }); } return vrai(u, o); };
+  const ecr = e.DLC.ecritures; let n1;
+  try { n1 = await nl.envoyerLot(e, new Date()); } finally { globalThis.fetch = vrai; }
+  assert.ok(requetes <= 48, requetes + " requêtes sortantes"); assert.ok(n1 > 0);
+  assert.ok(e.DLC.ecritures - ecr <= 2, (e.DLC.ecritures - ecr) + " écritures KV");
+  const html = envoyes.map(x => x.htmlContent).join("");
+  assert.ok(!html.includes("<img src=x"), "titre échappé"); assert.ok(html.includes("&lt;img") || !envoyes.length);
 });

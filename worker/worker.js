@@ -14,6 +14,7 @@
              La clé se passe en en-tête « X-API-Key » ou en paramètre « cle ».
    Gestion des clés (éditeur) : GET /admin/cles · POST /admin/cles {nom, contact, deps, types, quota, origines, notes}
              POST /admin/cles/maj {cle, ...} · POST /admin/cles/revoquer {cle} · POST /admin/cles/reactiver {cle}
+   Signalements : POST /signaler { sortie, titre, dep, raison, note } · éditeur : POST /admin/signalement { id } (traité)
    Comptes (voir comptes.js) : /compte/lien, /compte/connexion, /compte, /compte/export, /compte/supprimer, /newsletter/stop
    Variables : KV « DLC », secret « ADMIN_TOKEN », variable « ORIGINS » (origines autorisées, séparées par des virgules),
                variable « DATA_URL » (adresse des données publiées, par défaut le site GitHub Pages). */
@@ -269,6 +270,20 @@ async function traiter(req, env, ctx) {
       return json({ ok: true }, 200, cors);
     }
 
+    /* Signalement d'une fiche par un visiteur (annulée, date fausse, doublon…) : file à traiter par l'éditeur */
+    if (req.method === "POST" && p === "/signaler") {
+      const ip = req.headers.get("CF-Connecting-IP") || "?", rl = "rls:" + ip + ":" + new Date().toISOString().slice(0, 13);
+      const n = +(await env.DLC.get(rl) || 0); if (n >= 15) return json({ erreur: "trop_de_demandes" }, 429, cors);
+      await env.DLC.put(rl, String(n + 1), { expirationTtl: 3700 });
+      let b; try { b = await req.json(); } catch { return json({ erreur: "format" }, 400, cors); }
+      const RAISONS = ["annule", "date", "lieu", "doublon", "inapproprie", "autre"];
+      const sg = { id: id(), sortie: texte(b.sortie, 80), titre: texte(b.titre, 120), dep: texte(b.dep, 3), raison: RAISONS.includes(b.raison) ? b.raison : "autre", note: texte(b.note, 400), envoye: new Date().toISOString() };
+      if (!sg.sortie) return json({ erreur: "incomplet" }, 400, cors);
+      if (MOTS.test(sg.note)) sg.note = "";
+      await env.DLC.put("sg:" + sg.id, JSON.stringify(sg), { expirationTtl: 60 * 60 * 24 * 90 });
+      return json({ ok: true }, 200, cors);
+    }
+
     if (p.startsWith("/admin/")) {
       const tok = (req.headers.get("Authorization") || "").replace(/^Bearer\s+/i, "");
       if (!env.ADMIN_TOKEN || !egal(tok, env.ADMIN_TOKEN)) return json({ erreur: "non_autorise" }, 401, cors);
@@ -283,8 +298,8 @@ async function traiter(req, env, ctx) {
         return json({ cles: out }, 200, cors);
       }
       if (req.method === "GET" && p === "/admin/list") {
-        const [props, srcs, pub] = await Promise.all([tout(env, "p:"), tout(env, "s:"), tout(env, "a:")]);
-        return json({ propositions: props.filter(x => x.statut === "en_attente"), sources: srcs.filter(x => x.statut !== "traitee"), publiees: pub }, 200, cors);
+        const [props, srcs, pub, sigs] = await Promise.all([tout(env, "p:"), tout(env, "s:"), tout(env, "a:"), tout(env, "sg:")]);
+        return json({ propositions: props.filter(x => x.statut === "en_attente"), sources: srcs.filter(x => x.statut !== "traitee"), publiees: pub, signalements: sigs.sort((a, b) => a.envoye < b.envoye ? 1 : -1) }, 200, cors);
       }
       let b = {}; try { b = await req.json(); } catch {}
       const k = texte(b.id, 40);
@@ -294,6 +309,7 @@ async function traiter(req, env, ctx) {
         await env.DLC.delete("p:" + k); await majAgenda(env); return json({ ok: true }, 200, cors);
       }
       if (p === "/admin/org/verifier") { const o = await verifierOrg(env, texte(b.slug, 40), b.verifie !== false); return o ? json({ ok: true, org: o }, 200, cors) : json({ erreur: "introuvable" }, 404, cors); }
+      if (p === "/admin/signalement") { await env.DLC.delete("sg:" + k); return json({ ok: true }, 200, cors); }
       if (p === "/admin/refuse") { await env.DLC.delete("p:" + k); return json({ ok: true }, 200, cors); }
       if (p === "/admin/source") { await env.DLC.delete("s:" + k); return json({ ok: true }, 200, cors); }
       if (p === "/admin/unpublish") { await env.DLC.delete("a:" + k); await majAgenda(env); return json({ ok: true }, 200, cors); }

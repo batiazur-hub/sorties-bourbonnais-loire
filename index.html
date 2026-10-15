@@ -718,6 +718,23 @@ textarea.sbl-in{min-height:100px;resize:vertical}
 .sbl-orgp .sbl-btns{justify-content:center;margin-top:12px}
 .sbl-orgme{display:flex;align-items:center;gap:12px;margin-bottom:10px}.sbl-orgme div{display:grid}.sbl-orgme small{color:var(--sbl-muted)}
 .sbl-fologo{display:flex;align-items:center;gap:14px;margin-bottom:12px}.sbl-fologo label.sbl-btn{cursor:pointer;display:inline-flex}
+
+/* ---------- Raccourcis, partage, signalement ---------- */
+.sbl-qk{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;max-width:860px;margin:10px auto 0;padding:2px 2px 4px}
+.sbl-qk::-webkit-scrollbar{display:none}
+.sbl-qc{flex:none;display:inline-flex;align-items:center;gap:6px;min-height:38px;padding:0 14px;border-radius:999px;border:1px solid var(--sbl-line);background:var(--sbl-surface);color:var(--sbl-ink);font:600 .88rem var(--sbl-body);cursor:pointer;white-space:nowrap}
+.sbl-qc:hover{background:var(--sbl-hover)}
+.sbl-qc[aria-pressed="true"]{background:var(--sbl-accent);border-color:var(--sbl-accent);color:var(--sbl-accent-ink)}
+.sbl-qc.rnd{border-style:dashed;border-color:color-mix(in srgb,var(--sbl-confetti) 60%,var(--sbl-line))}
+.sbl-qc.rnd svg{color:var(--sbl-confetti-ink)}
+.sbl-qc.ld svg{animation:sbl-pulse 1s ease-in-out infinite}
+@keyframes sbl-pulse{50%{opacity:.3}}
+@media (max-width:600px){.sbl-qk{margin:6px -12px 0;padding:2px 12px 4px}}
+.sbl.kiosk .sbl-qk{display:none}
+.sbl-sheet .top.acts{align-items:center;flex-wrap:wrap}
+.sbl-sheet .top.acts>div:first-child{flex:1 1 220px}
+.sbl-shr{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 14px}
+.sbl-sgl{margin:16px 0 0;text-align:center;font-size:.85rem}.sbl-sgl .lnk{color:var(--sbl-muted);font-weight:500}
 /* ---------- Charte graphique Trucs à faire (v1.0) ---------- */
 .sbl-btn.lk{display:inline-flex;align-items:center;gap:7px}
 .sbl-btn.lk svg{flex:none}
@@ -825,7 +842,7 @@ textarea.sbl-in{min-height:100px;resize:vertical}
     <button type="button" id="sbl-qx" class="qx" aria-label="Effacer la recherche" hidden>✕</button>
   </div>
   <div class="sbl-sug" id="sbl-sug" role="listbox" aria-label="Suggestions" hidden></div>
-</div></div>
+</div><div class="sbl-qk" id="sbl-qk" role="group" aria-label="Raccourcis"></div></div>
 
 <section aria-label="Choix de l’affichage" class="sbl-navw"><div class="sbl-tabs" role="tablist" id="sbl-mt">
   <button class="sbl-tab hm" type="button" data-v="home" aria-selected="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4.5v-6h-5v6H5a1 1 0 0 1-1-1z"/></svg><span>Accueil</span></button>
@@ -1499,6 +1516,10 @@ function sheet(e){
   '<div class="sbl-hint" id="sbl-h"></div></div><div class="sbl-add"><h3>Y aller</h3><div class="sbl-btns" id="sbl-gps"></div></div></div></div>';
   $("sbl-st").textContent=e.t;h.querySelector(".kind").textContent=CATS[e.cat][0]+" · "+depName(e.z);
   {const bo=blocOrg(e);if(bo)h.querySelector(".top").after(bo)}
+  {const sh=document.createElement("button");sh.type="button";sh.className="sbl-fav";sh.setAttribute("aria-label","Partager");
+    sh.innerHTML='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3M7.5 7.5 12 3l4.5 4.5M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>';
+    sh.onclick=()=>partager(e);const tp=h.querySelector(".top");tp.classList.add("acts");tp.append(sh)}
+  {const sg=document.createElement("p");sg.className="sbl-sgl";sg.innerHTML='<button type="button" class="lnk">Signaler une erreur sur ce truc</button>';sg.firstChild.onclick=()=>signaler(e);h.querySelector(".sbl-sheet").append(sg)}
   if(accOn()){FICHES++;h.querySelector(".top").append(favBtn(e,true));
     if(!ACC.c){const a=document.createElement("button");a.type="button";a.className="sbl-alrt";a.innerHTML=icon("bell",18)+"<span></span>";a.lastChild.textContent="Me prévenir des prochains trucs comme ça près de chez moi";a.onclick=()=>openCompte("alerte",e);$("sbl-lk").after(a)}}
   {const bd=badge(e);if(bd){bd.classList.add("lg");$("sbl-st").after(bd)}}
@@ -1737,7 +1758,7 @@ function merge(){PIDX=null;
 }
 const API=CFG.apiUrl?String(CFG.apiUrl).replace(/\/+$/,""):null;let API_TOK="";
 async function apiCall(path,body){const r=await fetch(API+path,{method:body?"POST":"GET",headers:Object.assign({"Content-Type":"application/json"},API_TOK?{Authorization:"Bearer "+API_TOK}:{}),body:body?JSON.stringify(body):undefined});if(!r.ok)throw new Error("http "+r.status);return r.json()}
-let API_LIST={propositions:[],sources:[],publiees:[]};
+let API_LIST={propositions:[],sources:[],publiees:[],signalements:[]};
 async function apiRefresh(){API_LIST=await apiCall("/admin/list");PEND=[];SRCS=[];modBadge()}
 async function apiAdmin(){
   try{API_TOK=sessionStorage.getItem("sbl-tok")||""}catch(_){}
@@ -1785,7 +1806,7 @@ async function initParticip(){
 }
 function pendingItems(){if(API)return API_LIST.propositions.map(x=>({uid:null,i:null,x})).sort((a,b)=>a.x.s<b.x.s?-1:1);const out=[];PEND.forEach(d=>{const it=(d.data()||{}).items||[];it.forEach((x,i)=>{if(x.statut==="en_attente")out.push({uid:d.id,i,x})})});return out.sort((a,b)=>a.x.s<b.x.s?-1:1)}
 function newSources(){if(API)return API_LIST.sources.map(x=>({uid:null,i:null,x}));const out=[];SRCS.forEach(d=>{const it=(d.data()||{}).items||[];it.forEach((x,i)=>{if(x.statut!=="traitee")out.push({uid:d.id,i,x})})});return out}
-function modBadge(){const n=pendingItems().length+newSources().length,b=$("sbl-mod");b.hidden=!PX.admin;b.textContent=n?"À valider ("+n+")":"À valider";b.classList.toggle("hot",n>0)}
+function modBadge(){const n=pendingItems().length+newSources().length+((API_LIST.signalements||[]).length),b=$("sbl-mod");b.hidden=!PX.admin;b.textContent=n?"À valider ("+n+")":"À valider";b.classList.toggle("hot",n>0)}
 async function pushItem(col,item){
   if(PX.mode==="url"){const r=await fetch(CFG.submitUrl,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(Object.assign({type:col},item))});if(!r.ok)throw new Error("http");return}
   const ref=PX.db.doc(col+"/"+PX.uid),snap=await ref.get(),items=snap.exists?((snap.data()||{}).items||[]).slice():[];
@@ -1872,7 +1893,14 @@ function modPanel(){
   const M=modal('<div class="top"><div><div class="kind">Réservé aux éditeurs</div><h2>À valider</h2></div><button class="cl" data-close aria-label="Fermer">✕</button></div>'+
     '<p class="sbl-hint">Corrigez directement les champs si besoin, puis publiez. La sortie apparaît aussitôt pour tous les visiteurs.</p>'+
     '<h3 class="sbl-modh">Sorties proposées ('+pend.length+')</h3><div id="mod-ev"></div><h3 class="sbl-modh">Sources suggérées ('+srcs.length+')</h3><div id="mod-src"></div>'+
+    '<h3 class="sbl-modh">Signalements ('+(API_LIST.signalements||[]).length+')</h3><div id="mod-sg"></div>'+
     '<h3 class="sbl-modh">Sorties publiées ('+pub.length+')</h3><div id="mod-pub"></div>');
+  {const RS={annule:"Annulé ou reporté",date:"Date ou horaire faux",lieu:"Lieu faux",doublon:"En double",inapproprie:"Contenu inapproprié",autre:"Autre"},sb=$("mod-sg"),L=API_LIST.signalements||[];
+    if(!L.length)sb.innerHTML='<p class="sbl-hint">Aucun signalement.</p>';
+    L.forEach(x=>{const r=document.createElement("div");r.className="sbl-mod";r.innerHTML='<p><b></b><br><span class="rs"></span></p><p class="nt"></p><div class="sbl-btns"><button class="sbl-btn" type="button" data-v>Voir la fiche</button><button class="sbl-btn go" type="button" data-t>Traité</button></div>';
+      r.querySelector("b").textContent=x.titre||x.sortie;r.querySelector(".rs").textContent=RS[x.raison]+" · "+new Date(x.envoye).toLocaleDateString("fr-FR");r.querySelector(".nt").textContent=x.note||"";
+      r.querySelector("[data-v]").onclick=()=>{const e=EVENTS.find(k=>k.id===x.sortie);if(e)sheet(e);else toast("Fiche absente des départements affichés ("+x.dep+").")};
+      r.querySelector("[data-t]").onclick=async()=>{try{await apiCall("/admin/signalement",{id:x.id});API_LIST.signalements=L.filter(k=>k.id!==x.id);r.remove();modBadge()}catch(_){toast("Échec, réessayez.")}};sb.append(r)})}
   const box=$("mod-ev");
   if(!pend.length)box.innerHTML='<p class="sbl-hint">Aucune proposition en attente.</p>';
   const opts=Object.entries(CATS).filter(([k])=>k!=="pal").map(([k,v])=>'<option value="'+k+'">'+v[0]+'</option>').join("");
@@ -2203,6 +2231,51 @@ function formOrg(){
 function reduire(file,px){return new Promise((ok,ko)=>{const im=new Image(),u=URL.createObjectURL(file);im.onload=()=>{const c=document.createElement("canvas");c.width=c.height=px;const g=c.getContext("2d");
   const s=Math.min(im.width,im.height);g.fillStyle="#fff";g.fillRect(0,0,px,px);g.drawImage(im,(im.width-s)/2,(im.height-s)/2,s,s,0,0,px,px);URL.revokeObjectURL(u);
   let d=c.toDataURL("image/webp",.86);if(!/^data:image\/webp/.test(d))d=c.toDataURL("image/jpeg",.86);ok(d)};im.onerror=ko;im.src=u})}
+/* ---------- Raccourcis : autour de moi, ce soir, week-end, gratuit, en famille, surprends-moi ---------- */
+const QK={near:null,w:"",free:false,fam:false};
+function qkCompose(){const p=[];if(QK.fam)p.push("en famille");if(QK.free)p.push("gratuit");if(QK.w)p.push(QK.w);if(QK.near)p.push("autour de "+QK.near);
+  QK.setting=true;setQ(p.join(" "));QK.setting=false;qkSync();if(isHome())explore("list")}
+function qkSync(){document.querySelectorAll("#sbl-qk [data-k]").forEach(b=>{const k=b.dataset.k,on=k==="near"?!!QK.near:k==="free"?QK.free:k==="fam"?QK.fam:k==="soir"?QK.w==="ce soir":k==="we"?QK.w==="ce week-end":false;b.setAttribute("aria-pressed",on)});
+  const n=document.querySelector('#sbl-qk [data-k="near"] span');if(n)n.textContent=QK.near?"Autour de "+QK.near:"Autour de moi"}
+async function autourDeMoi(b){
+  if(QK.near){QK.near=null;return qkCompose()}
+  if(!navigator.geolocation){toast("Votre appareil ne permet pas la localisation.");return}
+  b.classList.add("ld");
+  navigator.geolocation.getCurrentPosition(async pos=>{try{await loadCommunes();const la=pos.coords.latitude,lo=pos.coords.longitude;let best=null,d=1e9;
+      (NATCOM||COMMUNES).forEach(c=>{const x=(c[3]-lo)*Math.cos(la*Math.PI/180),y=c[2]-la,k=x*x+y*y;if(k<d){d=k;best=c}});
+      b.classList.remove("ld");if(!best){toast("Commune introuvable.");return}QK.near=best[0];qkCompose()}catch(_){b.classList.remove("ld")}},
+    err=>{b.classList.remove("ld");toast(err.code===1?"Localisation refusée : vous pouvez taper votre commune dans la recherche.":"Position introuvable pour le moment.")},
+    {enableHighAccuracy:false,timeout:10000,maximumAge:600000})}
+function surprends(){const t=today(),fin=add(t,7);let c=pick().filter(e=>!e.long&&e.S<=fin);if(!c.length)c=EVENTS.filter(e=>!e.long&&e.S>=t&&e.S<=fin&&(st.near?km(e,st.near)<=25:REGION.includes(e.z)));
+  if(!c.length){toast("Pas de truc à tirer au sort par ici…");return}const w=c.filter(e=>e.img),src=w.length>3&&Math.random()<.6?w:c;sheet(src[Math.floor(Math.random()*src.length)]);toast("🎲 Et pourquoi pas ce truc ?")}
+function initQuick(){const box=$("sbl-qk");if(!box||KIOSK)return;
+  const ch=(k,ic,l)=>'<button type="button" class="sbl-qc'+(k==="rnd"?" rnd":"")+'" data-k="'+k+'" aria-pressed="false">'+ic+'<span>'+l+'</span></button>';
+  box.innerHTML=ch("near",icon("pin",16),"Autour de moi")+ch("soir",'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>',"Ce soir")+
+    ch("we",'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>',"Ce week-end")+ch("free",'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15 9.5a3.5 3.5 0 1 0 0 5M7.5 11h6M7.5 13.5h5"/></svg>',"Gratuit")+
+    ch("fam",icon("famille",16),"En famille")+ch("rnd",'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4"/><circle cx="9" cy="9" r="1.2" fill="currentColor"/><circle cx="15" cy="15" r="1.2" fill="currentColor"/><circle cx="15" cy="9" r="1.2" fill="currentColor"/><circle cx="9" cy="15" r="1.2" fill="currentColor"/></svg>',"Surprends-moi");
+  box.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{const k=b.dataset.k;
+    if(k==="near")return autourDeMoi(b);if(k==="rnd")return surprends();
+    if(k==="free")QK.free=!QK.free;else if(k==="fam")QK.fam=!QK.fam;else{const v=k==="soir"?"ce soir":"ce week-end";QK.w=QK.w===v?"":v}qkCompose()});
+  $("sbl-q").addEventListener("input",()=>{if(!QK.setting){QK.near=null;QK.w="";QK.free=false;QK.fam=false;qkSync()}});qkSync()}
+
+/* ---------- Partager une sortie (lien direct) et la signaler ---------- */
+const lienSortie=e=>location.href.split("#")[0]+"#dep="+e.z+"&sortie="+encodeURIComponent(e.id);
+function partager(e){const u=lienSortie(e),t=e.t+" · "+when(e)+" · "+e.w;
+  if(navigator.share)navigator.share({title:e.t,text:t,url:u}).catch(()=>{});
+  else{const M=modal('<div class="top"><div><div class="kind">Partager</div><h2>Envoyer ce truc</h2></div><button class="cl" data-close aria-label="Fermer">✕</button></div><div class="sbl-shr"></div><div class="sbl-f"><label for="sh-u">Lien direct</label><input class="sbl-in" id="sh-u" readonly></div><div class="sbl-btns"><button class="sbl-btn go" type="button" id="sh-c">Copier le lien</button></div>');
+    $("sh-u").value=u;const enc=encodeURIComponent,box=M.el.querySelector(".sbl-shr");
+    [["WhatsApp","https://wa.me/?text="+enc(t+" "+u)],["Facebook","https://www.facebook.com/sharer/sharer.php?u="+enc(u)],["SMS","sms:?&body="+enc(t+" "+u)],["E-mail","mailto:?subject="+enc(e.t)+"&body="+enc(t+"\n"+u)]].forEach(([l,h])=>box.append(linkBtn(h,l,"ext",false)));
+    $("sh-c").onclick=()=>navigator.clipboard.writeText(u).then(()=>toast("Lien copié"),()=>{$("sh-u").select()})}}
+function signaler(e){
+  const R=[["annule","Annulé ou reporté"],["date","Date ou horaire faux"],["lieu","Lieu faux"],["doublon","En double"],["inapproprie","Contenu inapproprié"],["autre","Autre chose"]];
+  const M=modal('<form id="sg-f" novalidate><div class="top"><div><div class="kind">Un souci avec ce truc ?</div><h2>Signaler une erreur</h2></div><button class="cl" type="button" data-close aria-label="Fermer">✕</button></div>'+
+    '<p class="sbl-acl"></p><fieldset class="sbl-chips"><legend>Quel est le problème ?</legend>'+R.map(([v,l],i)=>'<label><input type="radio" name="sg-r" value="'+v+'"'+(i?"":" checked")+'><span>'+l+'</span></label>').join("")+'</fieldset>'+
+    '<div class="sbl-f"><label for="sg-n">Précisions <span class="opt">(facultatif)</span></label><textarea class="sbl-in" id="sg-n" maxlength="400" placeholder="Nouvelle date, bon lieu, lien vers l’annonce…"></textarea></div>'+
+    '<p class="sbl-err" id="sg-err" role="alert"></p><div class="sbl-btns"><button class="sbl-btn go" type="submit">Envoyer</button></div><p class="sbl-acm">N’indiquez pas de données personnelles. Le signalement est relu par l’éditeur.</p></form>');
+  M.el.querySelector(".sbl-acl").textContent=e.t+" · "+when(e)+" · "+e.w;
+  $("sg-f").onsubmit=async ev=>{ev.preventDefault();if(!API){$("sg-err").textContent="Version de développement : les signalements partiront une fois le serveur en ligne.";return}
+    try{const r=await fetch(API+"/signaler",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({sortie:e.id,titre:e.t,dep:e.z,raison:M.el.querySelector('[name="sg-r"]:checked').value,note:$("sg-n").value})});
+      if(!r.ok)throw 0;M.close();toast("Merci ! On vérifie ce truc.")}catch(_){$("sg-err").textContent="L’envoi a échoué. Réessayez dans un instant."}}}
 async function boot(){
   let data=JSON.parse($("sbl-data").textContent);
   if(CFG.dataUrl){try{const r=await fetch(CFG.dataUrl);if(r.ok)data=await r.json()}catch(_){}}
@@ -2226,6 +2299,8 @@ async function boot(){
   $("sbl-prop").onclick=()=>proposeForm(st.day||"");$("sbl-home").onclick=e=>{e.preventDefault();goHome()};$("sbl-mod").onclick=()=>API?apiRefresh().then(modPanel,modPanel):modPanel();sourceForm();
   await initParticip();modBadge();
   $("sbl-calacc").onclick=versOffres;$("sbl-footacc").querySelector("[data-acc]").onclick=versOffres;
+  initQuick();
+  if(H.get("sortie")){const id=H.get("sortie");Promise.resolve(ensureDeps(REGION)).then(()=>{const e=EVENTS.find(x=>x.id===id);if(e)sheet(e);else toast("Ce truc est passé ou n’existe plus.")})}
   accInit(H);chargerOrgs().then(()=>{if(H.get("org"))ouvrirOrg(H.get("org"))});if(accOn())setInterval(()=>{if(FICHES>=3)banniere()},4000);
   if(H.get("q")){setQ(H.get("q"));loadCommunes()}
   if(H.has("proposer"))proposeForm("");

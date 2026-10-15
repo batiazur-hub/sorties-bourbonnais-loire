@@ -220,3 +220,13 @@ test("organisateurs : page publique, logo, publication directe, pastille vérifi
   await appel(e, "/compte/supprimer", { headers: auth, body: {} });
   assert.equal((await appel(e, "/org/" + o.slug)).statut, 404); assert.equal((await appel(e, "/agenda")).j.length, 0); assert.deepEqual((await appel(e, "/orgs")).j, []);
 });
+
+test("signalements : envoi par un visiteur, visible par l'éditeur, puis traité", async () => {
+  const e = env(), h = { "Content-Type": "application/json" };
+  assert.equal((await appel(e, "/signaler", { headers: h, body: { raison: "annule" } })).statut, 400);
+  assert.equal((await appel(e, "/signaler", { headers: h, body: { sortie: "dt-1", titre: "Brocante", raison: "annule", note: "Annulée pour cause de pluie" } })).statut, 200);
+  const l = (await appel(e, "/admin/list", { headers: admin })).j.signalements;
+  assert.equal(l.length, 1); assert.equal(l[0].raison, "annule");
+  await appel(e, "/admin/signalement", { headers: admin, body: { id: l[0].id } });
+  assert.equal((await appel(e, "/admin/list", { headers: admin })).j.signalements.length, 0);
+});

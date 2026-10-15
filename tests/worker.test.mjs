@@ -199,3 +199,24 @@ test("comptes : suppression automatique après 3 ans sans connexion", async () =
   assert.equal(await purgerInactifs(e), 1);
   assert.equal([...e.DLC.m.keys()].filter(k => k.startsWith("cpt:")).length, 1);
 });
+
+test("organisateurs : page publique, logo, publication directe, pastille vérifiée, suppression du compte", async () => {
+  const e = envC(), c = await inscrire(e, "comite@exemple.fr");
+  const auth = { Authorization: "Bearer " + c.session, "Content-Type": "application/json" };
+  assert.equal((await appel(e, "/compte/sorties", { headers: auth, body: { t: "Test" } })).j.erreur, "pas_de_profil");
+  const r = await appel(e, "/compte/org", { headers: auth, body: { nom: "Comité des fêtes de Décize", bio: "Fêtes et brocantes", site: "www.comite.fr", insta: "https://instagram.com/comite_decize" } });
+  const o = r.j.compte.org;
+  assert.equal(o.slug, "comite-des-fetes-de-decize"); assert.equal(o.site, "https://www.comite.fr"); assert.equal(o.insta, "comite_decize"); assert.equal(o.verifie, false);
+  assert.equal((await appel(e, "/compte/org/logo", { headers: auth, body: { image: "data:text/html;base64,AAAA" } })).statut, 400);
+  assert.equal((await appel(e, "/compte/org/logo", { headers: auth, body: { image: "data:image/png;base64,iVBORw0KGgo=" } })).j.compte.org.logo, 1);
+  const lg = await appel(e, "/org/" + o.slug + "/logo"); assert.equal(lg.statut, 200); assert.equal(lg.h.get("Content-Type"), "image/png");
+  const pub = await appel(e, "/compte/sorties", { headers: auth, body: { t: "Brocante du comité", cat: "brocante", s: "2099-05-01", w: "Decize", z: "58", lat: 46.83, lon: 3.46, b: "https://www.helloasso.com/x" } });
+  assert.equal(pub.j.sortie.org, o.slug); assert.equal(pub.j.sortie.src, "Publié par Comité des fêtes de Décize");
+  assert.equal((await appel(e, "/agenda")).j.filter(x => x.org === o.slug).length, 1, "publiée sans relecture");
+  const profil = await appel(e, "/org/" + o.slug); assert.equal(profil.j.org.nom, "Comité des fêtes de Décize"); assert.equal(profil.j.sorties.length, 1);
+  assert.equal((await appel(e, "/admin/org/verifier", { headers: admin, body: { slug: o.slug } })).j.org.verifie, true);
+  assert.equal((await appel(e, "/orgs")).j[0].verifie, true);
+  assert.equal((await appel(e, "/compte", { headers: auth })).j.compte.org.verifie, true);
+  await appel(e, "/compte/supprimer", { headers: auth, body: {} });
+  assert.equal((await appel(e, "/org/" + o.slug)).statut, 404); assert.equal((await appel(e, "/agenda")).j.length, 0); assert.deepEqual((await appel(e, "/orgs")).j, []);
+});

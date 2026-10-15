@@ -18,7 +18,7 @@
    Variables : KV « DLC », secret « ADMIN_TOKEN », variable « ORIGINS » (origines autorisées, séparées par des virgules),
                variable « DATA_URL » (adresse des données publiées, par défaut le site GitHub Pages). */
 
-import { comptes, purgerInactifs } from "./comptes.js";
+import { comptes, purgerInactifs, verifierOrg } from "./comptes.js";
 
 const DATA_DEFAUT = "https://batiazur-hub.github.io/sorties-bourbonnais-loire/data/";
 const TYPES_SORTIES = ["brocante", "fete", "spectacle", "culture", "famille", "sport", "pal"];
@@ -237,7 +237,7 @@ async function traiter(req, env, ctx) {
     if (p.startsWith("/v1/")) return api(req, env, url, p, ctx);
     if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: cors });
 
-    const rc = await comptes(req, env, url, p, cors, json);
+    const rc = await comptes(req, env, url, p, cors, json, { majAgenda });
     if (rc) return rc;
 
     if (req.method === "GET" && p === "/agenda") {
@@ -293,6 +293,7 @@ async function traiter(req, env, ctx) {
         await env.DLC.put("a:" + k, JSON.stringify(e));
         await env.DLC.delete("p:" + k); await majAgenda(env); return json({ ok: true }, 200, cors);
       }
+      if (p === "/admin/org/verifier") { const o = await verifierOrg(env, texte(b.slug, 40), b.verifie !== false); return o ? json({ ok: true, org: o }, 200, cors) : json({ erreur: "introuvable" }, 404, cors); }
       if (p === "/admin/refuse") { await env.DLC.delete("p:" + k); return json({ ok: true }, 200, cors); }
       if (p === "/admin/source") { await env.DLC.delete("s:" + k); return json({ ok: true }, 200, cors); }
       if (p === "/admin/unpublish") { await env.DLC.delete("a:" + k); await majAgenda(env); return json({ ok: true }, 200, cors); }

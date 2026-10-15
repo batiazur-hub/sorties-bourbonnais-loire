@@ -244,3 +244,33 @@ test("pré-remplissage depuis un lien : données schema.org Event, puis Open Gra
     assert.equal(await apercuLien("http://exemple.fr/"), null); assert.equal(await apercuLien("https://127.0.0.1/"), null);
   } finally { globalThis.fetch = vrai; }
 });
+
+test("Le Truc de la semaine : sélection autour de la commune, e-mail, envoi par lots sans doublon", async () => {
+  const nl = await import(path.join(RACINE, "worker/newsletter.js"));
+  const sem = nl.semaine(new Date("2099-06-04T06:00:00Z"));  // un jeudi
+  assert.deepEqual(sem, { du: "2099-06-05", au: "2099-06-11", edition: "2099-06-05" });
+  const prefs = { commune: { nom: "Decize", lat: 46.83, lon: 3.46 }, rayon: 20, cats: [] };
+  const ev = (id, s, lat, lon, x) => Object.assign({ id, t: "Truc " + id, cat: "fete", s, w: "Decize", z: "58", lat, lon }, x || {});
+  const sorties = [ev("loin", "2099-06-06", 48.85, 2.35), ev("avant", "2099-06-01", 46.83, 3.46), ev("sam", "2099-06-06", 46.84, 3.47),
+                   ev("mar", "2099-06-09", 46.83, 3.46, { h: "20:00" }), ev("expo", "2099-05-01", 46.83, 3.46, { e: "2099-09-01" })];
+  const sel = nl.selection(sorties, prefs, sem);
+  assert.deepEqual(sel.map(e => e.id), ["sam", "mar"]);
+  const m = nl.courriel({ prefs }, sel, sem, { site: "https://site.test/", stop: "https://api.test/newsletter/stop?c=x&s=y", prefs: "https://site.test/#compte" });
+  assert.match(m.sujet, /2 trucs à faire autour de Decize/); assert.ok(m.html.includes("Me désinscrire en un clic")); assert.ok(m.texte.includes("Truc sam"));
+  // envoi : 2 abonnés avec commune, 1 sans accord ; Brevo simulé
+  const e = Object.assign(envC(), { NL_LOT: "1", API_URL: "https://api.test" });
+  const a = await inscrire(e, "a@exemple.fr", { newsletter: true, prefs: { commune: { nom: "Moulins", dep: "03", lat: 46.566, lon: 3.333 }, rayon: 40 } });
+  await inscrire(e, "b@exemple.fr", { newsletter: true, prefs: { commune: { nom: "Moulins", dep: "03", lat: 46.566, lon: 3.333 } } });
+  await inscrire(e, "c@exemple.fr", { newsletter: false, prefs: { commune: { nom: "Moulins", dep: "03", lat: 46.566, lon: 3.333 } } });
+  e.BREVO_KEY = "k";
+  const envoyes = [], vrai = globalThis.fetch;
+  globalThis.fetch = async (u, o) => { if (String(u).includes("brevo")) { envoyes.push(JSON.parse(o.body)); return new Response("{}", { status: 201 }); } return vrai(u, o); };
+  try {
+    const jeudi = new Date();
+    assert.equal(await nl.envoyerLot(e, jeudi), 1); assert.equal(await nl.envoyerLot(e, jeudi), 1); assert.equal(await nl.envoyerLot(e, jeudi), 0);
+  } finally { globalThis.fetch = vrai; }
+  assert.deepEqual(envoyes.map(x => x.to[0].email).sort(), ["a@exemple.fr", "b@exemple.fr"]);
+  assert.equal(envoyes[0].headers["List-Unsubscribe-Post"], "List-Unsubscribe=One-Click");
+  const ap = await appel(e, "/compte/newsletter", { headers: { Authorization: "Bearer " + a.session } });
+  assert.equal(ap.statut, 200); assert.match(ap.t, /Le Truc de la semaine/);
+});

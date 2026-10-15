@@ -2184,6 +2184,7 @@ function monCompte(bienvenue){
       '<fieldset class="sbl-chips"><legend>Distance</legend>'+RAYONS.map(r=>'<label><input type="radio" name="mc-r" value="'+r+'"'+(r===(p.rayon||20)?" checked":"")+'><span>'+r+' km</span></label>').join("")+'</fieldset>'+
       '<fieldset class="sbl-chips"><legend>Ce qui m’intéresse</legend>'+Object.keys(CATS).filter(k=>k!=="pal").map(k=>'<label><input type="checkbox" name="mc-c" value="'+k+'"'+(sel.has(k)?" checked":"")+'><span>'+icon(k,15)+CATS[k][1]+'</span></label>').join("")+'</fieldset>'+
       '<label class="sbl-nl"><input type="checkbox" id="mc-nl"'+(c.newsletter?" checked":"")+'><span>'+CONSENT_NL+'</span></label>'+
+      '<p class="sbl-acm"><button type="button" class="lnk" id="mc-nlx">Voir un exemple de « Le Truc de la semaine »</button></p>'+
       '<p class="sbl-err" id="mc-err" role="alert"></p><div class="sbl-btns"><button class="sbl-btn go" type="submit">Enregistrer</button></div></form>'+
     '<h3 class="sbl-ach">Mon espace organisateur</h3><div id="mc-org"></div>'+
     '<h3 class="sbl-ach">Aller plus loin</h3><p class="sbl-acm">Vous organisez des sorties ? <a href="offres.html">Découvrez Faiseur de trucs et Truc &amp; Co</a>. Affiches et QR codes : <a href="kit.html">le kit de communication</a>.</p>'+
@@ -2203,6 +2204,9 @@ function monCompte(bienvenue){
     if(wn){await loadCommunes();const k=findCommune(wn);if(!k){err.textContent="Commune introuvable : choisissez-la dans la liste.";return}commune={nom:k[0],dep:k[1],lat:k[2],lon:k[3]}}
     try{const j=await accCall("/compte",{prefs:{commune,rayon:+M.el.querySelector('[name="mc-r"]:checked').value,cats:[...M.el.querySelectorAll('[name="mc-c"]:checked')].map(x=>x.value)},newsletter:$("mc-nl").checked});
       ACC.c=j.compte;accSave();accUI();toast("Préférences enregistrées")}catch(_){err.textContent="L’enregistrement a échoué. Réessayez."}};
+  $("mc-nlx").onclick=async()=>{try{const r=await fetch(API+"/compte/newsletter",{headers:{Authorization:"Bearer "+ACC.tok}});if(!r.ok){const j=await r.json().catch(()=>({}));throw j}
+      const u=URL.createObjectURL(new Blob([await r.text()],{type:"text/html"}));window.open(u,"_blank","noopener");setTimeout(()=>URL.revokeObjectURL(u),6e4)}
+    catch(j){toast((j&&j.message)||"Aperçu indisponible pour le moment.")}};
   $("mc-x").onclick=async()=>{try{const r=await fetch(API+"/compte/export",{headers:{Authorization:"Bearer "+ACC.tok}});if(!r.ok)throw 0;const u=URL.createObjectURL(await r.blob()),a=document.createElement("a");a.href=u;a.download="trucs-a-faire-mes-donnees.json";a.click();setTimeout(()=>URL.revokeObjectURL(u),2e3)}catch(_){toast("Téléchargement impossible pour le moment.")}};
   $("mc-o").onclick=async()=>{try{await accCall("/compte/deconnexion",{})}catch(_){}ACC.tok=null;ACC.c=null;accSave();accUI();M.close();toast("Vous êtes déconnecté.")};
   $("mc-d").onclick=async()=>{if(!confirm("Supprimer définitivement votre compte, vos préférences et vos favoris enregistrés ? Cette action est immédiate et ne peut pas être annulée."))return;

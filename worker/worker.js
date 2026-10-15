@@ -19,7 +19,8 @@
    Variables : KV « DLC », secret « ADMIN_TOKEN », variable « ORIGINS » (origines autorisées, séparées par des virgules),
                variable « DATA_URL » (adresse des données publiées, par défaut le site GitHub Pages). */
 
-import { comptes, purgerInactifs, verifierOrg } from "./comptes.js";
+import { comptes, purgerInactifs, verifierOrg, signature } from "./comptes.js";
+import { envoyerLot, pourCompte, semaine } from "./newsletter.js";
 
 const DATA_DEFAUT = "https://batiazur-hub.github.io/sorties-bourbonnais-loire/data/";
 const TYPES_SORTIES = ["brocante", "fete", "spectacle", "culture", "famille", "sport", "pal"];
@@ -224,7 +225,8 @@ async function api(req, env, url, p, ctx) {
 }
 
 export default {
-  async scheduled(evt, env, ctx) { ctx.waitUntil(purgerInactifs(env)); },
+  /* Tâches planifiées (wrangler.toml) : purge hebdomadaire des comptes inactifs ; « Le Truc de la semaine » le jeudi matin */
+  async scheduled(evt, env, ctx) { ctx.waitUntil(String(evt.cron || "").endsWith(" 4") ? envoyerLot(env) : purgerInactifs(env)); },
   async fetch(req, env, ctx) {
     try { return await traiter(req, env, ctx); }
     catch (e) {  // jamais de page d'erreur HTML sans CORS : le site affiche un message propre
@@ -238,7 +240,14 @@ async function traiter(req, env, ctx) {
     if (p.startsWith("/v1/")) return api(req, env, url, p, ctx);
     if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: cors });
 
-    const rc = await comptes(req, env, url, p, cors, json, { majAgenda });
+    /* « Le Truc de la semaine » vu dans le navigateur (lien signé), et aperçu pour le titulaire du compte */
+    if (req.method === "GET" && p === "/newsletter/apercu") {
+      const id = texte(url.searchParams.get("c"), 40), c = /^[0-9a-f]{24}$/.test(id) && await env.DLC.get("cpt:" + id, "json");
+      if (!c || texte(url.searchParams.get("s"), 64) !== await signature(env, id)) return new Response("Lien invalide", { status: 403 });
+      const m = await pourCompte(Object.assign({ API_URL: url.origin }, env), c, semaine(), new Map());
+      return new Response(m ? m.html : "Indiquez votre commune dans « Mon compte ».", { headers: { "Content-Type": "text/html; charset=utf-8" } });
+    }
+    const rc = await comptes(req, env, url, p, cors, json, { majAgenda, apercuNl: async c => pourCompte(Object.assign({ API_URL: url.origin }, env), c, semaine(), new Map()) });
     if (rc) return rc;
 
     if (req.method === "GET" && p === "/agenda") {

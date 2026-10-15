@@ -203,6 +203,11 @@ export async function comptes(req, env, url, p, cors, json, outils) {
     if (c.vu !== jour) { c.vu = jour; await enregistrer(env, c); }  // au plus une écriture par jour
     return json({ ok: true, compte: vuePublique(c) }, 200, cors);
   }
+  if (req.method === "GET" && p === "/compte/newsletter") {  // aperçu de « Le Truc de la semaine » avec les préférences du compte
+    if (!c.prefs || !c.prefs.commune) return json({ erreur: "commune_requise", message: "Indiquez votre commune pour recevoir une sélection autour de chez vous." }, 400, cors);
+    const m = outils && outils.apercuNl ? await outils.apercuNl(c) : null;
+    return m ? new Response(m.html, { headers: { "Content-Type": "text/html; charset=utf-8", ...cors } }) : json({ erreur: "indisponible" }, 503, cors);
+  }
   if (req.method === "GET" && p === "/compte/export") {
     const { sessions, ...donnees } = c;
     return new Response(JSON.stringify({ exporte: maintenant(), service: "Trucs à faire", compte: donnees }, null, 2),

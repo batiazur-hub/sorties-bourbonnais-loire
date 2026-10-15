@@ -67,3 +67,13 @@ Tant que `BREVO_KEY` n'est pas défini, le serveur répond « envoi indisponible
 Côté site, les boutons « Créer un compte » n'apparaissent que lorsque `config.js` contient l'adresse du serveur (`apiUrl`). Pour les voir avant, ouvrir le site avec `#comptes` à la fin de l'adresse (aperçu, sans envoi).
 
 Registre des traitements et liste des démarches RGPD : `docs/rgpd/registre-des-traitements.md`.
+
+## « Le Truc de la semaine » (newsletter)
+
+Code : `newsletter.js`. Envoi automatique le jeudi matin (tâche planifiée `*/15 5-9 * * 4`), par lots de `NL_LOT` comptes,
+uniquement aux Trucophiles qui ont coché la case et confirmé leur adresse. Sélection : du vendredi au jeudi suivant, dans le rayon
+choisi autour de leur commune, selon leurs centres d'intérêt (pas de doublon, 4 sorties par commune et 5 par type au plus).
+- Variables : `API_URL` (adresse publique de ce serveur, pour les liens de désinscription), `NL_LOT` (35 sur l'offre gratuite Cloudflare,
+  jusqu'à 900 avec l'offre payante), `BREVO_KEY` (secret).
+- Aperçu : « Mon compte » → « Voir un exemple de Le Truc de la semaine » (route `/compte/newsletter`).
+- Dans Brevo, désactiver le suivi des ouvertures et des clics si l'on veut s'en tenir à la politique de confidentialité actuelle.

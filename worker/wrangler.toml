@@ -8,13 +8,18 @@ binding = "DLC"
 id = "A_REMPLACER"
 
 # Suppression des comptes inactifs depuis 3 ans : chaque lundi à 3 h 17 UTC
+# « Le Truc de la semaine » : jeudi de 5 h à 9 h UTC, toutes les 15 minutes, par lots
 [triggers]
-crons = ["17 3 * * 1"]
+crons = ["17 3 * * 1", "*/15 5-9 * * 4"]
 
 [vars]
 ORIGINS = "https://batiazur-hub.github.io"
 SITE_URL = "https://batiazur-hub.github.io/sorties-bourbonnais-loire/"
 MAIL_FROM = "bonjour@trucsafaire.fr"
+# Adresse publique de ce serveur (liens de désinscription dans les e-mails envoyés par la tâche planifiée)
+API_URL = "https://api.trucsafaire.fr"
+# Nombre d'e-mails par exécution (offre gratuite Cloudflare : 50 requêtes sortantes au plus par exécution)
+NL_LOT = "35"
 # Secret à créer une fois : npx wrangler secret put ADMIN_TOKEN
 # Comptes : npx wrangler secret put BREVO_KEY      (clé API Brevo, envoi des liens de connexion)
 #          npx wrangler secret put SIGNATURE_KEY  (texte aléatoire long, signe les liens de désinscription)

@@ -9,6 +9,10 @@
 <link rel="icon" href="marque/icone-favicon.svg" type="image/svg+xml">
 <link rel="icon" href="marque/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="marque/apple-touch-icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Trucs à faire">
+<meta name="mobile-web-app-capable" content="yes">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Trucs à faire">
 <meta property="og:image" content="https://batiazur-hub.github.io/sorties-bourbonnais-loire/marque/partage-1200x630.png">
@@ -758,6 +762,26 @@ textarea.sbl-in{min-height:100px;resize:vertical}
 .sbl-pfl{padding:12px 14px;margin-bottom:14px;border-radius:14px;background:var(--sbl-accent-tint);}
 .sbl-pfl label{display:block;font-weight:600;font-size:.88rem;margin-bottom:6px}
 .sbl-pfl .row{display:flex;gap:8px}.sbl-pfl .row .sbl-in{flex:1;min-width:0}
+
+/* ---------- Illustrations par catégorie (sorties sans affiche) ---------- */
+.sbl .sbl-th.il:not(.ph),.sbl .sbl-hero.il:not(.ph){background-image:var(--il);background-size:cover;background-position:center}
+.sbl .sbl-th.il:not(.ph) .fb,.sbl .sbl-hero.il:not(.ph) .fb{display:none}
+
+/* ---------- Calendrier en semaine (téléphone) ---------- */
+.sbl .sbl-cal.sem{display:block;background:none;border:0}
+.sbl-semstrip{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;padding:6px 6px 10px}
+.sbl .sbl-cal.sem .sbl-semstrip button.dc{min-height:78px;display:grid;justify-items:center;align-content:center;gap:2px;padding:6px 2px;border-radius:14px;text-align:center}
+.sbl-semstrip .jw{font-size:.72rem;font-weight:600;color:var(--sbl-muted);text-transform:capitalize}
+.sbl-semstrip .dn{font:700 1.2rem/1 var(--sbl-display)}
+.sbl-semstrip .nb{font-size:.72rem;font-weight:700;color:var(--sbl-accent)}
+.sbl-semstrip .we .jw{color:var(--sbl-confetti-ink)}
+.sbl .sbl-cal.sem button.dc[aria-pressed="true"] .jw,.sbl .sbl-cal.sem button.dc[aria-pressed="true"] .nb{color:var(--sbl-accent-ink)}
+.sbl .sbl-cal.sem button.dc.t .dn{width:auto;height:auto;margin:0;box-shadow:none;border-radius:0;color:var(--sbl-accent)}
+.sbl-semlist{display:grid;gap:10px;padding:0 4px 8px}
+.sbl-semlist .sbl-calday{scroll-margin-top:90px}
+
+.sbl-instw{margin:0 0 12px}.sbl-instw .sbl-btn{display:inline-flex;align-items:center;gap:8px}
+.sbl-ios{padding-left:1.2em;line-height:1.6}.sbl-ios li{margin:6px 0}
 /* ---------- Charte graphique Trucs à faire (v1.0) ---------- */
 .sbl-btn.lk{display:inline-flex;align-items:center;gap:7px}
 .sbl-btn.lk svg{flex:none}
@@ -913,6 +937,7 @@ textarea.sbl-in{min-height:100px;resize:vertical}
     <p class="sbl-sfm" id="sf-msg" role="status"></p>
   </form>
   </details>
+  <p class="sbl-instw"><button type="button" class="sbl-btn" id="sbl-inst" hidden><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M12 7v7M9 11l3 3 3-3"/></svg>Installer l’appli sur mon téléphone</button></p>
   <p class="sbl-footacc" id="sbl-footacc" hidden><b>Trucophile, c’est gratuit.</b> Favoris illimités, alertes près de chez vous et « Le Truc de la semaine » par e-mail. <button type="button" class="lnk" data-acc>Rejoindre les Trucophiles</button> · <a href="offres.html">Toutes les offres</a></p>
   <p class="sbl-fine">Mis à jour chaque nuit. Un organisateur peut changer une date&nbsp;: vérifiez sur la fiche source avant de vous déplacer. Fonds de carte © IGN, via cartes.gouv.fr. Photos de communes&nbsp;: Wikipédia et Wikimedia Commons.</p>
   <nav class="sbl-legal" aria-label="Informations légales">
@@ -1199,10 +1224,12 @@ function paint(el,w,z,large){
     if(large){const c=el.querySelector(".cr");if(c&&r.page){c.hidden=false;c.href=r.page}}});
 }
 const lazy=("IntersectionObserver" in window)?new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){lazy.unobserve(en.target);paint(en.target,en.target.dataset.w,en.target.dataset.z)}}),{rootMargin:"200px"}):null;
-function thumb(e,cls){const d=document.createElement("div");d.className="sbl-th "+(cls||"");d.style.setProperty("--pc","var(--sbl-p-"+e.cat+")");
-  d.dataset.w=e.w;d.dataset.z=e.z;d.innerHTML='<span class="fb">'+icon(e.cat,cls==="xl"?54:30)+'</span>';
-  if(e.img){const im=new Image();im.onload=()=>{d.style.backgroundImage='url("'+im.src+'")';d.classList.add("ph","own")};im.onerror=()=>{if(lazy)lazy.observe(d);else paint(d,e.w,e.z)};im.src=e.img}
-  else if(lazy)lazy.observe(d);else paint(d,e.w,e.z);return d}
+/* Vignettes : l'affiche de la sortie si elle existe, sinon l'illustration de sa catégorie (plus parlante qu'une photo de la commune) */
+const illu=cat=>(CFG.illuBase||"marque/illustrations/")+(CATS[cat]?cat:"fete")+".svg";
+function thumb(e,cls){const d=document.createElement("div");d.className="sbl-th il "+(cls||"");d.style.setProperty("--pc","var(--sbl-p-"+e.cat+")");
+  d.style.setProperty("--il",'url("'+illu(e.cat)+'")');d.dataset.w=e.w;d.dataset.z=e.z;
+  if(e.img){const im=new Image();im.onload=()=>{d.style.backgroundImage='url("'+im.src+'")';d.classList.add("ph","own")};im.src=e.img}
+  return d}
 
 /* ---------- Badges partenaires ---------- */
 const BADGES={palnature:{l:"Fondation Le PAL Nature",c:"#2f7d3b"}};
@@ -1496,7 +1523,29 @@ function dayPanel(d){
   const add=document.createElement("button");add.type="button";add.className="sbl-btn sbl-dayadd";add.textContent="Proposer une sortie ce jour-là";add.onclick=()=>proposeForm(iso(d));box.append(add);
   return box;
 }
+/* Calendrier : semaine sur téléphone (7 jours lisibles + les sorties de la semaine), mois sur ordinateur */
+const CAL_SEM=matchMedia("(max-width:600px)");
+CAL_SEM.addEventListener&&CAL_SEM.addEventListener("change",()=>{try{cal()}catch(_){}});
+const lundi=d=>add(new Date(d.getFullYear(),d.getMonth(),d.getDate()),-((d.getDay()+6)%7));
+function calSemaine(){
+  if(!st.week)st.week=lundi(st.day?P(st.day):today());
+  const w0=st.week,w6=add(w0,6),t=today(),g=$("sbl-cal");g.textContent="";g.classList.add("sem");
+  $("sbl-mt2").textContent=w0.getMonth()===w6.getMonth()?"Du "+w0.getDate()+" au "+w6.getDate()+" "+ML[w6.getMonth()]:"Du "+w0.getDate()+" "+MO[w0.getMonth()]+" au "+w6.getDate()+" "+MO[w6.getMonth()];
+  const base=EVENTS.filter(e=>!e.long&&matchBase(e)),jours=[];for(let i=0;i<7;i++){const d=add(w0,i);jours.push([d,base.filter(e=>e.S<=d&&e.E>=d)])}
+  const max=Math.max(1,...jours.map(j=>j[1].length)),strip=document.createElement("div");strip.className="sbl-semstrip";
+  jours.forEach(([d,evs],i)=>{const n=evs.length,b=document.createElement("button");b.type="button";
+    b.className="dc "+(d<t?"p ":"")+(+d===+t?"t ":"")+(i>4?"we":"");b.dataset.h=n?String(Math.min(3,1+Math.floor(3*n/(max+1)))):"0";
+    const on=st.day===iso(d);b.setAttribute("aria-pressed",on?"true":"false");b.setAttribute("aria-label",JL[d.getDay()]+" "+d.getDate()+" "+ML[d.getMonth()]+", "+n+" sortie"+(n>1?"s":""));
+    b.innerHTML='<span class="jw">'+JL[d.getDay()].slice(0,3)+'.</span><span class="dn">'+d.getDate()+'</span><span class="nb">'+(n||"–")+'</span>';
+    b.onclick=()=>{st.day=st.day===iso(d)?"":iso(d);draw();const sec=g.querySelector('[data-j="'+iso(d)+'"]');if(sec&&!st.day)sec.scrollIntoView({block:"start",behavior:"smooth"})};strip.append(b)});
+  g.append(strip);
+  const lst=document.createElement("div");lst.className="sbl-semlist";
+  jours.filter(([d])=>st.day?st.day===iso(d):d>=t).forEach(([d,evs])=>{if(!evs.length&&!st.day)return;const p=dayPanel(d);p.dataset.j=iso(d);if(!st.day){const x=p.querySelector(".x");if(x)x.remove()}lst.append(p)});
+  if(!lst.children.length)lst.innerHTML='<p class="sbl-none">Pas de truc connu cette semaine avec ces critères.</p>';
+  g.append(lst)}
 function cal(){
+  if(CAL_SEM.matches)return calSemaine();
+  $("sbl-cal").classList.remove("sem");
   const m=st.month,first=new Date(m.getFullYear(),m.getMonth(),1);$("sbl-mt2").textContent=cap(ML[m.getMonth()])+" "+m.getFullYear();
   const g=$("sbl-cal");g.textContent="";["lun.","mar.","mer.","jeu.","ven.","sam.","dim."].forEach((d,i)=>{const s=document.createElement("div");s.className="w"+(i>4?" we":"");s.textContent=d;g.append(s)});
   const start=add(first,-((first.getDay()+6)%7)),t=today();
@@ -1550,7 +1599,7 @@ function sheet(e){
   if(accOn()){FICHES++;h.querySelector(".top").append(favBtn(e,true));
     if(!ACC.c){const a=document.createElement("button");a.type="button";a.className="sbl-alrt";a.innerHTML=icon("bell",18)+"<span></span>";a.lastChild.textContent="Me prévenir des prochains trucs comme ça près de chez moi";a.onclick=()=>openCompte("alerte",e);$("sbl-lk").after(a)}}
   {const bd=badge(e);if(bd){bd.classList.add("lg");$("sbl-st").after(bd)}}
-  const hero=$("sbl-hero");hero.style.setProperty("--pc","var(--sbl-p-"+e.cat+")");
+  const hero=$("sbl-hero");hero.style.setProperty("--pc","var(--sbl-p-"+e.cat+")");hero.classList.add("il");hero.style.setProperty("--il",'url("'+illu(e.cat)+'")');
   if(e.img){const im=new Image();im.onload=()=>{hero.classList.add("ph","poster");hero.style.setProperty("--img",'url("'+im.src+'")');const p=document.createElement("img");p.className="pst";p.src=im.src;p.alt="Affiche : "+e.t;hero.prepend(p);
       const c=hero.querySelector(".cr");c.hidden=false;c.textContent="Image : "+e.src;if(e.u)c.href=e.u;else c.removeAttribute("href")};im.onerror=()=>paint(hero,e.w,e.z,true);im.src=e.img}
   else paint(hero,e.w,e.z,true);
@@ -1988,8 +2037,8 @@ function syncTabs(){const v=st.view||"list",hm=isHome()&&v==="list";document.que
 function view(v){{const mp=$("sbl-mpop");if(mp)mp.hidden=true}const neuf=st.view!==v;st.view=v;if(neuf)scrollTo({top:0,behavior:"instant"});ROOT.dataset.v=v;$("sbl-main").dataset.v=v;syncTabs();if(v==="map"&&map)setTimeout(()=>map.resize(),30)}
 document.querySelectorAll("#sbl-mt button").forEach(b=>b.onclick=()=>{if(b.dataset.v==="kit")return void(location.href="kit.html");if(b.dataset.v==="home")return goHome();if(isHome())explore(b.dataset.v);else view(b.dataset.v)});
 document.querySelectorAll("#sbl-dt button").forEach(b=>b.onclick=()=>{st.side=b.dataset.s;{const sd=$("sbl-side");if(sd&&sd.getBoundingClientRect().top<0)sd.scrollIntoView({block:"start",behavior:"instant"})}$("sbl-side").dataset.s=st.side;document.querySelectorAll("#sbl-dt button").forEach(x=>x.setAttribute("aria-selected",x===b));if(st.side==="map"&&map)setTimeout(()=>map.resize(),30)});
-$("sbl-pm").onclick=()=>{st.month=new Date(st.month.getFullYear(),st.month.getMonth()-1,1);cal()};
-$("sbl-nm").onclick=()=>{st.month=new Date(st.month.getFullYear(),st.month.getMonth()+1,1);cal()};
+$("sbl-pm").onclick=()=>{if(CAL_SEM.matches){st.week=add(st.week||lundi(today()),-7);st.day="";draw();return}st.month=new Date(st.month.getFullYear(),st.month.getMonth()-1,1);cal()};
+$("sbl-nm").onclick=()=>{if(CAL_SEM.matches){st.week=add(st.week||lundi(today()),7);st.day="";draw();return}st.month=new Date(st.month.getFullYear(),st.month.getMonth()+1,1);cal()};
 const sk=$("sbl-skins");if(!inViewer)sk.hidden=true;SKINS.forEach(([n,t],i)=>{const b=btn(n,i===0,()=>{setTheme(t);sk.querySelectorAll(".sbl-b").forEach(x=>x.setAttribute("aria-pressed",x===b?"true":"false"))});sk.append(b)});
 try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",styleMap)}catch(_){}
 new MutationObserver(styleMap).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
@@ -2352,6 +2401,20 @@ function borneVeille(){if(!KIOSK)return;let tm,idx=0,rot;const el=document.creat
     el.hidden=false;const cd=el.querySelector(".cd");const tour=()=>{const e=it[idx++%it.length];cd.classList.remove("in");setTimeout(()=>{cd.textContent="";cd.append(card(e));cd.classList.add("in")},250)};tour();clearInterval(rot);rot=setInterval(tour,6000)};
   const cacher=()=>{el.hidden=true;clearInterval(rot);clearTimeout(tm);tm=setTimeout(montrer,120000)};
   ["pointerdown","keydown"].forEach(t=>addEventListener(t,ev=>{if(!el.hidden){ev.preventDefault();ev.stopPropagation()}cacher()},{capture:true}));cacher()}
+/* ---------- Application installable : hors ligne et bouton « Installer l'appli » ---------- */
+let INSTALL=null;
+function appli(){
+  if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost")&&!ROOT.classList.contains("embed"))
+    navigator.serviceWorker.register("sw.js").catch(()=>{});
+  const b=$("sbl-inst");if(!b||KIOSK)return;
+  const installee=matchMedia("(display-mode: standalone)").matches||navigator.standalone;if(installee)return;
+  const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)&&!/crios|fxios/i.test(navigator.userAgent);
+  addEventListener("beforeinstallprompt",ev=>{ev.preventDefault();INSTALL=ev;b.hidden=false});
+  if(ios)b.hidden=false;
+  b.onclick=async()=>{if(INSTALL){INSTALL.prompt();const r=await INSTALL.userChoice.catch(()=>null);if(r&&r.outcome==="accepted")b.hidden=true;INSTALL=null;return}
+    modal('<div class="top"><div><div class="kind">Application</div><h2>Installer Trucs à faire</h2></div><button class="cl" data-close aria-label="Fermer">✕</button></div>'+
+      '<ol class="sbl-ios"><li>Touchez le bouton <b>Partager</b> en bas de Safari (le carré avec une flèche).</li><li>Choisissez <b>« Sur l’écran d’accueil »</b>.</li><li>Touchez <b>Ajouter</b> : l’icône apparaît avec vos autres applis.</li></ol>'+
+      '<p class="sbl-acm">L’appli s’ouvre en plein écran et garde les dernières sorties consultées, même sans réseau.</p>')}}
 async function boot(){
   let data=JSON.parse($("sbl-data").textContent);
   if(CFG.dataUrl){try{const r=await fetch(CFG.dataUrl);if(r.ok)data=await r.json()}catch(_){}}
@@ -2375,7 +2438,7 @@ async function boot(){
   $("sbl-prop").onclick=()=>proposeForm(st.day||"");$("sbl-home").onclick=e=>{e.preventDefault();goHome()};$("sbl-mod").onclick=()=>API?apiRefresh().then(modPanel,modPanel):modPanel();sourceForm();
   await initParticip();modBadge();
   $("sbl-calacc").onclick=versOffres;$("sbl-footacc").querySelector("[data-acc]").onclick=versOffres;
-  initQuick();audience();borneVeille();
+  initQuick();audience();borneVeille();appli();
   if(H.get("sortie")){const id=H.get("sortie");Promise.resolve(ensureDeps(REGION)).then(()=>{const e=EVENTS.find(x=>x.id===id);if(e)sheet(e);else toast("Ce truc est passé ou n’existe plus.")})}
   accInit(H);chargerOrgs().then(()=>{if(H.get("org"))ouvrirOrg(H.get("org"))});if(accOn())setInterval(()=>{if(FICHES>=3)banniere()},4000);
   if(H.get("q")){setQ(H.get("q"));loadCommunes()}

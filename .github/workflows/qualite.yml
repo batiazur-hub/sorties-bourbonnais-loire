@@ -20,7 +20,7 @@ jobs:
         run: pip install --quiet pyflakes && python -m pyflakes scripts tests/planche.py
       - name: JavaScript sans erreur de syntaxe
         run: |
-          for f in dlc.js config.js vendor/qrcode.js tests/mobile.mjs; do node --check "$f"; done
+          for f in dlc.js config.js sw.js vendor/qrcode.js tests/mobile.mjs; do node --check "$f"; done
           node --input-type=module -e "await import('./worker/worker.js')"
       - name: Données, liens, pages générées à jour, aucun secret
         run: python scripts/verifier.py

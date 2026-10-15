@@ -1,0 +1,22 @@
+{
+  "name": "Trucs à faire",
+  "short_name": "Trucs à faire",
+  "description": "Que faire autour de chez vous ? Brocantes, fêtes, concerts, expos et sorties en famille, partout en France.",
+  "lang": "fr",
+  "start_url": "./index.html?source=appli",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#2546D8",
+  "categories": ["entertainment", "lifestyle", "travel"],
+  "icons": [
+    { "src": "marque/icone-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "marque/icone-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "marque/icone-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Les trucs du week-end", "url": "./index.html#q=ce%20week-end", "icons": [{ "src": "marque/icone-192.png", "sizes": "192x192" }] },
+    { "name": "Ce soir", "url": "./index.html#q=ce%20soir", "icons": [{ "src": "marque/icone-192.png", "sizes": "192x192" }] }
+  ]
+}

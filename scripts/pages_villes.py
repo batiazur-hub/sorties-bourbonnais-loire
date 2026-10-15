@@ -12,7 +12,7 @@ from collections import defaultdict
 
 RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SORTIE = os.environ.get("PAGES_SORTIE", os.path.join(RACINE, "_site"))
-SITE = os.environ.get("SITE_URL", "https://batiazur-hub.github.io/sorties-bourbonnais-loire/")
+SITE = os.environ.get("SITE_URL", "https://trucsafaire.fr/")
 MIN_SORTIES = 3          # seuil d'une page commune
 MAX_LISTE, MAX_LD = 40, 20
 AUJ = dt.date.fromisoformat(os.environ.get("AUJOURDHUI", dt.date.today().isoformat()))

@@ -14,7 +14,7 @@ Usage :
 import os, sys
 
 RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SITE = "https://batiazur-hub.github.io/sorties-bourbonnais-loire/"
+SITE = "https://trucsafaire.fr/"
 MAPLIBRE = "vendor/maplibre-gl-4.7.1/"
 MAPLIBRE_CDN = "https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"
 DESC = ("Brocantes, fêtes, marchés, concerts, expos et lieux à visiter près de chez vous : "

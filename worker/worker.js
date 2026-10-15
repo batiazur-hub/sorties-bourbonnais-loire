@@ -25,7 +25,7 @@ import { comptes, purgerInactifs, verifierOrg, suspendreOrg, supprimerOrgAdmin, 
 import { envoyerLot, pourCompte, semaine } from "./newsletter.js";
 import { motRefuse, egal, limite, epuise, tout, agenda, publier, retirer } from "./commun.js";
 
-const DATA_DEFAUT = "https://batiazur-hub.github.io/sorties-bourbonnais-loire/data/";
+const DATA_DEFAUT = "https://trucsafaire.fr/data/";
 const TYPES_SORTIES = ["brocante", "fete", "spectacle", "culture", "famille", "sport", "pal"];
 const TYPES_LIEUX = ["office", "musee", "patrimoine", "nature", "loisirs"];
 const MAX_DEPS = 8;

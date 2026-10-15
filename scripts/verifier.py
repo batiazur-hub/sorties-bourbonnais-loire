@@ -154,7 +154,7 @@ def site():
         if "<title>" not in s:
             ko(f"{nom} : titre absent")
     for u in re.findall(r"<loc>([^<]+)</loc>", open(chemin("sitemap.xml"), encoding="utf-8").read()):
-        f = u.split("/sorties-bourbonnais-loire/", 1)[-1] or "index.html"
+        f = re.sub(r"^https?://[^/]+/(sorties-bourbonnais-loire/)?", "", u) or "index.html"
         if not os.path.exists(chemin(f)):
             ko(f"sitemap.xml : page absente {f}")
     # fichiers publiés sans secret

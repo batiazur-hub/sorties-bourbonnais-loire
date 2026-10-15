@@ -9,7 +9,7 @@ import json, html, os, datetime as dt
 RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SORTIE = os.environ.get("PAGES_SORTIE", RACINE)  # dossier où écrire les pages (le contrôle qualité les génère à part)
 
-SITE = "https://batiazur-hub.github.io/sorties-bourbonnais-loire/"
+SITE = "https://trucsafaire.fr/"
 MAJ = "14 octobre 2026"
 EDITEUR = {
     "nom": "Clément Monteiro EI",

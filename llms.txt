@@ -6,18 +6,18 @@ Le site s’adresse aux habitants et aux visiteurs qui se demandent « que faire
 
 ## Pages principales
 
-- [Agenda (liste, carte, calendrier)](https://batiazur-hub.github.io/sorties-bourbonnais-loire/index.html) : recherche en langage naturel, par exemple « brocantes ce week-end autour de Moulins »
-- [Que faire près de chez vous](https://batiazur-hub.github.io/sorties-bourbonnais-loire/que-faire/) : une page par département, par commune (au moins 3 sorties à venir) et par type de sortie, régénérées chaque nuit avec des données structurées schema.org Event
-- [Choisissez votre truc](https://batiazur-hub.github.io/sorties-bourbonnais-loire/offres.html) : comptes gratuits (Trucophile, Faiseur de trucs) et offres pour organisateurs et professionnels (Truc & Co, Truc Pro)
+- [Agenda (liste, carte, calendrier)](https://trucsafaire.fr/index.html) : recherche en langage naturel, par exemple « brocantes ce week-end autour de Moulins »
+- [Que faire près de chez vous](https://trucsafaire.fr/que-faire/) : une page par département, par commune (au moins 3 sorties à venir) et par type de sortie, régénérées chaque nuit avec des données structurées schema.org Event
+- [Choisissez votre truc](https://trucsafaire.fr/offres.html) : comptes gratuits (Trucophile, Faiseur de trucs) et offres pour organisateurs et professionnels (Truc & Co, Truc Pro)
 
 ## Données et réutilisation
 
-- [API et widgets](https://batiazur-hub.github.io/sorties-bourbonnais-loire/api.html) : sorties et lieux en JSON, avec clé
-- [Mentions légales et sources](https://batiazur-hub.github.io/sorties-bourbonnais-loire/mentions-legales.html#sources) : chaque donnée reste sous la licence de son producteur (Licence Ouverte, ODbL…)
-- [Intelligence artificielle](https://batiazur-hub.github.io/sorties-bourbonnais-loire/intelligence-artificielle.html) : transparence sur l’usage de l’IA
+- [API et widgets](https://trucsafaire.fr/api.html) : sorties et lieux en JSON, avec clé
+- [Mentions légales et sources](https://trucsafaire.fr/mentions-legales.html#sources) : chaque donnée reste sous la licence de son producteur (Licence Ouverte, ODbL…)
+- [Intelligence artificielle](https://trucsafaire.fr/intelligence-artificielle.html) : transparence sur l’usage de l’IA
 
 ## Optional
 
-- [Conditions d’utilisation](https://batiazur-hub.github.io/sorties-bourbonnais-loire/cgu.html)
-- [Politique de confidentialité](https://batiazur-hub.github.io/sorties-bourbonnais-loire/confidentialite.html)
-- [Kit de communication](https://batiazur-hub.github.io/sorties-bourbonnais-loire/kit.html)
+- [Conditions d’utilisation](https://trucsafaire.fr/cgu.html)
+- [Politique de confidentialité](https://trucsafaire.fr/confidentialite.html)
+- [Kit de communication](https://trucsafaire.fr/kit.html)

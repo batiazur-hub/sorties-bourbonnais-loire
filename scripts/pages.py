@@ -31,7 +31,7 @@ def mail():
     x = EDITEUR.get("email")
     return f'<a href="mailto:{html.escape(x)}">{html.escape(x)}</a>' if x else v("email")
 
-NAV = [("index.html", "Accueil"), ("plan-du-site.html", "Plan du site"), ("mentions-legales.html", "Mentions légales"),
+NAV = [("index.html", "Accueil"), ("plan-du-site.html", "Plan du site"), ("que-faire/index.html", "Que faire près de chez vous"), ("mentions-legales.html", "Mentions légales"),
        ("cgu.html", "Conditions d’utilisation"), ("confidentialite.html", "Confidentialité"),
        ("intelligence-artificielle.html", "Intelligence artificielle"), ("accessibilite.html", "Accessibilité"), ("integrer.html", "Intégrer l’agenda"), ("api.html", "API"), ("offres.html", "Choisissez votre truc"), ("kit.html", "Kit de communication")]
 
@@ -529,5 +529,5 @@ urls = ["", "offres.html", "plan-du-site.html", "mentions-legales.html", "cgu.ht
 jour = dt.date.today().isoformat()
 open(os.path.join(SORTIE, "sitemap.xml"), "w", encoding="utf-8").write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
     "".join(f"  <url><loc>{SITE}{u}</loc><lastmod>{jour}</lastmod><changefreq>{'daily' if not u else 'monthly'}</changefreq></url>\n" for u in urls) + "</urlset>\n")
-open(os.path.join(SORTIE, "robots.txt"), "w", encoding="utf-8").write(f"User-agent: *\nAllow: /\nDisallow: /data/enrich/\nSitemap: {SITE}sitemap.xml\n")
+open(os.path.join(SORTIE, "robots.txt"), "w", encoding="utf-8").write(f"User-agent: *\nAllow: /\nDisallow: /data/enrich/\nSitemap: {SITE}sitemap.xml\nSitemap: {SITE}sitemap-villes.xml\n")
 print("Pages :", ", ".join(P))

@@ -24,6 +24,17 @@ jobs:
           node --input-type=module -e "await import('./worker/worker.js')"
       - name: Données, liens, pages générées à jour, aucun secret
         run: python scripts/verifier.py
+      - name: Pages « Que faire à … » (générées comme à la publication)
+        run: |
+          d=$(mktemp -d); PAGES_SORTIE=$d python scripts/pages_villes.py
+          n=$(find $d/que-faire -name index.html | wc -l); test "$n" -gt 100
+          python - "$d" <<'PY'
+          import json, re, sys, pathlib
+          for f in list(pathlib.Path(sys.argv[1]).glob("que-faire/*/index.html"))[:300]:
+              s = f.read_text(encoding="utf-8")
+              json.loads(re.search(r'<script type="application/ld\+json">(.*?)</script>', s, re.S).group(1))
+              assert "<title>" in s and 'rel="canonical"' in s, f
+          PY
       - name: Tests du serveur (Worker)
         run: node --test tests/worker.test.mjs
       - name: Empreintes SRI de MapLibre identiques au CDN et à la copie hébergée

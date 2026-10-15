@@ -1,0 +1,44 @@
+name: Publication du site
+# Construit le site complet (fichiers du dépôt + pages « Que faire à … » générées) et le publie sur GitHub Pages.
+# Les pages villes ne sont jamais enregistrées dans le dépôt : elles sont refaites à chaque publication.
+# Prérequis (une fois) : Settings → Pages → Source : « GitHub Actions ».
+on:
+  push:
+    branches: [main]
+  workflow_run:
+    workflows: ["Mise à jour des sorties (DATAtourisme)", "Lieux à visiter (DATAtourisme)", "Horaires d'ouverture (OpenStreetMap)"]
+    types: [completed]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency: { group: pages, cancel-in-progress: true }
+jobs:
+  publier:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploiement.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: main }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: Assembler le site
+        run: |
+          mkdir _site
+          # tout ce qui est public, sans les outils internes (scripts, tests, serveur, documents de travail)
+          git ls-files -z | grep -zv -E '^(\.github/|scripts/|tests/|worker/|docs/|README\.md$|\.gitignore$)' | xargs -0 cp --parents -t _site
+          touch _site/.nojekyll
+      - name: Pages par commune et par département
+        run: PAGES_SORTIE=_site python scripts/pages_villes.py
+      - name: Contrôle des pages générées
+        run: |
+          test -f _site/index.html && test -f _site/que-faire/index.html && test -f _site/sitemap-villes.xml
+          n=$(find _site/que-faire -name index.html | wc -l); echo "Pages « Que faire » : $n"; test "$n" -gt 100
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with: { path: _site }
+      - id: deploiement
+        uses: actions/deploy-pages@v4

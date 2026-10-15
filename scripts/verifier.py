@@ -147,7 +147,7 @@ def site():
             if re.match(r"^(https?:|mailto:|tel:|data:|javascript:|#|\{)", u) or "+" in u:
                 continue
             f = u.split("#")[0].split("?")[0]
-            if f and not os.path.exists(chemin(f)):
+            if f and not f.startswith("que-faire/") and not os.path.exists(chemin(f)):  # pages villes : fabriquées à la publication
                 ko(f"{nom} : lien cassé vers {u}")
         if not re.search(r'<html lang="fr"', s):
             ko(f"{nom} : langue de la page absente")

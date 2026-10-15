@@ -287,3 +287,31 @@ main:has(.kit){max-width:980px}
   .aff{position:fixed;inset:0;width:100%;height:100%;aspect-ratio:auto;box-shadow:none;border-radius:0;padding:12mm 14mm}
   .aff.a5{page:a5}
 }
+/* Affiche : fond coloré ou sobre, pied de page */
+.aff{position:relative;overflow:hidden;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.aff>*{position:relative;z-index:1}
+.aff-deco{position:absolute!important;inset:0;z-index:0!important;display:none}
+.aff.couleur{background:radial-gradient(110% 70% at 100% 0%,#5B78F2 0%,rgba(91,120,242,0) 60%),linear-gradient(165deg,#3150E3,#2546D8 50%,#1C38BD);color:#fff}
+.aff.couleur .aff-deco{display:block}
+.aff-deco i{position:absolute;border-radius:42% 58% 55% 45%/48% 42% 58% 52%;background:rgba(255,255,255,.08)}
+.aff-deco .b1{width:70cqi;height:60cqi;left:-30cqi;top:-18cqi}
+.aff-deco .b2{width:80cqi;height:70cqi;right:-38cqi;bottom:-26cqi;background:rgba(255,255,255,.07)}
+.aff-deco .b3{width:40cqi;height:36cqi;right:-12cqi;top:34%;background:rgba(255,138,61,.16)}
+.aff-deco b{position:absolute;width:2.4cqi;height:2.4cqi;border-radius:50%}
+.aff-deco b.r{background:none!important;border:.9cqi solid #FFB27F;width:3.6cqi;height:3.6cqi}
+.aff.couleur .aff-top{color:#fff;background:#fff;padding:2.2cqi 4cqi 2.2cqi 2.4cqi;border-radius:999px;color:#141a33}
+.aff.couleur .aff-k{color:#FFB27F}
+.aff.couleur .aff-h{color:#fff}
+.aff.couleur .aff-qr{background:#fff;border-color:#FF8A3D;box-shadow:0 3cqi 6cqi -3cqi rgba(0,0,0,.4)}
+.aff.couleur .aff-s{color:#DCE3FF}
+.aff.couleur .aff-n{color:#fff}
+.aff.couleur .aff-b,.aff.couleur .aff-u{color:#DCE3FF}
+.aff.couleur .aff-u b{color:#fff}
+.aff-n{margin:2.4cqi 0 0!important;font:700 5cqi/1.2 "Outfit",sans-serif!important}
+.aff-pied{margin-top:auto;display:grid;gap:1.4cqi}
+.aff-pied p{margin:0}
+.aff-u{font:500 2.7cqi/1.35 "DM Sans",sans-serif!important;color:#4d5470}
+.aff-u b{font-weight:700;color:#2546D8}
+.aff-qr{width:52cqi!important;margin-top:7cqi!important}
+.aff-h{font-size:9.2cqi!important}
+.aff-n{font-size:5.6cqi!important}

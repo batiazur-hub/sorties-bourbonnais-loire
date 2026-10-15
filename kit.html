@@ -30,8 +30,12 @@
   </fieldset>
   <div class="kit-row">
     <div><label for="kf-n">Votre nom <span class="opt">(facultatif)</span></label><input id="kf-n" maxlength="60" placeholder="Comité des fêtes de Decize"></div>
-    <div><label for="kf-c">Commune</label><input id="kf-c" maxlength="60" placeholder="Decize"></div>
+    <div><label for="kf-c">Ville ou département</label><input id="kf-c" maxlength="60" placeholder="Decize, ou Allier" list="kf-deps"><datalist id="kf-deps"></datalist></div>
   </div>
+  <fieldset class="kit-ch"><legend>Style</legend>
+    <label><input type="radio" name="kf-s" value="couleur" checked><span>Coloré</span></label>
+    <label><input type="radio" name="kf-s" value="sobre"><span>Sobre, fond blanc (économise l’encre)</span></label>
+  </fieldset>
   <fieldset class="kit-ch"><legend>Format</legend>
     <label><input type="radio" name="kf-f" value="a4" checked><span>A4</span></label>
     <label><input type="radio" name="kf-f" value="a5"><span>A5 (comptoir, vitrine)</span></label>
@@ -39,15 +43,16 @@
   <p><button type="button" class="btn go" id="kf-p">Imprimer ou enregistrer en PDF</button></p>
 </form>
 
-<div class="kit-aper" aria-label="Aperçu de l’affiche"><div class="aff a4" id="aff">
+<div class="kit-aper" aria-label="Aperçu de l’affiche"><div class="aff a4 couleur" id="aff">
+  <div class="aff-deco" aria-hidden="true"><i class="b1"></i><i class="b2"></i><i class="b3"></i><b style="left:8%;top:22%;background:#FF8A3D"></b><b style="left:86%;top:16%;background:#fff"></b><b style="left:90%;top:52%;background:#4CC9A3"></b><b style="left:6%;top:60%;background:#F27BA6"></b><b style="left:14%;top:84%;background:#E2B84B"></b><b style="left:80%;top:80%;background:#FF8A3D"></b><b class="r" style="left:74%;top:30%"></b><b class="r" style="left:18%;top:40%"></b></div>
   <div class="aff-top"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 0C52.5 0 64 4.6 64 32S52.5 64 32 64 0 59.4 0 32 11.5 0 32 0Z" fill="#2546D8"/><path d="M29.5 13.5V38c0 7.5 4.2 12 11.6 12h2.4" fill="none" stroke="#fff" stroke-width="6.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M17.5 27.6 24.6 34C31.5 26.9 38 22.2 46.4 18.6" fill="none" stroke="#fff" stroke-width="6.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="48.6" cy="46.4" r="4.3" fill="#FF8A3D"/></svg><span>trucs à faire</span></div>
   <p class="aff-k" id="aff-k">Nos prochains trucs</p>
   <h3 class="aff-h" id="aff-h">Retrouvez toutes nos sorties ici&nbsp;!</h3>
   <div class="aff-qr" id="aff-qr" aria-hidden="true"></div>
   <p class="aff-s">Scannez avec l’appareil photo de votre téléphone</p>
-  <p class="aff-u" id="aff-u">trucsafaire.fr</p>
   <p class="aff-n" id="aff-n"></p>
-  <p class="aff-b">Brocantes, fêtes, concerts, expos, sorties en famille : gratuit, sans inscription.</p>
+  <div class="aff-pied"><p class="aff-b">Brocantes, fêtes, concerts, expos, sorties en famille : gratuit, sans inscription.</p>
+  <p class="aff-u"><b id="aff-u">trucsafaire.fr</b> · Instagram @trucsafaire · Facebook @trucsafaire</p></div>
 </div></div>
 
 <h2>2. Un badge pour votre site</h2>
@@ -75,13 +80,24 @@
 (function(){
   var $=function(i){return document.getElementById(i)};
   var SITE=location.href.replace(/kit\.html.*$/,"");
+  /* « à Decize », « dans l’Allier », « dans les Landes », « en Guyane »… */
+  var DEPS=[],PLUR=["Ardennes","Bouches-du-Rhône","Côtes-d'Armor","Deux-Sèvres","Hautes-Alpes","Alpes-de-Haute-Provence","Alpes-Maritimes","Hautes-Pyrénées","Pyrénées-Atlantiques","Pyrénées-Orientales","Landes","Vosges","Yvelines","Hauts-de-Seine"],
+      MASC_E=["Rhône","Finistère","Puy-de-Dôme","Maine-et-Loire","Val-de-Marne","Val-d'Oise","Lot-et-Garonne","Tarn-et-Garonne"],FEM_X=["Seine-Saint-Denis","Eure-et-Loir","Côte-d'Or","Corse-du-Sud"],
+      DOM={"Guadeloupe":"en Guadeloupe","Martinique":"en Martinique","Guyane":"en Guyane","La Réunion":"à La Réunion","Mayotte":"à Mayotte","Paris":"à Paris"};
+  var cle=function(x){return x.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[’']/g,"'").trim()};
+  function lieuDe(c){var d=DEPS.filter(function(x){return cle(x)===cle(c)})[0];
+    if(!d)return "à "+c;if(DOM[d])return DOM[d];if(PLUR.indexOf(d)>=0)return "dans les "+d;if(/^[AEIOUYÉÈH]/i.test(d))return "dans l’"+d;
+    if((/e$/.test(d)&&MASC_E.indexOf(d)<0)||FEM_X.indexOf(d)>=0)return "dans la "+d;return "dans le "+d}
+  fetch("data/departements.json").then(function(r){return r.json()}).then(function(j){DEPS=j.departements.map(function(x){return x.nom});
+    $("kf-deps").innerHTML=DEPS.map(function(x){return '<option value="'+x+'">'}).join("");maj()}).catch(function(){});
   function val(n){var x=document.querySelector('[name="'+n+'"]:checked');return x?x.value:""}
   function lien(){var c=$("kf-c").value.trim();return SITE+(c?"#q="+encodeURIComponent("que faire à "+c):"")}
   function maj(){
-    var t=val("kf-t"),n=$("kf-n").value.trim(),c=$("kf-c").value.trim(),f=val("kf-f");
-    $("aff").className="aff "+f;
+    var t=val("kf-t"),n=$("kf-n").value.trim(),c=$("kf-c").value.trim(),f=val("kf-f"),st=val("kf-s");
+    $("aff").className="aff "+f+" "+st;
+    var ou=c?lieuDe(c):"";
     $("aff-k").textContent=t==="orga"?"Nos prochains trucs":"Envie d’un truc à faire ?";
-    $("aff-h").textContent=t==="orga"?"Retrouvez toutes nos sorties ici !":(c?"Que faire autour de "+c+" ?":"Que faire autour d’ici ?");
+    $("aff-h").textContent=t==="orga"?(ou?"Retrouvez toutes nos sorties "+ou+" ici !":"Retrouvez toutes nos sorties ici !"):(ou?"Que faire "+ou+" ?":"Que faire autour d’ici ?");
     $("aff-n").textContent=n;
     $("aff-u").textContent=SITE.replace(/^https?:\/\//,"").replace(/\/$/,"");
     var q=$("aff-qr");q.textContent="";

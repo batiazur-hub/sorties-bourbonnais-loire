@@ -1008,7 +1008,8 @@ function parseQ(text){
   let s=" "+norm(text||"").replace(/[’']/g," ").replace(/[^a-z0-9\- ]+/g," ").replace(/\bvide (grenier|greniers|maison)\b/g,"vide-$1").replace(/\s+/g," ")+" ";
   const o={w:"",cats:new Set(),z:"",place:"",near:null,words:[]};
   const take=(re,fn)=>{const m=s.match(re);if(m){fn(m);s=s.replace(re," ")}};
-  take(/ aujourd hui | ce soir /,()=>o.w="today");
+  take(/ (ce soir|cette nuit|ce soir-la) /,()=>{o.w="today";o.soir=1});
+  take(/ aujourd hui /,()=>o.w="today");
   take(/ demain /,()=>o.w="tomorrow");
   take(/ (ce )?week ?-?end /,()=>o.w="we");
   take(/ (cette semaine|7 jours) /,()=>o.w="7");
@@ -1028,7 +1029,7 @@ function parseQ(text){
   return o;
 }
 const km=(a,b)=>{const dx=(a.lon-b.lo)*Math.cos(a.lat*Math.PI/180)*111.3,dy=(a.lat-b.la)*111.2;return Math.hypot(dx,dy)};
-const matchO=(e,o)=>(!o.free||e.g)&&(!o.abri||estAbri(e))&&(o.place||o.near||o.z||!REGION.length||REGION.includes(e.z))&&(!o.cats.size||o.cats.has(e.cat))&&(!o.z||e.z===o.z)&&(!o.place||e.w===o.place)&&(!o.near||km(e,o.near)<=25)&&o.words.every(w=>e.k.includes(w));
+const matchO=(e,o)=>(!o.free||e.g)&&(!o.abri||estAbri(e))&&(!o.soir||(!e.long&&!!e.h&&e.h>="18:00"))&&(o.place||o.near||o.z||!REGION.length||REGION.includes(e.z))&&(!o.cats.size||o.cats.has(e.cat))&&(!o.z||e.z===o.z)&&(!o.place||e.w===o.place)&&(!o.near||km(e,o.near)<=25)&&o.words.every(w=>e.k.includes(w));
 function matchBase(e){return matchO(e,st)}
 function pickO(o,w,day){const[a,b]=day?[P(day),P(day)]:range(w);
   return EVENTS.filter(e=>!(e.E<a||e.S>b)&&matchO(e,o)).sort((x,y)=>(x.long-y.long)||(Math.max(x.S,a)-Math.max(y.S,a))||((x.h||"99")<(y.h||"99")?-1:1));}
@@ -1036,7 +1037,7 @@ function pick(){return pickO(st,st.w,st.day)}
 const wOf=(o,text)=>o.w||((text||"").trim()?"all":"30");
 const countQ=text=>{const o=parseQ(text);return pickO(o,wOf(o,text),"").length};
 function applyQ(text){st.q=text;st.lim=LIM0;const o=parseQ(text);const prev=(st.place||"")+(st.near?st.near.n:"")+st.z;
-  Object.assign(st,{lv:o.lv||null,free:o.free,abri:o.abri,w:wOf(o,text),cats:o.cats,z:o.z,place:o.place,pz:o.pz,near:o.near,words:o.words});$("sbl-qx").hidden=!text;
+  Object.assign(st,{lv:o.lv||null,free:o.free,abri:o.abri,soir:o.soir,w:wOf(o,text),cats:o.cats,z:o.z,place:o.place,pz:o.pz,near:o.near,words:o.words});$("sbl-qx").hidden=!text;
   const cur=(o.place||"")+(o.near?o.near.n:"")+o.z;
   if(cur&&cur!==prev)needFor(o).then(ds=>ensureDeps(ds)).then(ch=>{if(ch)draw();flyTo(o)});}
 function flyTo(o){if(!map)return;ZSAVE=null;let p=null;if(o.near)p=[o.near.lo,o.near.la];else if(o.place){const e=EVENTS.find(x=>x.w===o.place);if(e)p=[e.lon,e.lat];else{const c=placeIndex().m.get(PKEY(o.place));if(c)p=[c[3],c[2]]}}
@@ -1119,7 +1120,7 @@ function initSearch(){
 }
 function summary(n){
   const o=st,c1=o.cats.size===1?[...o.cats][0]:"",what=c1?(n<2?CAT1[c1]:CATP[c1]):(n<2?"sortie":"sorties"),
-    raw=(st.q||"").split(/\s+/).filter(x=>o.words.includes(norm(x).replace(/[^a-z0-9-]/g,""))).join(" ")||o.words.join(" "),wt=st.day?"le "+P(st.day).getDate()+" "+ML[P(st.day).getMonth()]:(st.w==="30"&&!st.q?"dans les 30 prochains jours":st.w==="all"?"à venir":whenTxt(st.w)),wh=whereTxt(o);
+    raw=(st.q||"").split(/\s+/).filter(x=>o.words.includes(norm(x).replace(/[^a-z0-9-]/g,""))).join(" ")||o.words.join(" "),wt=st.day?"le "+P(st.day).getDate()+" "+ML[P(st.day).getMonth()]:o.soir?"ce soir (à partir de 18 h)":(st.w==="30"&&!st.q?"dans les 30 prochains jours":st.w==="all"?"à venir":whenTxt(st.w)),wh=whereTxt(o);
   return "<b>"+n+"</b> "+what+(o.free?(n>1?" gratuites":" gratuite"):"")+(o.abri?" à l’abri":"")+(o.words.length?" « "+escH(raw)+" »":"")+" "+wt+(wh?" "+escH(wh):"");
 }
 const $=id=>document.getElementById(id);

@@ -735,6 +735,25 @@ textarea.sbl-in{min-height:100px;resize:vertical}
 .sbl-sheet .top.acts>div:first-child{flex:1 1 220px}
 .sbl-shr{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 14px}
 .sbl-sgl{margin:16px 0 0;text-align:center;font-size:.85rem}.sbl-sgl .lnk{color:var(--sbl-muted);font-weight:500}
+
+/* ---------- Météo, liste des favoris, veille de la borne ---------- */
+.sbl-meteo{display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;align-items:center;width:100%;margin:6px 0 14px;padding:12px 14px;border:0;border-radius:18px;background:linear-gradient(120deg,#1C38BD,#2546D8 60%,#5B78F2);color:#fff;text-align:left;font:inherit;cursor:pointer}
+.sbl-meteo .ic{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:rgb(255 255 255 / .16)}
+.sbl-meteo .tx{display:grid}.sbl-meteo b{font-family:var(--sbl-display);font-size:1.02rem}.sbl-meteo small{opacity:.85}
+.sbl-ach .lnk{float:right;font-size:.82rem;font-family:var(--sbl-body)}
+.sbl-favj{margin:10px 0 2px;font-weight:700;font-size:.82rem;text-transform:uppercase;letter-spacing:.06em;color:var(--sbl-muted)}
+.sbl-acfr .ac2{white-space:nowrap;font-size:.85rem}
+.sbl-veille{position:fixed;inset:0;z-index:3000;display:grid;place-items:center;background:radial-gradient(120% 90% at 100% 0%,#5B78F2,rgba(91,120,242,0) 55%),linear-gradient(160deg,#3150E3,#2546D8 45%,#1C38BD);color:#fff;text-align:center;padding:4vh 4vw}
+.sbl-veille[hidden]{display:none}
+.sbl-veille .vc{display:grid;justify-items:center;gap:2.5vh;max-width:760px;width:100%}
+.sbl-veille .lg{display:flex;align-items:center;gap:12px;background:#fff;color:#141a33;padding:10px 22px 10px 12px;border-radius:999px;font:700 1.6rem var(--sbl-display)}
+.sbl-veille .lg svg{width:44px;height:44px}
+.sbl-veille .k{margin:0;font:700 clamp(2rem,5vw,3.6rem)/1.05 var(--sbl-display);letter-spacing:-.03em}
+.sbl-veille .cd{width:min(440px,80vw);opacity:0;transform:translateY(16px) scale(.98);transition:opacity .4s,transform .4s}
+.sbl-veille .cd.in{opacity:1;transform:none}
+.sbl-veille .cd .sbl-card{background:#fff;color:#141a33;border-radius:22px;padding:10px;box-shadow:0 30px 60px -20px rgb(0 0 0 / .45);pointer-events:none;width:100%}
+.sbl-veille .go{margin:0;font-size:1.25rem;animation:sbl-pulse 2.4s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){.sbl-veille .cd{transition:none}.sbl-veille .go{animation:none}}
 /* ---------- Charte graphique Trucs à faire (v1.0) ---------- */
 .sbl-btn.lk{display:inline-flex;align-items:center;gap:7px}
 .sbl-btn.lk svg{flex:none}
@@ -1016,6 +1035,7 @@ function parseQ(text){
   take(new RegExp(" (en |d |au mois de )?("+MONTHS.join("|")+") "),m=>o.w="m"+MONTHS.indexOf(m[2]));
   take(/ (toutes les dates|a venir|bientot) /,()=>o.w="all");
   take(/ (gratuit|gratuite|gratuits|gratuites|sans payer) /,()=>o.free=1);
+  take(/ (a l abri|en interieur|au sec|quand il pleut|s il pleut) /,()=>o.abri=1);
   let arr=[];s.trim().split(/\s+/).filter(Boolean).forEach(w=>{if(KW2CAT.has(w))arr.push(w);else w.split("-").forEach(x=>x&&arr.push(x))});
   const f=findPlace(arr);
   if(f){if(f.type==="z")o.z=f.code;else if(f.type==="near")o.near={n:f.c[0],la:f.c[2],lo:f.c[3],z:f.c[1]};else{o.place=f.c[0];o.pz=f.c[1]}arr.splice(Math.max(0,f.i),f.len)}
@@ -1026,7 +1046,7 @@ function parseQ(text){
   return o;
 }
 const km=(a,b)=>{const dx=(a.lon-b.lo)*Math.cos(a.lat*Math.PI/180)*111.3,dy=(a.lat-b.la)*111.2;return Math.hypot(dx,dy)};
-const matchO=(e,o)=>(!o.free||e.g)&&(o.place||o.near||o.z||!REGION.length||REGION.includes(e.z))&&(!o.cats.size||o.cats.has(e.cat))&&(!o.z||e.z===o.z)&&(!o.place||e.w===o.place)&&(!o.near||km(e,o.near)<=25)&&o.words.every(w=>e.k.includes(w));
+const matchO=(e,o)=>(!o.free||e.g)&&(!o.abri||estAbri(e))&&(o.place||o.near||o.z||!REGION.length||REGION.includes(e.z))&&(!o.cats.size||o.cats.has(e.cat))&&(!o.z||e.z===o.z)&&(!o.place||e.w===o.place)&&(!o.near||km(e,o.near)<=25)&&o.words.every(w=>e.k.includes(w));
 function matchBase(e){return matchO(e,st)}
 function pickO(o,w,day){const[a,b]=day?[P(day),P(day)]:range(w);
   return EVENTS.filter(e=>!(e.E<a||e.S>b)&&matchO(e,o)).sort((x,y)=>(x.long-y.long)||(Math.max(x.S,a)-Math.max(y.S,a))||((x.h||"99")<(y.h||"99")?-1:1));}
@@ -1034,7 +1054,7 @@ function pick(){return pickO(st,st.w,st.day)}
 const wOf=(o,text)=>o.w||((text||"").trim()?"all":"30");
 const countQ=text=>{const o=parseQ(text);return pickO(o,wOf(o,text),"").length};
 function applyQ(text){st.q=text;st.lim=LIM0;const o=parseQ(text);const prev=(st.place||"")+(st.near?st.near.n:"")+st.z;
-  Object.assign(st,{lv:o.lv||null,free:o.free,w:wOf(o,text),cats:o.cats,z:o.z,place:o.place,pz:o.pz,near:o.near,words:o.words});$("sbl-qx").hidden=!text;
+  Object.assign(st,{lv:o.lv||null,free:o.free,abri:o.abri,w:wOf(o,text),cats:o.cats,z:o.z,place:o.place,pz:o.pz,near:o.near,words:o.words});$("sbl-qx").hidden=!text;
   const cur=(o.place||"")+(o.near?o.near.n:"")+o.z;
   if(cur&&cur!==prev)needFor(o).then(ds=>ensureDeps(ds)).then(ch=>{if(ch)draw();flyTo(o)});}
 function flyTo(o){if(!map)return;ZSAVE=null;let p=null;if(o.near)p=[o.near.lo,o.near.la];else if(o.place){const e=EVENTS.find(x=>x.w===o.place);if(e)p=[e.lon,e.lat];else{const c=placeIndex().m.get(PKEY(o.place));if(c)p=[c[3],c[2]]}}
@@ -1118,7 +1138,7 @@ function initSearch(){
 function summary(n){
   const o=st,c1=o.cats.size===1?[...o.cats][0]:"",what=c1?(n<2?CAT1[c1]:CATP[c1]):(n<2?"sortie":"sorties"),
     raw=(st.q||"").split(/\s+/).filter(x=>o.words.includes(norm(x).replace(/[^a-z0-9-]/g,""))).join(" ")||o.words.join(" "),wt=st.day?"le "+P(st.day).getDate()+" "+ML[P(st.day).getMonth()]:(st.w==="30"&&!st.q?"dans les 30 prochains jours":st.w==="all"?"à venir":whenTxt(st.w)),wh=whereTxt(o);
-  return "<b>"+n+"</b> "+what+(o.free?(n>1?" gratuites":" gratuite"):"")+(o.words.length?" « "+escH(raw)+" »":"")+" "+wt+(wh?" "+escH(wh):"");
+  return "<b>"+n+"</b> "+what+(o.free?(n>1?" gratuites":" gratuite"):"")+(o.abri?" à l’abri":"")+(o.words.length?" « "+escH(raw)+" »":"")+" "+wt+(wh?" "+escH(wh):"");
 }
 const $=id=>document.getElementById(id);
 function btn(label,on,fn,color){const b=document.createElement("button");b.type="button";b.className="sbl-b";b.setAttribute("aria-pressed",on?"true":"false");
@@ -1223,6 +1243,7 @@ function list(items){
     const t=today(),fin=add(t,7),sem=EVENTS.filter(e=>!e.long&&e.S>=t&&e.S<=fin&&matchBase(e)&&e.img).slice(0,12);
     if(sem.length>=4)sec("Cette semaine, en images",sem,card,()=>setQ("cette semaine"));
     sec("À visiter près d’ici",homeLieux(),lieuCard,()=>setQ("à visiter "+(REGION.length===1?dansDep(REGION[0]):"")));
+    const mt=document.createElement("div");mt.id="sbl-meteo";wk.prepend(mt);meteoWeekend(mt);
     const pv=document.createElement("div");pv.id="sbl-pourvous";wk.append(pv);pourVous(pv); /* sélection selon les préférences du compte, ou invitation à en créer un */
     wk.append(homeCTA(n));
     return;
@@ -1846,7 +1867,9 @@ function proposeForm(day,opt){loadCommunes();
    '<div class="sbl-hp" aria-hidden="true"><label for="pf-x">Ne pas remplir</label><input id="pf-x" tabindex="-1" autocomplete="off"></div>'+
    '<p class="sbl-err" id="pf-err" role="alert"></p>'+
    '<div class="sbl-btns"><button class="sbl-btn go" type="submit" id="pf-go">'+(ORG?"Publier":"Envoyer la proposition")+'</button><button class="sbl-btn" type="button" data-close>Annuler</button></div></form>'));
-  if(ORG){const bo=blocOrg({org:ORG.slug});if(bo){bo.disabled=true;M.el.querySelector(".top").after(bo)}}
+  if(ORG){const bo=blocOrg({org:ORG.slug});if(bo){bo.disabled=true;M.el.querySelector(".top").after(bo)}
+    const B=opt.base;if(B){const f=(i,v)=>{const x=$(i);if(x&&v)x.value=v};f("pf-t",B.t);f("pf-c",B.cat);f("pf-h",B.h);f("pf-w",B.w);f("pf-l",B.lieu!==B.w?B.lieu:"");f("pf-d",B.d);f("pf-u",B.u);f("pf-b",B.b);f("pf-img",B.img);
+      M.el.querySelector(".sbl-hint").textContent="Copie de « "+B.t+" » : choisissez la nouvelle date, puis publiez."}}
   if(PX.mode==="none"&&!ORG){M.el.querySelector(".sbl-note").textContent=PX.why;M.el.querySelector("[data-close]").focus();return}
   M.el.querySelectorAll("[data-close]").forEach(b=>b.onclick=M.close);
   $("pf-t").focus();
@@ -2094,7 +2117,7 @@ function monCompte(bienvenue){
   const c=ACC.c,p=c.prefs||{},sel=new Set(p.cats||[]);loadCommunes();
   const M=modal('<div class="top"><div><div class="kind">Trucophile</div><h2>'+(bienvenue?"Bienvenue !":"Mon compte")+'</h2></div><button class="cl" type="button" data-close aria-label="Fermer">✕</button></div>'+
     '<p class="sbl-acl" id="mc-e"></p>'+
-    '<h3 class="sbl-ach">Mes trucs à faire</h3><div class="sbl-acfav" id="mc-f"></div>'+
+    '<h3 class="sbl-ach">Mes trucs à faire <button type="button" class="lnk" id="mc-sh">Partager ma liste</button></h3><div class="sbl-acfav" id="mc-f"></div>'+
     '<h3 class="sbl-ach">Autour de chez moi</h3><form id="mc-p" novalidate>'+
       '<div class="sbl-f"><label for="mc-w">Ma commune</label><input class="sbl-in" id="mc-w" list="sbl-cl" autocomplete="address-level2"></div>'+
       '<fieldset class="sbl-chips"><legend>Distance</legend>'+RAYONS.map(r=>'<label><input type="radio" name="mc-r" value="'+r+'"'+(r===(p.rayon||20)?" checked":"")+'><span>'+r+' km</span></label>').join("")+'</fieldset>'+
@@ -2107,12 +2130,14 @@ function monCompte(bienvenue){
   $("mc-e").textContent="Connecté avec "+c.email+(bienvenue?". Vos favoris sont maintenant enregistrés sur tous vos appareils.":"");
   if(p.commune)$("mc-w").value=p.commune.nom;
   const fl=$("mc-f"),remplir=()=>{if(!fl.isConnected)return;fl.textContent="";
-  const favs=FAV.map(id=>EVENTS.find(e=>e.id===id)).filter(Boolean),ailleurs=FAV.length-favs.length;
+  const favs=FAV.map(id=>EVENTS.find(e=>e.id===id)).filter(e=>e&&e.E>=today()).sort((a,b)=>a.S-b.S),ailleurs=FAV.length-favs.length;let jourPrec="";
   if(!FAV.length)fl.innerHTML='<p class="sbl-acm">Rien de gardé pour l’instant. Touchez ♥ sur un truc qui vous plaît.</p>';
-  favs.forEach(e=>{const r=document.createElement("button");r.type="button";r.className="sbl-acfr";r.innerHTML='<span class="ci">'+icon(e.cat,15)+'</span><span class="tx"><b></b><small></small></span>';
+  favs.forEach(e=>{const dj=e.S<today()?today():e.S,jl=e.long?"En ce moment":cap(JL[dj.getDay()])+" "+dj.getDate()+" "+ML[dj.getMonth()];
+    if(jl!==jourPrec){jourPrec=jl;const hd=document.createElement("p");hd.className="sbl-favj";hd.textContent=jl;fl.append(hd)}
+    const r=document.createElement("button");r.type="button";r.className="sbl-acfr";r.innerHTML='<span class="ci">'+icon(e.cat,15)+'</span><span class="tx"><b></b><small></small></span>';
     r.querySelector("b").textContent=e.t;r.querySelector("small").textContent=when(e)+" · "+e.w;r.style.setProperty("--c","var(--sbl-c-"+e.cat+")");r.style.setProperty("--pc","var(--sbl-p-"+e.cat+")");r.onclick=()=>sheet(e);fl.append(r)});
   if(ailleurs>0){const s=document.createElement("p");s.className="sbl-acm";s.textContent=ailleurs+(ailleurs>1?" autres favoris sont dans des départements non affichés ou déjà passés.":" autre favori est dans un département non affiché ou déjà passé.");fl.append(s)}};
-  remplir();Promise.resolve(ensureDeps(REGION)).then(remplir,()=>{});espaceOrg($("mc-org"));
+  remplir();Promise.resolve(ensureDeps(REGION)).then(remplir,()=>{});espaceOrg($("mc-org"));$("mc-sh").onclick=partagerListe;
   $("mc-p").onsubmit=async ev=>{ev.preventDefault();const err=$("mc-err");err.textContent="";const wn=$("mc-w").value.trim();let commune=null;
     if(wn){await loadCommunes();const k=findCommune(wn);if(!k){err.textContent="Commune introuvable : choisissez-la dans la liste.";return}commune={nom:k[0],dep:k[1],lat:k[2],lon:k[3]}}
     try{const j=await accCall("/compte",{prefs:{commune,rayon:+M.el.querySelector('[name="mc-r"]:checked').value,cats:[...M.el.querySelectorAll('[name="mc-c"]:checked')].map(x=>x.value)},newsletter:$("mc-nl").checked});
@@ -2207,9 +2232,10 @@ function espaceOrg(box){
   const bt=document.createElement("div");bt.className="sbl-btns";bt.innerHTML='<button type="button" class="sbl-btn go" id="eo-p">Publier un truc</button><button type="button" class="sbl-btn" id="eo-v">Voir ma page</button><button type="button" class="sbl-btn" id="eo-m">Modifier</button>';box.append(bt);
   $("eo-p").onclick=()=>proposeForm(st.day||"",{org:true});$("eo-v").onclick=()=>ouvrirOrg(o.slug);$("eo-m").onclick=()=>formOrg();
   const l=document.createElement("div");l.className="sbl-acfav";box.append(l);
-  accCall("/compte/sorties").then(j=>{j.sorties.forEach(e=>{const r=document.createElement("div");r.className="sbl-acfr";r.innerHTML='<span class="ci">'+icon(e.cat||"fete",15)+'</span><span class="tx"><b></b><small></small></span><button type="button" class="lnk">Retirer</button>';
+  accCall("/compte/sorties").then(j=>{j.sorties.forEach(e=>{const r=document.createElement("div");r.className="sbl-acfr";r.innerHTML='<span class="ci">'+icon(e.cat||"fete",15)+'</span><span class="tx"><b></b><small></small></span><span class="ac2"><button type="button" class="lnk dp">Dupliquer</button> <button type="button" class="lnk rt">Retirer</button></span>';
     r.style.gridTemplateColumns="32px minmax(0,1fr) auto";r.style.setProperty("--c","var(--sbl-c-"+(e.cat||"fete")+")");r.querySelector("b").textContent=e.t;r.querySelector("small").textContent=e.s.split("-").reverse().join("/")+" · "+e.w;
-    r.querySelector(".lnk").onclick=async()=>{if(!confirm("Retirer « "+e.t+" » de l’agenda ?"))return;try{await accCall("/compte/sorties",{supprimer:e.id});r.remove();USER_EV=USER_EV.filter(x=>x.id!==e.id);merge();toast("Truc retiré")}catch(_){toast("Échec, réessayez.")}};l.append(r)})}).catch(()=>{})}
+    r.querySelector(".dp").onclick=()=>proposeForm("",{org:true,base:e});
+    r.querySelector(".rt").onclick=async()=>{if(!confirm("Retirer « "+e.t+" » de l’agenda ?"))return;try{await accCall("/compte/sorties",{supprimer:e.id});r.remove();USER_EV=USER_EV.filter(x=>x.id!==e.id);merge();toast("Truc retiré")}catch(_){toast("Échec, réessayez.")}};l.append(r)})}).catch(()=>{})}
 function formOrg(){
   const o=(ACC.c&&ACC.c.org)||{};
   const M=modal('<form id="fo" novalidate><div class="top"><div><div class="kind">Faiseur de trucs · gratuit</div><h2>Ma page organisateur</h2></div><button class="cl" type="button" data-close aria-label="Fermer">✕</button></div>'+
@@ -2276,6 +2302,41 @@ function signaler(e){
   $("sg-f").onsubmit=async ev=>{ev.preventDefault();if(!API){$("sg-err").textContent="Version de développement : les signalements partiront une fois le serveur en ligne.";return}
     try{const r=await fetch(API+"/signaler",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({sortie:e.id,titre:e.t,dep:e.z,raison:M.el.querySelector('[name="sg-r"]:checked').value,note:$("sg-n").value})});
       if(!r.ok)throw 0;M.close();toast("Merci ! On vérifie ce truc.")}catch(_){$("sg-err").textContent="L’envoi a échoué. Réessayez dans un instant."}}}
+/* ---------- Météo du week-end : s'il pleut, mettre en avant les trucs à l'abri ----------
+   Prévisions Open-Meteo (gratuit, sans clé ni cookie) pour le centre du secteur affiché, demandées une fois par session. */
+const ABRI=/\b(salle|salles|musee|musees|mediatheque|bibliotheque|eglise|cathedrale|basilique|theatre|cinema|auditorium|gymnase|halle|galerie|chateau|abbaye|centre culturel|espace culturel|maison de quartier|foyer|conservatoire|interieur|couvert|chapelle|patinoire|piscine)\b/;
+const estAbri=e=>ABRI.test(e.k)||e.cat==="culture";
+async function meteoWeekend(box){
+  if(KIOSK||!box)return;let c=null;
+  if(st.near)c=[st.near.la,st.near.lo];else{const pts=EVENTS.filter(e=>REGION.includes(e.z)&&e.lat);if(pts.length)c=[pts.reduce((a,e)=>a+e.lat,0)/pts.length,pts.reduce((a,e)=>a+e.lon,0)/pts.length]}
+  if(!c)return;const k="sbl-meteo:"+c.map(x=>x.toFixed(1)).join(",");let m=null;try{m=JSON.parse(sessionStorage.getItem(k)||"null")}catch(_){}
+  if(!m){try{const r=await fetch("https://api.open-meteo.com/v1/forecast?latitude="+c[0].toFixed(2)+"&longitude="+c[1].toFixed(2)+"&daily=precipitation_probability_max,weathercode&timezone=Europe%2FParis&forecast_days=7");
+      if(!r.ok)return;m=(await r.json()).daily;try{sessionStorage.setItem(k,JSON.stringify(m))}catch(_){}}catch(_){return}}
+  const t=today(),d=t.getDay(),sat=add(t,d===0?-1:(6-d)%7),jours=[sat,add(sat,1)].filter(x=>x>=t);
+  const pluie=jours.map(j=>{const i=m.time.indexOf(iso(j));return i>=0?{j,p:m.precipitation_probability_max[i]}:null}).filter(x=>x&&x.p>=60);
+  box.textContent="";if(!pluie.length)return;
+  const n=pickO(Object.assign({},st,{abri:1}),"we","").length;if(n<3)return;
+  const j=pluie.length===2?"ce week-end":(pluie[0].j.getDay()===6?"samedi":"dimanche");
+  const d2=document.createElement("button");d2.type="button";d2.className="sbl-meteo";
+  d2.innerHTML='<span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 15a4.5 4.5 0 1 1 1-8.9A6 6 0 0 1 19.5 9 4 4 0 0 1 18 16.8"/><path d="M8 19l-1 2M12 19l-1 2M16 19l-1 2"/></svg></span><span class="tx"><b></b><small>Toucher pour voir les trucs à l’abri</small></span>';
+  d2.querySelector("b").textContent="Il risque de pleuvoir "+j+" : "+n+" trucs à l’abri";d2.onclick=()=>{setQ("à l’abri ce week-end");explore("list")};box.append(d2)}
+
+/* ---------- Mon week-end : les favoris rangés par jour, à partager ---------- */
+function partagerListe(){const t=today(),ev=FAV.map(id=>EVENTS.find(e=>e.id===id)).filter(e=>e&&e.E>=t).sort((a,b)=>a.S-b.S);
+  if(!ev.length){toast("Gardez d’abord quelques trucs avec ♥");return}
+  const txt="Mes trucs à faire :\n"+ev.map(e=>"• "+e.t+" ("+when(e)+", "+e.w+") "+lienSortie(e)).join("\n");
+  if(navigator.share)navigator.share({title:"Mes trucs à faire",text:txt}).catch(()=>{});else navigator.clipboard.writeText(txt).then(()=>toast("Liste copiée : collez-la dans un message"),()=>{})}
+
+/* ---------- Mesure d'audience sans cookie (Cloudflare Web Analytics), seulement si un jeton est configuré ---------- */
+function audience(){const tk=CFG.analyticsToken;if(!tk||!/^[0-9a-f]{32}$/i.test(tk)||KIOSK)return;const sc=document.createElement("script");sc.defer=true;sc.src="https://static.cloudflareinsights.com/beacon.min.js";sc.setAttribute("data-cf-beacon",JSON.stringify({token:tk}));document.head.append(sc)}
+
+/* ---------- Borne : écran d'accueil animé quand personne ne l'utilise ---------- */
+function borneVeille(){if(!KIOSK)return;let tm,idx=0,rot;const el=document.createElement("div");el.className="sbl-veille";el.hidden=true;
+  el.innerHTML='<div class="vc"><div class="lg">'+document.querySelector(".sbl-brand").innerHTML+'</div><p class="k">Envie d’un truc à faire ?</p><div class="cd"></div><p class="go">Touchez l’écran pour découvrir les sorties autour d’ici</p></div>';ROOT.append(el);
+  const montrer=()=>{const t=today(),it=EVENTS.filter(e=>!e.long&&e.S>=t&&e.S<=add(t,7)&&REGION.includes(e.z)).sort((a,b)=>(b.img?1:0)-(a.img?1:0)).slice(0,12);if(!it.length)return;
+    el.hidden=false;const cd=el.querySelector(".cd");const tour=()=>{const e=it[idx++%it.length];cd.classList.remove("in");setTimeout(()=>{cd.textContent="";cd.append(card(e));cd.classList.add("in")},250)};tour();clearInterval(rot);rot=setInterval(tour,6000)};
+  const cacher=()=>{el.hidden=true;clearInterval(rot);clearTimeout(tm);tm=setTimeout(montrer,120000)};
+  ["pointerdown","keydown"].forEach(t=>addEventListener(t,ev=>{if(!el.hidden){ev.preventDefault();ev.stopPropagation()}cacher()},{capture:true}));cacher()}
 async function boot(){
   let data=JSON.parse($("sbl-data").textContent);
   if(CFG.dataUrl){try{const r=await fetch(CFG.dataUrl);if(r.ok)data=await r.json()}catch(_){}}
@@ -2299,7 +2360,7 @@ async function boot(){
   $("sbl-prop").onclick=()=>proposeForm(st.day||"");$("sbl-home").onclick=e=>{e.preventDefault();goHome()};$("sbl-mod").onclick=()=>API?apiRefresh().then(modPanel,modPanel):modPanel();sourceForm();
   await initParticip();modBadge();
   $("sbl-calacc").onclick=versOffres;$("sbl-footacc").querySelector("[data-acc]").onclick=versOffres;
-  initQuick();
+  initQuick();audience();borneVeille();
   if(H.get("sortie")){const id=H.get("sortie");Promise.resolve(ensureDeps(REGION)).then(()=>{const e=EVENTS.find(x=>x.id===id);if(e)sheet(e);else toast("Ce truc est passé ou n’existe plus.")})}
   accInit(H);chargerOrgs().then(()=>{if(H.get("org"))ouvrirOrg(H.get("org"))});if(accOn())setInterval(()=>{if(FICHES>=3)banniere()},4000);
   if(H.get("q")){setQ(H.get("q"));loadCommunes()}

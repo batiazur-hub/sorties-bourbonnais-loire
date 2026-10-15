@@ -99,7 +99,39 @@ def donnees():
                     ko(f"{genre} : {total.get(genre, 0)} fiches contre {a} dans la version publiée (chute de plus de 40 %)")
             except Exception:
                 pass
+    sources()
     print(f"Données : {total.get('dep', 0)} sorties, {total.get('lieux', 0)} lieux, {len(ids)} identifiants uniques.")
+
+
+NOMS_SOURCES = {"dt": "DATAtourisme", "oa": "OpenAgenda", "qfap": "Que faire à Paris", "marche": "Marchés de Paris", "src": "Sources régionales", "pal": "Le Pal"}
+
+
+def sources():
+    """Santé des sources : compare les sorties par source avec la version publiée.
+    Une source qui chute de plus de 60 % ou disparaît est signalée (annotation GitHub + résumé de l'exécution), sans bloquer."""
+    def compte(j):
+        c = {}
+        for d in (j or {}).get("departements", []):
+            for k, n in (d.get("sources") or {}).items():
+                c[k] = c.get(k, 0) + n
+        return c
+    try:
+        maint, avant = compte(charger("data/departements.json")), compte(publie("data/departements.json"))
+    except Exception:
+        return
+    lignes = ["| Source | Publiée | Maintenant | Évolution |", "|---|---:|---:|---:|"]
+    for k in sorted(set(maint) | set(avant), key=lambda x: -max(maint.get(x, 0), avant.get(x, 0))):
+        a, m = avant.get(k, 0), maint.get(k, 0)
+        evo = f"{(m - a) / a * 100:+.0f} %" if a else "nouvelle"
+        lignes.append(f"| {NOMS_SOURCES.get(k, k)} | {a} | {m} | {evo} |")
+        if a >= 50 and m < 0.4 * a:
+            msg = f"source « {NOMS_SOURCES.get(k, k)} » en forte baisse : {m} sorties contre {a} (à vérifier)"
+            avert(msg)
+            if os.environ.get("GITHUB_ACTIONS"):
+                print(f"::warning title=Source en baisse::{msg}")
+    if os.environ.get("GITHUB_STEP_SUMMARY"):
+        with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as h:
+            h.write("### Santé des sources\n\n" + "\n".join(lignes) + "\n")
 
 
 SECRETS = re.compile(r"(ADMIN_TOKEN\s*[:=]\s*['\"][^'\"]{6,}|OPENAGENDA_KEY\s*[:=]\s*['\"][^'\"]{6,}|ghp_[A-Za-z0-9]{20,}|"

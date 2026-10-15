@@ -189,7 +189,7 @@ P["cgu.html"] = ("Conditions générales d’utilisation", "Les règles d’util
 P["confidentialite.html"] = ("Politique de confidentialité", "Ce que le site enregistre, pourquoi, combien de temps, et comment exercer vos droits.", f"""
 <h2>En résumé</h2>
 <ul class="sum">
-<li>Consulter les sorties ne demande ni compte ni donnée personnelle. Pas de cookie publicitaire, pas de mesure d’audience.</li>
+<li>Consulter les sorties ne demande ni compte ni donnée personnelle. Pas de cookie, pas de publicité ; une mesure d’audience anonyme et sans cookie peut être activée.</li>
 <li>Le compte Trucophile est facultatif : il ne demande qu’une adresse e-mail. Votre commune et vos centres d’intérêt sont facultatifs.</li>
 <li>La newsletter n’est envoyée qu’avec votre accord explicite, confirmé par e-mail, et se désactive en un clic.</li>
 <li>Vos données ne sont jamais vendues ni cédées. Vous pouvez les télécharger ou supprimer votre compte vous-même, à tout moment.</li>
@@ -249,6 +249,8 @@ P["confidentialite.html"] = ("Politique de confidentialité", "Ce que le site en
 <tr><td>Cloudflare (États-Unis)</td><td>Serveur des comptes, des propositions et des sorties ajoutées par les visiteurs.</td></tr>
 <tr><td>Géoplateforme de l’IGN (France)</td><td>Fonds de carte.</td></tr>
 <tr><td>Wikipédia / Wikimedia</td><td>Photos des communes.</td></tr>
+<tr><td>Open-Meteo (Suisse)</td><td>Prévisions météo du week-end pour le secteur affiché (position approximative du secteur, jamais la vôtre).</td></tr>
+<tr><td>Cloudflare Web Analytics (si activé)</td><td>Mesure d’audience <strong>sans cookie</strong> ni identifiant : pages vues et pays, agrégés, sans suivi d’une visite à l’autre. Exemptée de consentement selon les recommandations de la CNIL.</td></tr>
 <tr><td>Sites des organisateurs</td><td>Affiches des événements, chargées depuis la source.</td></tr>
 </tbody></table></div>
 <p>Les polices de caractères et la bibliothèque d’affichage de la carte sont hébergées sur le site lui-même : aucun appel à Google Fonts ni à un réseau de diffusion tiers.</p>

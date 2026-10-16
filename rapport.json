@@ -1,0 +1,594 @@
+[
+ {
+  "label": "iphone14 accueil",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [
+   "déborde: sbl-qc 442",
+   "déborde: SPAN 427"
+  ],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "iphone14 liste",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [
+   "déborde: sbl-qc 442",
+   "déborde: SPAN 427"
+  ],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "iphone14 suggestions",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [
+   "déborde: sbl-qc 442",
+   "déborde: SPAN 427"
+  ],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "iphone14 recherche",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [
+   "déborde: sbl-qc 442",
+   "déborde: SPAN 427"
+  ],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "iphone14 fiche lieu",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [
+   "déborde: sbl-qc 442",
+   "déborde: SPAN 427"
+  ],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "iphone14 carte",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [
+   "déborde: sbl-qc 442",
+   "déborde: SPAN 427"
+  ],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "iphone14 bulle",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [
+   "déborde: sbl-qc 442",
+   "déborde: SPAN 427"
+  ],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "iphone14 calendrier",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [
+   "déborde: sbl-qc 442",
+   "déborde: SPAN 427"
+  ],
+  "tiny": [
+   "nb=10.88",
+   "SMALL=11.2"
+  ],
+  "smallTap": []
+ },
+ {
+  "label": "iphone14 proposer",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [
+   "déborde: sbl-qc 442",
+   "déborde: SPAN 427"
+  ],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "iphone14 départements",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [
+   "déborde: sbl-qc 442",
+   "déborde: SPAN 427"
+  ],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "iphone14 api haut",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "iphone14 api widgets",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "iphone14 api rest",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "iphone14 api essayer",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "iphone14 erreurs JS",
+  "errs": [
+   "/api.trucsafaire.fr/agenda due to access control checks.",
+   "/api.trucsafaire.fr/orgs due to access control checks."
+  ]
+ },
+ {
+  "label": "iphoneSE accueil",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [
+   "déborde: sbl-qc 442"
+  ],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "iphoneSE liste",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [
+   "déborde: sbl-qc 442"
+  ],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "iphoneSE suggestions",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [
+   "déborde: sbl-qc 442"
+  ],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "iphoneSE recherche",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [
+   "déborde: sbl-qc 442"
+  ],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "iphoneSE fiche lieu",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [
+   "déborde: sbl-qc 442"
+  ],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "iphoneSE carte",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [
+   "déborde: sbl-qc 442"
+  ],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "iphoneSE bulle",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [
+   "déborde: sbl-qc 442"
+  ],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "iphoneSE calendrier",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [
+   "déborde: sbl-qc 442",
+   "coupé: SPAN «Calendrier»"
+  ],
+  "tiny": [
+   "nb=10.88",
+   "SMALL=11.2"
+  ],
+  "smallTap": []
+ },
+ {
+  "label": "iphoneSE proposer",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [
+   "déborde: sbl-qc 442"
+  ],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "iphoneSE départements",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [
+   "déborde: sbl-qc 442"
+  ],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "iphoneSE api haut",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "iphoneSE api widgets",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "iphoneSE api rest",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "iphoneSE api essayer",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "iphoneSE erreurs JS",
+  "errs": [
+   "/api.trucsafaire.fr/orgs due to access control checks.",
+   "/api.trucsafaire.fr/agenda due to access control checks."
+  ]
+ },
+ {
+  "label": "pixel7 accueil",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [
+   "déborde: sbl-qc 438",
+   "déborde: SPAN 423"
+  ],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "pixel7 liste",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [
+   "déborde: sbl-qc 438",
+   "déborde: SPAN 423"
+  ],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "pixel7 suggestions",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [
+   "déborde: sbl-qc 438",
+   "déborde: SPAN 423"
+  ],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "pixel7 recherche",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [
+   "déborde: sbl-qc 438",
+   "déborde: SPAN 423"
+  ],
+  "tiny": [
+   "SMALL=11.2"
+  ],
+  "smallTap": []
+ },
+ {
+  "label": "pixel7 fiche lieu",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [
+   "déborde: sbl-qc 438",
+   "déborde: SPAN 423"
+  ],
+  "tiny": [
+   "SMALL=11.2"
+  ],
+  "smallTap": []
+ },
+ {
+  "label": "pixel7 carte",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [
+   "déborde: sbl-qc 438",
+   "déborde: SPAN 423"
+  ],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "pixel7 bulle",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [
+   "déborde: sbl-qc 438",
+   "déborde: SPAN 423"
+  ],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "pixel7 calendrier",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [
+   "déborde: sbl-qc 438",
+   "déborde: SPAN 423"
+  ],
+  "tiny": [
+   "nb=10.88",
+   "SMALL=11.2"
+  ],
+  "smallTap": []
+ },
+ {
+  "label": "pixel7 proposer",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [
+   "déborde: sbl-qc 438",
+   "déborde: SPAN 423"
+  ],
+  "tiny": [
+   "SMALL=11.2"
+  ],
+  "smallTap": []
+ },
+ {
+  "label": "pixel7 départements",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [
+   "déborde: sbl-qc 438",
+   "déborde: SPAN 423"
+  ],
+  "tiny": [
+   "SMALL=11.2"
+  ],
+  "smallTap": []
+ },
+ {
+  "label": "pixel7 api haut",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "pixel7 api widgets",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "pixel7 api rest",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "pixel7 api essayer",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "pixel7 erreurs JS",
+  "errs": []
+ },
+ {
+  "label": "galaxyS9 accueil",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [
+   "déborde: sbl-qc 438"
+  ],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "galaxyS9 liste",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [
+   "déborde: sbl-qc 438"
+  ],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "galaxyS9 suggestions",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [
+   "déborde: sbl-qc 438"
+  ],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "galaxyS9 recherche",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [
+   "déborde: sbl-qc 438"
+  ],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "galaxyS9 fiche lieu",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [
+   "déborde: sbl-qc 438"
+  ],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "galaxyS9 carte",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [
+   "déborde: sbl-qc 438"
+  ],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "galaxyS9 bulle",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [
+   "déborde: sbl-qc 438"
+  ],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "galaxyS9 calendrier",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [
+   "déborde: sbl-qc 438",
+   "coupé: SPAN «Calendrier»"
+  ],
+  "tiny": [
+   "nb=10.88",
+   "SMALL=11.2"
+  ],
+  "smallTap": []
+ },
+ {
+  "label": "galaxyS9 proposer",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [
+   "déborde: sbl-qc 438"
+  ],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "galaxyS9 départements",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [
+   "déborde: sbl-qc 438"
+  ],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "galaxyS9 api haut",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "galaxyS9 api widgets",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "galaxyS9 api rest",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "galaxyS9 api essayer",
+  "overlap": [],
+  "overflowX": 0,
+  "clipped": [],
+  "tiny": [],
+  "smallTap": []
+ },
+ {
+  "label": "galaxyS9 erreurs JS",
+  "errs": []
+ }
+]

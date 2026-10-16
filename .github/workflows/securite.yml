@@ -1,0 +1,76 @@
+name: Agent de sécurité
+# Vérifie que rien ne peut être piraté ni lu par le public :
+#  - secrets (clés, codes, jetons) dans tout l'historique du dépôt, avec gitleaks ;
+#  - code du site et du serveur, fichiers publiés, GitHub Actions, données (scripts/securite.py) ;
+#  - site et serveur en ligne : fichiers internes cachés, espace éditeur fermé, CORS, en-têtes (scripts/securite.py --en-ligne).
+# En cas de problème grave : le contrôle échoue (GitHub prévient par e-mail) et un ticket « Alerte sécurité » est ouvert.
+on:
+  push:
+    branches: [main]
+    paths-ignore: ["data/**"]
+  pull_request:
+  schedule:
+    - cron: "12 6 * * 1"  # chaque lundi matin
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  depot:
+    name: Dépôt (secrets et code)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - uses: actions/setup-node@v4
+        with: { node-version: "22" }
+      - name: Secrets dans tout l'historique (gitleaks)
+        run: |
+          v=8.21.2; f=gitleaks_${v}_linux_x64.tar.gz
+          curl -sSfL -o $f https://github.com/gitleaks/gitleaks/releases/download/v$v/$f
+          echo "5bc41815076e6ed6ef8fbecc9d9b75bcae31f39029ceb55da08086315316e3ba  $f" | sha256sum -c -
+          tar xzf $f gitleaks
+          ./gitleaks git . --config .gitleaks.toml --no-banner --redact -v --log-opts="--all -- . :(exclude)data"
+      - name: Contrôles du dépôt
+        run: python scripts/securite.py
+      - name: Tests de sécurité du serveur
+        run: node --test tests/worker.test.mjs
+
+  en-ligne:
+    name: Site et serveur en ligne
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: Laisser le temps au déploiement
+        if: github.event_name == 'push'
+        run: sleep 180
+      - name: Contrôles en ligne
+        env:
+          WORKERS_DEV_URL: ${{ vars.WORKERS_DEV_URL }}
+        run: python scripts/securite.py --en-ligne
+
+  alerte:
+    name: Ticket d'alerte
+    needs: [depot, en-ligne]
+    if: failure() && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Ouvrir ou compléter le ticket « Alerte sécurité »
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          LIEN: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          corps="Le contrôle de sécurité a trouvé un problème grave. Détail : $LIEN"
+          n=$(gh issue list --state open --label securite --json number --jq '.[0].number' 2>/dev/null || true)
+          if [ -n "$n" ]; then gh issue comment "$n" --body "$corps"; else
+            gh label create securite --color B60205 --description "Alertes de l'agent de sécurité" 2>/dev/null || true
+            gh issue create --title "Alerte sécurité" --label securite --body "$corps"; fi

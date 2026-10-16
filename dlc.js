@@ -182,6 +182,7 @@
     return "du " + a.getDate() + (a.getMonth() === b.getMonth() ? "" : " " + MOIS[a.getMonth()]) + " au " + b.getDate() + " " + MOIS[b.getMonth()];
   }
   function el(tag, cls, txt) { var e = d.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+  function sur(u) { u = String(u || ""); return /^https?:\/\/[^\s"<>]+$/i.test(u) ? u : ""; }  // liens http(s) seulement : jamais de « javascript: » chez un partenaire
   function cible(x) { var e = typeof x === "string" ? d.querySelector(x) : x; if (!e) throw Erreur("element_introuvable", 0, "Élément introuvable : " + x); return e; }
   var cssPose = false;
   function css() {
@@ -217,7 +218,7 @@
     box.append(p);
   }
   function fiche(x, o) {
-    var lieu = !!x.nom, lien = lieu ? x.site : x.lien, f = el(lien ? "a" : "div", "dlc-f");
+    var lieu = !!x.nom, lien = sur(lieu ? x.site : x.lien), f = el(lien ? "a" : "div", "dlc-f");
     if (lien) { f.href = lien; f.target = "_blank"; f.rel = "noopener"; }
     var im = el("div", "dlc-img"); im.style.setProperty("--t", COULEURS[x.type] || "#555");
     if (x.image) im.style.backgroundImage = "url(\"" + String(x.image).replace(/["\\]/g, "") + "\")";
@@ -303,7 +304,7 @@
     map.on("click", "dlc-grp", function (e) { var f = e.features[0]; map.getSource("dlc").getClusterExpansionZoom(f.properties.cluster_id).then(function (z) { map.easeTo({ center: f.geometry.coordinates, zoom: z + .3 }); }); });
     map.on("click", "dlc-pt", function (e) { var x = self._items[e.features[0].properties.i]; if (!x) return;
       if (self.options.auClic && self.options.auClic(x, e) === false) return;
-      var box = el("div", "dlc-pop"), lieu = !!x.nom, lien = lieu ? x.site : x.lien;
+      var box = el("div", "dlc-pop"), lieu = !!x.nom, lien = sur(lieu ? x.site : x.lien);
       box.append(el("small", null, lieu ? (NOMS[x.type] || "") : dateCourte(x)), el("b", null, lieu ? x.nom : x.titre), el("span", null, x.commune || ""));
       if (lien) { var a = el("a", null, lieu ? "Site du lieu" : "Voir la fiche"); a.href = lien; a.target = "_blank"; a.rel = "noopener"; box.append(el("br"), a); }
       new w.maplibregl.Popup({ offset: 10, maxWidth: "260px" }).setLngLat(e.features[0].geometry.coordinates).setDOMContent(box).addTo(map); });

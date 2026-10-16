@@ -33,7 +33,7 @@ jobs:
       - name: Publication sur Cloudflare
         working-directory: worker
         env: { CLOUDFLARE_API_TOKEN: "${{ secrets.CLOUDFLARE_API_TOKEN }}" }
-        run: npx --yes wrangler@4 deploy
+        run: npx --yes wrangler@4.151.0 deploy
       - name: Secrets du serveur
         working-directory: worker
         env:
@@ -44,7 +44,7 @@ jobs:
         run: |
           for n in ADMIN_TOKEN BREVO_KEY SIGNATURE_KEY; do
             v="${!n}"
-            if [ -n "$v" ]; then printf '%s' "$v" | npx --yes wrangler@4 secret put "$n" >/dev/null && echo "$n : envoyé"; else echo "$n : non renseigné, inchangé"; fi
+            if [ -n "$v" ]; then printf '%s' "$v" | npx --yes wrangler@4.151.0 secret put "$n" >/dev/null && echo "$n : envoyé"; else echo "$n : non renseigné, inchangé"; fi
           done
       - name: Le serveur répond
         run: |

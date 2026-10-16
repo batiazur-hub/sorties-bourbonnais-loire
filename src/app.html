@@ -936,7 +936,7 @@ const CFG=Object.assign({
   tiles:"auto",          // "ign" (Plan IGN, Géoplateforme), "osm", "none" ou "auto" (IGN hors aperçu Claude)
   theme:null,            // ex. {accent:"#0a6ebd", head:"#0b2e4f", font:"Montserrat, sans-serif", radius:"8px"}
   inheritFont:false,     // true : reprend la police du site hôte
-  apiUrl:null            // adresse du serveur des propositions (Cloudflare Worker), ex. "https://trucs-a-faire.xxx.workers.dev"
+  apiUrl:null            // adresse du serveur des propositions (Cloudflare Worker), ex. "https://api.trucsafaire.fr"
 },window.SORTIES_CONFIG||{});
 const ROOT=document.getElementById("sbl");
 const inViewer=!!window.claude;
@@ -1195,7 +1195,7 @@ function paint(el,w,z,large){
   townPhoto(w,z).then(r=>{if(!r)return;const try1=large?big(r.u):r.u;const im=new Image();
     im.onload=()=>{el.style.backgroundImage='url("'+im.src+'")';el.classList.add("ph")};
     im.onerror=()=>{if(im.src!==r.u)im.src=r.u};im.src=try1;
-    if(large){const c=el.querySelector(".cr");if(c&&r.page){c.hidden=false;c.href=r.page}}});
+    if(large){const c=el.querySelector(".cr");if(c&&okUrl(r.page)){c.hidden=false;c.href=r.page}}});
 }
 const lazy=("IntersectionObserver" in window)?new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){lazy.unobserve(en.target);paint(en.target,en.target.dataset.w,en.target.dataset.z)}}),{rootMargin:"200px"}):null;
 /* Vignettes : l'affiche de la sortie si elle existe, sinon l'illustration de sa catégorie (plus parlante qu'une photo de la commune) */
@@ -1292,7 +1292,7 @@ function setOpen(w,on){
 /* Liens d'une sortie : billetterie (b) et site ou page de l'événement (u). Les anciennes données n'ont que u : on reconnaît alors les billetteries d'après l'adresse. */
 const TICKET=/billet|ticket|helloasso|weezevent|festik|yurplan|shotgun\.live|eventbrite|digitick|fnacspectacles|placeminute|tickandlive|mapado|ticketac|francebillet|billetreduc|seetickets|regiondo|rezdy|^boutique\.|\/boutique|reservation|reserver|\/booking|\/book\/|\/tickets?\b|\/inscription/i;
 function isTicket(u){const m=/^https?:\/\/([^\/?#]+)([^?#]*)/i.exec(u||"");return !!m&&(TICKET.test(m[1].toLowerCase().replace(/^www\./,""))||TICKET.test(m[2]))}
-function okUrl(u){return /^https?:\/\/[^\/\s]+\.[^\/\s]+/i.test(u||"")&&!/\.\.\.|…/.test(u)}
+function okUrl(u){return /^https?:\/\/[^\/\s?#]+\.[^\s]+$/i.test(String(u||"").trim().replace(/ /g,"%20"))&&!/\.\.\.|…|["<>\\`]/.test(u)}
 function evLinks(e){let u=okUrl(e.u)?e.u:"",b=okUrl(e.b)?e.b:"";if(!b&&isTicket(u)){b=u;u=""}if(u===b)u="";return{u,b}}
 function siteLabel(u){const h=(/^https?:\/\/([^\/?#]+)/i.exec(u)||[])[1]||"";
   if(/facebook\.com|fb\.me/i.test(h))return"Page Facebook";if(/instagram\.com/i.test(h))return"Instagram";
@@ -1584,10 +1584,10 @@ function sheet(e){
   {const bd=badge(e);if(bd){bd.classList.add("lg");$("sbl-st").after(bd)}}
   const hero=$("sbl-hero");hero.style.setProperty("--pc","var(--sbl-p-"+e.cat+")");hero.classList.add("il");hero.style.setProperty("--il",'url("'+illu(e.cat)+'")');
   if(e.img){const im=new Image();im.onload=()=>{hero.classList.add("ph","poster");hero.style.setProperty("--img",'url("'+im.src+'")');const p=document.createElement("img");p.className="pst";p.src=im.src;p.alt="Affiche : "+e.t;hero.prepend(p);
-      const c=hero.querySelector(".cr");c.hidden=false;c.textContent="Image : "+e.src;if(e.u)c.href=e.u;else c.removeAttribute("href")};im.onerror=()=>paint(hero,e.w,e.z,true);im.src=e.img}
+      const c=hero.querySelector(".cr");c.hidden=false;c.textContent="Image : "+e.src;if(okUrl(e.u))c.href=e.u;else c.removeAttribute("href")};im.onerror=()=>paint(hero,e.w,e.z,true);im.src=e.img}
   else paint(hero,e.w,e.z,true);
   $("sbl-sw").textContent=when(e)+(e.n?" (et "+e.n+" autre"+(e.n>1?"s":"")+" date"+(e.n>1?"s":"")+")":"")+(e.g?" · Gratuit":"");$("sbl-sl").textContent=e.lieu+(e.lieu!==e.w?", "+e.w:"");$("sbl-sd").textContent=e.d;
-  const u=$("sbl-su");if(e.u)u.href=e.u;else u.removeAttribute("href");u.textContent=e.src;
+  const u=$("sbl-su");if(okUrl(e.u))u.href=e.u;else u.removeAttribute("href");u.textContent=e.src;
   {const L=evLinks(e),lk=$("sbl-lk");
     if(KIOSK){const q=L.b||L.u;if(q){lk.hidden=false;kioskQR(lk,q,L.b?"Scannez pour réserver vos places":"Scannez pour voir le site de l’événement")}}
     else{if(L.b)lk.append(linkBtn(L.b,"Réserver · Billetterie","ticket",true));if(L.u)lk.append(linkBtn(L.u,siteLabel(L.u),"ext",!L.b));lk.hidden=!lk.children.length}}
@@ -1672,7 +1672,7 @@ function renderLieux(){
     b.setAttribute("aria-label",KIND[x.k][0]+" : "+x.t+", "+x.w);el.append(b);
     const pop=new maplibregl.Popup({offset:[0,-16],maxWidth:"290px",focusAfterOpen:false}).setHTML('<div class="sbl-pop lvp"><div class="k">'+kIcon(x.k,15)+' '+KIND[x.k][0]+'</div><h4>'+escH(x.t)+'</h4>'+
       (x.l?'<p class="lb">'+escH(x.l)+'</p>':'')+'<p>'+escH(x.w)+'</p>'+(()=>{const st=lieuStatut(x);return st&&st.txt?'<p class="when '+(st.open?"ok":"ko")+'">'+escH(st.txt)+'</p>':''})()+
-      (x.tel?'<p><a href="tel:'+x.tel.replace(/\s/g,"")+'">'+escH(x.tel)+'</a></p>':'')+'<button type="button" class="sbl-btn go" data-see="1">Voir '+(x.k==="office"?"l’office":"le lieu")+'</button></div>');
+      (x.tel?'<p><a href="tel:'+escH(String(x.tel).replace(/[^0-9+]/g,""))+'">'+escH(x.tel)+'</a></p>':'')+'<button type="button" class="sbl-btn go" data-see="1">Voir '+(x.k==="office"?"l’office":"le lieu")+'</button></div>');
     pop.on("open",()=>{fitPopup(pop);const s=pop.getElement().querySelector("[data-see]");if(s)s.onclick=()=>{pop.remove();lieuSheet(x)}});
     if(PHONE())el.addEventListener("click",ev=>{ev.stopPropagation();mobilePop(pop)});
     lvMarks.push(new maplibregl.Marker({element:el,anchor:"center"}).setLngLat([x.lon,x.lat]).setPopup(PHONE()?null:pop).addTo(map));el.removeAttribute("tabindex");el.removeAttribute("aria-label");el.removeAttribute("role")});
@@ -1707,12 +1707,12 @@ function lieuSheet(x){
       if(st.detail){const d=document.createElement("span");d.className="sbl-ohd";d.textContent=st.detail;o.append(d)}
       $("sbl-ohh").textContent="Horaires indicatifs : jours fériés et fermetures exceptionnelles non pris en compte, vérifiez auprès du lieu."}
     else{o.textContent="Non communiqués";$("sbl-ohh").textContent="Horaires et tarifs : consultez le site du lieu avant de vous déplacer."}}
-  {const t=$("sbl-tel");if(x.tel){const a=document.createElement("a");a.href="tel:"+x.tel.replace(/\s/g,"");a.textContent=x.tel;t.append(a)}else{t.previousSibling.remove();t.remove()}}
-  const u=$("sbl-su");if(x.u){u.href=x.u;u.textContent=x.u.replace(/^https?:\/\/(www\.)?/,"").replace(/\/$/,"").slice(0,48)}else u.closest("dd").previousSibling.remove(),u.closest("dd").remove();
+  {const t=$("sbl-tel");if(x.tel){const a=document.createElement("a");a.href="tel:"+String(x.tel).replace(/[^0-9+]/g,"");a.textContent=x.tel;t.append(a)}else{t.previousSibling.remove();t.remove()}}
+  const u=$("sbl-su");if(okUrl(x.u)){u.href=x.u;u.textContent=x.u.replace(/^https?:\/\/(www\.)?/,"").replace(/\/$/,"").slice(0,48)}else u.closest("dd").previousSibling.remove(),u.closest("dd").remove();
   $("sbl-gps").innerHTML=gps(x.lat,x.lon,x.t+", "+x.w);
   if(KIOSK)kioskQR($("sbl-gps"),"https://www.google.com/maps/dir/?api=1&destination="+x.lat+","+x.lon,"Scannez avec votre téléphone pour l’itinéraire");
   const hero=$("sbl-hero");
-  lieuPhoto(x).then(r=>{if(r){const im=new Image();im.onload=()=>{hero.style.backgroundImage='url("'+im.src+'")';hero.classList.add("ph");const c=hero.querySelector(".cr");if(r.page){c.hidden=false;c.href=r.page}};im.src=big(r.u)}else paint(hero,x.w,x.z,true)});
+  lieuPhoto(x).then(r=>{if(r){const im=new Image();im.onload=()=>{hero.style.backgroundImage='url("'+im.src+'")';hero.classList.add("ph");const c=hero.querySelector(".cr");if(okUrl(r.page)){c.hidden=false;c.href=r.page}};im.src=big(r.u)}else paint(hero,x.w,x.z,true)});
   const ne=nearEvents(x,3);if(ne.length){const box=$("sbl-ne");box.hidden=false;ne.forEach(e=>{const b=document.createElement("button");b.type="button";b.className="sbl-cd";b.style.setProperty("--c","var(--sbl-c-"+e.cat+")");
     b.innerHTML='<span class="tm">'+icon(e.cat,15)+'<span></span></span><span class="tx"><b></b><small></small></span>';b.querySelector(".tm span").textContent=e.S<today()?"en cours":e.S.getDate()+" "+MO[e.S.getMonth()];
     b.querySelector("b").textContent=e.t;b.querySelector("small").textContent=e.w;b.onclick=()=>sheet(e);box.append(b)})}
@@ -1832,7 +1832,7 @@ async function apiAdmin(){
 }
 /* Opérations d'édition, identiques en mode Claude (base partagée) et en mode serveur (Worker) */
 const BK={
-  async publish(uid,i,x,e){if(API){await apiCall("/admin/publish",{id:x.id,event:e});USER_EV=USER_EV.filter(o=>o.id!==x.id).concat([e]);merge();API_LIST.propositions=API_LIST.propositions.filter(o=>o.id!==x.id);modBadge();return}
+  async publish(uid,i,x,e){if(API){const rp=await apiCall("/admin/publish",{id:x.id,event:e});if(rp&&rp.sortie)e=rp.sortie;USER_EV=USER_EV.filter(o=>o.id!==x.id).concat([e]);merge();API_LIST.propositions=API_LIST.propositions.filter(o=>o.id!==x.id);modBadge();return}
     await PX.db.doc("agenda/"+x.id).set(e);await setItem("propositions",uid,i,{statut:"valide"})},
   async refuse(uid,i,x){if(API){await apiCall("/admin/refuse",{id:x.id});API_LIST.propositions=API_LIST.propositions.filter(o=>o.id!==x.id);modBadge();return}
     await setItem("propositions",uid,i,{statut:"refuse"})},
@@ -1996,6 +1996,8 @@ function modPanel(){
     const val=k=>r.querySelector("#"+id(k)).value.trim(),err=r.querySelector(".sbl-err"),btns=r.querySelectorAll("button");
     r.onsubmit=async ev=>{ev.preventDefault();err.textContent="";
       const t=val("t"),cat=val("c"),w=val("w"),sd=val("s");if(t.length<4||!sd||!w){err.textContent="Titre, date et commune sont nécessaires.";return}
+      {const wl=k=>{const v=val(k);return /^www\./i.test(v)?"https://"+v:v};["u","b","i"].forEach(k=>{r.querySelector("#"+id(k)).value=wl(k)})}
+      if(["u","b"].some(k=>val(k)&&!okUrl(val(k)))||(val("i")&&!/^https:\/\//i.test(val("i")))){err.textContent="Lien refusé : adresses en https:// (ou http://) uniquement, et https:// pour l’affiche.";return}
       let la=x.lat,lo=x.lon,z=x.z,wn=w;if(PKEY(w)!==PKEY(x.w||"")){await loadCommunes();PIDX=null;const c=placeIndex().m.get(PKEY(w));if(!c){err.textContent="Commune introuvable : choisissez-la dans la liste.";return}wn=c[0];z=c[1];la=c[2];lo=c[3]}
       btns.forEach(b=>b.disabled=true);
       try{const e={id:x.id,t,cat,z,w:wn,lieu:val("l")||wn,s:sd,d:val("d"),u:val("u"),src:x.org?"Proposé par "+x.org:"Proposé par un habitant",lat:la,lon:lo,p:1};

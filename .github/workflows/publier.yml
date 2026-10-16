@@ -37,7 +37,7 @@ jobs:
         run: |
           mkdir _site
           # tout ce qui est public, sans les outils internes (scripts, tests, serveur, documents de travail)
-          git ls-files -z | grep -zv -E '^(\.github/|scripts/|tests/|worker/|docs/|README\.md$|\.gitignore$)' | xargs -0 cp --parents -t _site
+          git ls-files -z | grep -zv -E '^(\.github/|scripts/|tests/|worker/|docs/|README\.md$|\.gitignore$|\.gitleaks\.toml$)' | xargs -0 cp --parents -t _site
           touch _site/.nojekyll
           # version du cache hors ligne = empreinte de la page : chaque publication renouvelle l'appli installée
           v=$(sha1sum _site/index.html | cut -c1-10); sed -i "s/^const VERSION = \"[^\"]*\"/const VERSION = \"taf-$v\"/" _site/sw.js; grep -q "taf-$v" _site/sw.js

@@ -26,7 +26,7 @@ Relancer un déploiement à la main : onglet Actions → « Déploiement du serv
 5. **Réglages** : *Settings → Variables and Secrets* :
    - `ORIGINS` (texte) : `https://batiazur-hub.github.io` (ajouter le futur nom de domaine, séparé par une virgule) ;
    - `ADMIN_TOKEN` (secret) : un long mot de passe, c'est le **code éditeur** demandé pour valider.
-6. **Brancher le site** : recopier l'adresse du Worker (`https://trucs-a-faire.<compte>.workers.dev`)
+6. **Brancher le site** : recopier l'adresse du Worker (`https://api.trucsafaire.fr` ; l'adresse `*.workers.dev` est désactivée pour la sécurité)
    dans `config.js`, champ `apiUrl`.
 
 ## Utilisation
@@ -47,7 +47,7 @@ documentée sur la page `api.html` du site. Chaque appel exige une clé.
   sites autorisés (pour un usage depuis un navigateur), notes.
 - **Bibliothèque JavaScript** : le serveur sert aussi `/v1/dlc.js` (copie de `dlc.js` publiée sur le site,
   avec son adresse déjà réglée). Les sites l'incluent comme Google Maps :
-  `<script src="https://trucs-a-faire.<compte>.workers.dev/v1/dlc.js?key=dlc_…&callback=initTrucs" async></script>`.
+  `<script src="https://api.trucsafaire.fr/v1/dlc.js?key=dlc_…&callback=initTrucs" async></script>`.
   Pour une clé utilisée dans un navigateur, renseigner toujours les **sites autorisés**.
 - Le serveur lit les données publiées sur GitHub Pages (variable facultative `DATA_URL` pour en changer)
   et les garde 30 minutes en cache.

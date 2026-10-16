@@ -23,7 +23,7 @@
 
 import { comptes, purgerInactifs, verifierOrg, suspendreOrg, supprimerOrgAdmin, signatureValide } from "./comptes.js";
 import { envoyerLot, pourCompte, semaine } from "./newsletter.js";
-import { motRefuse, egal, limite, epuise, tout, agenda, publier, retirer } from "./commun.js";
+import { motRefuse, egal, limite, epuise, tout, agenda, publier, retirer, lienSur, imageSure, sortiePropre, securiser } from "./commun.js";
 
 const DATA_DEFAUT = "https://trucsafaire.fr/data/";
 const TYPES_SORTIES = ["brocante", "fete", "spectacle", "culture", "famille", "sport", "pal"];
@@ -178,7 +178,7 @@ async function api(req, env, url, p, ctx) {
     if (parDistance) L.sort((a, b) => dist(a) - dist(b));
     const total = L.length; L = L.slice((page - 1) * limite, page * limite);
     return rep({ total, page, limite, resultats: L.map(x => ({ id: x.id, nom: x.t, type: x.k, commune: x.w, departement: x.z, adresse: x.a || "",
-      description: x.d || "", site: x.u || "", telephone: x.tel || "", horaires_osm: x.oh || "", label: x.l || "", principal: !!x.m,
+      description: x.d || "", site: lienSur(x.u), telephone: String(x.tel || "").replace(/[^0-9+ ;]/g, ""), horaires_osm: x.oh || "", label: x.l || "", principal: !!x.m,
       latitude: x.lat, longitude: x.lon, distance_km: dist(x), source: x.src || "DATAtourisme" })) });
   }
   if (p === "/v1/sorties") {
@@ -197,7 +197,7 @@ async function api(req, env, url, p, ctx) {
     E.sort((a, b) => (longue(a) - longue(b)) || (parDistance ? dist(a) - dist(b) : 0) || (deb(a) < deb(b) ? -1 : deb(a) > deb(b) ? 1 : (a.h || "99") < (b.h || "99") ? -1 : 1));
     const total = E.length; E = E.slice((page - 1) * limite, page * limite);
     return rep({ total, page, limite, du, au, resultats: E.map(e => ({ id: e.id, titre: e.t, type: e.cat, debut: e.s, fin: e.e || e.s, heure: e.h || "",
-      autres_dates: e.n || 0, commune: e.w, departement: e.z, lieu: e.lieu || "", description: e.d || "", lien: e.u || "", billetterie: e.b || "", image: e.img || "",
+      autres_dates: e.n || 0, commune: e.w, departement: e.z, lieu: e.lieu || "", description: e.d || "", lien: lienSur(e.u), billetterie: lienSur(e.b), image: imageSure(e.img),
       gratuit: !!e.g, latitude: e.lat, longitude: e.lon, distance_km: dist(e), source: e.src || "" })) });
   }
   return json({ erreur: "introuvable" }, 404, cors);
@@ -207,9 +207,9 @@ export default {
   /* Tâches planifiées (wrangler.toml) : purge hebdomadaire des comptes inactifs ; « Le Truc de la semaine » le jeudi matin */
   async scheduled(evt, env, ctx) { ctx.waitUntil(String(evt.cron || "").endsWith(" 4") ? envoyerLot(env) : purgerInactifs(env)); },
   async fetch(req, env, ctx) {
-    try { return await traiter(req, env, ctx); }
+    try { return securiser(await traiter(req, env, ctx)); }
     catch (e) {  // jamais de page d'erreur HTML sans CORS : le site affiche un message propre
-      return json({ erreur: "erreur_serveur", message: "Erreur interne, réessayez dans un instant." }, 500, Object.assign({ "Access-Control-Allow-Origin": "*" }, corsPour(req, env)));
+      return securiser(json({ erreur: "erreur_serveur", message: "Erreur interne, réessayez dans un instant." }, 500, Object.assign({ "Access-Control-Allow-Origin": "*" }, corsPour(req, env))));
     }
   }
 };
@@ -245,11 +245,13 @@ async function traiter(req, env, ctx) {
       if (b.type === "sources") {
         const s = { id: id(), url: texte(b.url, 200), note: texte(b.note, 200), statut: "nouvelle", envoye: ici };
         if (s.url.length < 4) return json({ erreur: "incomplet" }, 400, cors);
+        if (/^[a-z][a-z0-9+.-]*:/i.test(s.url) && !lienSur(s.url)) return json({ erreur: "lien_refuse", message: "Seules les adresses en http:// ou https:// sont acceptées." }, 400, cors);
         await env.DLC.put("s:" + s.id, JSON.stringify(s)); return json({ ok: true }, 200, cors);
       }
       const x = { id: id(), t: texte(b.t, 90), cat: texte(b.cat, 20), s: texte(b.s, 10), e: texte(b.e, 10), h: texte(b.h, 5), w: texte(b.w, 80),
-                  z: texte(b.z, 3), lieu: texte(b.lieu, 90), d: texte(b.d, 400), u: texte(b.u, 300), b: texte(b.b, 300), img: texte(b.img, 400), org: texte(b.org, 60),
+                  z: texte(b.z, 3).toUpperCase(), lieu: texte(b.lieu, 90), d: texte(b.d, 400), u: lienSur(b.u), b: lienSur(b.b), img: imageSure(b.img), org: texte(b.org, 60),
                   lat: +b.lat, lon: +b.lon, statut: "en_attente", envoye: ici };
+      if (x.cat && !TYPES_SORTIES.includes(x.cat)) x.cat = "";
       if (x.t.length < 4 || !/^\d{4}-\d{2}-\d{2}$/.test(x.s) || !x.w || !isFinite(x.lat) || !isFinite(x.lon)) return json({ erreur: "incomplet" }, 400, cors);
       await env.DLC.put("p:" + x.id, JSON.stringify(x), { expirationTtl: 60 * 60 * 24 * 120 });
       return json({ ok: true }, 200, cors);
@@ -290,9 +292,10 @@ async function traiter(req, env, ctx) {
       let b = {}; try { b = await req.json(); } catch {}
       const k = texte(b.id, 40);
       if (p === "/admin/publish" && b.event) {
-        const e = b.event; e.id = k; e.p = 1;
+        const e = sortiePropre(Object.assign({}, b.event, { id: k }));  // jamais d'objet brut dans l'agenda public
+        if (!e.id || e.t.length < 2 || !e.s || !e.cat || !e.w || !isFinite(e.lat) || !isFinite(e.lon)) return json({ erreur: "sortie_invalide" }, 400, cors);
         await publier(env, e);
-        await env.DLC.delete("p:" + k); return json({ ok: true }, 200, cors);
+        await env.DLC.delete("p:" + k); return json({ ok: true, sortie: e }, 200, cors);
       }
       if (p === "/admin/org/verifier") { const o = await verifierOrg(env, texte(b.slug, 40), b.verifie !== false); return o ? json({ ok: true, org: o }, 200, cors) : json({ erreur: "introuvable" }, 404, cors); }
       if (p === "/admin/org/suspendre") { const o = await suspendreOrg(env, texte(b.slug, 40), b.suspendu !== false, b.motif); return o ? json({ ok: true, org: o }, 200, cors) : json({ erreur: "introuvable" }, 404, cors); }

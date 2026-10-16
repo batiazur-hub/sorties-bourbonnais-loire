@@ -268,6 +268,7 @@ export async function comptes(req, env, url, p, cors, json, outils) {
     if (nom.length < 2) return json({ erreur: "nom_requis", message: "Indiquez le nom de votre organisation." }, 400, cors);
     if (motRefuse(nom, b.bio)) return json({ erreur: "mot_refuse", message: "Un mot n’est pas accepté. Reformulez, s’il vous plaît." }, 422, cors);
     let o = c.org && await env.DLC.get("org:" + c.org.slug, "json");
+    if (o && o.id !== c.id) { delete c.org; o = null; }  // page supprimée puis reprise par un autre compte : jamais la sienne
     if (o && o.suspendu) return json({ erreur: "suspendu", message: "Votre page est suspendue. Écrivez-nous : contact@trucsafaire.fr" }, 403, cors);
     if (!o) {
       let slug = slugDe(nom), n = 2; while (await env.DLC.get("org:" + slug)) slug = slugDe(nom).slice(0, 36) + "-" + n++;
@@ -284,6 +285,7 @@ export async function comptes(req, env, url, p, cors, json, outils) {
     const img = String(b.image || "");
     if (!/^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(img) || img.length > 270000) return json({ erreur: "image_invalide", message: "Image PNG, JPEG ou WebP de 200 Ko maximum." }, 400, cors);
     const o = await env.DLC.get("org:" + c.org.slug, "json");
+    if (o && o.id !== c.id) return json({ erreur: "pas_de_profil" }, 403, cors);
     if (!o || o.suspendu) return json({ erreur: "suspendu" }, 403, cors);
     o.logo = (o.logo || 0) + 1;
     await env.DLC.put("logo:" + o.slug, img); await env.DLC.put("org:" + o.slug, JSON.stringify(o));
@@ -301,6 +303,7 @@ export async function comptes(req, env, url, p, cors, json, outils) {
     const ag = await agenda(env);
     if (req.method === "GET") return json({ ok: true, sorties: ag.filter(e => e.org === c.org.slug) }, 200, cors);
     const o = await env.DLC.get("org:" + c.org.slug, "json");
+    if (o && o.id !== c.id) return json({ erreur: "pas_de_profil", message: "Cette page organisateur n’est plus la vôtre." }, 403, cors);
     if (!o || o.suspendu) return json({ erreur: "suspendu", message: "Votre page est suspendue : la publication est bloquée. Écrivez-nous : contact@trucsafaire.fr" }, 403, cors);
     let b; try { b = await req.json(); } catch { return json({ erreur: "format" }, 400, cors); }
     if (b.supprimer) {

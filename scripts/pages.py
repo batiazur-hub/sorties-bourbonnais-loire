@@ -396,7 +396,7 @@ P["cgv.html"] = ("Conditions générales de vente", "Les règles des offres paya
 TETE["cles.html"] = '\n<meta name="robots" content="noindex, nofollow">\n<link rel="stylesheet" href="vendor/maplibre-gl-4.7.1/maplibre-gl.css">\n<script src="vendor/maplibre-gl-4.7.1/maplibre-gl.js"></script>\n<script src="config.js"></script>'
 P["cles.html"] = ("Générateur de clés API", "Espace éditeur : choisissez la zone et les critères, vérifiez ce que la clé récupérera, puis générez-la.", """
 <form class="gen" id="cx" autocomplete="on">
-<div class="row"><label for="cx-url">Adresse du serveur</label><input id="cx-url" type="url" placeholder="https://trucs-a-faire.compte.workers.dev"></div>
+<div class="row"><label for="cx-url">Adresse du serveur</label><input id="cx-url" type="url" placeholder="https://api.trucsafaire.fr"></div>
 <div class="row"><label for="cx-tok">Code éditeur</label><input id="cx-tok" type="password" autocomplete="current-password"></div>
 <p><button class="btn" type="submit">Se connecter</button> <span id="cx-msg" role="status">L’aperçu ci-dessous marche sans connexion ; la connexion sert à créer et gérer les clés.</span></p>
 </form>

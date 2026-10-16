@@ -5,7 +5,8 @@ compatibility_date = "2026-09-01"
 # Adresse publique du serveur (domaine personnalisé, certificat géré par Cloudflare)
 routes = [ { pattern = "api.trucsafaire.fr", custom_domain = true } ]
 
-workers_dev = true
+# Désactivé (audit sécurité) : le serveur ne répond que sur api.trucsafaire.fr, où s'appliquent les règles Cloudflare (WAF, limitation de débit)
+workers_dev = false
 
 # Espace de stockage « TRUCS_A_FAIRE_DLC » (compte Cloudflare, données dans l'UE)
 [[kv_namespaces]]
@@ -21,7 +22,7 @@ enabled = true
 crons = ["17 3 * * 1", "*/15 5-9 * * 4"]
 
 [vars]
-ORIGINS = "https://trucsafaire.fr,https://www.trucsafaire.fr,https://batiazur-hub.github.io"
+ORIGINS = "https://trucsafaire.fr,https://www.trucsafaire.fr"
 SITE_URL = "https://trucsafaire.fr/"
 MAIL_FROM = "bonjour@trucsafaire.fr"
 # Adresse publique de ce serveur (liens de désinscription dans les e-mails envoyés par la tâche planifiée)

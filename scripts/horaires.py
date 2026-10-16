@@ -2,7 +2,7 @@
 sites touristiques et offices de tourisme. La France est découpée en carreaux ; chaque passage rafraîchit les
 carreaux les plus anciens (pour ménager les serveurs Overpass), puis rattache les horaires aux lieux déjà publiés
 dans data/lieux/. Données © les contributeurs d'OpenStreetMap, licence ODbL."""
-import glob, json, os, sys, time, urllib.parse, urllib.request
+import glob, json, os, re, sys, time, urllib.parse, urllib.request
 sys.path.insert(0, os.path.dirname(__file__))
 import lieux
 
@@ -58,7 +58,7 @@ def main():
             oh, tel = t.get("opening_hours", ""), t.get("phone", t.get("contact:phone", ""))
             if not oh and not tel: continue
             out.append({"n": t["name"], "lat": c["lat"], "lon": c["lon"], "oh": oh[:200], "office": t.get("information") == "office",
-                        "tel": tel[:30], "web": t.get("website", t.get("contact:website", ""))[:200]})
+                        "tel": re.sub(r"[^0-9+ ;]", "", tel)[:30], "web": t.get("website", t.get("contact:website", ""))[:200]})
         json.dump(out, open(f"{DOSSIER}/{nom}.json", "w"), ensure_ascii=False, separators=(",", ":"))
         faits += 1; print(nom, len(out), "lieux"); time.sleep(2)
     print("Carreaux rafraîchis :", faits, "sur", len(a_faire), "· en cache :", len(glob.glob(f"{DOSSIER}/*.json")), "sur", len(tous))

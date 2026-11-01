@@ -1,12 +1,12 @@
 {
-"source": "https://static.data.gouv.fr/resources/datatourisme-la-plateforme-nationale-des-donnees-touristiques/20261025-034934/datatourisme-place.csv",
-"total": 56594,
+"source": "https://static.data.gouv.fr/resources/datatourisme-la-plateforme-nationale-des-donnees-touristiques/20261101-035157/datatourisme-place.csv",
+"total": 56504,
 "types": {
-"patrimoine": 38283,
-"musee": 5431,
-"nature": 7515,
-"office": 2636,
-"loisirs": 2729
+"patrimoine": 38228,
+"musee": 5418,
+"nature": 7502,
+"loisirs": 2725,
+"office": 2631
 },
 "departements": {
 "01": {
@@ -14,8 +14,8 @@
 "m": 123,
 "office": 19,
 "loisirs": 7,
-"musee": 28,
-"patrimoine": 252,
+"musee": 27,
+"patrimoine": 253,
 "nature": 44
 },
 "02": {
@@ -28,119 +28,119 @@
 "nature": 33
 },
 "03": {
-"n": 556,
-"m": 225,
+"n": 553,
+"m": 222,
 "office": 14,
 "loisirs": 30,
-"musee": 63,
-"patrimoine": 379,
-"nature": 70
+"musee": 60,
+"patrimoine": 378,
+"nature": 71
 },
 "04": {
-"n": 323,
-"m": 159,
+"n": 325,
+"m": 160,
 "office": 34,
 "loisirs": 12,
-"musee": 45,
-"patrimoine": 223,
+"musee": 46,
+"patrimoine": 224,
 "nature": 9
 },
 "05": {
-"n": 342,
-"m": 178,
+"n": 344,
+"m": 180,
 "office": 48,
-"loisirs": 10,
-"musee": 45,
-"patrimoine": 213,
-"nature": 26
+"loisirs": 11,
+"musee": 46,
+"patrimoine": 212,
+"nature": 27
 },
 "06": {
-"n": 751,
+"n": 752,
 "m": 427,
 "office": 47,
 "loisirs": 15,
-"musee": 146,
+"musee": 147,
 "patrimoine": 459,
 "nature": 84
 },
 "07": {
 "n": 181,
 "m": 142,
-"office": 40,
+"office": 41,
 "loisirs": 13,
 "musee": 71,
-"patrimoine": 48,
+"patrimoine": 47,
 "nature": 9
 },
 "08": {
 "n": 648,
 "m": 167,
 "office": 7,
-"musee": 25,
-"patrimoine": 545,
-"nature": 71
+"musee": 27,
+"patrimoine": 542,
+"nature": 72
 },
 "09": {
-"n": 185,
-"m": 104,
+"n": 183,
+"m": 102,
 "office": 18,
 "loisirs": 11,
-"musee": 42,
-"patrimoine": 112,
-"nature": 2
+"musee": 40,
+"patrimoine": 111,
+"nature": 3
 },
 "10": {
-"n": 654,
+"n": 655,
 "m": 202,
 "office": 15,
 "loisirs": 13,
-"musee": 36,
-"patrimoine": 523,
-"nature": 67
+"musee": 38,
+"patrimoine": 521,
+"nature": 68
 },
 "11": {
-"n": 237,
+"n": 236,
 "m": 194,
-"office": 40,
+"office": 39,
 "loisirs": 44,
 "musee": 46,
 "patrimoine": 74,
 "nature": 33
 },
 "12": {
-"n": 1555,
-"m": 594,
+"n": 1548,
+"m": 591,
 "office": 55,
-"loisirs": 67,
-"musee": 165,
-"patrimoine": 1089,
-"nature": 179
+"loisirs": 66,
+"musee": 162,
+"patrimoine": 1085,
+"nature": 180
 },
 "13": {
 "n": 2042,
-"m": 1025,
+"m": 1026,
 "office": 69,
-"loisirs": 36,
+"loisirs": 37,
 "musee": 371,
-"patrimoine": 1262,
-"nature": 304
+"patrimoine": 1258,
+"nature": 307
 },
 "14": {
-"n": 718,
-"m": 279,
+"n": 693,
+"m": 277,
 "office": 32,
 "loisirs": 12,
-"musee": 64,
-"patrimoine": 475,
-"nature": 135
+"musee": 63,
+"patrimoine": 476,
+"nature": 110
 },
 "15": {
-"n": 367,
-"m": 100,
+"n": 369,
+"m": 99,
 "office": 20,
 "loisirs": 3,
-"musee": 30,
-"patrimoine": 303,
+"musee": 29,
+"patrimoine": 306,
 "nature": 11
 },
 "16": {
@@ -153,93 +153,93 @@
 "nature": 5
 },
 "17": {
-"n": 896,
-"m": 361,
-"office": 42,
+"n": 891,
+"m": 357,
+"office": 40,
 "loisirs": 36,
-"musee": 66,
-"patrimoine": 648,
+"musee": 68,
+"patrimoine": 643,
 "nature": 104
 },
 "18": {
-"n": 244,
-"m": 167,
+"n": 243,
+"m": 166,
 "office": 18,
 "loisirs": 15,
-"musee": 77,
+"musee": 76,
 "patrimoine": 104,
 "nature": 30
 },
 "19": {
-"n": 819,
+"n": 818,
 "m": 359,
 "office": 24,
 "loisirs": 28,
 "musee": 40,
-"patrimoine": 593,
+"patrimoine": 592,
 "nature": 134
 },
 "21": {
-"n": 755,
+"n": 756,
 "m": 337,
 "office": 35,
 "loisirs": 43,
-"musee": 49,
-"patrimoine": 610,
-"nature": 18
+"musee": 50,
+"patrimoine": 609,
+"nature": 19
 },
 "22": {
-"n": 1021,
+"n": 1030,
 "m": 91,
 "office": 35,
 "loisirs": 11,
-"musee": 18,
-"patrimoine": 640,
-"nature": 317
+"musee": 17,
+"patrimoine": 651,
+"nature": 316
 },
 "23": {
-"n": 544,
-"m": 158,
+"n": 543,
+"m": 157,
 "office": 12,
-"loisirs": 25,
+"loisirs": 24,
 "musee": 24,
-"patrimoine": 389,
-"nature": 94
+"patrimoine": 390,
+"nature": 93
 },
 "24": {
-"n": 775,
-"m": 453,
+"n": 776,
+"m": 455,
 "office": 54,
 "loisirs": 69,
 "musee": 95,
-"patrimoine": 474,
+"patrimoine": 475,
 "nature": 83
 },
 "25": {
-"n": 530,
+"n": 529,
 "m": 302,
 "office": 17,
 "loisirs": 35,
 "musee": 58,
 "patrimoine": 415,
-"nature": 5
+"nature": 4
 },
 "26": {
-"n": 915,
-"m": 359,
+"n": 914,
+"m": 358,
 "office": 31,
 "loisirs": 25,
-"musee": 107,
-"patrimoine": 655,
-"nature": 97
+"musee": 106,
+"patrimoine": 656,
+"nature": 96
 },
 "27": {
-"n": 246,
-"m": 131,
+"n": 236,
+"m": 127,
 "office": 20,
 "loisirs": 4,
-"musee": 37,
-"patrimoine": 132,
+"musee": 36,
+"patrimoine": 123,
 "nature": 53
 },
 "28": {
@@ -252,13 +252,13 @@
 "nature": 23
 },
 "29": {
-"n": 863,
+"n": 841,
 "m": 140,
 "office": 74,
 "loisirs": 9,
 "musee": 26,
-"patrimoine": 534,
-"nature": 220
+"patrimoine": 510,
+"nature": 222
 },
 "2A": {
 "n": 65,
@@ -279,17 +279,17 @@
 },
 "30": {
 "n": 1020,
-"m": 350,
-"office": 27,
-"loisirs": 25,
-"musee": 59,
+"m": 349,
+"office": 26,
+"loisirs": 24,
+"musee": 60,
 "patrimoine": 817,
-"nature": 92
+"nature": 93
 },
 "31": {
-"n": 14,
+"n": 13,
 "m": 0,
-"nature": 14
+"nature": 13
 },
 "32": {
 "n": 444,
@@ -301,31 +301,31 @@
 "nature": 3
 },
 "33": {
-"n": 1484,
-"m": 679,
+"n": 1490,
+"m": 686,
 "office": 69,
 "loisirs": 42,
-"musee": 49,
-"patrimoine": 1148,
-"nature": 176
+"musee": 50,
+"patrimoine": 1154,
+"nature": 175
 },
 "34": {
-"n": 743,
-"m": 531,
+"n": 744,
+"m": 532,
 "office": 44,
-"loisirs": 43,
-"musee": 115,
-"patrimoine": 292,
+"loisirs": 44,
+"musee": 116,
+"patrimoine": 291,
 "nature": 249
 },
 "35": {
-"n": 430,
+"n": 429,
 "m": 89,
 "office": 21,
 "loisirs": 23,
-"musee": 13,
-"patrimoine": 243,
-"nature": 130
+"musee": 14,
+"patrimoine": 239,
+"nature": 132
 },
 "36": {
 "n": 301,
@@ -346,74 +346,74 @@
 "nature": 18
 },
 "38": {
-"n": 693,
-"m": 375,
-"office": 55,
+"n": 685,
+"m": 366,
+"office": 53,
 "loisirs": 25,
-"musee": 136,
-"patrimoine": 463,
-"nature": 14
+"musee": 129,
+"patrimoine": 462,
+"nature": 16
 },
 "39": {
-"n": 530,
+"n": 529,
 "m": 322,
 "office": 26,
 "loisirs": 27,
 "musee": 48,
-"patrimoine": 418,
+"patrimoine": 417,
 "nature": 11
 },
 "40": {
-"n": 810,
-"m": 384,
+"n": 806,
+"m": 381,
 "office": 40,
 "loisirs": 42,
-"musee": 82,
-"patrimoine": 475,
+"musee": 81,
+"patrimoine": 472,
 "nature": 171
 },
 "41": {
-"n": 173,
-"m": 121,
+"n": 174,
+"m": 122,
 "office": 16,
 "loisirs": 9,
 "musee": 47,
-"patrimoine": 75,
+"patrimoine": 76,
 "nature": 26
 },
 "42": {
-"n": 499,
-"m": 236,
-"office": 26,
-"loisirs": 16,
-"musee": 53,
-"patrimoine": 397,
+"n": 497,
+"m": 233,
+"office": 27,
+"loisirs": 14,
+"musee": 50,
+"patrimoine": 399,
 "nature": 7
 },
 "43": {
-"n": 614,
-"m": 212,
+"n": 616,
+"m": 214,
 "office": 21,
-"loisirs": 6,
-"musee": 58,
-"patrimoine": 425,
+"loisirs": 4,
+"musee": 59,
+"patrimoine": 428,
 "nature": 104
 },
 "44": {
-"n": 1220,
+"n": 1221,
 "m": 576,
 "office": 40,
-"loisirs": 121,
-"patrimoine": 712,
-"nature": 347
+"loisirs": 122,
+"patrimoine": 711,
+"nature": 348
 },
 "45": {
-"n": 549,
+"n": 550,
 "m": 241,
 "office": 27,
 "loisirs": 23,
-"musee": 79,
-"patrimoine": 358,
+"musee": 77,
+"patrimoine": 361,
 "nature": 62
 },
 "46": {
@@ -422,8 +422,8 @@
 "office": 32,
 "loisirs": 20,
 "musee": 2,
-"patrimoine": 219,
-"nature": 34
+"patrimoine": 218,
+"nature": 35
 },
 "47": {
 "n": 573,
@@ -435,30 +435,30 @@
 "nature": 81
 },
 "48": {
-"n": 599,
-"m": 228,
+"n": 579,
+"m": 220,
 "office": 38,
 "loisirs": 11,
 "musee": 19,
-"patrimoine": 353,
-"nature": 178
+"patrimoine": 332,
+"nature": 179
 },
 "49": {
-"n": 768,
-"m": 269,
+"n": 771,
+"m": 270,
 "office": 18,
 "loisirs": 54,
-"patrimoine": 645,
-"nature": 51
+"patrimoine": 646,
+"nature": 53
 },
 "50": {
-"n": 379,
-"m": 219,
+"n": 377,
+"m": 218,
 "office": 36,
-"loisirs": 12,
-"musee": 51,
-"patrimoine": 222,
-"nature": 58
+"loisirs": 11,
+"musee": 52,
+"patrimoine": 218,
+"nature": 60
 },
 "51": {
 "n": 382,
@@ -466,8 +466,8 @@
 "office": 6,
 "loisirs": 13,
 "musee": 45,
-"patrimoine": 270,
-"nature": 48
+"patrimoine": 271,
+"nature": 47
 },
 "52": {
 "n": 2550,
@@ -487,49 +487,49 @@
 "nature": 31
 },
 "54": {
-"n": 601,
-"m": 393,
+"n": 609,
+"m": 400,
 "office": 13,
 "loisirs": 19,
 "musee": 10,
-"patrimoine": 490,
-"nature": 69
+"patrimoine": 500,
+"nature": 67
 },
 "55": {
 "n": 556,
 "m": 380,
 "office": 13,
 "loisirs": 14,
-"musee": 6,
-"patrimoine": 456,
+"musee": 7,
+"patrimoine": 455,
 "nature": 67
 },
 "56": {
-"n": 731,
-"m": 81,
+"n": 740,
+"m": 84,
 "office": 35,
-"loisirs": 9,
-"musee": 28,
-"patrimoine": 406,
-"nature": 253
+"loisirs": 10,
+"musee": 29,
+"patrimoine": 415,
+"nature": 251
 },
 "57": {
 "n": 1192,
 "m": 665,
 "office": 23,
 "loisirs": 63,
-"musee": 13,
-"patrimoine": 920,
+"musee": 12,
+"patrimoine": 921,
 "nature": 173
 },
 "58": {
-"n": 390,
+"n": 388,
 "m": 188,
 "office": 24,
 "loisirs": 23,
 "musee": 36,
 "patrimoine": 295,
-"nature": 12
+"nature": 10
 },
 "59": {
 "n": 1073,
@@ -537,8 +537,8 @@
 "office": 11,
 "loisirs": 15,
 "musee": 164,
-"patrimoine": 830,
-"nature": 53
+"patrimoine": 831,
+"nature": 52
 },
 "60": {
 "n": 241,
@@ -550,12 +550,12 @@
 "nature": 37
 },
 "61": {
-"n": 268,
-"m": 143,
+"n": 267,
+"m": 142,
 "office": 24,
 "loisirs": 5,
 "musee": 39,
-"patrimoine": 154,
+"patrimoine": 153,
 "nature": 46
 },
 "62": {
@@ -563,31 +563,31 @@
 "m": 300,
 "office": 39,
 "loisirs": 146,
-"musee": 44,
-"patrimoine": 584,
+"musee": 45,
+"patrimoine": 583,
 "nature": 146
 },
 "63": {
-"n": 427,
-"m": 225,
+"n": 417,
+"m": 222,
 "office": 33,
-"loisirs": 18,
-"musee": 61,
-"patrimoine": 293,
+"loisirs": 15,
+"musee": 60,
+"patrimoine": 287,
 "nature": 22
 },
 "64": {
-"n": 731,
-"m": 455,
+"n": 732,
+"m": 456,
 "office": 45,
 "loisirs": 51,
 "musee": 110,
-"patrimoine": 372,
+"patrimoine": 373,
 "nature": 153
 },
 "66": {
 "n": 354,
-"m": 239,
+"m": 246,
 "office": 45,
 "loisirs": 17,
 "patrimoine": 177,
@@ -598,27 +598,27 @@
 "m": 897,
 "office": 35,
 "loisirs": 161,
-"musee": 100,
-"patrimoine": 1405,
-"nature": 117
+"musee": 102,
+"patrimoine": 1402,
+"nature": 118
 },
 "68": {
 "n": 1391,
 "m": 822,
 "office": 24,
 "loisirs": 96,
-"musee": 74,
-"patrimoine": 1065,
+"musee": 75,
+"patrimoine": 1064,
 "nature": 132
 },
 "69": {
-"n": 635,
-"m": 352,
+"n": 633,
+"m": 350,
 "office": 19,
 "loisirs": 7,
 "musee": 161,
-"patrimoine": 432,
-"nature": 16
+"patrimoine": 431,
+"nature": 15
 },
 "70": {
 "n": 330,
@@ -630,25 +630,25 @@
 "nature": 7
 },
 "71": {
-"n": 977,
+"n": 978,
 "m": 431,
 "office": 38,
 "loisirs": 60,
 "musee": 94,
-"patrimoine": 771,
-"nature": 14
+"patrimoine": 770,
+"nature": 16
 },
 "72": {
 "n": 571,
 "m": 198,
 "office": 16,
-"loisirs": 51,
-"patrimoine": 442,
+"loisirs": 52,
+"patrimoine": 441,
 "nature": 62
 },
 "73": {
 "n": 679,
-"m": 329,
+"m": 328,
 "office": 76,
 "loisirs": 16,
 "musee": 65,
@@ -656,22 +656,22 @@
 "nature": 84
 },
 "74": {
-"n": 842,
-"m": 412,
-"office": 57,
-"loisirs": 32,
-"musee": 94,
-"patrimoine": 519,
-"nature": 140
+"n": 839,
+"m": 409,
+"office": 56,
+"loisirs": 31,
+"musee": 93,
+"patrimoine": 518,
+"nature": 141
 },
 "75": {
 "n": 765,
 "m": 503,
 "office": 1,
-"loisirs": 41,
-"musee": 217,
+"loisirs": 42,
+"musee": 215,
 "patrimoine": 498,
-"nature": 8
+"nature": 9
 },
 "76": {
 "n": 548,
@@ -679,35 +679,35 @@
 "office": 27,
 "loisirs": 17,
 "musee": 67,
-"patrimoine": 301,
-"nature": 136
+"patrimoine": 302,
+"nature": 135
 },
 "77": {
-"n": 216,
-"m": 119,
+"n": 218,
+"m": 121,
 "office": 13,
-"loisirs": 15,
+"loisirs": 16,
 "musee": 58,
-"patrimoine": 118,
+"patrimoine": 119,
 "nature": 12
 },
 "78": {
-"n": 281,
-"m": 154,
+"n": 283,
+"m": 156,
 "office": 11,
 "loisirs": 22,
-"musee": 55,
-"patrimoine": 190,
+"musee": 56,
+"patrimoine": 191,
 "nature": 3
 },
 "79": {
 "n": 637,
-"m": 360,
+"m": 361,
 "office": 13,
 "loisirs": 56,
 "musee": 43,
-"patrimoine": 458,
-"nature": 67
+"patrimoine": 457,
+"nature": 68
 },
 "80": {
 "n": 372,
@@ -719,12 +719,12 @@
 "nature": 54
 },
 "81": {
-"n": 320,
-"m": 190,
+"n": 317,
+"m": 188,
 "office": 39,
 "loisirs": 13,
-"musee": 60,
-"patrimoine": 197,
+"musee": 59,
+"patrimoine": 195,
 "nature": 11
 },
 "82": {
@@ -737,11 +737,11 @@
 "nature": 7
 },
 "83": {
-"n": 1116,
-"m": 698,
+"n": 1114,
+"m": 696,
 "office": 74,
 "loisirs": 25,
-"musee": 242,
+"musee": 240,
 "patrimoine": 549,
 "nature": 226
 },
@@ -750,9 +750,9 @@
 "m": 262,
 "office": 33,
 "loisirs": 20,
-"musee": 116,
+"musee": 117,
 "patrimoine": 246,
-"nature": 12
+"nature": 11
 },
 "85": {
 "n": 506,
@@ -764,39 +764,39 @@
 },
 "86": {
 "n": 470,
-"m": 252,
+"m": 253,
 "office": 31,
 "loisirs": 59,
 "musee": 47,
-"patrimoine": 261,
-"nature": 72
+"patrimoine": 262,
+"nature": 71
 },
 "87": {
 "n": 699,
-"m": 349,
+"m": 350,
 "office": 19,
 "loisirs": 51,
-"musee": 73,
-"patrimoine": 461,
+"musee": 72,
+"patrimoine": 462,
 "nature": 95
 },
 "88": {
-"n": 846,
-"m": 519,
+"n": 841,
+"m": 515,
 "office": 37,
 "loisirs": 40,
 "musee": 6,
-"patrimoine": 480,
-"nature": 283
+"patrimoine": 477,
+"nature": 281
 },
 "89": {
-"n": 234,
+"n": 236,
 "m": 181,
 "office": 20,
 "loisirs": 19,
 "musee": 51,
 "patrimoine": 137,
-"nature": 7
+"nature": 9
 },
 "90": {
 "n": 44,
@@ -808,13 +808,13 @@
 "nature": 1
 },
 "91": {
-"n": 382,
-"m": 176,
+"n": 380,
+"m": 175,
 "office": 8,
 "loisirs": 15,
 "musee": 35,
-"patrimoine": 322,
-"nature": 2
+"patrimoine": 321,
+"nature": 1
 },
 "92": {
 "n": 124,
@@ -831,7 +831,8 @@
 "office": 2,
 "loisirs": 6,
 "musee": 19,
-"patrimoine": 91
+"patrimoine": 90,
+"nature": 1
 },
 "94": {
 "n": 168,

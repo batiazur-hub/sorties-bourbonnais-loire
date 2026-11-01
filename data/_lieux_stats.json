@@ -1,114 +1,114 @@
 {
  "retenus_par_type": {
-  "patrimoine": 38283,
-  "musee": 5431,
-  "nature": 7515,
-  "office": 2636,
-  "loisirs": 2729
+  "patrimoine": 38228,
+  "musee": 5418,
+  "nature": 7502,
+  "loisirs": 2725,
+  "office": 2631
  },
  "ecartes": {
-  "type non retenu": 291455,
-  "doublon": 1117,
-  "hébergement, restauration, commerce": 2351,
-  "bibliothèque, salle, cinéma": 3382,
-  "agence ou commerce classé office": 1281,
-  "sans commune ou hors zone": 120,
-  "identifiant rendu unique": 17,
+  "type non retenu": 291418,
+  "hébergement, restauration, commerce": 2343,
+  "doublon": 1112,
+  "agence ou commerce classé office": 1283,
+  "bibliothèque, salle, cinéma": 3389,
+  "sans commune ou hors zone": 121,
+  "identifiant rendu unique": 16,
   "position replacée au centre de la commune": 9,
   "position hors du département": 1
  },
  "lignes_source_par_departement": {
-  "01": 352,
+  "01": 351,
   "02": 179,
-  "03": 557,
-  "04": 324,
-  "05": 342,
-  "06": 754,
+  "03": 554,
+  "04": 326,
+  "05": 344,
+  "06": 755,
   "07": 181,
   "08": 765,
-  "09": 187,
-  "10": 658,
-  "11": 237,
-  "12": 1598,
+  "09": 185,
+  "10": 659,
+  "11": 236,
+  "12": 1592,
   "13": 2050,
-  "14": 722,
-  "15": 369,
+  "14": 697,
+  "15": 371,
   "16": 315,
-  "17": 908,
-  "18": 244,
-  "19": 831,
-  "21": 760,
-  "22": 1041,
-  "23": 549,
+  "17": 903,
+  "18": 243,
+  "19": 830,
+  "21": 761,
+  "22": 1056,
+  "23": 548,
   "24": 778,
-  "25": 530,
-  "26": 916,
-  "27": 247,
+  "25": 529,
+  "26": 915,
+  "27": 237,
   "28": 140,
-  "29": 933,
+  "29": 904,
   "2A": 65,
   "2B": 82,
   "30": 1223,
-  "31": 14,
+  "31": 13,
   "32": 445,
-  "33": 1493,
-  "34": 747,
-  "35": 448,
+  "33": 1499,
+  "34": 748,
+  "35": 449,
   "36": 302,
   "37": 223,
-  "38": 694,
-  "39": 534,
-  "40": 819,
-  "41": 173,
-  "42": 500,
-  "43": 776,
-  "44": 1247,
-  "45": 549,
+  "38": 686,
+  "39": 530,
+  "40": 816,
+  "41": 174,
+  "42": 498,
+  "43": 778,
+  "44": 1248,
+  "45": 550,
   "46": 311,
   "47": 577,
-  "48": 616,
-  "49": 773,
-  "50": 381,
+  "48": 595,
+  "49": 776,
+  "50": 379,
   "51": 383,
   "52": 2554,
   "53": 295,
-  "54": 605,
+  "54": 613,
   "55": 557,
-  "56": 734,
-  "57": 1195,
-  "58": 393,
+  "56": 743,
+  "57": 1194,
+  "58": 391,
   "59": 1144,
   "60": 245,
-  "61": 268,
+  "61": 267,
   "62": 979,
-  "63": 427,
-  "64": 736,
+  "63": 417,
+  "64": 737,
   "66": 354,
-  "67": 1821,
+  "67": 1820,
   "68": 1395,
-  "69": 636,
+  "69": 633,
   "70": 331,
-  "71": 982,
+  "71": 983,
   "72": 577,
-  "73": 706,
-  "74": 843,
+  "73": 707,
+  "74": 840,
   "75": 845,
   "76": 550,
-  "77": 223,
-  "78": 291,
+  "77": 225,
+  "78": 293,
   "79": 638,
   "80": 376,
-  "81": 322,
+  "81": 319,
   "82": 51,
-  "83": 1124,
+  "83": 1122,
   "84": 436,
   "85": 507,
   "86": 474,
   "87": 702,
-  "88": 847,
-  "89": 234,
+  "88": 842,
+  "89": 236,
   "90": 44,
-  "91": 385,
+  "91": 383,
   "92": 129,
   "93": 123,
   "94": 173,
@@ -116,10 +116,10 @@
   "971": 22,
   "972": 81,
   "974": 365,
-  "98": 114,
+  "98": 115,
   "?": 3
  },
- "avec_horaires_osm": 6247,
+ "avec_horaires_osm": 6230,
  "avec_periodes": 0,
  "colonnes": [
   "Nom_du_POI",
@@ -140,150 +140,150 @@
  "echantillons": [],
  "contacts_offices": [
   [
-   "Accueil de loisirs",
-   "#https://www.labresse.fr/fr/pages/18-centres-aeres"
-  ],
-  [
    "Office de Tourisme du Grand Longwy",
    "#http://www.longwy-tourisme.com/"
-  ],
-  [
-   "Office de tourisme VAL D'ARDENNE",
-   "#http://www.valdardennetourisme.com/"
-  ],
-  [
-   "Office de Tourisme Ardenne & Meuse",
-   "#https://ardenne-meuse.fr/"
-  ],
-  [
-   "Office de Tourisme Charleville/Sedan en Ardenne - Sedan",
-   "#http://www.charleville-sedan-tourisme.fr/<>http://visitcharlevillesedan.ellohaweb.com/"
   ],
   [
    "Destination Nancy - Office de Tourisme",
    "#http://www.destination-nancy.com/tourisme/"
   ],
   [
+   "Point d'accueil GIVET",
+   "#http://www.valdardennetourisme.com/"
+  ],
+  [
    "Office de Tourisme Charleville/Sedan en Ardenne - Charleville",
    "#http://www.charleville-sedan-tourisme.fr/<>http://visitcharlevillesedan.ellohaweb.com/"
   ],
   [
-   "Point d'accueil GIVET",
+   "Office de Tourisme Charleville/Sedan en Ardenne - Sedan",
+   "#http://www.charleville-sedan-tourisme.fr/<>http://visitcharlevillesedan.ellohaweb.com/"
+  ],
+  [
+   "Office de tourisme VAL D'ARDENNE",
    "#http://www.valdardennetourisme.com/"
+  ],
+  [
+   "Accueil de loisirs",
+   "#https://www.labresse.fr/fr/pages/18-centres-aeres"
+  ],
+  [
+   "Office de tourisme Destination Brenne",
+   "#http://www.destination-brenne.fr/"
   ]
  ],
  "classes_gardees": [
   [
    "PlaceOfInterest",
-   56594
+   56504
   ],
   [
    "PointOfInterest",
-   56594
+   56504
   ],
   [
    "CulturalSite",
-   42328
+   42276
   ],
   [
    "ReligiousSite",
-   9707
+   9701
   ],
   [
    "LocalBusiness",
-   9378
+   9350
   ],
   [
    "Museum",
-   8072
+   8044
   ],
   [
    "NaturalHeritage",
-   7765
+   7739
   ],
   [
    "Landform",
-   7765
+   7739
   ],
   [
    "SportsAndLeisurePlace",
-   6115
+   6105
   ],
   [
    "TouristInformationCenter",
-   5272
+   5262
   ],
   [
    "Church",
-   5189
+   5185
   ],
   [
    "RemarkableBuilding",
-   4918
+   4910
   ],
   [
    "TechnicalHeritage",
-   4465
+   4457
   ],
   [
    "CityHeritage",
-   4199
+   4197
   ],
   [
    "ParkAndGarden",
-   3519
+   3518
   ],
   [
    "Park",
-   3519
+   3518
   ],
   [
    "LocalTouristOffice",
-   2441
+   2436
   ],
   [
    "Store",
-   2395
+   2385
   ],
   [
    "Product",
-   2014
+   2006
   ],
   [
    "Castle",
-   1807
+   1794
   ],
   [
    "ArtGalleryOrExhibitionGallery",
-   1414
+   1407
   ],
   [
    "Beach",
-   1387
+   1389
   ],
   [
    "Chapel",
-   1349
-  ],
-  [
-   "LeisureComplex",
-   1303
+   1347
   ],
   [
    "RemembranceSite",
+   1303
+  ],
+  [
+   "LeisureComplex",
    1302
   ],
   [
    "ThemePark",
-   1128
+   1130
   ],
   [
    "AmusementPark",
-   1128
+   1130
   ],
   [
    "DefenceSite",
-   1102
+   1094
   ],
   [
    "PointOfView",
@@ -291,59 +291,59 @@
   ],
   [
    "ArcheologicalSite",
-   924
+   923
   ],
   [
    "RemarkableHouse",
-   896
+   898
   ],
   [
    "EntertainmentAndEvent",
-   765
+   755
   ],
   [
    "Event",
-   765
+   755
   ],
   [
    "ActivityProvider",
-   747
+   749
   ],
   [
    "InterpretationCentre",
-   693
+   688
   ],
   [
    "TeachingFarm",
-   612
+   611
   ],
   [
    "LeisureSportActivityProvider",
-   583
+   584
   ],
   [
    "Transport",
    574
   ],
   [
-   "Forest",
-   556
-  ],
-  [
    "IndustrialSite",
    553
   ],
   [
+   "Forest",
+   553
+  ],
+  [
    "TastingProvider",
-   543
+   546
   ],
   [
    "Ruins",
-   530
+   529
   ],
   [
    "Calvary",
-   512
+   513
   ],
   [
    "RiverPort",
@@ -359,7 +359,7 @@
   ],
   [
    "CulturalEvent",
-   460
+   473
   ],
   [
    "WashHouse",
@@ -375,7 +375,7 @@
   ],
   [
    "MilitaryCemetery",
-   378
+   379
   ],
   [
    "PlayArea",
@@ -383,7 +383,7 @@
   ],
   [
    "Bridge",
-   360
+   357
   ],
   [
    "Zoo",
@@ -395,39 +395,39 @@
   ],
   [
    "Mill",
-   339
+   341
   ],
   [
    "Producer",
    335
   ],
   [
-   "ShowEvent",
-   300
+   "Practice",
+   302
   ],
   [
-   "Practice",
-   294
+   "ShowEvent",
+   301
   ],
   [
    "Abbey",
-   293
+   292
   ],
   [
    "Marina",
-   285
-  ],
-  [
-   "Visit",
-   272
+   286
   ],
   [
    "FortifiedCastle",
-   270
+   269
   ],
   [
    "FortifiedSet",
-   262
+   261
+  ],
+  [
+   "Visit",
+   257
   ],
   [
    "Tower",
@@ -439,11 +439,11 @@
   ],
   [
    "Swamp",
-   245
+   237
   ],
   [
    "CaveSinkholeOrAven",
-   232
+   231
   ],
   [
    "District",
@@ -455,7 +455,7 @@
   ],
   [
    "NaturalCuriosity",
-   214
+   213
   ],
   [
    "Pond",
@@ -463,11 +463,11 @@
   ],
   [
    "CulturalActivityProvider",
-   174
+   175
   ],
   [
    "Waterfall",
-   172
+   171
   ],
   [
    "Mountain",
@@ -487,257 +487,257 @@
   ],
   [
    "Cirque",
-   157
+   156
   ],
   [
-   "AdventurePark",
-   154
+   "Farmer",
+   152
   ]
  ],
  "classes_vues": [
   [
    "PlaceOfInterest",
-   356300
+   356170
   ],
   [
    "PointOfInterest",
-   356300
+   356170
   ],
   [
    "Accommodation",
-   237032
+   236882
   ],
   [
    "FoodEstablishment",
-   120380
+   120600
   ],
   [
    "LodgingBusiness",
-   118516
+   118441
   ],
   [
    "RentalAccommodation",
-   91669
+   91696
   ],
   [
    "LocalBusiness",
-   78049
+   78027
   ],
   [
    "SelfCateringAccommodation",
-   72345
+   72404
   ],
   [
    "Restaurant",
-   63268
+   63228
   ],
   [
    "Product",
-   63168
+   63148
   ],
   [
    "SportsAndLeisurePlace",
-   56808
+   56699
   ],
   [
    "CulturalSite",
-   48353
+   48305
   ],
   [
    "Store",
-   44123
+   44120
   ],
   [
    "Hotel",
-   23782
+   23732
   ],
   [
    "TastingProvider",
-   20401
+   20412
   ],
   [
    "AccommodationProduct",
-   16110
+   16123
   ],
   [
    "ActivityProvider",
-   14641
+   14657
   ],
   [
    "Guesthouse",
-   12876
+   12835
   ],
   [
    "BedAndBreakfast",
-   12876
+   12835
   ],
   [
    "HotelTrade",
-   12481
+   12455
   ],
   [
    "BoutiqueOrLocalShop",
-   11590
+   11580
   ],
   [
    "ConvenientService",
-   10753
+   10774
   ],
   [
    "ReligiousSite",
-   9896
+   9890
   ],
   [
    "FastFoodRestaurant",
-   9152
+   9134
   ],
   [
    "CampingAndCaravanning",
-   9097
+   9077
   ],
   [
    "Practice",
-   8435
+   8445
   ],
   [
    "Museum",
-   8366
+   8340
   ],
   [
    "Producer",
-   8255
+   8259
   ],
   [
    "NaturalHeritage",
-   8065
+   8034
   ],
   [
    "Landform",
-   8065
+   8034
   ],
   [
    "TouristInformationCenter",
-   7900
+   7894
   ],
   [
    "CraftsmanShop",
-   7537
+   7538
   ],
   [
    "Library",
-   6718
+   6736
   ],
   [
    "House",
-   5864
+   5868
   ],
   [
    "LeisureSportActivityProvider",
-   5666
+   5669
   ],
   [
    "CollectiveAccommodation",
-   5542
+   5488
   ],
   [
    "Tour",
-   5358
+   5360
   ],
   [
    "OrderedList",
-   5358
-  ],
-  [
-   "Church",
-   5278
+   5360
   ],
   [
    "PicnicArea",
-   5273
+   5294
+  ],
+  [
+   "Church",
+   5274
   ],
   [
    "Camping",
-   5162
+   5151
   ],
   [
    "RemarkableBuilding",
-   5132
+   5123
   ],
   [
    "ServiceProvider",
-   4821
+   4813
   ],
   [
    "Apartment",
-   4704
+   4708
   ],
   [
    "TechnicalHeritage",
-   4699
+   4690
   ],
   [
    "HotelRestaurant",
-   4664
+   4648
   ],
   [
    "Rental",
-   4481
+   4479
   ],
   [
    "CityHeritage",
-   4446
+   4442
   ],
   [
    "LocalProductsShop",
-   4216
+   4210
   ],
   [
    "BrasserieOrTavern",
-   4119
+   4118
   ],
   [
    "ParkAndGarden",
-   3573
+   3574
   ],
   [
    "Park",
-   3573
+   3574
   ],
   [
    "WalkingTour",
-   3456
+   3460
   ],
   [
    "CamperVanArea",
-   3373
+   3365
   ],
   [
    "BistroOrWineBar",
-   3356
+   3357
   ],
   [
    "Winery",
-   3356
+   3357
   ],
   [
    "Transport",
-   3206
+   3214
   ],
   [
    "Tasting",
-   3036
+   3035
   ],
   [
    "MedicalPlace",
-   2879
+   2878
   ],
   [
    "Bakery",
-   2644
+   2648
   ],
   [
    "LocalTouristOffice",
-   2610
+   2605
   ],
   [
    "CivicStructure",
@@ -745,11 +745,11 @@
   ],
   [
    "EquipmentRental",
-   2416
+   2405
   ],
   [
    "BarOrPub",
-   2262
+   2265
   ],
   [
    "PlayArea",
@@ -757,67 +757,67 @@
   ],
   [
    "Cellar",
-   2111
-  ],
-  [
-   "Visit",
-   1988
+   2112
   ],
   [
    "NonHousingRealEstateRental",
-   1972
+   1981
   ],
   [
    "GourmetRestaurant",
-   1951
-  ],
-  [
-   "CafeOrTeahouse",
-   1944
+   1953
   ],
   [
    "CafeOrCoffeeShop",
-   1944
+   1949
   ],
   [
-   "StopOverOrGroupLodge",
-   1905
+   "CafeOrTeahouse",
+   1949
+  ],
+  [
+   "Visit",
+   1943
   ],
   [
    "Castle",
-   1890
+   1876
+  ],
+  [
+   "StopOverOrGroupLodge",
+   1851
   ],
   [
    "EquestrianCenter",
-   1825
+   1823
   ],
   [
    "EducationalTrail",
-   1821
-  ],
-  [
-   "EntertainmentAndEvent",
-   1817
-  ],
-  [
-   "Event",
-   1817
+   1820
   ],
   [
    "EquipmentRentalShop",
-   1765
+   1753
   ],
   [
    "AccompaniedPractice",
    1692
   ],
   [
+   "EntertainmentAndEvent",
+   1684
+  ],
+  [
+   "Event",
+   1684
+  ],
+  [
    "GroupLodging",
-   1657
+   1651
   ],
   [
    "SwimmingPool",
-   1610
+   1614
   ],
   [
    "HealthcareProfessional",
@@ -825,35 +825,35 @@
   ],
   [
    "ArtGalleryOrExhibitionGallery",
-   1558
+   1553
   ],
   [
    "MovieTheater",
-   1534
+   1488
   ],
   [
    "Cinema",
-   1534
+   1488
   ],
   [
    "Beach",
-   1416
+   1417
   ],
   [
    "Chapel",
-   1387
+   1386
   ],
   [
    "RemembranceSite",
-   1331
+   1332
   ],
   [
    "HolidayResort",
-   1318
+   1329
   ],
   [
    "CyclingTour",
-   1316
+   1317
   ],
   [
    "LeisureComplex",
@@ -861,11 +861,11 @@
   ],
   [
    "FreePractice",
-   1269
+   1272
   ],
   [
    "Course",
-   1232
+   1235
   ],
   [
    "CulturalActivityProvider",
@@ -873,31 +873,27 @@
   ],
   [
    "Theater",
-   1150
+   1146
   ],
   [
    "ThemePark",
-   1145
-  ],
-  [
-   "AmusementPark",
-   1145
-  ],
-  [
-   "GolfCourse",
    1144
   ],
   [
+   "AmusementPark",
+   1144
+  ],
+  [
+   "GolfCourse",
+   1140
+  ],
+  [
    "DefenceSite",
-   1143
+   1136
   ],
   [
    "TennisComplex",
    1095
-  ],
-  [
-   "CulturalEvent",
-   1089
   ],
   [
    "Parking",
@@ -905,59 +901,63 @@
   ],
   [
    "ElectricVehicleChargingPoint",
-   1075
+   1077
+  ],
+  [
+   "CulturalEvent",
+   1063
   ],
   [
    "RemarkableHouse",
-   1022
+   1025
   ],
   [
    "PointOfView",
-   962
+   961
   ],
   [
    "ArcheologicalSite",
-   946
+   945
   ],
   [
    "Stadium",
-   941
+   940
   ],
   [
    "StadiumOrArena",
-   941
+   940
   ],
   [
    "IntroductionCourse",
-   936
+   929
   ],
   [
    "Transporter",
-   894
+   896
   ],
   [
    "BoulesPitch",
-   871
+   870
+  ],
+  [
+   "BusinessPlace",
+   856
   ],
   [
    "Pharmacy",
    856
   ],
   [
-   "BusinessPlace",
-   852
-  ],
-  [
-   "SightseeingBoat",
-   832
-  ],
-  [
    "StreetFood",
-   832
+   842
   ],
   [
    "ClimbingWall",
    829
+  ],
+  [
+   "SightseeingBoat",
+   823
   ],
   [
    "TrainStation",
@@ -965,7 +965,7 @@
   ],
   [
    "InterpretationCentre",
-   765
+   759
   ],
   [
    "NightClub",
@@ -973,31 +973,31 @@
   ],
   [
    "TableHoteGuesthouse",
-   710
+   705
   ],
   [
    "NauticalCentre",
-   672
+   673
   ],
   [
    "WaterSource",
-   672
+   671
   ],
   [
    "DevelopmentCourse",
-   659
-  ],
-  [
-   "TeachingFarm",
-   617
+   661
   ],
   [
    "IceCreamShop",
-   612
+   616
+  ],
+  [
+   "TeachingFarm",
+   616
   ],
   [
    "TaxiCompany",
-   608
+   609
   ],
   [
    "EquipmentRepairShop",
@@ -1008,44 +1008,48 @@
    564
   ],
   [
-   "Forest",
+   "IncomingTravelAgency",
    560
   ],
   [
-   "IncomingTravelAgency",
-   559
+   "Forest",
+   557
   ],
   [
    "Gymnasium",
-   556
+   554
   ],
   [
    "PublicLavatories",
-   544
+   543
   ],
   [
    "Ruins",
-   543
+   542
+  ],
+  [
+   "Farmer",
+   533
   ],
   [
    "Calvary",
    533
   ],
   [
-   "Farmer",
-   532
-  ],
-  [
    "TrackRollerOrSkateBoard",
-   524
+   521
   ],
   [
    "ConventionCentre",
+   515
+  ],
+  [
+   "Traineeship",
    513
   ],
   [
    "RiverPort",
-   509
+   510
   ],
   [
    "Farm",
@@ -1053,19 +1057,15 @@
   ],
   [
    "Hostel",
-   507
-  ],
-  [
-   "Traineeship",
-   500
+   506
   ],
   [
    "ClubOrHolidayVillage",
-   495
+   493
   ],
   [
    "Marina",
-   486
+   487
   ],
   [
    "Fountain",
@@ -1077,7 +1077,7 @@
   ],
   [
    "FitnessCenter",
-   445
+   443
   ],
   [
    "WashHouse",
@@ -1089,11 +1089,11 @@
   ],
   [
    "MiniGolf",
-   427
+   426
   ],
   [
    "BalneotherapyCentre",
-   410
+   416
   ],
   [
    "Lake",
@@ -1101,7 +1101,7 @@
   ],
   [
    "RoadTour",
-   404
+   401
   ],
   [
    "FarmhouseInn",
@@ -1109,15 +1109,15 @@
   ],
   [
    "MilitaryCemetery",
-   383
-  ],
-  [
-   "Bridge",
-   375
+   384
   ],
   [
    "Brewery",
-   374
+   373
+  ],
+  [
+   "Bridge",
+   372
   ],
   [
    "Trader",
@@ -1125,23 +1125,23 @@
   ],
   [
    "Zoo",
-   362
+   361
   ],
   [
    "ZooAnimalPark",
-   362
+   361
   ],
   [
    "Mill",
-   352
+   354
   ],
   [
    "MultiActivity",
-   343
+   345
   ],
   [
    "FirstPractice",
-   342
+   344
   ],
   [
    "CampingCar",
@@ -1149,19 +1149,19 @@
   ],
   [
    "ServiceArea",
-   338
+   336
   ],
   [
    "TheaterEvent",
-   314
+   316
   ],
   [
    "Abbey",
-   303
+   302
   ],
   [
    "HolidayCentre",
-   300
+   301
   ],
   [
    "SelfServiceCafeteria",
@@ -1169,7 +1169,7 @@
   ],
   [
    "Casino",
-   294
+   292
   ],
   [
    "MultiPurposeRoomOrCommunityRoom",
@@ -1177,7 +1177,7 @@
   ],
   [
    "FortifiedCastle",
-   284
+   283
   ],
   [
    "TourOperatorOrTravelAgency",
@@ -1185,7 +1185,7 @@
   ],
   [
    "FortifiedSet",
-   272
+   271
   ],
   [
    "Tower",
@@ -1196,20 +1196,16 @@
    259
   ],
   [
-   "Swamp",
-   258
+   "BowlingAlley",
+   252
   ],
   [
-   "BowlingAlley",
+   "Swamp",
    249
   ],
   [
-   "SportsEvent",
-   243
-  ],
-  [
    "CaveSinkholeOrAven",
-   235
+   234
   ],
   [
    "District",
@@ -1217,7 +1213,7 @@
   ],
   [
    "ViaFerrata",
-   232
+   231
   ],
   [
    "TaxiStation",
@@ -1229,7 +1225,7 @@
   ],
   [
    "HypermarketAndSupermarket",
-   225
+   226
   ],
   [
    "Cathedral",
@@ -1237,7 +1233,11 @@
   ],
   [
    "NaturalCuriosity",
-   219
+   218
+  ],
+  [
+   "SportsEvent",
+   215
   ],
   [
    "Pond",
@@ -1245,7 +1245,7 @@
   ],
   [
    "Hammam",
-   208
+   207
   ],
   [
    "Cooperative",
@@ -1253,7 +1253,7 @@
   ],
   [
    "ResidentialLeisurePark",
-   197
+   198
   ],
   [
    "CrossCountrySkiTrail",
@@ -1261,41 +1261,39 @@
   ],
   [
    "TouristTrain",
-   193
-  ],
-  [
-   "Spa",
-   187
+   189
   ],
   [
    "TourismCableCar",
-   183
+   189
   ],
   [
    "KidsClub",
-   181
+   188
   ],
   [
-   "SaleEvent",
-   180
+   "Spa",
+   185
   ],
   [
    "CableCarStation",
-   179
+   185
   ],
   [
    "PigeonLoft",
    175
   ],
   [
-   "Waterfall",
-   172
-  ],
-  [
    "Mountain",
    171
+  ],
+  [
+   "Waterfall",
+   171
+  ],
+  [
+   "AntiqueAndSecondhandGoodDealer",
+   167
   ]
- ],
- "osm_en_cache": 17096,
- "osm_carreaux": "53/53"
+ ]
 }

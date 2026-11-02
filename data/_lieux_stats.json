@@ -119,7 +119,7 @@
   "98": 115,
   "?": 3
  },
- "avec_horaires_osm": 6230,
+ "avec_horaires_osm": 6231,
  "avec_periodes": 0,
  "colonnes": [
   "Nom_du_POI",
@@ -1295,5 +1295,7 @@
    "AntiqueAndSecondhandGoodDealer",
    167
   ]
- ]
+ ],
+ "osm_en_cache": 17100,
+ "osm_carreaux": "53/53"
 }

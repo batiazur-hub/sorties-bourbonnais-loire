@@ -119,7 +119,7 @@
   "98": 115,
   "?": 3
  },
- "avec_horaires_osm": 6230,
+ "avec_horaires_osm": 6234,
  "avec_periodes": 0,
  "colonnes": [
   "Nom_du_POI",
@@ -1296,6 +1296,6 @@
    167
   ]
  ],
- "osm_en_cache": 17096,
+ "osm_en_cache": 17097,
  "osm_carreaux": "53/53"
 }

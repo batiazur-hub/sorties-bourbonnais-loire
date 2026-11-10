@@ -1,139 +1,139 @@
 {
- "maj": "2026-11-09",
+ "maj": "2026-11-10",
  "par_type": {
-  "culture": 24092,
-  "famille": 3447,
-  "fete": 25073,
-  "spectacle": 17417,
-  "sport": 6946,
-  "brocante": 1061,
-  "(Paris open data)": 2756,
-  "(OpenAgenda)": 14519,
-  "(sources complémentaires)": 13318
+  "culture": 24264,
+  "fete": 25285,
+  "sport": 7433,
+  "spectacle": 17691,
+  "famille": 3525,
+  "brocante": 1068,
+  "(Paris open data)": 2845,
+  "(OpenAgenda)": 14967,
+  "(sources complémentaires)": 13567
  },
  "ecartes": {
-  "trop lointain": 5577,
-  "passé ou sans date": 14427,
-  "doublon": 345,
+  "passé ou sans date": 13494,
+  "trop lointain": 5525,
+  "doublon": 343,
   "coordonnées incohérentes": 49,
   "sans commune": 4,
   "département inconnu": 2,
-  "annulée ou reportée": 26,
+  "annulée ou reportée": 25,
   "position replacée au centre de la commune": 9,
-  "lien de billetterie reconnu": 128,
-  "identifiant rendu unique": 37,
-  "position hors du département": 3,
+  "lien de billetterie reconnu": 127,
+  "position hors du département": 4,
   "date de fin incohérente retirée": 5,
-  "coordonnées corrigées (centre de la commune)": 51
+  "identifiant rendu unique": 37,
+  "coordonnées corrigées (centre de la commune)": 52
  },
  "classes": [
   [
-   "PointOfInterest",
-   47443
+   "Event",
+   47887
   ],
   [
-   "Event",
-   47443
+   "PointOfInterest",
+   47887
   ],
   [
    "EntertainmentAndEvent",
-   47443
+   47887
   ],
   [
    "CulturalEvent",
-   27720
+   28032
   ],
   [
    "SaleEvent",
-   8433
+   8529
   ],
   [
    "SportsEvent",
-   7576
+   7712
   ],
   [
    "SocialEvent",
-   7508
+   7704
   ],
   [
    "ShowEvent",
-   7028
+   7169
   ],
   [
    "Market",
-   6412
+   6472
   ],
   [
    "MusicEvent",
-   5532
+   5671
   ],
   [
    "Concert",
-   5457
+   5595
   ],
   [
    "LocalAnimation",
-   4923
+   5096
   ],
   [
    "TraditionalCelebration",
-   3778
-  ],
-  [
-   "Exhibition",
-   3162
-  ],
-  [
-   "ExhibitionEvent",
-   3162
-  ],
-  [
-   "Product",
-   3114
+   3906
   ],
   [
    "ChildrensEvent",
-   3114
+   3216
+  ],
+  [
+   "Exhibition",
+   3179
+  ],
+  [
+   "ExhibitionEvent",
+   3179
+  ],
+  [
+   "Product",
+   3126
   ],
   [
    "TheaterEvent",
-   2884
+   2898
   ],
   [
    "Practice",
-   1647
+   1650
   ],
   [
    "Traineeship",
-   1576
+   1579
   ],
   [
    "Visit",
-   1498
+   1507
   ],
   [
    "Conference",
-   1471
+   1456
   ],
   [
    "PlaceOfInterest",
-   1288
+   1303
   ],
   [
    "ScreeningEvent",
-   1186
+   1175
   ],
   [
    "Festival",
-   1139
+   1147
   ],
   [
    "BusinessEvent",
-   1070
+   1072
   ],
   [
    "Rambling",
-   912
+   922
   ],
   [
    "Game",
@@ -141,119 +141,123 @@
   ],
   [
    "SportsCompetition",
-   754
+   763
   ],
   [
    "SportsAndLeisurePlace",
-   690
+   700
   ],
   [
    "FairOrShow",
-   685
+   691
   ],
   [
    "TrainingWorkshop",
-   675
+   678
   ],
   [
    "CulturalSite",
-   539
+   544
   ],
   [
    "GarageSale",
-   472
+   474
   ],
   [
    "Reading",
-   450
+   454
   ],
   [
    "BricABrac",
-   375
+   379
   ],
   [
    "OpenDay",
-   303
-  ],
-  [
-   "MovieTheater",
-   258
-  ],
-  [
-   "Cinema",
-   258
+   304
   ],
   [
    "VisualArtsEvent",
-   205
+   270
+  ],
+  [
+   "Cinema",
+   257
+  ],
+  [
+   "MovieTheater",
+   257
   ],
   [
    "Theater",
-   187
+   191
   ],
   [
    "SportsDemonstration",
-   185
-  ],
-  [
-   "ActivityProvider",
-   171
-  ],
-  [
-   "CulturalActivityProvider",
-   169
+   186
   ],
   [
    "Parade",
-   146
+   175
+  ],
+  [
+   "ActivityProvider",
+   172
+  ],
+  [
+   "CulturalActivityProvider",
+   170
   ],
   [
    "Commemoration",
-   142
+   139
   ],
   [
    "NaturalHeritage",
-   117
+   120
   ],
   [
    "Landform",
-   117
+   120
   ],
   [
-   "ReligiousEvent",
-   99
+   "Cirque",
+   102
+  ],
+  [
+   "CircusPlace",
+   102
   ],
   [
    "Congress",
    99
   ],
   [
-   "CircusPlace",
-   99
-  ],
-  [
-   "Cirque",
-   99
+   "ReligiousEvent",
+   98
   ],
   [
    "Opera",
-   91
+   94
   ],
   [
    "IntroductionCourse",
-   66
+   69
   ],
   [
    "Recital",
-   58
+   60
   ],
   [
    "Rally",
-   55
+   54
   ],
   [
    "LocalBusiness",
    47
+  ],
+  [
+   "Carnival",
+   44
   ],
   [
    "Seminar",
@@ -262,10 +266,6 @@
   [
    "ArtistSigning",
    42
-  ],
-  [
-   "Carnival",
-   41
   ],
   [
    "Store",
@@ -284,15 +284,15 @@
    31
   ],
   [
+   "Accommodation",
+   21
+  ],
+  [
    "RentalAccommodation",
    21
   ],
   [
    "LodgingBusiness",
-   21
-  ],
-  [
-   "Accommodation",
    21
   ],
   [
@@ -308,6 +308,18 @@
    16
   ],
   [
+   "Tour",
+   13
+  ],
+  [
+   "WalkingTour",
+   13
+  ],
+  [
+   "OrderedList",
+   13
+  ],
+  [
    "Competition",
    11
   ],
@@ -316,27 +328,15 @@
    11
   ],
   [
-   "Tour",
-   11
-  ],
-  [
-   "WalkingTour",
-   11
-  ],
-  [
-   "OrderedList",
-   11
-  ],
-  [
    "EquipmentRental",
    8
   ],
   [
-   "ServiceProvider",
+   "Rental",
    8
   ],
   [
-   "Rental",
+   "ServiceProvider",
    8
   ],
   [
@@ -348,16 +348,16 @@
    7
   ]
  ],
- "total": 78036,
+ "total": 79266,
  "rotation": {
   "paris-marches": {
-   "rafraichi": "2026-11-09",
-   "n": 557,
-   "en_cache": 557,
+   "en_cache": 552,
    "jour": "lundi"
   },
   "62-pas-de-calais": {
-   "en_cache": 457,
+   "rafraichi": "2026-11-10",
+   "n": 563,
+   "en_cache": 563,
    "jour": "mardi"
   },
   "63-clermont": {
@@ -381,17 +381,17 @@
    "jour": "dimanche"
   },
   "occitanie": {
-   "rafraichi": "2026-11-09",
-   "n": 563,
    "en_cache": 563,
    "jour": "lundi"
   },
   "34-herault": {
-   "en_cache": 5285,
+   "rafraichi": "2026-11-10",
+   "n": 5834,
+   "en_cache": 5834,
    "jour": "mardi"
   },
   "pays-de-la-loire": {
-   "en_cache": 9967,
+   "en_cache": 9894,
    "jour": "mercredi"
   },
   "31-toulouse-culture": {
@@ -399,7 +399,7 @@
    "jour": "jeudi"
   },
   "31-toulouse-marches": {
-   "en_cache": 257,
+   "en_cache": 256,
    "jour": "vendredi"
   }
  },

@@ -25,6 +25,7 @@
 import { comptes, purgerInactifs, verifierOrg, suspendreOrg, supprimerOrgAdmin, signatureValide } from "./comptes.js";
 import { envoyerLot, pourCompte, semaine } from "./newsletter.js";
 import { calendrier } from "./calendrier.js";
+import { cathos } from "./cathos.js";
 import { motRefuse, egal, limite, epuise, tout, agenda, publier, retirer, lienSur, imageSure, sortiePropre, securiser } from "./commun.js";
 
 const DATA_DEFAUT = "https://trucsafaire.fr/data/";
@@ -272,6 +273,18 @@ async function traiter(req, env, ctx) {
       if (motRefuse(sg.note)) sg.note = "";
       await env.DLC.put("sg:" + sg.id, JSON.stringify(sg), { expirationTtl: 60 * 60 * 24 * 90 });
       return json({ ok: true }, 200, cors);
+    }
+
+    /* Trucs de cathos (agenda catholique) : routes /cathos/* et /admin/cathos* */
+    {
+      const estAdmin = async () => {
+        const tok = (req.headers.get("Authorization") || "").replace(/^Bearer\s+/i, ""), ip = req.headers.get("CF-Connecting-IP") || "?";
+        if (epuise("rlx-echec:" + ip, 10)) return json({ erreur: "trop_de_demandes" }, 429, cors);
+        if (!env.ADMIN_TOKEN || !egal(tok, env.ADMIN_TOKEN)) { limite("rlx-echec:" + ip, 10, 3600); return json({ erreur: "non_autorise" }, 401, cors); }
+        return null;
+      };
+      const rk = await cathos(req, env, p, cors, json, estAdmin);
+      if (rk) return rk;
     }
 
     if (p.startsWith("/admin/")) {

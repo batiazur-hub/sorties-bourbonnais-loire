@@ -1,9 +1,10 @@
 /* Comptes Trucophile : connexion sans mot de passe (lien envoyé par e-mail), préférences, favoris, consentement newsletter.
 
-   POST /compte/lien        { email, prefs?, newsletter?, cgu }  → envoie un lien de connexion (réponse identique que le compte existe ou non)
+   POST /compte/lien        { email, prefs?, newsletter?, cgu, site?, cathos? } → envoie un lien de connexion (réponse identique que le compte existe ou non)
+                            site : "taf" (défaut) ou "cathos" : le lien arrive sur ce site-là (compte commun aux deux)
    POST /compte/connexion   { jeton }                            → { session, compte }   (jeton à usage unique, valable 30 min)
    GET  /compte                                                   → profil           (en-tête Authorization: Bearer <session>)
-   POST /compte             { prefs?, newsletter?, fav? }         → profil mis à jour
+   POST /compte             { prefs?, newsletter?, fav?, cathos? } → profil mis à jour (cathos : { prefs, fav } de Trucs de cathos)
    GET  /compte/export                                            → toutes les données du compte (droit à la portabilité)
    POST /compte/deconnexion { partout? }                          → déconnexion (de cet appareil, ou de tous)
    POST /compte/supprimer                                         → suppression immédiate et définitive (page organisateur et sorties comprises)
@@ -32,6 +33,33 @@ const maintenant = () => new Date().toISOString();
 const t = (v, n) => String(v == null ? "" : v).replace(/[\u0000-\u001f<>]/g, " ").trim().slice(0, n);
 export const emailValide = e => /^[^\s@"<>,;]{1,64}@[^\s@"<>,;]{1,180}\.[a-z]{2,24}$/i.test(e);
 const siteUrl = env => (env.SITE_URL || SITE_DEFAUT).replace(/\/?$/, "/");
+
+/* ---------- Compte commun « Trucs » : un seul compte pour Trucs à faire et Trucs de cathos ----------
+   Le lien de connexion arrive sur le site d'où vient la demande (b.site), jamais sur une adresse fournie par le visiteur.
+   Les préférences et favoris propres à Trucs de cathos sont rangés à part dans c.cathos (catégories différentes). */
+const SITES = {
+  taf: { nom: "Trucs à faire", url: env => siteUrl(env), couleur: "#2546d8", membre: "Trucophile" },
+  cathos: { nom: "Trucs de cathos", url: env => (env.SITE_URL_CATHOS || "https://trucsdecathos.fr/").replace(/\/?$/, "/"), couleur: "#2f6db5", membre: "membre" }
+};
+const siteDe = v => (v === "cathos" ? "cathos" : "taf");
+const FAMILLES_CATHOS = ["messes", "sacrements", "priere", "pelerinages", "formation", "jeunes", "culture", "fraternite"];
+export function prefsCathosPropres(p, anc) {
+  const r = Object.assign({ rayon: 20, familles: [] }, anc || {});
+  if (!p || typeof p !== "object") return r;
+  const base = prefsPropres({ commune: p.commune, rayon: p.rayon }, { rayon: r.rayon, cats: [], commune: r.commune });
+  if (p.commune !== undefined) { if (base.commune) r.commune = base.commune; else delete r.commune; }
+  if (p.rayon !== undefined) r.rayon = base.rayon;
+  if (p.familles !== undefined) r.familles = (Array.isArray(p.familles) ? p.familles : []).filter(x => FAMILLES_CATHOS.includes(x));
+  return r;
+}
+function cathosPropre(v, anc) {
+  const a = anc || {}, r = { prefs: a.prefs || prefsCathosPropres(), fav: a.fav || [] };
+  if (!v || typeof v !== "object") return r;
+  if (v.prefs !== undefined) r.prefs = prefsCathosPropres(v.prefs, r.prefs);
+  if (v.fav !== undefined) r.fav = favPropres(v.fav);
+  return r;
+}
+const avecApp = (c, site) => { c.apps = [...new Set((c.apps || ["taf"]).concat([site]))]; };
 
 /* Liens signés (désinscription « stop », lecture dans le navigateur « vue ») : clé dédiée obligatoire, jamais de valeur par défaut */
 export async function signature(env, id, usage = "stop") {
@@ -62,7 +90,8 @@ const favPropres = f => [...new Set((Array.isArray(f) ? f : []).map(x => t(x, 80
 
 function vuePublique(c) {
   return { email: c.email, cree: c.cree, offre: c.offre || "trucophile", prefs: c.prefs, fav: c.fav || [],
-           newsletter: !!(c.newsletter && c.newsletter.actif), org: c.org || null };
+           newsletter: !!(c.newsletter && c.newsletter.actif), org: c.org || null,
+           apps: c.apps || ["taf"], cathos: cathosPropre(null, c.cathos) };
 }
 
 /* ---------- Profils organisateurs (Faiseur de trucs) ----------
@@ -99,19 +128,22 @@ function consentir(c, actif, source) {
 }
 
 
-async function envoyerLien(env, email, lien, nouveau) {
-  const sujet = nouveau ? "Bienvenue chez les Trucophiles : confirmez votre compte" : "Votre lien pour retrouver vos trucs";
-  const intro = nouveau ? "Bienvenue ! Cliquez sur le bouton pour confirmer votre adresse et activer votre compte Trucophile." : "Cliquez sur le bouton pour vous connecter.";
+async function envoyerLien(env, email, lien, nouveau, site = "taf") {
+  const S = SITES[site], cathos = site === "cathos";
+  const sujet = cathos ? (nouveau ? "Bienvenue sur Trucs de cathos : confirmez votre compte" : "Votre lien de connexion à Trucs de cathos")
+    : nouveau ? "Bienvenue chez les Trucophiles : confirmez votre compte" : "Votre lien pour retrouver vos trucs";
+  const intro = cathos ? (nouveau ? "Bienvenue ! Cliquez sur le bouton pour confirmer votre adresse. Ce compte vous sert aussi sur Trucs à faire." : "Cliquez sur le bouton pour vous connecter. Votre compte est le même que sur Trucs à faire.")
+    : nouveau ? "Bienvenue ! Cliquez sur le bouton pour confirmer votre adresse et activer votre compte Trucophile." : "Cliquez sur le bouton pour vous connecter.";
   const html = `<!doctype html><html lang="fr"><body style="margin:0;background:#f1f3f8;font-family:Arial,sans-serif;color:#141a33">
-<div style="max-width:520px;margin:0 auto;padding:32px 20px"><p style="font-size:22px;font-weight:700;margin:0 0 18px;color:#2546d8">trucs à faire</p>
+<div style="max-width:520px;margin:0 auto;padding:32px 20px"><p style="font-size:22px;font-weight:700;margin:0 0 18px;color:${S.couleur}">${cathos ? "trucs de cathos" : "trucs à faire"}</p>
 <div style="background:#fff;border-radius:18px;padding:28px"><p style="font-size:16px;line-height:1.5;margin:0 0 22px">${intro}</p>
-<p style="margin:0 0 22px"><a href="${lien}" style="display:inline-block;background:#2546d8;color:#fff;text-decoration:none;font-weight:700;padding:14px 24px;border-radius:999px">${nouveau ? "Confirmer mon compte" : "Me connecter"}</a></p>
+<p style="margin:0 0 22px"><a href="${lien}" style="display:inline-block;background:${S.couleur};color:#fff;text-decoration:none;font-weight:700;padding:14px 24px;border-radius:999px">${nouveau ? "Confirmer mon compte" : "Me connecter"}</a></p>
 <p style="font-size:13px;color:#4d5470;line-height:1.5;margin:0">Ce lien est valable ${JETON_MIN} minutes et ne sert qu’une fois. Si vous n’êtes pas à l’origine de cette demande, ignorez cet e-mail : aucun compte ne sera créé.</p></div>
-<p style="font-size:12px;color:#4d5470;margin:18px 4px 0">Trucs à faire · Saryn Digital (Clément Monteiro EI)</p></div></body></html>`;
+<p style="font-size:12px;color:#4d5470;margin:18px 4px 0">${S.nom} · Saryn Digital (Clément Monteiro EI)</p></div></body></html>`;
   const txt = `${intro}\n\n${lien}\n\nCe lien est valable ${JETON_MIN} minutes et ne sert qu’une fois. Si vous n’êtes pas à l’origine de cette demande, ignorez cet e-mail.`;
   const r = await fetch("https://api.brevo.com/v3/smtp/email", { method: "POST",
     headers: { "api-key": env.BREVO_KEY, "Content-Type": "application/json", "Accept": "application/json" },
-    body: JSON.stringify({ sender: { name: "Trucs à faire", email: env.MAIL_FROM || "bonjour@trucsafaire.fr" }, to: [{ email }], subject: sujet, htmlContent: html, textContent: txt, tags: ["connexion"] }) });
+    body: JSON.stringify({ sender: { name: S.nom, email: (cathos && env.MAIL_FROM_CATHOS) || env.MAIL_FROM || "bonjour@trucsafaire.fr" }, to: [{ email }], subject: sujet, htmlContent: html, textContent: txt, tags: ["connexion", site] }) });
   if (!r.ok) throw new Error("envoi " + r.status);
 }
 
@@ -187,11 +219,14 @@ export async function comptes(req, env, url, p, cors, json, outils) {
     const existe = !!(await env.DLC.get("cpt:" + id));
     // Réponse identique que l'adresse ait un compte ou non : sans CGU acceptées, rien n'est envoyé à une adresse inconnue
     if (!existe && b.cgu !== true) return json({ ok: true }, 200, cors);
-    const jeton = aleatoire(32);
-    await env.DLC.put("jet:" + await empreinte(jeton), JSON.stringify({ email, id, nouveau: !existe, prefs: prefsPropres(b.prefs), newsletter: b.newsletter === true, fav: favPropres(b.fav), cree: maintenant() }), { expirationTtl: JETON_MIN * 60 });
-    const lien = siteUrl(env) + "#connexion=" + jeton;
+    const jeton = aleatoire(32), site = siteDe(b.site);
+    const fiche = { email, id, nouveau: !existe, site, newsletter: b.newsletter === true, cree: maintenant() };
+    if (site === "cathos") Object.assign(fiche, { cathos: cathosPropre(b.cathos), newsletter: false });  // newsletter : Trucs à faire seulement
+    else Object.assign(fiche, { prefs: prefsPropres(b.prefs), fav: favPropres(b.fav) });
+    await env.DLC.put("jet:" + await empreinte(jeton), JSON.stringify(fiche), { expirationTtl: JETON_MIN * 60 });
+    const lien = SITES[site].url(env) + "#connexion=" + jeton;
     if (env.BREVO_KEY) {
-      try { await envoyerLien(env, email, lien, !existe); } catch { return json({ erreur: "envoi_impossible", message: "L’e-mail n’a pas pu partir. Réessayez dans un instant." }, 502, cors); }
+      try { await envoyerLien(env, email, lien, !existe, site); } catch { return json({ erreur: "envoi_impossible", message: "L’e-mail n’a pas pu partir. Réessayez dans un instant." }, 502, cors); }
       return json({ ok: true }, 200, cors);
     }
     if (env.MODE_TEST === "1" && /^(localhost|127\.0\.0\.1|[a-z0-9.-]+\.test)$/.test(url.hostname)) return json({ ok: true, lien }, 200, cors);  // tests automatiques, jamais en ligne
@@ -207,12 +242,14 @@ export async function comptes(req, env, url, p, cors, json, outils) {
     await env.DLC.delete(kj);
     let c = await env.DLC.get("cpt:" + j.id, "json");
     if (!c) {
-      c = { id: j.id, email: j.email, cree: maintenant(), offre: "trucophile", prefs: j.prefs, fav: j.fav || [], cgu: { date: maintenant(), version: "cgu-2026-10" }, sessions: [], gen: aleatoire(6) };
+      c = { id: j.id, email: j.email, cree: maintenant(), offre: "trucophile", prefs: j.prefs || prefsPropres(), fav: j.fav || [], cgu: { date: maintenant(), version: "cgu-2026-10" }, sessions: [], gen: aleatoire(6), apps: [] };
       consentir(c, j.newsletter, "inscription");  // double opt-in : actif seulement après clic sur le lien reçu par e-mail
     } else {
       c.fav = favPropres((c.fav || []).concat(j.fav || []));
       if (j.newsletter) consentir(c, true, "formulaire de connexion");
     }
+    const site = siteDe(j.site); avecApp(c, site);
+    if (j.cathos) { const a = cathosPropre(null, c.cathos); c.cathos = { prefs: a.prefs.commune ? a.prefs : j.cathos.prefs, fav: favPropres(a.fav.concat(j.cathos.fav)) }; }
     const session = aleatoire(32), hs = await empreinte(session);
     await env.DLC.put("ses:" + hs, JSON.stringify({ id: c.id, gen: c.gen || "", cree: maintenant() }), { expirationTtl: SESSION_JOURS * 86400 });
     c.sessions = (c.sessions || []).concat([hs]);
@@ -236,7 +273,7 @@ export async function comptes(req, env, url, p, cors, json, outils) {
     return m ? new Response(m.html, { headers: { "Content-Type": "text/html; charset=utf-8", ...cors } }) : json({ erreur: "indisponible" }, 503, cors);
   }
   if (req.method === "GET" && p === "/compte/export") {
-    const { sessions, gen, ...donnees } = c, out = { exporte: maintenant(), service: "Trucs à faire", compte: donnees };
+    const { sessions, gen, ...donnees } = c, out = { exporte: maintenant(), service: "Trucs à faire et Trucs de cathos (compte commun)", compte: donnees };
     if (c.org) {  // page organisateur et sorties publiées (droit à la portabilité)
       const o = await env.DLC.get("org:" + c.org.slug, "json");
       if (o) { const { id, ...page } = o; out.page_organisateur = Object.assign(page, { logo: o.logo ? await env.DLC.get("logo:" + o.slug) : null }); }
@@ -250,6 +287,7 @@ export async function comptes(req, env, url, p, cors, json, outils) {
     if (b.prefs !== undefined) c.prefs = prefsPropres(b.prefs, c.prefs);
     if (b.fav !== undefined) c.fav = favPropres(b.fav);
     if (b.newsletter !== undefined) consentir(c, b.newsletter === true, "Mon compte");
+    if (b.cathos !== undefined) { c.cathos = cathosPropre(b.cathos, c.cathos); avecApp(c, "cathos"); }
     c.vu = jour; await enregistrer(env, c);
     return json({ ok: true, compte: vuePublique(c) }, 200, cors);
   }

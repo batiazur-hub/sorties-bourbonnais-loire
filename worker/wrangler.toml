@@ -22,8 +22,11 @@ enabled = true
 crons = ["17 3 * * 1", "*/15 5-9 * * 4"]
 
 [vars]
-ORIGINS = "https://trucsafaire.fr,https://www.trucsafaire.fr,https://localhost,capacitor://localhost"  # les deux dernières : applis Android et iPhone
+ORIGINS = "https://trucsafaire.fr,https://www.trucsafaire.fr,https://trucsdecathos.fr,https://www.trucsdecathos.fr,https://localhost,capacitor://localhost"  # les deux dernières : applis Android et iPhone
 SITE_URL = "https://trucsafaire.fr/"
+# Compte commun : les liens de connexion demandés depuis Trucs de cathos arrivent ici
+SITE_URL_CATHOS = "https://trucsdecathos.fr/"
+# Facultatif, une fois le domaine vérifié chez Brevo : MAIL_FROM_CATHOS = "bonjour@trucsdecathos.fr"
 MAIL_FROM = "bonjour@trucsafaire.fr"
 # Adresse publique de ce serveur (liens de désinscription dans les e-mails envoyés par la tâche planifiée)
 API_URL = "https://api.trucsafaire.fr"

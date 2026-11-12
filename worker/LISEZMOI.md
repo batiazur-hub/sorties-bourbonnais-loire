@@ -106,3 +106,15 @@ choisi autour de leur commune, selon leurs centres d'intérêt (pas de doublon, 
 - **Récapitulatif `agenda`** : mis à jour par ajout ou retrait de la sortie concernée (KV.list n'est pas cohérent tout de suite).
   Si le trafic grandit (publications simultanées fréquentes), passer les sorties sur D1 (SQL, gratuit jusqu'à 5 M de lectures par jour).
 - Quand le domaine `trucsafaire.fr` sera branché, ajouter `https://trucsafaire.fr` à `ORIGINS`. Sans `ORIGINS`, aucun site tiers n'est autorisé (plus de repli sur « * »).
+
+## Trucs de cathos (compte commun et agenda catholique)
+
+Le même serveur sert Trucs de cathos (https://trucsdecathos.fr, dépôt `trucsdecathos`). Code : `cathos.js` et la partie « compte commun » de `comptes.js`.
+
+- **Compte commun** : un seul compte pour les deux sites. `POST /compte/lien` accepte `site: "cathos"` : le lien de connexion arrive alors sur `SITE_URL_CATHOS`
+  (jamais sur une adresse envoyée par le visiteur) et l'e-mail est aux couleurs de Trucs de cathos. Les préférences et favoris de Trucs de cathos sont rangés
+  dans `compte.cathos` ; `compte.apps` dit sur quels sites le compte a servi. La newsletter reste propre à Trucs à faire.
+- **Agenda** : `POST /cathos/propose` (proposition d'un visiteur, en attente), `GET /cathos/agenda` (publiés à venir).
+  Validation : page `admin.html` du site Trucs de cathos (même code éditeur), routes `/admin/cathos`, `/admin/cathos/publier`, `/refuser`, `/retirer`.
+- **Réglages** : `ORIGINS` contient `https://trucsdecathos.fr` ; variable `SITE_URL_CATHOS` ; facultatif `MAIL_FROM_CATHOS` une fois le domaine vérifié chez Brevo
+  (sinon l'expéditeur reste `MAIL_FROM`, avec le nom « Trucs de cathos »).

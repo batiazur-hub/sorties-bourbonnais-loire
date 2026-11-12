@@ -192,6 +192,7 @@ P["confidentialite.html"] = ("Politique de confidentialité", "Ce que le site en
 <ul class="sum">
 <li>Consulter les sorties ne demande ni compte ni donnée personnelle. Pas de cookie, pas de publicité ; une mesure d’audience anonyme et sans cookie peut être activée.</li>
 <li>Le compte Trucophile est facultatif : il ne demande qu’une adresse e-mail. Votre commune et vos centres d’intérêt sont facultatifs.</li>
+<li>Le même compte sert aussi sur <a href="https://trucsdecathos.fr/">Trucs de cathos</a>, l’agenda catholique du même éditeur. Les préférences et favoris de chaque site sont rangés à part. Si vous vous connectez à Trucs de cathos, votre compte en garde trace (donnée sensible au sens de l’article 9 du RGPD) : cela n’arrive qu’avec votre accord exprès, donné en cochant une case, et sert uniquement à faire fonctionner ce service.</li>
 <li>La newsletter n’est envoyée qu’avec votre accord explicite, confirmé par e-mail, et se désactive en un clic.</li>
 <li>Vos données ne sont jamais vendues ni cédées. Vous pouvez les télécharger ou supprimer votre compte vous-même, à tout moment.</li>
 </ul>
@@ -204,6 +205,7 @@ P["confidentialite.html"] = ("Politique de confidentialité", "Ce que le site en
 <thead><tr><th scope="col">Pourquoi</th><th scope="col">Quelles données</th><th scope="col">Base légale</th><th scope="col">Combien de temps</th></tr></thead>
 <tbody>
 <tr><td>Compte Trucophile : connexion, favoris, préférences</td><td>Adresse e-mail ; commune choisie (son centre, jamais votre adresse), distance, centres d’intérêt ; favoris ; dates de création et de dernière connexion ; date d’acceptation des conditions</td><td>Exécution du contrat (conditions d’utilisation), art. 6.1.b du RGPD</td><td>Jusqu’à la suppression du compte par vous, ou trois ans après la dernière connexion (suppression automatique)</td></tr>
+<tr><td>Compte utilisé sur Trucs de cathos : préférences et favoris de ce site</td><td>Familles d’événements choisies, commune et distance, favoris ; indication que le compte sert sur Trucs de cathos</td><td>Consentement exprès, art. 9.2.a du RGPD (case à cocher à la connexion), retirable en supprimant ces données ou le compte</td><td>Comme le compte</td></tr>
 <tr><td>Sélection des sorties par e-mail (newsletter et alertes)</td><td>Adresse e-mail, préférences ; preuve du consentement (date, texte accepté, origine)</td><td>Consentement, art. 6.1.a, retirable à tout moment</td><td>Jusqu’au retrait du consentement ; la preuve est conservée tant que le compte existe</td></tr>
 <tr><td>Page organisateur publique (Faiseur de trucs)</td><td>Nom de l’organisation, logo, présentation, site et comptes de réseaux sociaux, sorties publiées : <strong>visibles par tous</strong>, c’est leur but</td><td>Exécution du contrat</td><td>Jusqu’à la suppression de la page ou du compte (la page, le logo et les sorties publiées sont alors effacés)</td></tr>
 <tr><td>Lien de connexion</td><td>Adresse e-mail et empreinte du lien</td><td>Exécution du contrat</td><td>30 minutes, ou jusqu’à son utilisation</td></tr>

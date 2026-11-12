@@ -485,3 +485,52 @@ test("sécurité : agenda automatique mis en cache (une même demande calculée 
     assert.equal(deux.headers.get("X-Content-Type-Options"), "nosniff");
   } finally { globalThis.caches = avant; globalThis.fetch = fetchAvant; }
 });
+
+/* ---------- Compte commun Trucs à faire / Trucs de cathos ---------- */
+test("compte commun : inscription depuis Trucs de cathos, lien vers son site, préférences rangées à part", async () => {
+  const e = Object.assign(envC(), { SITE_URL_CATHOS: "https://cathos.test/" });
+  const r = await appel(e, "/compte/lien", { headers: jsonH, body: { email: "marie@exemple.fr", cgu: true, site: "cathos", newsletter: true,
+    cathos: { prefs: { commune: { nom: "Moulins", dep: "03", lat: 46.566, lon: 3.333 }, rayon: 40, familles: ["priere", "inconnue"] }, fav: ["tdc-1"] } } });
+  assert.match(r.j.lien, /^https:\/\/cathos\.test\/#connexion=/);
+  const c = (await appel(e, "/compte/connexion", { headers: jsonH, body: { jeton: r.j.lien.split("#connexion=")[1] } })).j;
+  assert.equal(c.nouveau, true); assert.deepEqual(c.compte.apps, ["cathos"]);
+  assert.deepEqual(c.compte.cathos.prefs.familles, ["priere"]); assert.equal(c.compte.cathos.prefs.rayon, 40); assert.deepEqual(c.compte.cathos.fav, ["tdc-1"]);
+  assert.equal(c.compte.newsletter, false, "pas de newsletter Trucs à faire depuis Trucs de cathos"); assert.deepEqual(c.compte.fav, []);
+  // le même compte se connecte ensuite sur Trucs à faire, sans rien perdre
+  const r2 = await appel(e, "/compte/lien", { headers: jsonH, body: { email: "marie@exemple.fr", fav: ["dt-9"] } });
+  assert.match(r2.j.lien, /^https:\/\/site\.test\/#connexion=/);
+  const c2 = (await appel(e, "/compte/connexion", { headers: jsonH, body: { jeton: r2.j.lien.split("#connexion=")[1] } })).j;
+  assert.equal(c2.nouveau, false); assert.deepEqual(c2.compte.apps.sort(), ["cathos", "taf"]);
+  assert.deepEqual(c2.compte.fav, ["dt-9"]); assert.deepEqual(c2.compte.cathos.fav, ["tdc-1"]);
+});
+
+test("compte commun : un compte Trucs à faire existant se connecte sur Trucs de cathos et y enregistre ses préférences", async () => {
+  const e = Object.assign(envC(), { SITE_URL_CATHOS: "https://cathos.test/" }), c = await inscrire(e, "paul@exemple.fr", { fav: ["dt-1"] });
+  const auth = { Authorization: "Bearer " + c.session, "Content-Type": "application/json" };
+  const m = await appel(e, "/compte", { headers: auth, body: { cathos: { prefs: { rayon: 999, familles: ["messes"] }, fav: ["tdc-2", "tdc-2"] } } });
+  assert.equal(m.j.compte.cathos.prefs.rayon, 100); assert.deepEqual(m.j.compte.cathos.fav, ["tdc-2"]); assert.deepEqual(m.j.compte.fav, ["dt-1"]);
+  assert.deepEqual(m.j.compte.apps.sort(), ["cathos", "taf"]);
+  const r = await appel(e, "/compte/lien", { headers: jsonH, body: { email: "paul@exemple.fr", site: "cathos" } });
+  assert.match(r.j.lien, /^https:\/\/cathos\.test\//, "compte existant : lien envoyé sans redemander les CGU");
+  const autre = await appel(e, "/compte/lien", { headers: jsonH, body: { email: "paul@exemple.fr", site: "https://pirate.test/" } });
+  assert.match(autre.j.lien, /^https:\/\/site\.test\//, "site inconnu : jamais d'adresse fournie par le visiteur");
+});
+
+test("Trucs de cathos : proposition, validation par l'éditeur, agenda public", async () => {
+  const e = env(), demain = new Date(Date.now() + 864e5).toISOString().slice(0, 10);
+  const base = { t: "Veillée de louange", type: "louange", s: demain, h: "20:30", w: "Moulins", z: "03", lat: 46.566, lon: 3.333, u: "javascript:alert(1)" };
+  assert.equal((await appel(e, "/cathos/propose", { headers: jsonH, body: Object.assign({}, base, { type: "inconnu" }) })).j.erreur, "incomplet");
+  assert.equal((await appel(e, "/cathos/propose", { headers: jsonH, body: Object.assign({}, base, { s: "2001-01-01" }) })).j.erreur, "date_passee");
+  assert.equal((await appel(e, "/cathos/propose", { headers: jsonH, body: base })).statut, 200);
+  assert.deepEqual((await appel(e, "/cathos/agenda")).j, [], "rien de public avant validation");
+  assert.equal((await appel(e, "/admin/cathos")).statut, 401);
+  const l = (await appel(e, "/admin/cathos", { headers: admin })).j;
+  assert.equal(l.propositions.length, 1); const p = l.propositions[0]; assert.equal(p.u, "", "lien dangereux retiré");
+  const pub = await appel(e, "/admin/cathos/publier", { headers: admin, body: { id: p.id, t: "Soirée louange et adoration" } });
+  assert.equal(pub.statut, 200);
+  const ag = (await appel(e, "/cathos/agenda")).j;
+  assert.equal(ag.length, 1); assert.equal(ag[0].t, "Soirée louange et adoration"); assert.ok(!("statut" in ag[0]));
+  assert.equal((await appel(e, "/admin/cathos", { headers: admin })).j.propositions.length, 0);
+  await appel(e, "/admin/cathos/retirer", { headers: admin, body: { id: p.id } });
+  assert.deepEqual((await appel(e, "/cathos/agenda")).j, []);
+});

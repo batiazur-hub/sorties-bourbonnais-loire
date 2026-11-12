@@ -28,6 +28,8 @@ jobs:
         with: { python-version: "3.12" }
       - uses: actions/setup-node@v4
         with: { node-version: "22" }
+      - name: Pages d'information (refaites ici : le plan du site liste les départements, qui changent avec les données de la nuit)
+        run: python scripts/pages.py
       - name: Contrôles avant publication (un site cassé ne part pas en ligne)
         run: |
           python scripts/construire_app.py --verifier

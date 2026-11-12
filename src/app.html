@@ -897,21 +897,21 @@ textarea.sbl-in{min-height:100px;resize:vertical}
   <a class="sbl-brand" href="#" id="sbl-home" aria-label="Trucs à faire, accueil"><svg class="ico" viewBox="0 0 64 64" width="34" height="34" aria-hidden="true"><path d="M32 0C52.5 0 64 4.6 64 32S52.5 64 32 64 0 59.4 0 32 11.5 0 32 0Z" fill="#2546D8"/><path d="M29.5 13.5V38c0 7.5 4.2 12 11.6 12h2.4" fill="none" stroke="#fff" stroke-width="6.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M17.5 27.6 24.6 34C31.5 26.9 38 22.2 46.4 18.6" fill="none" stroke="#fff" stroke-width="6.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="48.6" cy="46.4" r="4.3" fill="#FF8A3D"/></svg><span class="mk">trucs à faire</span></a>
   <div class="sbl-acts"><button class="sbl-hb alt" type="button" id="sbl-mod" hidden>À valider</button><button class="sbl-hb" type="button" id="sbl-prop" aria-label="Proposer un truc">Proposer<span class="lg"> un truc</span></button><button class="sbl-hb acc" type="button" id="sbl-acc" hidden></button></div>
 </div></header>
-<section class="sbl-intro" aria-label="Présentation"><h1>Que faire autour de chez vous&nbsp;?</h1><p id="sbl-sub"></p><button type="button" class="sbl-reg" id="sbl-reg"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg><span id="sbl-regl"></span><span class="ch">Changer</span></button></section>
+<section class="sbl-intro" aria-label="Présentation"><h1>Que faire autour de chez vous&nbsp;?</h1><p id="sbl-sub"></p><button type="button" class="sbl-reg" id="sbl-reg"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg><span id="sbl-regl"></span><span class="ch">Changer</span></button></section>
 <div class="sbl-sbar" role="search"><div class="sbl-sbox" id="sbl-sbox">
-  <div class="sbl-sw"><svg class="sbl-ic" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.6-4.6"/></svg>
+  <div class="sbl-sw"><svg class="sbl-ic" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
     <input id="sbl-q" type="text" role="combobox" aria-expanded="false" aria-controls="sbl-sug" aria-autocomplete="list" autocomplete="off" enterkeyhint="search" aria-label="Rechercher une sortie">
-    <button type="button" id="sbl-qx" class="qx" aria-label="Effacer la recherche" hidden>✕</button>
+    <button type="button" id="sbl-qx" class="qx" aria-label="Effacer la recherche" hidden><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
   </div>
   <div class="sbl-sug" id="sbl-sug" role="listbox" aria-label="Suggestions" hidden></div>
 </div><div class="sbl-qk" id="sbl-qk" role="group" aria-label="Raccourcis"></div></div>
 
 <section aria-label="Choix de l’affichage" class="sbl-navw"><div class="sbl-tabs" role="tablist" id="sbl-mt">
-  <button class="sbl-tab hm" type="button" role="tab" data-v="home" aria-selected="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4.5v-6h-5v6H5a1 1 0 0 1-1-1z"/></svg><span>Accueil</span></button>
-  <button class="sbl-tab" role="tab" data-v="list" aria-selected="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg><span>Liste</span></button>
-  <button class="sbl-tab" role="tab" data-v="map" aria-selected="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4 3 6.5v13.5l6-2.5 6 2.5 6-2.5V4l-6 2.5z"/><path d="M9 4v13.5M15 6.5V20"/></svg><span>Carte</span></button>
-  <button class="sbl-tab" role="tab" data-v="cal" aria-selected="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><span>Calendrier</span></button>
-  <button class="sbl-tab kt" type="button" role="tab" data-v="kit" aria-selected="false" hidden><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10v4h3l7 4V6L7 10zM17 9.5a3.5 3.5 0 0 1 0 5"/></svg><span>Kit</span></button>
+  <button class="sbl-tab hm" type="button" role="tab" data-v="home" aria-selected="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span>Accueil</span></button>
+  <button class="sbl-tab" role="tab" data-v="list" aria-selected="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h.01"/><path d="M3 12h.01"/><path d="M3 19h.01"/><path d="M8 5h13"/><path d="M8 12h13"/><path d="M8 19h13"/></svg><span>Liste</span></button>
+  <button class="sbl-tab" role="tab" data-v="map" aria-selected="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15"/><path d="M9 3.236v15"/></svg><span>Carte</span></button>
+  <button class="sbl-tab" role="tab" data-v="cal" aria-selected="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v3"/><path d="M16 2v3"/><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg><span>Calendrier</span></button>
+  <button class="sbl-tab kt" type="button" role="tab" data-v="kit" aria-selected="false" hidden><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 6a13 13 0 0 0 8.4-2.8A1 1 0 0 1 21 4v12a1 1 0 0 1-1.6.8A13 13 0 0 0 11 14H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"/><path d="M6 14a12 12 0 0 0 2.4 7.2 2 2 0 0 0 3.2-2.4A8 8 0 0 1 10 14"/><path d="M8 6v8"/></svg><span>Kit</span></button>
   <span class="sbl-ind" aria-hidden="true"></span>
 </div></section>
 
@@ -952,7 +952,7 @@ textarea.sbl-in{min-height:100px;resize:vertical}
     <p class="sbl-sfm" id="sf-msg" role="status"></p>
   </form>
   </details>
-  <p class="sbl-instw"><button type="button" class="sbl-btn" id="sbl-aaf" hidden><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4M9 15l2 2 4-4"/></svg>Mon agenda automatique</button> <button type="button" class="sbl-btn" id="sbl-inst" hidden><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M12 7v7M9 11l3 3 3-3"/></svg>Installer l’appli sur mon téléphone</button></p>
+  <p class="sbl-instw"><button type="button" class="sbl-btn" id="sbl-aaf" hidden><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v3"/><path d="M16 2v3"/><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="m9 15 2 2 4-4"/></svg>Mon agenda automatique</button> <button type="button" class="sbl-btn" id="sbl-inst" hidden><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>Installer l’appli sur mon téléphone</button></p>
   <p class="sbl-footacc" id="sbl-footacc" hidden><b>Trucophile, c’est gratuit.</b> Favoris illimités, alertes près de chez vous et « Le Truc de la semaine » par e-mail. <button type="button" class="lnk" data-acc>Rejoindre les Trucophiles</button> · <a href="offres.html">Toutes les offres</a></p>
   <p class="sbl-fine">Mis à jour chaque nuit. Un organisateur peut changer une date&nbsp;: vérifiez sur la fiche source avant de vous déplacer. Fonds de carte © IGN, via cartes.gouv.fr. Photos de communes&nbsp;: Wikipédia et Wikimedia Commons.</p>
   <nav class="sbl-legal" aria-label="Informations légales">
@@ -1121,9 +1121,9 @@ function setPlace(w){const o=parseQ(st.q);o.place=w;o.near=null;o.z="";o.w=o.w||
 
 /* ---------- Suggestions guidées : Quoi, Quand, Où ---------- */
 const IDEAS=[["brocante","Brocantes ce week-end"],["famille","En famille pendant les vacances"],["spectacle","Concerts cette semaine"],["fete","Marchés de Noël en décembre"],["culture","Expos ce mois-ci"],["sport","Randos ce week-end"]];
-const searchIco='<svg class="sbl-ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.6-4.6"/></svg>';
-const clockIco='<svg class="sbl-ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>';
-const pinIco='<svg class="sbl-ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>';
+const searchIco='<svg class="sbl-ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>';
+const clockIco='<svg class="sbl-ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>';
+const pinIco='<svg class="sbl-ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>';
 let SUG=[],sugI=-1;
 function topTowns(o,w,n){const c=new Map();pickO(Object.assign({},o,{place:"",near:null,z:""}),w,"").forEach(e=>c.set(e.w,(c.get(e.w)||0)+1));return[...c.entries()].sort((a,b)=>b[1]-a[1]).slice(0,n).map(x=>x[0])}
 function buildSug(text){
@@ -1195,27 +1195,30 @@ function btn(label,on,fn,color){const b=document.createElement("button");b.type=
 function filters(){}
 
 /* ---------- Icônes par type de sortie (trait 24 px) ---------- */
+/* Icônes : Lucide 1.72 (https://lucide.dev), © Lucide Contributors, licence ISC — tracé 24 px, trait 2 */
 const ICONS={
-  brocante:'<path d="M3.5 12.2V4.5a1 1 0 0 1 1-1h7.7l8.3 8.3a1 1 0 0 1 0 1.4l-7.3 7.3a1 1 0 0 1-1.4 0z"/><circle cx="8" cy="8" r="1.6"/>',
-  fete:'<path d="M4 20.5 8.2 8.6l7.2 7.2z"/><path d="M14 3.5v2.2M19.6 5.9l-1.6 1.6M20.5 11.5h-2.2M10.8 6.7l1.2 1.2M15.7 9.8c1.3-1.3 3.1-1.3 4.3-.4"/>',
-  spectacle:'<path d="M9 18.2V5.6l11-2.1v12.6"/><circle cx="6.3" cy="18.2" r="2.7"/><circle cx="17.3" cy="16.1" r="2.7"/>',
-  culture:'<path d="M3 9.5 12 4l9 5.5M5 10v8M9.7 10v8M14.3 10v8M19 10v8M3 20.5h18"/>',
-  famille:'<path d="M12 3.2c3 0 5.3 2.6 5.3 5.9 0 3.6-2.6 6.4-5.3 6.4s-5.3-2.8-5.3-6.4c0-3.3 2.3-5.9 5.3-5.9z"/><path d="m11 15.5-.8 1.8h3.6l-.8-1.8M12 17.3c0 1.6-1.6 1.9-.6 3.7"/>',
-  sport:'<circle cx="12" cy="13.5" r="7.5"/><path d="M12 13.5V9.2M9.8 2.8h4.4M12 2.8V6M18.3 6.6l1.4-1.4"/>',
-  patrimoine:'<path d="M4 21V9.5l2-1V5h2.4v2h2.2V5h2.8v2h2.2V5H18v3.5l2 1V21z"/><path d="M10 21v-3.6a2 2 0 0 1 4 0V21"/>',
-  nature:'<path d="M12 21v-5.5"/><path d="M12 3c3.6 0 6.2 2.8 6.2 6.2 0 3.3-2.7 5.9-6.2 6.3-3.5-.4-6.2-3-6.2-6.3C5.8 5.8 8.4 3 12 3z"/>',
-  loisirs:'<path d="m12 3.5 2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/>',
-  office:'<circle cx="12" cy="12" r="8.6"/><path d="M12 11v5.6M12 7.6v.2"/>',
-  pin:'<path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',
-  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
-  heart:'<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>',
-  bell:'<path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0"/>',
-  mail:'<rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/>',
-  ticket:'<path d="M3 8.5V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v1.5a2.5 2.5 0 0 0 0 5V17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1.5a2.5 2.5 0 0 0 0-5z"/><path d="M14 5.5v2M14 11v2M14 16.5v2"/>',
-  ext:'<path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"/>',
-  pal:'<circle cx="12" cy="10" r="6.8"/><path d="M12 3.2v13.6M5.2 10h13.6M7.2 5.2l9.6 9.6M16.8 5.2l-9.6 9.6M8.6 21 12 10l3.4 11M7 21h10"/>'
+  brocante:'<path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/>',
+  fete:'<path d="M5.8 11.3 2 22l10.7-3.79"/><path d="M4 3h.01"/><path d="M22 8h.01"/><path d="M15 2h.01"/><path d="M22 20h.01"/><path d="m22 2-2.24.75a2.9 2.9 0 0 0-1.96 3.12c.1.86-.57 1.63-1.45 1.63h-.38c-.86 0-1.6.6-1.76 1.44L14 10"/><path d="m22 13-.82-.33c-.86-.34-1.82.2-1.98 1.11c-.11.7-.72 1.22-1.43 1.22H17"/><path d="m11 2 .33.82c.34.86-.2 1.82-1.11 1.98C9.52 4.9 9 5.52 9 6.23V7"/><path d="M11 13c1.93 1.93 2.83 4.17 2 5-.83.83-3.07-.07-5-2-1.93-1.93-2.83-4.17-2-5 .83-.83 3.07.07 5 2Z"/>',
+  spectacle:'<path d="M21 16V3a1 1 0 0 0-1.28-.96l-10 2.917a1 1 0 0 0-.72.96V19"/><circle cx="18" cy="16" r="3"/><circle cx="6" cy="19" r="3"/>',
+  culture:'<path d="M10 18v-7"/><path d="M11.119 2.205a2 2 0 0 1 1.762 0l7.84 3.846A.5.5 0 0 1 20.5 7h-17a.5.5 0 0 1-.22-.949z"/><path d="M14 18v-7"/><path d="M18 18v-7"/><path d="M3 22h18"/><path d="M6 18v-7"/>',
+  famille:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/>',
+  sport:'<circle cx="18.5" cy="17.5" r="3.5"/><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="15" cy="5" r="1"/><path d="M12 17.5V14l-3-3 4-3 2 3h2"/>',
+  patrimoine:'<path d="M10 5V3"/><path d="M14 5V3"/><path d="M15 21v-3a3 3 0 0 0-6 0v3"/><path d="M18 3v8"/><path d="M18 5H6"/><path d="M22 11H2"/><path d="M22 9v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9"/><path d="M6 3v8"/>',
+  nature:'<path d="M10 10v.2A3 3 0 0 1 8.9 16H5a3 3 0 0 1-1-5.8V10a3 3 0 0 1 6 0Z"/><path d="M7 16v6"/><path d="M13 19v3"/><path d="M12 19h8.3a1 1 0 0 0 .7-1.7L18 14h.3a1 1 0 0 0 .7-1.7L16 9h.2a1 1 0 0 0 .8-1.7L13 3l-1.4 1.5"/>',
+  loisirs:'<circle cx="12" cy="12" r="2"/><path d="M12 2v4"/><path d="m6.8 15-3.5 2"/><path d="m20.7 7-3.5 2"/><path d="M6.8 9 3.3 7"/><path d="m20.7 17-3.5-2"/><path d="m9 22 3-8 3 8"/><path d="M8 22h8"/><path d="M18 18.7a9 9 0 1 0-12 0"/>',
+  office:'<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>',
+  pin:'<path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/>',
+  user:'<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+  heart:'<path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/>',
+  bell:'<path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/>',
+  mail:'<path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/><rect x="2" y="4" width="20" height="16" rx="2"/>',
+  ticket:'<path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/>',
+  ext:'<path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>',
+  tout:'<rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>',
+  ok:'<path d="M20 6 9 17l-5-5"/>',
+  pal:'<path d="M6 19V5"/><path d="M10 19V6.8"/><path d="M14 19v-7.8"/><path d="M18 5v4"/><path d="M18 19v-6"/><path d="M22 19V9"/><path d="M2 19V9a4 4 0 0 1 4-4c2 0 4 1.33 6 4s4 4 6 4a4 4 0 1 0-3-6.65"/>'
 };
-const icon=(cat,s)=>'<svg class="sbl-ic" viewBox="0 0 24 24" width="'+(s||18)+'" height="'+(s||18)+'" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+ICONS[cat]+'</svg>';
+const icon=(cat,s)=>'<svg class="sbl-ic" viewBox="0 0 24 24" width="'+(s||18)+'" height="'+(s||18)+'" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+ICONS[cat]+'</svg>';
 
 /* ---------- Photos des communes (Wikipédia), chargées à la demande ---------- */
 
@@ -1252,7 +1255,7 @@ function thumb(e,cls){const d=document.createElement("div");d.className="sbl-th 
 
 /* ---------- Badges partenaires ---------- */
 const BADGES={palnature:{l:"Fondation Le PAL Nature",c:"#2f7d3b"}};
-const leafIco='<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19c0-8 5-13 14-14-1 9-6 14-14 14z"/><path d="M5 19l7-7"/></svg>';
+const leafIco='<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20a10 10 0 0010-10 25.9 25.9 0 00-1.04-7.281 1 1 0 00-1.755-.325C15.833 5.5 13 5.5 9.8 6.1A7 7 0 0011 20"/><path d="M2 21a5 5 0 012.911-4.544C7.613 15.212 8.351 15.24 11 13"/></svg>';
 function badge(e){const b=BADGES[e.b];if(!b)return null;const s=document.createElement("span");s.className="sbl-badge";s.style.setProperty("--bc",b.c);s.innerHTML=leafIco+"<span></span>";s.lastChild.textContent=b.l;return s}
 
 /* ---------- Liste ---------- */
@@ -1363,7 +1366,7 @@ function evRow(e,ref){
   w.style.setProperty("--c","var(--sbl-c-"+e.cat+")");w.style.setProperty("--pc","var(--sbl-p-"+e.cat+")");
   const id="sbl-evx"+(++evSeq),m=document.createElement("button");m.type="button";m.className="sbl-evm";m.setAttribute("aria-expanded","false");m.setAttribute("aria-controls",id);
   const quand=e.long?"Jusqu’au":(e.h?hh(e.h):"Journée"),sous=e.long?e.E.getDate()+" "+MO[e.E.getMonth()]:(!e.long&&+e.S!==+e.E?"au "+e.E.getDate()+" "+MO[e.E.getMonth()]:"");
-  m.innerHTML='<span class="hr"><b></b><small></small></span><span class="ci">'+icon(e.cat,16)+'</span><span class="tx"><span class="t"></span><span class="m"></span></span><svg class="chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
+  m.innerHTML='<span class="hr"><b></b><small></small></span><span class="ci">'+icon(e.cat,16)+'</span><span class="tx"><span class="t"></span><span class="m"></span></span><svg class="chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>';
   m.querySelector(".hr b").textContent=quand;m.querySelector(".hr small").textContent=sous;
   m.querySelector(".t").textContent=e.t;
   const bits=[CATS[e.cat][1],e.w];if(e.g)bits.push("Gratuit");if(e._rep)bits.push("+ "+e._rep+(e._rep>1?" autres dates":" autre date"));m.querySelector(".m").textContent=bits.join(" · ");
@@ -1466,7 +1469,7 @@ let PIN_ITEMS=[],pinTm=null,ZSAVE=null;
 const PHONE=()=>matchMedia("(max-width:600px)").matches;
 function mobilePop(pop){
   let box=$("sbl-mpop");if(!box){box=document.createElement("div");box.id="sbl-mpop";box.className="sbl-mpop";box.setAttribute("role","dialog");box.setAttribute("aria-label","Détail du repère");ROOT.append(box)}
-  const html=pop._content?pop._content.innerHTML:"";box.innerHTML='<button type="button" class="x" aria-label="Fermer">✕</button>'+html;box.hidden=false;
+  const html=pop._content?pop._content.innerHTML:"";box.innerHTML='<button type="button" class="x" aria-label="Fermer"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>'+html;box.hidden=false;
   box.querySelectorAll(".maplibregl-popup-close-button").forEach(b=>b.remove());
   box.querySelector(".x").onclick=()=>{box.hidden=true};
   /* même comportement que la bulle : on rejoue ses gestionnaires sur la copie */
@@ -1529,7 +1532,7 @@ function dayPanel(d){
   const evs=dayEvents(d),diff=Math.round((d-today())/864e5);
   const h=document.createElement("div");h.className="hd";
   const t=document.createElement("h3");t.textContent=(diff===0?"Aujourd’hui, ":diff===1?"Demain, ":"")+(diff<2?JL[d.getDay()]:cap(JL[d.getDay()]))+" "+d.getDate()+" "+ML[d.getMonth()];
-  const x=document.createElement("button");x.type="button";x.className="x";x.setAttribute("aria-label","Fermer le jour");x.textContent="✕";x.onclick=()=>{st.day="";draw()};
+  const x=document.createElement("button");x.type="button";x.className="x";x.setAttribute("aria-label","Fermer le jour");x.innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>';x.onclick=()=>{st.day="";draw()};
   h.append(t,x);box.append(h);box.setAttribute("aria-label",t.textContent);
   if(!evs.length){const p=document.createElement("p");p.className="none";p.textContent="Aucune sortie connue ce jour-là.";box.append(p)}
   const longs=evs.filter(e=>e.long);
@@ -1613,7 +1616,7 @@ let back=null;
 function sheet(e){
   back=document.activeElement;const h=$("sbl-sheet");
   h.innerHTML='<div class="sbl-veil" id="sbl-veil"><div class="sbl-sheet ev" role="dialog" aria-modal="true" aria-labelledby="sbl-st" style="--c:var(--sbl-c-'+e.cat+')">'+
-  '<div class="sbl-hero" id="sbl-hero"><span class="fb">'+icon(e.cat,64)+'</span><span class="ich">'+icon(e.cat,20)+'</span><a class="cr" hidden target="_blank" rel="noopener">Photo : Wikipédia</a><button class="cl" id="sbl-x" aria-label="Fermer">✕</button></div>'+
+  '<div class="sbl-hero" id="sbl-hero"><span class="fb">'+icon(e.cat,64)+'</span><span class="ich">'+icon(e.cat,20)+'</span><a class="cr" hidden target="_blank" rel="noopener">Photo : Wikipédia</a><button class="cl" id="sbl-x" aria-label="Fermer"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>'+
   '<div class="top"><div><div class="kind"></div><h2 id="sbl-st"></h2></div></div>'+
   '<dl><dt>Quand</dt><dd id="sbl-sw"></dd><dt>Où</dt><dd id="sbl-sl"></dd><dt>Source</dt><dd><a id="sbl-su" target="_blank" rel="noopener"></a></dd></dl><p id="sbl-sd"></p>'+
   '<div class="sbl-btns sbl-lks" id="sbl-lk" hidden></div>'+
@@ -1623,7 +1626,7 @@ function sheet(e){
   $("sbl-st").textContent=e.t;h.querySelector(".kind").textContent=CATS[e.cat][0]+" · "+depName(e.z);
   {const bo=blocOrg(e);if(bo)h.querySelector(".top").after(bo)}
   {const sh=document.createElement("button");sh.type="button";sh.className="sbl-fav";sh.setAttribute("aria-label","Partager");
-    sh.innerHTML='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3M7.5 7.5 12 3l4.5 4.5M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>';
+    sh.innerHTML='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v13"/><path d="m16 6-4-4-4 4"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/></svg>';
     sh.onclick=()=>partager(e);const tp=h.querySelector(".top");tp.classList.add("acts");tp.append(sh)}
   {const sg=document.createElement("p");sg.className="sbl-sgl";sg.innerHTML='<button type="button" class="lnk">Signaler une erreur sur ce truc</button>';sg.firstChild.onclick=()=>signaler(e);h.querySelector(".sbl-sheet").append(sg)}
   if(accOn()){FICHES++;h.querySelector(".top").append(favBtn(e,true));
@@ -1751,7 +1754,7 @@ function nearEvents(x,km0){const t=today(),lim=add(t,30);return EVENTS.filter(e=
 function lieuSheet(x){
   back=document.activeElement;const h=$("sbl-sheet");
   h.innerHTML='<div class="sbl-veil" id="sbl-veil"><div class="sbl-sheet ev" role="dialog" aria-modal="true" aria-labelledby="sbl-st" style="--c:var(--sbl-ink)">'+
-  '<div class="sbl-hero" id="sbl-hero" style="--pc:#4d5470"><span class="fb">'+kIcon(x.k,64)+'</span><span class="ich">'+kIcon(x.k,20)+'</span><a class="cr" hidden target="_blank" rel="noopener">Photo : Wikimedia</a><button class="cl" id="sbl-x" aria-label="Fermer">✕</button></div>'+
+  '<div class="sbl-hero" id="sbl-hero" style="--pc:#4d5470"><span class="fb">'+kIcon(x.k,64)+'</span><span class="ich">'+kIcon(x.k,20)+'</span><a class="cr" hidden target="_blank" rel="noopener">Photo : Wikimedia</a><button class="cl" id="sbl-x" aria-label="Fermer"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>'+
   '<div class="top"><div><div class="kind"></div><h2 id="sbl-st"></h2></div></div>'+
   '<dl><dt>Horaires</dt><dd id="sbl-oh"></dd><dt>Où</dt><dd id="sbl-sl"></dd><dt>Téléphone</dt><dd id="sbl-tel"></dd><dt>Site</dt><dd><a id="sbl-su" target="_blank" rel="noopener"></a></dd><dt>Source</dt><dd id="sbl-ss"></dd></dl><p id="sbl-sd"></p>'+
   '<p class="sbl-hint" id="sbl-ohh"></p>'+
@@ -1832,7 +1835,7 @@ function fillCommuneList(){const dl=$("sbl-cl");if(!dl)return;const src=NATCOM?N
 function regionPicker(){
   const deps=DEPIDX?DEPIDX.departements.slice():Object.keys(DEF_NAMES).map(c=>({code:c,nom:DEF_NAMES[c],n:0}));
   const sel=new Set(REGION);
-  const M=modal('<div class="top"><div><div class="kind">Secteur</div><h2>Où cherchez-vous&nbsp;?</h2></div><button class="cl" data-close aria-label="Fermer">✕</button></div>'+
+  const M=modal('<div class="top"><div><div class="kind">Secteur</div><h2>Où cherchez-vous&nbsp;?</h2></div><button class="cl" data-close aria-label="Fermer"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>'+
     '<p class="sbl-hint">Choisissez un ou plusieurs départements. Vous pouvez aussi taper une ville dans la recherche : « concerts à Lyon ».</p>'+
     '<div class="sbl-btns" style="margin:10px 0"><button type="button" class="sbl-btn" id="rg-me">'+pinIco+' Autour de moi</button></div>'+
     '<input class="sbl-in" id="rg-q" placeholder="Rechercher un département ou un numéro" aria-label="Rechercher un département">'+
@@ -1880,7 +1883,7 @@ async function apiAdmin(){
   try{API_TOK=sessionStorage.getItem("sbl-tok")||""}catch(_){}
   const tryTok=async()=>{try{await apiRefresh();PX.admin=true;try{sessionStorage.setItem("sbl-tok",API_TOK)}catch(_){}modBadge();return true}catch(_){API_TOK="";return false}};
   if(API_TOK&&await tryTok())return;
-  const M=modal('<form id="sbl-tk"><div class="top"><div><div class="kind">Espace éditeur</div><h2>Code d’accès</h2></div><button class="cl" type="button" data-close aria-label="Fermer">✕</button></div>'+
+  const M=modal('<form id="sbl-tk"><div class="top"><div><div class="kind">Espace éditeur</div><h2>Code d’accès</h2></div><button class="cl" type="button" data-close aria-label="Fermer"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>'+
     '<div class="sbl-f"><label for="tk-v">Code éditeur</label><input class="sbl-in" id="tk-v" type="password" autocomplete="current-password" required></div><p class="sbl-err" id="tk-e" role="alert"></p>'+
     '<div class="sbl-btns"><button class="sbl-btn go" type="submit">Entrer</button></div></form>');
   $("tk-v").focus();
@@ -1945,7 +1948,7 @@ function modal(inner,color){
 }
 function proposeForm(day,opt){loadCommunes();
   const today0=iso(today()),ORG=opt&&opt.org&&ACC.c&&ACC.c.org;
-  const M=modal('<div class="top"><div><div class="kind">'+(ORG?"Faiseur de trucs":"Agenda participatif")+'</div><h2>'+(ORG?"Publier un truc":"Proposer un truc")+'</h2></div><button class="cl" data-close aria-label="Fermer">✕</button></div>'+
+  const M=modal('<div class="top"><div><div class="kind">'+(ORG?"Faiseur de trucs":"Agenda participatif")+'</div><h2>'+(ORG?"Publier un truc":"Proposer un truc")+'</h2></div><button class="cl" data-close aria-label="Fermer"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>'+
    (PX.mode==="none"&&!ORG?'<p class="sbl-note"></p><div class="sbl-btns"><button class="sbl-btn" data-close type="button">Fermer</button></div>':
    (ORG?'<p class="sbl-hint">Publié tout de suite sous le nom de votre page.</p>':'<p class="sbl-hint">Votre proposition sera relue avant d’apparaître dans l’agenda.</p>')+
    '<form class="sbl-form" id="sbl-pf" novalidate>'+
@@ -2016,7 +2019,7 @@ function sourceForm(){
 async function setItem(col,uid,idx,patch){const ref=PX.db.doc(col+"/"+uid),snap=await ref.get();if(!snap.exists)return;const items=((snap.data()||{}).items||[]).map(x=>Object.assign({},x));if(!items[idx])return;Object.assign(items[idx],patch);await ref.set({items})}
 function modPanel(){
   const pend=pendingItems(),srcs=newSources(),pub=USER_EV.slice().sort((a,b)=>a.s<b.s?-1:1);
-  const M=modal('<div class="top"><div><div class="kind">Réservé aux éditeurs</div><h2>À valider</h2></div><button class="cl" data-close aria-label="Fermer">✕</button></div>'+
+  const M=modal('<div class="top"><div><div class="kind">Réservé aux éditeurs</div><h2>À valider</h2></div><button class="cl" data-close aria-label="Fermer"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>'+
     '<p class="sbl-hint">Corrigez directement les champs si besoin, puis publiez. La sortie apparaît aussitôt pour tous les visiteurs.</p>'+
     '<h3 class="sbl-modh">Sorties proposées ('+pend.length+')</h3><div id="mod-ev"></div><h3 class="sbl-modh">Sources suggérées ('+srcs.length+')</h3><div id="mod-src"></div>'+
     '<h3 class="sbl-modh">Signalements ('+(API_LIST.signalements||[]).length+')</h3><div id="mod-sg"></div>'+
@@ -2143,7 +2146,7 @@ function kioskQR(box,url,label){box.innerHTML='<div class="sbl-qr"><div class="q
    Abonnement iCalendar servi par le serveur (/calendrier.ics, voir worker/calendrier.js), relu par le calendrier plusieurs fois par jour.
    Assistant en 3 étapes pensé pour tout le monde : quoi, où, puis un seul gros bouton adapté à l'appareil avec les gestes à faire. */
 const AA_TYPES=["brocante","fete","spectacle","culture","famille","sport"];
-const calIco='<svg class="sbl-ic" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4M9 15l2 2 4-4"/></svg>';
+const calIco='<svg class="sbl-ic" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v3"/><path d="M16 2v3"/><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="m9 15 2 2 4-4"/></svg>';
 function aaParams(s){const p=new URLSearchParams();p.set("t",[...s.types].join(","));
   if(s.lieu){const d=s.lieu.moi?2:3;p.set("lat",(+s.lieu.lat).toFixed(d));p.set("lon",(+s.lieu.lon).toFixed(d));p.set("r",s.r);if(s.lieu.nom)p.set("nom",s.lieu.nom)}return p}
 function aaLiens(s){const q=aaParams(s).toString(),https=API+"/calendrier.ics?"+q,webcal=https.replace(/^https?:/,"webcal:");
@@ -2162,7 +2165,7 @@ function agendaAuto(pre){
   if(!pre.types){try{const m=JSON.parse(lsGet("sbl-aa")||"null");if(m&&m.types)pre=Object.assign(m,{etape:1})}catch(_){}}
   loadCommunes();
   const s={types:new Set(pre.types||[]),lieu:pre.lieu||null,r:pre.r||20,etape:pre.etape||1};
-  const M=modal('<div class="top"><div><div class="kind">Agenda automatique</div><h2 id="aa-h"></h2></div><button class="cl" data-close aria-label="Fermer">✕</button></div>'+
+  const M=modal('<div class="top"><div><div class="kind">Agenda automatique</div><h2 id="aa-h"></h2></div><button class="cl" data-close aria-label="Fermer"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>'+
     '<ol class="sbl-aa-pas" aria-hidden="true"><li></li><li></li><li></li></ol><div id="aa-c"></div>');
   const C=$("aa-c"),H2=$("aa-h");
   const go=n=>{s.etape=n;M.el.querySelectorAll(".sbl-aa-pas li").forEach((l,i)=>l.classList.toggle("on",i<n));[null,un,deux,trois][n]();
@@ -2173,7 +2176,7 @@ function agendaAuto(pre){
       '<div class="sbl-btns sbl-aa-nav"><button type="button" class="sbl-btn go" id="aa-n1">Continuer</button></div>';
     const box=$("aa-ty");
     AA_TYPES.concat(["tout"]).forEach(k=>{const b=document.createElement("button");b.type="button";b.className="sbl-aa-t";b.dataset.k=k;
-      b.innerHTML=(k==="tout"?'<span class="i">★</span>':'<span class="i" style="color:var(--sbl-c-'+k+')">'+icon(k,26)+'</span>')+'<span class="l"></span><span class="ck" aria-hidden="true">✓</span>';
+      b.innerHTML=(k==="tout"?'<span class="i">'+icon("tout",26)+'</span>':'<span class="i" style="color:var(--sbl-c-'+k+')">'+icon(k,26)+'</span>')+'<span class="l"></span><span class="ck" aria-hidden="true">'+icon("ok",14)+'</span>';
       b.querySelector(".l").textContent=k==="tout"?"Toutes les sorties":CATS[k][0];box.append(b)});
     const paint=()=>box.querySelectorAll("[data-k]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.k==="tout"?s.types.size===AA_TYPES.length:s.types.has(b.dataset.k)));
     box.onclick=ev=>{const b=ev.target.closest("[data-k]");if(!b)return;const k=b.dataset.k;
@@ -2273,7 +2276,7 @@ function toggleFav(e){
     FAV.push(e.id);toast(ACC.c||!accOn()?"Truc gardé !":"Truc gardé ! ("+FAV.length+"/"+FAV_LIBRE+" sans compte)")}
   accSave();favSync();favBtns();document.dispatchEvent(new CustomEvent("sbl:fav",{detail:{e,on:isFav(e.id)}}))}
 function favBtn(e,label){const b=document.createElement("button");b.type="button";b.className="sbl-fav"+(label?" wl":"");b.dataset.fav=e.id;
-  b.innerHTML='<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>'+(label?'<span class="l"></span>':"");
+  b.innerHTML='<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>'+(label?'<span class="l"></span>':"");
   b.onclick=ev=>{ev.stopPropagation();toggleFav(e)};setTimeout(favBtns);return b}
 
 /* En-tête : « Créer un compte » ou « Mon compte » */
@@ -2295,7 +2298,7 @@ function openCompte(raison,e){
   if(ACC.c&&raison!=="login")return monCompte();
   loadCommunes();const login=raison==="login",R=RAISONS[raison]||RAISONS.def;
   const cats=new Set(e&&e.cat&&CATS[e.cat]?[e.cat]:(ACC.c&&ACC.c.prefs&&ACC.c.prefs.cats)||[]);
-  const M=modal('<form id="ac-f" novalidate><div class="top"><div><div class="kind">Compte Trucophile · gratuit</div><h2 id="ac-h"></h2></div><button class="cl" type="button" data-close aria-label="Fermer">✕</button></div>'+
+  const M=modal('<form id="ac-f" novalidate><div class="top"><div><div class="kind">Compte Trucophile · gratuit</div><h2 id="ac-h"></h2></div><button class="cl" type="button" data-close aria-label="Fermer"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>'+
     '<p class="sbl-acl" id="ac-p"></p>'+
     (login?'':'<ul class="sbl-acb"><li>'+icon("heart",18)+'Favoris illimités</li><li>'+icon("bell",18)+'Alertes près de chez vous</li><li>'+icon("pin",18)+'Sur tous vos appareils</li></ul>')+
     '<div class="sbl-f"><label for="ac-e">Adresse e-mail</label><input class="sbl-in" id="ac-e" type="email" autocomplete="email" inputmode="email" maxlength="200" required placeholder="vous@exemple.fr"></div>'+
@@ -2322,7 +2325,7 @@ function openCompte(raison,e){
       body.newsletter=$("ac-nl").checked}
     go.disabled=true;go.textContent="Envoi…";
     try{await accCall("/compte/lien",body);
-      M.el.querySelector(".sbl-sheet").innerHTML='<div class="top"><div><div class="kind">Plus qu’une étape</div><h2>Regardez vos e-mails</h2></div><button class="cl" type="button" data-close aria-label="Fermer">✕</button></div>'+
+      M.el.querySelector(".sbl-sheet").innerHTML='<div class="top"><div><div class="kind">Plus qu’une étape</div><h2>Regardez vos e-mails</h2></div><button class="cl" type="button" data-close aria-label="Fermer"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>'+
         '<div class="sbl-acok">'+icon("mail",36)+'<p>Un lien vient de partir à <b></b>. Ouvrez-le sur cet appareil pour '+(login?"vous connecter":"activer votre compte")+'. Il est valable 30 minutes.</p><p class="sbl-acm">Rien reçu ? Regardez dans les indésirables, ou réessayez dans quelques minutes.</p></div>'+
         '<div class="sbl-btns"><button class="sbl-btn go" type="button" data-close>Compris</button></div>';
       M.el.querySelector(".sbl-acok b").textContent=email;M.el.querySelectorAll("[data-close]").forEach(b=>b.onclick=M.close);lsSet("sbl-nudge",String(Date.now()+864e5*30))}
@@ -2337,7 +2340,7 @@ async function connexion(jeton){
 function monCompte(bienvenue){
   if(!ACC.c)return openCompte("def");
   const c=ACC.c,p=c.prefs||{},sel=new Set(p.cats||[]);loadCommunes();
-  const M=modal('<div class="top"><div><div class="kind">Trucophile</div><h2>'+(bienvenue?"Bienvenue !":"Mon compte")+'</h2></div><button class="cl" type="button" data-close aria-label="Fermer">✕</button></div>'+
+  const M=modal('<div class="top"><div><div class="kind">Trucophile</div><h2>'+(bienvenue?"Bienvenue !":"Mon compte")+'</h2></div><button class="cl" type="button" data-close aria-label="Fermer"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>'+
     '<p class="sbl-acl" id="mc-e"></p>'+
     '<h3 class="sbl-ach">Mes trucs à faire <button type="button" class="lnk" id="mc-sh">Partager ma liste</button></h3><div class="sbl-acfav" id="mc-f"></div>'+
     '<h3 class="sbl-ach">Autour de chez moi</h3><form id="mc-p" novalidate>'+
@@ -2382,7 +2385,7 @@ function versOffres(){location.href="offres.html"}
 function nudgeOk(){return accOn()&&!ACC.c&&+(lsGet("sbl-nudge")||0)<Date.now()}
 function nudgeStop(jours){lsSet("sbl-nudge",String(Date.now()+864e5*jours))}
 function ctaCard(raison,titre,texte,bouton){const d=document.createElement("div");d.className="sbl-accta";
-  d.innerHTML='<span class="ic">'+icon(raison==="semaine"?"bell":"heart",22)+'</span><div class="tx"><b></b><span></span></div><button type="button" class="sbl-btn go"></button><button type="button" class="x" aria-label="Ne plus proposer">✕</button>';
+  d.innerHTML='<span class="ic">'+icon(raison==="semaine"?"bell":"heart",22)+'</span><div class="tx"><b></b><span></span></div><button type="button" class="sbl-btn go"></button><button type="button" class="x" aria-label="Ne plus proposer"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>';
   d.querySelector("b").textContent=titre;d.querySelector(".tx span").textContent=texte;d.querySelector(".go").textContent=bouton;
   d.querySelector(".go").onclick=versOffres;d.querySelector(".x").onclick=()=>{nudgeStop(14);document.querySelectorAll(".sbl-accta").forEach(x=>x.remove())};return d}
 function pourVous(pv){pv.textContent="";if(!accOn())return;
@@ -2395,7 +2398,7 @@ const kmd=(a,b,c,d)=>Math.hypot((d-b)*Math.cos((a+c)/2*Math.PI/180)*111.32,(c-a)
 let FICHES=0;
 function banniere(){if(!nudgeOk()||$("sbl-ban")||$("sbl-veil"))return;
   const d=document.createElement("div");d.id="sbl-ban";d.className="sbl-ban";d.setAttribute("role","complementary");d.setAttribute("aria-label","Créer un compte");
-  d.innerHTML='<span class="ic">'+icon("bell",20)+'</span><p><b>Ne ratez plus rien près de chez vous.</b> <span>Favoris, alertes et « Le Truc de la semaine » : c’est gratuit.</span></p><button type="button" class="sbl-btn go">Rejoindre les Trucophiles</button><button type="button" class="x" aria-label="Non merci">✕</button>';
+  d.innerHTML='<span class="ic">'+icon("bell",20)+'</span><p><b>Ne ratez plus rien près de chez vous.</b> <span>Favoris, alertes et « Le Truc de la semaine » : c’est gratuit.</span></p><button type="button" class="sbl-btn go">Rejoindre les Trucophiles</button><button type="button" class="x" aria-label="Non merci"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>';
   d.querySelector(".go").onclick=()=>{d.remove();versOffres()};d.querySelector(".x").onclick=()=>{nudgeStop(7);d.remove();document.querySelectorAll(".sbl-accta").forEach(x=>x.remove())};ROOT.append(d);requestAnimationFrame(()=>d.classList.add("on"))}
 function accInit(H){
   ACC.apercu=APERCU_COMPTES||H.has("comptes")||lsGet("sbl-apercu-comptes")==="1";if(H.has("comptes"))lsSet("sbl-apercu-comptes","1");
@@ -2410,7 +2413,7 @@ function accInit(H){
    ORGS : index public { slug: {nom, logo, verifie} } chargé depuis le serveur (/orgs).
    En phase de développement sans serveur, un profil d'exemple montre le rendu (APERCU_COMPTES). */
 let ORGS={},ORG_DEMO=null;
-const CHECK='<svg class="sbl-vf" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M12 1.8l2.5 1.9 3.1-.3 1 3 2.7 1.6-.6 3.1 1.5 2.7-2.2 2.2-.2 3.1-3.1.5-1.9 2.5-2.8-1.4-2.8 1.4-1.9-2.5-3.1-.5-.2-3.1L1.3 14l1.5-2.7-.6-3.1 2.7-1.6 1-3 3.1.3z" fill="currentColor"/><path d="m8 12.2 2.6 2.6L16.2 9" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const CHECK='<svg class="sbl-vf" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="m16 9-5.5 5.5L8 12" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const orgDe=e=>e&&e.org?ORGS[e.org]:null;
 function logoUrl(o){return o&&o.logo?(o.demo?o.logoData:API+"/org/"+o.slug+"/logo?v="+o.logo):""}
 function avatar(o,size){const d=document.createElement("span");d.className="sbl-av";d.style.setProperty("--s",(size||40)+"px");
@@ -2433,7 +2436,7 @@ async function ouvrirOrg(slug){
   else if(API){try{const r=await fetch(API+"/org/"+encodeURIComponent(slug));if(!r.ok)throw 0;const j=await r.json();o=j.org;ORGS[slug]=Object.assign(ORGS[slug]||{},o);
     sorties=j.sorties.map(x=>EVENTS.find(e=>e.id===x.id)||null).filter(Boolean)}catch(_){toast("Ce profil est introuvable.");return}}
   if(!o){toast("Ce profil est introuvable.");return}
-  const M=modal('<div class="sbl-orgp"><div class="cv"></div><button class="cl" type="button" data-close aria-label="Fermer">✕</button><div class="hd"></div>'+
+  const M=modal('<div class="sbl-orgp"><div class="cv"></div><button class="cl" type="button" data-close aria-label="Fermer"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button><div class="hd"></div>'+
     '<h2><span class="nm"></span></h2><p class="vt" hidden>'+CHECK+'Organisateur vérifié par Trucs à faire</p><p class="bio"></p><div class="lk"></div>'+
     '<div class="stt"><b></b> <span></span></div><div class="ev"></div><div class="sbl-btns"><button type="button" class="sbl-btn" id="op-sh">Partager ce profil</button></div></div>');
   const el=M.el.querySelector(".sbl-orgp");el.querySelector(".hd").append(avatar(o,96));el.querySelector(".nm").textContent=o.nom;
@@ -2450,7 +2453,7 @@ async function ouvrirOrg(slug){
 function blocOrg(e){const o=orgDe(e);if(!o)return null;const b=document.createElement("button");b.type="button";b.className="sbl-orgb";
   b.append(avatar(o,40));const tx=document.createElement("span");tx.className="tx";tx.innerHTML="<b></b><small></small>";tx.querySelector("b").textContent=o.nom;
   tx.querySelector("small").textContent=o.verifie?"Organisateur vérifié · voir le profil":"Organisateur · voir le profil";b.append(tx);
-  b.insertAdjacentHTML("beforeend",'<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>');
+  b.insertAdjacentHTML("beforeend",'<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>');
   b.onclick=()=>ouvrirOrg(o.slug);return b}
 
 /* Mon espace organisateur (dans Mon compte) */
@@ -2463,7 +2466,7 @@ function espaceOrg(box){
   const bt=document.createElement("div");bt.className="sbl-btns";bt.innerHTML='<button type="button" class="sbl-btn go" id="eo-p">Publier un truc</button><button type="button" class="sbl-btn" id="eo-v">Voir ma page</button><button type="button" class="sbl-btn" id="eo-m">Modifier</button><button type="button" class="sbl-btn" id="eo-w">Code pour mon site</button>';box.append(bt);
   $("eo-p").onclick=()=>proposeForm(st.day||"",{org:true});$("eo-v").onclick=()=>ouvrirOrg(o.slug);$("eo-m").onclick=()=>formOrg();
   $("eo-w").onclick=()=>{const u=pageUrl()+"#integre&org="+o.slug,code='<iframe src="'+u+'" title="Nos trucs à faire" style="width:100%;height:720px;border:0;border-radius:16px" loading="lazy"></iframe>';
-    const M=modal('<div class="top"><div><div class="kind">Sur votre site</div><h2>Nos prochains trucs</h2></div><button class="cl" data-close aria-label="Fermer">✕</button></div><p class="sbl-acl">Collez ce code dans votre site (bloc « HTML personnalisé ») : vos sorties s’y affichent et se mettent à jour toutes seules. Affiches et badge : <a href="kit.html">kit de communication</a>.</p><textarea class="sbl-in" id="eo-code" rows="4" readonly></textarea><div class="sbl-btns"><button class="sbl-btn go" type="button" id="eo-cp">Copier le code</button></div>');
+    const M=modal('<div class="top"><div><div class="kind">Sur votre site</div><h2>Nos prochains trucs</h2></div><button class="cl" data-close aria-label="Fermer"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div><p class="sbl-acl">Collez ce code dans votre site (bloc « HTML personnalisé ») : vos sorties s’y affichent et se mettent à jour toutes seules. Affiches et badge : <a href="kit.html">kit de communication</a>.</p><textarea class="sbl-in" id="eo-code" rows="4" readonly></textarea><div class="sbl-btns"><button class="sbl-btn go" type="button" id="eo-cp">Copier le code</button></div>');
     $("eo-code").value=code;$("eo-cp").onclick=()=>navigator.clipboard.writeText(code).then(()=>toast("Code copié"),()=>$("eo-code").select())};
   const l=document.createElement("div");l.className="sbl-acfav";box.append(l);
   accCall("/compte/sorties").then(j=>{j.sorties.forEach(e=>{const r=document.createElement("div");r.className="sbl-acfr";r.innerHTML='<span class="ci">'+icon(e.cat||"fete",15)+'</span><span class="tx"><b></b><small></small></span><span class="ac2"><button type="button" class="lnk dp">Dupliquer</button> <button type="button" class="lnk rt">Retirer</button></span>';
@@ -2472,7 +2475,7 @@ function espaceOrg(box){
     r.querySelector(".rt").onclick=async()=>{if(!confirm("Retirer « "+e.t+" » de l’agenda ?"))return;try{await accCall("/compte/sorties",{supprimer:e.id});r.remove();USER_EV=USER_EV.filter(x=>x.id!==e.id);merge();toast("Truc retiré")}catch(_){toast("Échec, réessayez.")}};l.append(r)})}).catch(()=>{})}
 function formOrg(){
   const o=(ACC.c&&ACC.c.org)||{};
-  const M=modal('<form id="fo" novalidate><div class="top"><div><div class="kind">Faiseur de trucs · gratuit</div><h2>Ma page organisateur</h2></div><button class="cl" type="button" data-close aria-label="Fermer">✕</button></div>'+
+  const M=modal('<form id="fo" novalidate><div class="top"><div><div class="kind">Faiseur de trucs · gratuit</div><h2>Ma page organisateur</h2></div><button class="cl" type="button" data-close aria-label="Fermer"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>'+
     '<div class="sbl-fologo"><span id="fo-av"></span><div><label class="sbl-btn" for="fo-img">Choisir un logo</label><input type="file" id="fo-img" accept="image/png,image/jpeg,image/webp" hidden><p class="sbl-acm">Carré de préférence. Il apparaîtra en rond sur vos sorties.</p></div></div>'+
     '<div class="sbl-f"><label for="fo-n">Nom de l’organisation *</label><input class="sbl-in" id="fo-n" maxlength="60" required></div>'+
     '<div class="sbl-f"><label for="fo-b">Présentation</label><textarea class="sbl-in" id="fo-b" maxlength="300" placeholder="Ce que vous organisez, où, pour qui…"></textarea></div>'+
@@ -2510,9 +2513,9 @@ function surprends(){const t=today(),fin=add(t,7);let c=pick().filter(e=>!e.long
   if(!c.length){toast("Pas de truc à tirer au sort par ici…");return}const w=c.filter(e=>e.img),src=w.length>3&&Math.random()<.6?w:c;sheet(src[Math.floor(Math.random()*src.length)]);toast("🎲 Et pourquoi pas ce truc ?")}
 function initQuick(){const box=$("sbl-qk");if(!box||KIOSK)return;
   const ch=(k,ic,l)=>'<button type="button" class="sbl-qc'+(k==="rnd"?" rnd":"")+'" data-k="'+k+'" aria-pressed="false">'+ic+'<span>'+l+'</span></button>';
-  box.innerHTML=ch("near",icon("pin",16),"Autour de moi")+ch("soir",'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>',"Ce soir")+
-    ch("we",'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>',"Ce week-end")+ch("free",'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15 9.5a3.5 3.5 0 1 0 0 5M7.5 11h6M7.5 13.5h5"/></svg>',"Gratuit")+
-    ch("fam",icon("famille",16),"En famille")+ch("rnd",'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4"/><circle cx="9" cy="9" r="1.2" fill="currentColor"/><circle cx="15" cy="15" r="1.2" fill="currentColor"/><circle cx="15" cy="9" r="1.2" fill="currentColor"/><circle cx="9" cy="15" r="1.2" fill="currentColor"/></svg>',"Surprends-moi");
+  box.innerHTML=ch("near",icon("pin",16),"Autour de moi")+ch("soir",'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg>',"Ce soir")+
+    ch("we",'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v3"/><path d="M16 2v3"/><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg>',"Ce week-end")+ch("free",'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="M7 12h5"/><path d="M15 9.4a4 4 0 1 0 0 5.2"/></svg>',"Gratuit")+
+    ch("fam",icon("famille",16),"En famille")+ch("rnd",'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="12" height="12" x="2" y="10" rx="2" ry="2"/><path d="m17.92 14 3.5-3.5a2.24 2.24 0 0 0 0-3l-5-4.92a2.24 2.24 0 0 0-3 0L10 6"/><path d="M6 18h.01"/><path d="M10 14h.01"/><path d="M15 6h.01"/><path d="M18 9h.01"/></svg>',"Surprends-moi");
   box.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{const k=b.dataset.k;
     if(k==="near")return autourDeMoi(b);if(k==="rnd")return surprends();
     if(k==="free")QK.free=!QK.free;else if(k==="fam")QK.fam=!QK.fam;else{const v=k==="soir"?"ce soir":"ce week-end";QK.w=QK.w===v?"":v}qkCompose()});
@@ -2522,13 +2525,13 @@ function initQuick(){const box=$("sbl-qk");if(!box||KIOSK)return;
 const lienSortie=e=>pageUrl()+"#dep="+e.z+"&sortie="+encodeURIComponent(e.id);
 function partager(e){const u=lienSortie(e),t=e.t+" · "+when(e)+" · "+e.w;
   if(navigator.share)navigator.share({title:e.t,text:t,url:u}).catch(()=>{});
-  else{const M=modal('<div class="top"><div><div class="kind">Partager</div><h2>Envoyer ce truc</h2></div><button class="cl" data-close aria-label="Fermer">✕</button></div><div class="sbl-shr"></div><div class="sbl-f"><label for="sh-u">Lien direct</label><input class="sbl-in" id="sh-u" readonly></div><div class="sbl-btns"><button class="sbl-btn go" type="button" id="sh-c">Copier le lien</button></div>');
+  else{const M=modal('<div class="top"><div><div class="kind">Partager</div><h2>Envoyer ce truc</h2></div><button class="cl" data-close aria-label="Fermer"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div><div class="sbl-shr"></div><div class="sbl-f"><label for="sh-u">Lien direct</label><input class="sbl-in" id="sh-u" readonly></div><div class="sbl-btns"><button class="sbl-btn go" type="button" id="sh-c">Copier le lien</button></div>');
     $("sh-u").value=u;const enc=encodeURIComponent,box=M.el.querySelector(".sbl-shr");
     [["WhatsApp","https://wa.me/?text="+enc(t+" "+u)],["Facebook","https://www.facebook.com/sharer/sharer.php?u="+enc(u)],["SMS","sms:?&body="+enc(t+" "+u)],["E-mail","mailto:?subject="+enc(e.t)+"&body="+enc(t+"\n"+u)]].forEach(([l,h])=>box.append(linkBtn(h,l,"ext",false)));
     $("sh-c").onclick=()=>navigator.clipboard.writeText(u).then(()=>toast("Lien copié"),()=>{$("sh-u").select()})}}
 function signaler(e){
   const R=[["annule","Annulé ou reporté"],["date","Date ou horaire faux"],["lieu","Lieu faux"],["doublon","En double"],["inapproprie","Contenu inapproprié"],["autre","Autre chose"]];
-  const M=modal('<form id="sg-f" novalidate><div class="top"><div><div class="kind">Un souci avec ce truc ?</div><h2>Signaler une erreur</h2></div><button class="cl" type="button" data-close aria-label="Fermer">✕</button></div>'+
+  const M=modal('<form id="sg-f" novalidate><div class="top"><div><div class="kind">Un souci avec ce truc ?</div><h2>Signaler une erreur</h2></div><button class="cl" type="button" data-close aria-label="Fermer"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>'+
     '<p class="sbl-acl"></p><fieldset class="sbl-chips"><legend>Quel est le problème ?</legend>'+R.map(([v,l],i)=>'<label><input type="radio" name="sg-r" value="'+v+'"'+(i?"":" checked")+'><span>'+l+'</span></label>').join("")+'</fieldset>'+
     '<div class="sbl-f"><label for="sg-n">Précisions <span class="opt">(facultatif)</span></label><textarea class="sbl-in" id="sg-n" maxlength="400" placeholder="Nouvelle date, bon lieu, lien vers l’annonce…"></textarea></div>'+
     '<p class="sbl-err" id="sg-err" role="alert"></p><div class="sbl-btns"><button class="sbl-btn go" type="submit">Envoyer</button></div><p class="sbl-acm">N’indiquez pas de données personnelles. Le signalement est relu par l’éditeur.</p></form>');
@@ -2552,7 +2555,7 @@ async function meteoWeekend(box){
   const n=pickO(Object.assign({},st,{abri:1}),"we","").length;if(n<3)return;
   const j=pluie.length===2?"ce week-end":(pluie[0].j.getDay()===6?"samedi":"dimanche");
   const d2=document.createElement("button");d2.type="button";d2.className="sbl-meteo";
-  d2.innerHTML='<span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 15a4.5 4.5 0 1 1 1-8.9A6 6 0 0 1 19.5 9 4 4 0 0 1 18 16.8"/><path d="M8 19l-1 2M12 19l-1 2M16 19l-1 2"/></svg></span><span class="tx"><b></b><small>Toucher pour voir les trucs à l’abri</small></span>';
+  d2.innerHTML='<span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M16 14v6"/><path d="M8 14v6"/><path d="M12 16v6"/></svg></span><span class="tx"><b></b><small>Toucher pour voir les trucs à l’abri</small></span>';
   d2.querySelector("b").textContent="Il risque de pleuvoir "+j+" : "+n+" trucs à l’abri";d2.onclick=()=>{setQ("à l’abri ce week-end");explore("list")};box.append(d2)}
 
 /* ---------- Mon week-end : les favoris rangés par jour, à partager ---------- */
@@ -2583,7 +2586,7 @@ function appli(){
   addEventListener("beforeinstallprompt",ev=>{ev.preventDefault();INSTALL=ev;b.hidden=false});
   if(ios)b.hidden=false;
   b.onclick=async()=>{if(INSTALL){INSTALL.prompt();const r=await INSTALL.userChoice.catch(()=>null);if(r&&r.outcome==="accepted")b.hidden=true;INSTALL=null;return}
-    modal('<div class="top"><div><div class="kind">Application</div><h2>Installer Trucs à faire</h2></div><button class="cl" data-close aria-label="Fermer">✕</button></div>'+
+    modal('<div class="top"><div><div class="kind">Application</div><h2>Installer Trucs à faire</h2></div><button class="cl" data-close aria-label="Fermer"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>'+
       '<ol class="sbl-ios"><li>Touchez le bouton <b>Partager</b> en bas de Safari (le carré avec une flèche).</li><li>Choisissez <b>« Sur l’écran d’accueil »</b>.</li><li>Touchez <b>Ajouter</b> : l’icône apparaît avec vos autres applis.</li></ol>'+
       '<p class="sbl-acm">L’appli s’ouvre en plein écran et garde les dernières sorties consultées, même sans réseau.</p>')}}
 async function boot(){

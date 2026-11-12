@@ -133,6 +133,8 @@ jobs:
             adb logcat -d | grep -iE "Capacitor|chromium|AndroidRuntime" | grep -iE "error|exception|fatal|Uncaught" | tail -40 > erreurs.txt || true
             echo "--- erreurs relevées ---"; cat erreurs.txt
             adb shell pidof fr.trucsafaire.app
+            adb shell uiautomator dump /sdcard/ui.xml >/dev/null && adb shell cat /sdcard/ui.xml | grep -o 'text="[^"]\+"' | head -40
+            for f in accueil liste; do echo "=== CAPTURE $f ==="; convert $f.png -resize 360x -quality 70 jpg:- | base64 -w0; echo; echo "=== FIN ==="; done
       - uses: actions/upload-artifact@v4
         if: always()
         with:

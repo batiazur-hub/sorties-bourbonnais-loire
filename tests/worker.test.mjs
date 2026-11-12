@@ -383,3 +383,26 @@ test("Le Truc de la semaine : au plus 48 requêtes sortantes par lot, une écrit
   const html = envoyes.map(x => x.htmlContent).join("");
   assert.ok(!html.includes("<img src=x"), "titre échappé"); assert.ok(html.includes("&lt;img") || !envoyes.length);
 });
+
+test("agenda automatique : abonnement iCalendar filtré par type et par cercle, valide et plié à 75 octets", async () => {
+  const e = env();
+  const r = await appel(e, "/calendrier.ics?t=brocante,fete&lat=46.566&lon=3.333&r=40&nom=Moulins");
+  assert.equal(r.statut, 200); assert.match(r.h.get("Content-Type"), /text\/calendar/);
+  const t = r.t;
+  assert.ok(t.startsWith("BEGIN:VCALENDAR\r\n") && t.endsWith("END:VCALENDAR\r\n"));
+  assert.match(t.replace(/\r\n /g, ""), /X-WR-CALNAME:Brocantes et Fêtes et marchés · 40 km autour de Moulins \(Trucs à faire\)/);
+  assert.match(t, /REFRESH-INTERVAL;VALUE=DURATION:PT6H/);
+  for (const l of t.split("\r\n")) assert.ok(new TextEncoder().encode(l).length <= 75, "ligne trop longue : " + l);
+  const n = (t.match(/BEGIN:VEVENT/g) || []).length;
+  assert.equal(n, (t.match(/END:VEVENT/g) || []).length);
+  const cats = [...t.replace(/\r\n /g, "").matchAll(/CATEGORIES:(.*)/g)].map(m => m[1]);
+  assert.ok(cats.every(c => /Brocantes|Fêtes/.test(c)), "uniquement les types demandés");
+  // même sélection que l'aperçu
+  const a = await appel(e, "/calendrier/apercu?t=brocante,fete&lat=46.566&lon=3.333&r=40&nom=Moulins");
+  assert.equal(a.statut, 200); assert.equal(a.j.total, n);
+  // département entier, type seul
+  const d = await appel(e, "/calendrier.ics?t=brocante&dep=03");
+  assert.equal(d.statut, 200); assert.ok(!/CATEGORIES:(?!Brocantes)/.test(d.t.replace(/\r\n /g, "")));
+  // sans zone : erreur claire
+  assert.equal((await appel(e, "/calendrier.ics?t=brocante")).statut, 400);
+});

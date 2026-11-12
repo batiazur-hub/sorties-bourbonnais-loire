@@ -742,6 +742,45 @@ textarea.sbl-in{min-height:100px;resize:vertical}
 .sbl-sgl{margin:16px 0 0;text-align:center;font-size:.85rem}.sbl-sgl .lnk{color:var(--sbl-muted);font-weight:500}
 
 /* ---------- Météo, liste des favoris, veille de la borne ---------- */
+/* ---------- Agenda automatique (assistant en 3 étapes) ---------- */
+.sbl-meteo.sbl-aacard{background:linear-gradient(120deg,#0a6b53,#12a37e);color:#fff;text-align:left;cursor:pointer}
+.sbl-meteo.sbl-aacard b,.sbl-meteo.sbl-aacard small{color:#fff}
+#aa-h:focus{outline:none}
+.sbl-aal{display:flex;align-items:center;gap:10px;width:100%;margin-top:12px;padding:12px 14px;border:1.5px dashed var(--sbl-accent);border-radius:16px;background:color-mix(in srgb,var(--sbl-accent) 7%,transparent);color:var(--sbl-ink);font:600 .95rem var(--sbl-body);text-align:left;cursor:pointer}
+.sbl-aal svg{flex:none;color:var(--sbl-accent)}
+.sbl-aa-pas{display:flex;gap:6px;list-style:none;margin:6px 0 14px;padding:0}.sbl-aa-pas li{flex:1;height:6px;border-radius:9px;background:var(--sbl-line)}.sbl-aa-pas li.on{background:var(--sbl-accent)}
+.sbl-aa-int{font-size:1.02rem;line-height:1.5;margin:0 0 12px}
+.sbl-aa-lb{display:block;font-weight:700;margin:12px 0 8px;font-size:1rem}
+.sbl-aa-ty{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.sbl-aa-t{position:relative;display:flex;align-items:center;gap:10px;min-height:64px;padding:10px 34px 10px 12px;border:2px solid var(--sbl-line);border-radius:16px;background:var(--sbl-surface);color:var(--sbl-ink);font:600 1rem var(--sbl-body);text-align:left;cursor:pointer}
+.sbl-aa-t .i{flex:none;display:grid;place-items:center;width:30px;font-size:1.4rem;color:var(--sbl-accent)}
+.sbl-aa-t .ck{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:22px;height:22px;border-radius:50%;border:2px solid var(--sbl-line);display:grid;place-items:center;font-size:.8rem;color:transparent}
+.sbl-aa-t[aria-pressed="true"]{border-color:var(--sbl-accent);background:color-mix(in srgb,var(--sbl-accent) 9%,var(--sbl-surface))}
+.sbl-aa-t[aria-pressed="true"] .ck{background:var(--sbl-accent);border-color:var(--sbl-accent);color:var(--sbl-accent-ink)}
+.sbl-aa-nav{margin-top:18px}.sbl-aa-nav .sbl-btn{min-height:52px;padding:0 26px;font-size:1.02rem}.sbl-aa-nav .sbl-btn[disabled]{opacity:.45}
+.sbl-aa-moi{width:100%;min-height:56px;gap:8px;font-size:1.05rem}
+.sbl-aa-ou{display:flex;align-items:center;gap:10px;margin:14px 0 4px;color:var(--sbl-muted)}.sbl-aa-ou::before,.sbl-aa-ou::after{content:"";flex:1;height:1px;background:var(--sbl-line)}
+#aa-v{font-size:1.05rem;min-height:52px}
+.sbl-aa-sug{display:grid;gap:6px;margin-top:6px}
+.sbl-aa-s{display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:48px;padding:0 14px;border:1px solid var(--sbl-line);border-radius:12px;background:var(--sbl-surface);color:var(--sbl-ink);font:600 1rem var(--sbl-body);text-align:left;cursor:pointer}
+.sbl-aa-s small{color:var(--sbl-muted);font-weight:500}
+.sbl-aa-sel{display:flex;align-items:center;gap:8px;margin:14px 0 0;font-weight:700;font-size:1.05rem}
+.sbl-aa-r{display:flex;gap:8px;flex-wrap:wrap}
+.sbl-aa-km{min-height:48px;min-width:72px;padding:0 14px;border:2px solid var(--sbl-line);border-radius:999px;background:var(--sbl-surface);color:var(--sbl-ink);font:600 1rem var(--sbl-body);cursor:pointer}
+.sbl-aa-km[aria-pressed="true"]{border-color:var(--sbl-accent);background:var(--sbl-accent);color:var(--sbl-accent-ink)}
+.sbl-aa-pv{display:grid;gap:4px;margin-top:14px;padding:12px 14px;border-radius:14px;background:color-mix(in srgb,#0b7a5e 10%,var(--sbl-surface));line-height:1.4}
+.sbl-aa-pv:empty{display:none}.sbl-aa-pv.vide{background:color-mix(in srgb,var(--sbl-muted) 10%,var(--sbl-surface))}.sbl-aa-pv .ld{color:var(--sbl-muted)}
+.sbl-aa-big{display:flex;width:100%;min-height:62px;gap:10px;font-size:1.12rem;margin:4px 0 10px}
+.sbl-aa-et{margin:6px 0 10px;padding-left:1.4em;display:grid;gap:8px;font-size:1rem;line-height:1.45}
+.sbl-aa-et li::marker{font-weight:800;color:var(--sbl-accent)}
+.sbl-aa-alt,.sbl-aa-fin{font-size:.92rem;color:var(--sbl-muted);line-height:1.45}
+.sbl-aa-choix{display:grid;gap:4px}
+.sbl-aa-qr{display:grid;grid-template-columns:120px minmax(0,1fr);gap:14px;align-items:center;margin:12px 0;padding:12px;border:1px solid var(--sbl-line);border-radius:16px}
+.sbl-aa-qr .sbl-qr{margin:0}.sbl-aa-qr .sbl-qr p{display:none}.sbl-aa-qr svg{width:120px;height:120px;background:#fff;border-radius:8px}
+.sbl-aa-plus{margin:12px 0}.sbl-aa-plus summary{cursor:pointer;font-weight:600;min-height:44px;display:flex;align-items:center;justify-content:space-between;gap:10px;list-style:none}
+.sbl-aa-plus summary::-webkit-details-marker{display:none}.sbl-aa-plus summary::after{content:"+";font-size:1.4rem;font-weight:400;color:var(--sbl-accent)}.sbl-aa-plus[open] summary::after{content:"−"}
+.sbl-aa-url{display:flex;gap:8px;margin:6px 0 10px}.sbl-aa-url .sbl-in{flex:1;min-width:0;font-size:.85rem}
+@media (max-width:480px){.sbl-aa-ty{grid-template-columns:1fr 1fr}.sbl-aa-t{font-size:.95rem;min-height:60px}.sbl-aa-qr{display:none}}
 .sbl-meteo{display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;align-items:center;width:100%;margin:6px 0 14px;padding:12px 14px;border:0;border-radius:18px;background:linear-gradient(120deg,#1C38BD,#2546D8 60%,#5B78F2);color:#fff;text-align:left;font:inherit;cursor:pointer}
 .sbl-meteo .ic{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:rgb(255 255 255 / .16)}
 .sbl-meteo .tx{display:grid}.sbl-meteo b{font-family:var(--sbl-display);font-size:1.02rem}.sbl-meteo small{opacity:.85}
@@ -938,7 +977,7 @@ textarea.sbl-in{min-height:100px;resize:vertical}
     <p class="sbl-sfm" id="sf-msg" role="status"></p>
   </form>
   </details>
-  <p class="sbl-instw"><button type="button" class="sbl-btn" id="sbl-inst" hidden><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M12 7v7M9 11l3 3 3-3"/></svg>Installer l’appli sur mon téléphone</button></p>
+  <p class="sbl-instw"><button type="button" class="sbl-btn" id="sbl-aaf" hidden><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4M9 15l2 2 4-4"/></svg>Mon agenda automatique</button> <button type="button" class="sbl-btn" id="sbl-inst" hidden><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M12 7v7M9 11l3 3 3-3"/></svg>Installer l’appli sur mon téléphone</button></p>
   <p class="sbl-footacc" id="sbl-footacc" hidden><b>Trucophile, c’est gratuit.</b> Favoris illimités, alertes près de chez vous et « Le Truc de la semaine » par e-mail. <button type="button" class="lnk" data-acc>Rejoindre les Trucophiles</button> · <a href="offres.html">Toutes les offres</a></p>
   <p class="sbl-fine">Mis à jour chaque nuit. Un organisateur peut changer une date&nbsp;: vérifiez sur la fiche source avant de vous déplacer. Fonds de carte © IGN, via cartes.gouv.fr. Photos de communes&nbsp;: Wikipédia et Wikimedia Commons.</p>
   <nav class="sbl-legal" aria-label="Informations légales">
@@ -1282,6 +1321,9 @@ function list(items){
     if(sem.length>=4)sec("Cette semaine, en images",sem,card,()=>setQ("cette semaine"));
     sec("À visiter près d’ici",homeLieux(),lieuCard,()=>setQ("à visiter "+(REGION.length===1?dansDep(REGION[0]):"")));
     const mt=document.createElement("div");mt.id="sbl-meteo";wk.prepend(mt);meteoWeekend(mt);
+    if(API&&!KIOSK){const ag=document.createElement("button");ag.type="button";ag.className="sbl-meteo sbl-aacard";
+      ag.innerHTML='<span class="ic">'+calIco+'</span><span class="tx"><b>Vos sorties préférées dans votre calendrier</b><small>Les brocantes, concerts… autour de chez vous s’ajoutent tout seuls. Réglage en 1 minute.</small></span>';
+      ag.onclick=()=>agendaAuto();mt.after(ag)}
     const pv=document.createElement("div");pv.id="sbl-pourvous";wk.append(pv);pourVous(pv); /* sélection selon les préférences du compte, ou invitation à en créer un */
     wk.append(homeCTA(n));
     return;
@@ -1603,7 +1645,7 @@ function sheet(e){
   '<div class="sbl-btns sbl-lks" id="sbl-lk" hidden></div>'+
   '<div class="sbl-add"><h3>Ajouter à mon agenda</h3><label for="sbl-r">Rappel</label><select id="sbl-r">'+RAPP.map(([v,l])=>'<option value="'+v+'"'+(v==="P1D"?" selected":"")+'>'+l+'</option>').join("")+'</select>'+
   '<div class="sbl-btns"><a class="sbl-btn go" id="sbl-g" target="_blank" rel="noopener">Google Agenda</a><a class="sbl-btn" id="sbl-o" target="_blank" rel="noopener">Outlook</a>'+(inViewer?'':'<button class="sbl-btn" id="sbl-i" type="button">iPhone, Android (.ics)</button>')+'</div>'+
-  '<div class="sbl-hint" id="sbl-h"></div></div><div class="sbl-add"><h3>Y aller</h3><div class="sbl-btns" id="sbl-gps"></div></div></div></div>';
+  '<div class="sbl-hint" id="sbl-h"></div><button type="button" class="sbl-aal" id="sbl-aal" hidden></button></div><div class="sbl-add"><h3>Y aller</h3><div class="sbl-btns" id="sbl-gps"></div></div></div></div>';
   $("sbl-st").textContent=e.t;h.querySelector(".kind").textContent=CATS[e.cat][0]+" · "+depName(e.z);
   {const bo=blocOrg(e);if(bo)h.querySelector(".top").after(bo)}
   {const sh=document.createElement("button");sh.type="button";sh.className="sbl-fav";sh.setAttribute("aria-label","Partager");
@@ -1628,6 +1670,9 @@ function sheet(e){
   const up=()=>{const r=$("sbl-r").value;$("sbl-g").href=gUrl(e,r);$("sbl-o").href=oUrl(e,r);
     $("sbl-h").textContent=inViewer?"Google et Outlook gardent votre rappel habituel. Le rappel choisi est noté dans l’événement.":"Le fichier .ics règle le rappel choisi sur iPhone, Android et Mac."};
   $("sbl-r").onchange=up;up();
+  {const b=$("sbl-aal");if(API&&!KIOSK&&AA_TYPES.includes(e.cat)){b.hidden=false;b.innerHTML=calIco+"<span></span>";
+    b.lastChild.textContent="Recevoir toutes les "+CATP[e.cat]+" autour de "+e.w+", automatiquement";
+    b.onclick=()=>agendaAuto({types:[e.cat],lieu:{nom:e.w,lat:e.lat,lon:e.lon},r:20,etape:2})}}
   const ib=$("sbl-i");if(ib)ib.onclick=()=>{if(CFG.onIcs)return void CFG.onIcs(ics(e,$("sbl-r").value),e.id+".ics");const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([ics(e,$("sbl-r").value)],{type:"text/calendar"}));a.download=e.id+".ics";document.body.append(a);a.click();a.remove();toast("Événement prêt à ouvrir dans votre agenda")};
   const close=()=>{h.textContent="";document.removeEventListener("keydown",esc);back&&back.focus()};
   const esc=ev=>{if(ev.key==="Escape")close()};document.addEventListener("keydown",esc);
@@ -2110,6 +2155,109 @@ function qrLib(){if(window.qrcode)return Promise.resolve(window.qrcode);if(qrLib
 function kioskQR(box,url,label){box.innerHTML='<div class="sbl-qr"><div class="q" aria-hidden="true"></div><p></p></div>';box.querySelector("p").textContent=label;
   qrLib().then(q=>{if(!q){box.querySelector(".q").remove();return}const c=q(0,"M");c.addData(url);c.make();box.querySelector(".q").innerHTML=c.createSvgTag({cellSize:5,margin:2,scalable:true})})}
 
+/* ---------- Agenda automatique : les sorties choisies arrivent toutes seules dans le calendrier du téléphone ----------
+   Abonnement iCalendar servi par le serveur (/calendrier.ics, voir worker/calendrier.js), relu par le calendrier plusieurs fois par jour.
+   Assistant en 3 étapes pensé pour tout le monde : quoi, où, puis un seul gros bouton adapté à l'appareil avec les gestes à faire. */
+const AA_TYPES=["brocante","fete","spectacle","culture","famille","sport"];
+const calIco='<svg class="sbl-ic" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4M9 15l2 2 4-4"/></svg>';
+function aaParams(s){const p=new URLSearchParams();p.set("t",[...s.types].join(","));
+  if(s.lieu){const d=s.lieu.moi?2:3;p.set("lat",(+s.lieu.lat).toFixed(d));p.set("lon",(+s.lieu.lon).toFixed(d));p.set("r",s.r);if(s.lieu.nom)p.set("nom",s.lieu.nom)}return p}
+function aaLiens(s){const q=aaParams(s).toString(),https=API+"/calendrier.ics?"+q,webcal=https.replace(/^https?:/,"webcal:");
+  return{https,webcal,google:"https://calendar.google.com/calendar/render?cid="+encodeURIComponent(webcal),
+    outlook:"https://outlook.live.com/calendar/0/addfromweb?url="+encodeURIComponent(https)+"&name="+encodeURIComponent("Trucs à faire"),
+    page:(CFG.siteUrl||"https://trucsafaire.fr/")+"#agenda&"+q}}
+function aaAppareil(){const C=window.Capacitor,n=CFG.natif&&C&&C.getPlatform?C.getPlatform():"",ua=navigator.userAgent;
+  if(n==="ios"||/iphone|ipad|ipod/i.test(ua)||(/macintosh/i.test(ua)&&navigator.maxTouchPoints>1))return"iphone";
+  if(n==="android"||/android/i.test(ua))return"android";return/macintosh/i.test(ua)?"mac":"pc"}
+function aaDepuis(H){const t=(H.get("t")||"").split(",").filter(k=>AA_TYPES.includes(k)),la=parseFloat(H.get("lat")),lo=parseFloat(H.get("lon"));
+  const lieu=isFinite(la)&&isFinite(lo)?{nom:(H.get("nom")||"").slice(0,50),lat:la,lon:lo}:null;
+  return{types:t,lieu,r:[10,20,40,80].includes(+H.get("r"))?+H.get("r"):20,etape:t.length&&lieu?3:t.length?2:1}}
+function agendaAuto(pre){
+  pre=pre||{};
+  if(!API){toast("L’agenda automatique est disponible sur trucsafaire.fr");return}
+  if(!pre.types){try{const m=JSON.parse(lsGet("sbl-aa")||"null");if(m&&m.types)pre=Object.assign(m,{etape:1})}catch(_){}}
+  loadCommunes();
+  const s={types:new Set(pre.types||[]),lieu:pre.lieu||null,r:pre.r||20,etape:pre.etape||1};
+  const M=modal('<div class="top"><div><div class="kind">Agenda automatique</div><h2 id="aa-h"></h2></div><button class="cl" data-close aria-label="Fermer">✕</button></div>'+
+    '<ol class="sbl-aa-pas" aria-hidden="true"><li></li><li></li><li></li></ol><div id="aa-c"></div>');
+  const C=$("aa-c"),H2=$("aa-h");
+  const go=n=>{s.etape=n;M.el.querySelectorAll(".sbl-aa-pas li").forEach((l,i)=>l.classList.toggle("on",i<n));[null,un,deux,trois][n]();
+    const sh=M.el.querySelector(".sbl-sheet");if(sh)sh.scrollTop=0;H2.focus&&H2.setAttribute("tabindex","-1");H2.focus({preventScroll:true})};
+  function un(){H2.textContent="1. Quelles sorties voulez-vous ?";
+    C.innerHTML='<p class="sbl-aa-int">Elles s’ajouteront <b>toutes seules</b> dans le calendrier de votre téléphone, et se mettront à jour chaque jour. Gratuit, sans compte.</p>'+
+      '<p class="sbl-aa-lb">Touchez une ou plusieurs cases :</p><div class="sbl-aa-ty" id="aa-ty"></div><p class="sbl-err" id="aa-e1" role="alert"></p>'+
+      '<div class="sbl-btns sbl-aa-nav"><button type="button" class="sbl-btn go" id="aa-n1">Continuer</button></div>';
+    const box=$("aa-ty");
+    AA_TYPES.concat(["tout"]).forEach(k=>{const b=document.createElement("button");b.type="button";b.className="sbl-aa-t";b.dataset.k=k;
+      b.innerHTML=(k==="tout"?'<span class="i">★</span>':'<span class="i" style="color:var(--sbl-c-'+k+')">'+icon(k,26)+'</span>')+'<span class="l"></span><span class="ck" aria-hidden="true">✓</span>';
+      b.querySelector(".l").textContent=k==="tout"?"Toutes les sorties":CATS[k][0];box.append(b)});
+    const paint=()=>box.querySelectorAll("[data-k]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.k==="tout"?s.types.size===AA_TYPES.length:s.types.has(b.dataset.k)));
+    box.onclick=ev=>{const b=ev.target.closest("[data-k]");if(!b)return;const k=b.dataset.k;
+      if(k==="tout"){if(s.types.size===AA_TYPES.length)s.types.clear();else AA_TYPES.forEach(t=>s.types.add(t))}else if(s.types.has(k))s.types.delete(k);else s.types.add(k);
+      paint();$("aa-e1").textContent=""};
+    paint();
+    $("aa-n1").onclick=()=>{if(!s.types.size){$("aa-e1").textContent="Touchez au moins une case (par exemple « Brocantes »).";return}go(2)}}
+  function deux(){H2.textContent="2. Où ça ?";
+    C.innerHTML='<button type="button" class="sbl-btn go sbl-aa-moi" id="aa-moi">'+pinIco+'<span>Autour de moi</span></button>'+
+      '<p class="sbl-aa-ou"><span>ou</span></p><label class="sbl-aa-lb" for="aa-v">Tapez le nom d’une ville ou d’un village :</label>'+
+      '<input class="sbl-in" id="aa-v" autocomplete="off" enterkeyhint="search" placeholder="Par exemple : Moulins"><div class="sbl-aa-sug" id="aa-sug"></div>'+
+      '<div id="aa-z" hidden><p class="sbl-aa-sel" id="aa-sel"></p><p class="sbl-aa-lb">Jusqu’à quelle distance ?</p><div class="sbl-aa-r" id="aa-r"></div>'+
+      '<div class="sbl-aa-pv" id="aa-pv" aria-live="polite"></div></div><p class="sbl-err" id="aa-e2" role="alert"></p>'+
+      '<div class="sbl-btns sbl-aa-nav"><button type="button" class="sbl-btn go" id="aa-n2" disabled>Continuer</button><button type="button" class="sbl-btn" id="aa-p2">Retour</button></div>';
+    const R=$("aa-r");[10,20,40,80].forEach(r=>{const b=document.createElement("button");b.type="button";b.className="sbl-aa-km";b.dataset.r=r;b.textContent=r+" km";R.append(b)});
+    let tm,seq=0;
+    const apercu=()=>{const pv=$("aa-pv");if(!pv||!s.lieu)return;pv.innerHTML='<span class="ld">On compte les sorties…</span>';const my=++seq;
+      fetch(API+"/calendrier/apercu?"+aaParams(s)).then(r=>r.json()).then(j=>{if(my!==seq)return;const n=j.total||0;
+        if(!n){pv.className="sbl-aa-pv vide";pv.innerHTML='<b>Rien de prévu pour l’instant</b><span>Ce n’est pas grave : les sorties s’ajouteront dès qu’elles seront annoncées. Vous pouvez aussi choisir une distance plus grande.</span>';return}
+        const p=j.premieres[0],d=new Date(p.debut+"T12:00:00").toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"});
+        pv.className="sbl-aa-pv";pv.innerHTML='<b></b><span></span>';pv.firstChild.textContent="✓ "+n.toLocaleString("fr-FR")+" sortie"+(n>1?"s":"")+" trouvée"+(n>1?"s":"")+" pour les 3 prochains mois";
+        pv.lastChild.textContent="La prochaine : « "+p.titre+" », "+d+" à "+p.commune+"."}).catch(()=>{if(my===seq)pv.textContent=""})};
+    const zone=()=>{$("aa-z").hidden=!s.lieu;$("aa-n2").disabled=!s.lieu;if(!s.lieu)return;
+      const sel=$("aa-sel");sel.innerHTML=pinIco+"<span></span>";sel.lastChild.textContent=s.lieu.moi?"Autour de vous"+(s.lieu.nom?" ("+s.lieu.nom+")":""):"Autour de "+s.lieu.nom;
+      R.querySelectorAll("[data-r]").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.r===s.r));clearTimeout(tm);tm=setTimeout(apercu,200)};
+    R.onclick=ev=>{const b=ev.target.closest("[data-r]");if(b){s.r=+b.dataset.r;zone()}};
+    const choisir=c=>{s.lieu={nom:c[0],lat:c[2],lon:c[3]};$("aa-v").value=c[0];$("aa-sug").textContent="";$("aa-e2").textContent="";zone()};
+    $("aa-v").oninput=async ev=>{await loadCommunes();const q=norm(ev.target.value.trim()).replace(/[-']/g," "),S=$("aa-sug");S.textContent="";if(q.length<2)return;
+      const res=[];for(const c of(NATCOM||COMMUNES)){if(norm(c[0]).replace(/[-']/g," ").startsWith(q)){res.push(c);if(res.length>=6)break}}
+      res.forEach(c=>{const b=document.createElement("button");b.type="button";b.className="sbl-aa-s";b.innerHTML="<span></span><small></small>";b.firstChild.textContent=c[0];b.lastChild.textContent=depName(c[1]);b.onclick=()=>choisir(c);S.append(b)});
+      if(!res.length)S.innerHTML='<p class="sbl-hint">Aucune commune trouvée : vérifiez l’orthographe.</p>'};
+    $("aa-v").onkeydown=ev=>{if(ev.key==="Enter"){const b=$("aa-sug").querySelector("button");if(b)b.click()}};
+    $("aa-moi").onclick=()=>{const b=$("aa-moi"),t=b.lastChild;if(!navigator.geolocation){$("aa-e2").textContent="La localisation n’est pas disponible : tapez le nom de votre commune ci-dessous.";return}
+      b.disabled=true;t.textContent="Recherche de votre position…";
+      navigator.geolocation.getCurrentPosition(async p=>{await loadCommunes();const la=p.coords.latitude,lo=p.coords.longitude;let best=null,d=1e9;
+        (NATCOM||COMMUNES).forEach(c=>{const x=(c[2]-la)**2+((c[3]-lo)*Math.cos(la*Math.PI/180))**2;if(x<d){d=x;best=c}});
+        s.lieu={nom:best?best[0]:"",lat:la,lon:lo,moi:true};b.disabled=false;t.textContent="Autour de moi";$("aa-v").value="";$("aa-e2").textContent="";zone()},
+        ()=>{b.disabled=false;t.textContent="Autour de moi";$("aa-e2").textContent="Votre position n’a pas pu être lue. Pas de souci : tapez le nom de votre commune ci-dessous."},{timeout:12000,maximumAge:600000})};
+    $("aa-n2").onclick=()=>go(3);$("aa-p2").onclick=()=>go(1);zone()}
+  function trois(){H2.textContent="3. Ajoutez-le à votre calendrier";
+    lsSet("sbl-aa",JSON.stringify({types:[...s.types],lieu:s.lieu,r:s.r}));
+    const L=aaLiens(s),ap=aaAppareil();
+    const gros=(href,txt,ext)=>'<a class="sbl-btn go sbl-aa-big" href="'+escH(href)+'"'+(ext?' target="_blank" rel="noopener"':"")+'>'+calIco+"<span>"+txt+"</span></a>";
+    const etapes=a=>'<ol class="sbl-aa-et">'+a.map(x=>"<li>"+x+"</li>").join("")+"</ol>";
+    const GOOGLE_ETAPES=["Touchez le bouton bleu. La page Google Agenda s’ouvre (connectez-vous avec votre compte Google si elle le demande).","Touchez <b>Ajouter</b>.",
+      "Ouvrez l’appli <b>Google Agenda</b> : les sorties apparaissent. Si vous ne les voyez pas, touchez <b>☰</b> en haut à gauche, puis cochez <b>Trucs à faire</b>."];
+    let h="";
+    if(ap==="iphone")h=gros(L.webcal,"Ajouter à mon calendrier")+etapes(["Touchez le bouton bleu ci-dessus.","Votre iPhone demande « S’abonner au calendrier ? » : touchez <b>S’abonner</b>.","Touchez <b>Ajouter</b> en haut à droite. C’est fini !"])+
+      '<p class="sbl-aa-alt">Vous utilisez plutôt Google Agenda ? <a href="'+escH(L.google)+'" target="_blank" rel="noopener">Ajouter à Google Agenda</a></p>';
+    else if(ap==="android")h=gros(L.google,"Ajouter à Google Agenda",1)+etapes(GOOGLE_ETAPES.concat(["Si la page Google ne montre pas le bouton « Ajouter » : touchez <b>⋮</b> en haut à droite du navigateur, cochez <b>Version pour ordinateur</b>, puis touchez à nouveau le bouton bleu."]));
+    else h='<div class="sbl-aa-choix">'+(ap==="mac"?gros(L.webcal,"Calendrier du Mac"):"")+gros(L.google,"Google Agenda",1)+
+      '<a class="sbl-btn sbl-aa-big" href="'+escH(L.outlook)+'" target="_blank" rel="noopener">'+calIco+'<span>Outlook</span></a></div>'+
+      '<div class="sbl-aa-qr"><div id="aa-qr"></div><p><b>Plutôt sur votre téléphone ?</b> Visez ce code avec l’appareil photo du téléphone : la page s’ouvre directement à cette étape.</p></div>';
+    C.innerHTML=h+'<details class="sbl-aa-plus"><summary>Un autre calendrier, ou envoyer à un proche</summary>'+
+      '<p class="sbl-hint">Adresse de l’abonnement, à coller dans votre calendrier (« S’abonner à un calendrier » ou « Ajouter par URL ») :</p>'+
+      '<div class="sbl-aa-url"><input class="sbl-in" readonly id="aa-u"><button type="button" class="sbl-btn" id="aa-cp">Copier</button></div>'+
+      '<p class="sbl-hint">Pour aider un proche, envoyez-lui ce lien : il arrivera directement sur le bouton à toucher.</p><div class="sbl-aa-url"><button type="button" class="sbl-btn" id="aa-sh">Envoyer le lien</button></div></details>'+
+      '<p class="sbl-aa-fin">Ensuite, rien à faire : les nouvelles sorties s’ajoutent toutes seules, celles qui sont annulées disparaissent. Pour arrêter, supprimez l’agenda « Trucs à faire » de votre calendrier.</p>'+
+      '<div class="sbl-btns sbl-aa-nav"><button type="button" class="sbl-btn go" data-close>C’est fait</button><button type="button" class="sbl-btn" id="aa-p3">Modifier mes choix</button></div>';
+    $("aa-u").value=L.https;
+    $("aa-cp").onclick=()=>{const i=$("aa-u");i.select();(navigator.clipboard?navigator.clipboard.writeText(L.https):Promise.reject()).then(()=>toast("Adresse copiée"),()=>{try{document.execCommand("copy");toast("Adresse copiée")}catch(_){}})};
+    $("aa-sh").onclick=()=>{const t="Les sorties qui t’intéressent, directement dans ton calendrier : touche ce lien puis le bouton bleu.";
+      if(navigator.share)navigator.share({title:"Agenda automatique · Trucs à faire",text:t,url:L.page}).catch(()=>{});else navigator.clipboard&&navigator.clipboard.writeText(t+" "+L.page).then(()=>toast("Lien copié : collez-le dans un message"),()=>{})};
+    $("aa-p3").onclick=()=>go(1);
+    const qr=$("aa-qr");if(qr)kioskQR(qr,L.page,"");
+    C.querySelectorAll(".sbl-aa-big").forEach(a=>a.addEventListener("click",()=>setTimeout(()=>toast("Suivez les étapes ci-dessous"),400)))}
+  go(s.etape)}
+
 /* ---------- Comptes Trucophile : inscription, connexion par lien e-mail, favoris, préférences ----------
    Visible quand le serveur est relié (config.js → apiUrl), ou en aperçu avec l'adresse #comptes.
    Jamais en mode borne ni en mode intégré. Session : jeton dans le stockage local (strictement nécessaire, sans consentement). */
@@ -2482,6 +2630,8 @@ async function boot(){
   accInit(H);chargerOrgs().then(()=>{if(H.get("org"))ouvrirOrg(H.get("org"))});if(accOn())setInterval(()=>{if(FICHES>=3)banniere()},4000);
   if(H.get("q")){setQ(H.get("q"));loadCommunes()}
   if(H.has("proposer"))proposeForm("");
+  {const f=$("sbl-aaf");if(f&&API&&!KIOSK){f.hidden=false;f.onclick=()=>agendaAuto()}}
+  if(H.has("agenda")&&!KIOSK)setTimeout(()=>agendaAuto(aaDepuis(H)),300);
   if(H.has("source")){$("sbl-srcd").open=true;const f=$("sbl-sf");f.scrollIntoView();$("sf-u").focus({preventScroll:true})}
 }
 window.SortiesBL={setTheme,config:CFG,reload:boot,get map(){return map}};

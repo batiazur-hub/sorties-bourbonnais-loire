@@ -14,6 +14,7 @@
              La clé se passe en en-tête « X-API-Key » ou en paramètre « cle ».
    Gestion des clés (éditeur) : GET /admin/cles · POST /admin/cles {nom, contact, deps, types, quota, origines, notes}
              POST /admin/cles/maj {cle, ...} · POST /admin/cles/revoquer {cle} · POST /admin/cles/reactiver {cle}
+   Agenda automatique (sans clé) : GET /calendrier.ics?t=brocante&lat=…&lon=…&r=20&nom=… ou ?dep=03 · GET /calendrier/apercu (voir calendrier.js)
    Signalements : POST /signaler { sortie, titre, dep, raison, note } · éditeur : POST /admin/signalement { id } (traité)
    Organisateurs (éditeur) : POST /admin/org/verifier { slug, verifie } · POST /admin/org/suspendre { slug, suspendu, motif }
              POST /admin/org/supprimer { slug } · GET /admin/orgs (toutes les pages, suspendues comprises)
@@ -23,6 +24,7 @@
 
 import { comptes, purgerInactifs, verifierOrg, suspendreOrg, supprimerOrgAdmin, signatureValide } from "./comptes.js";
 import { envoyerLot, pourCompte, semaine } from "./newsletter.js";
+import { calendrier } from "./calendrier.js";
 import { motRefuse, egal, limite, epuise, tout, agenda, publier, retirer } from "./commun.js";
 
 const DATA_DEFAUT = "https://trucsafaire.fr/data/";
@@ -217,6 +219,8 @@ export default {
 async function traiter(req, env, ctx) {
     const cors = corsPour(req, env), url = new URL(req.url), p = url.pathname.replace(/\/+$/, "");
     if (p.startsWith("/v1/")) return api(req, env, url, p, ctx);
+    if (p === "/calendrier.ics" || p === "/calendrier/apercu")  // agenda automatique (abonnement), voir calendrier.js
+      return calendrier(req, url, p, { donnees: c => donnees(env, c), depsDeZone: z => depsDeZone(env, z), km });
     if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: cors });
 
     /* « Le Truc de la semaine » vu dans le navigateur (lien signé), et aperçu pour le titulaire du compte */

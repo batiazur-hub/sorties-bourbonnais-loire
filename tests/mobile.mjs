@@ -37,6 +37,8 @@ async function audit(p,label){
 for(const [name,dev] of PHONES){ if(only&&name!==only)continue;
   const {defaultBrowserType,...opts}=dev;const br=browsers[defaultBrowserType]||browsers.chromium;
   const ctx=await br.newContext({...opts,locale:'fr-FR'});const p=await ctx.newPage();const errs=[];p.on('pageerror',e=>errs.push(e.message));
+  // le serveur n'accepte que le vrai site : pour le site de test, réponses vides (pas d'erreur d'origine)
+  await p.route(/api\.trucsafaire\.fr\/(agenda|orgs)(\?|$)/,r=>r.fulfill({status:200,contentType:'application/json',headers:{'Access-Control-Allow-Origin':'*'},body:'[]'}));
   if(LOCAL){
   await p.route(/jsdelivr/,r=>r.fulfill({path:'/home/claude/build/ml/package/dist/maplibre-gl.js',contentType:'application/javascript'}));
   await p.route(/geopf.*\.json/,r=>r.fulfill({contentType:'application/json',body:JSON.stringify({version:8,sources:{},layers:[{id:'bg',type:'background',paint:{'background-color':'#ece8de'}}]})}));

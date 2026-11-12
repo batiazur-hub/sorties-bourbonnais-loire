@@ -153,7 +153,7 @@ main:has(.offres)>.maj{display:none}
 .per{display:flex;width:max-content;margin:22px auto 28px;padding:4px;border-radius:999px;background:var(--soft);border:1px solid var(--line)}
 .per button{font:600 .95rem "DM Sans",system-ui,sans-serif;border:0;background:none;color:var(--muted);min-height:42px;padding:0 18px;border-radius:999px;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
 .per button[aria-pressed="true"]{background:var(--bg);color:var(--ink);box-shadow:0 1px 3px rgba(20,26,51,.14)}
-.per .eco{font-size:.75rem;font-weight:700;color:var(--confetti-ink);background:color-mix(in srgb,var(--confetti) 18%,transparent);padding:2px 8px;border-radius:999px}
+.per .eco{font-size:.75rem;font-weight:700;color:color-mix(in srgb,var(--confetti-ink) 82%,#000);background:color-mix(in srgb,var(--confetti) 18%,transparent);padding:2px 8px;border-radius:999px}
 .cartes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;align-items:stretch;padding:16px 2px 6px}
 .carte{position:relative;display:flex;flex-direction:column;background:var(--bg);border:1px solid var(--line);border-radius:22px;padding:24px 22px 22px}
 .carte .pic{width:48px;height:48px;border-radius:15px;background:var(--kt);color:var(--k);display:grid;place-items:center}

@@ -292,12 +292,14 @@ P["intelligence-artificielle.html"] = ("Intelligence artificielle", "Transparenc
 
 P["accessibilite.html"] = ("Accessibilité", "Ce qui a été vérifié pour que le site soit lisible et utilisable par tous, et ses limites connues.", f"""
 <h2>État</h2>
-<p>Le site n’a pas encore fait l’objet d’un audit complet selon le référentiel RGAA. Un contrôle interne a été réalisé le {MAJ} : outil automatique axe-core, navigation au clavier, zoom à 200 %, contrastes, et affichage sur ordinateur, tablette et téléphones, y compris pliables.</p>
+<p>Le site n’a pas encore fait l’objet d’un audit complet selon le référentiel RGAA. Un contrôle interne a été réalisé le {MAJ} : outil automatique axe-core (27 écrans, en mode clair et sombre, aucun défaut restant), navigation au clavier, zoom à 200 %, contrastes, et affichage sur ordinateur, tablette et téléphones, y compris pliables.</p>
 
 <h2>Ce qui est en place</h2>
 <ul>
 <li>Textes d’au moins 16 pixels, contrastes conformes au niveau AA, mode sombre automatique.</li>
-<li>Navigation complète au clavier, focus visible, lien d’accès direct au contenu sur les pages d’information.</li>
+<li>Navigation complète au clavier, focus visible, lien « Aller aux sorties » dans l’agenda et lien d’accès direct au contenu sur les pages d’information.</li>
+<li>Fenêtres (fiches, formulaires, agenda automatique) : titre annoncé, focus placé dans la fenêtre et gardé à l’intérieur, touche Échap pour fermer, retour au bouton d’origine.</li>
+<li>Messages de confirmation annoncés par les lecteurs d’écran.</li>
 <li>Champs de formulaire tous libellés, messages d’erreur lus par les lecteurs d’écran.</li>
 <li>Cibles tactiles d’au moins 44 pixels sur téléphone et en mode borne (adresse terminée par <code>#borne</code>).</li>
 <li>Mise en page adaptée de 280 pixels de large (téléphone pliable fermé) aux grands écrans.</li>

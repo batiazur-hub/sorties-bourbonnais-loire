@@ -202,7 +202,7 @@
       ".dlc-d{font-size:13px;font-weight:700;color:var(--dlc-c);text-transform:uppercase;letter-spacing:.02em}" +
       ".dlc-t{font-weight:650;margin:2px 0 2px;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}" +
       ".dlc-w{font-size:13.5px;opacity:.72}" +
-      ".dlc-pied{margin-top:10px;font-size:12px;opacity:.7}.dlc-pied a{color:inherit}" +
+      ".dlc-pied{margin-top:10px;font-size:12px}.dlc-pied a{color:inherit}" +
       ".dlc-vide,.dlc-err{padding:14px;border:1px dashed rgba(128,128,128,.4);border-radius:12px;opacity:.85}" +
       ".dlc-sq{border-radius:14px;height:180px;background:linear-gradient(90deg,rgba(128,128,128,.08),rgba(128,128,128,.18),rgba(128,128,128,.08));background-size:200% 100%;animation:dlc-s 1.2s infinite linear}" +
       "@keyframes dlc-s{to{background-position:-200% 0}}@media (prefers-reduced-motion:reduce){.dlc-sq{animation:none}}" +

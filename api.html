@@ -120,7 +120,7 @@ for (const s of resultats) {
 <section id="bibliotheque" aria-labelledby="t-bib">
 <h2 id="t-bib">Bibliothèque JavaScript</h2>
 <h3>Charger la bibliothèque</h3>
-<pre class="cb"><code>&lt;script src="https://VOTRE-SERVEUR/v1/dlc.js?key=VOTRE_CLE&amp;callback=initTrucs" async&gt;&lt;/script&gt;</code></pre>
+<pre class="cb" tabindex="0"><code>&lt;script src="https://VOTRE-SERVEUR/v1/dlc.js?key=VOTRE_CLE&amp;callback=initTrucs" async&gt;&lt;/script&gt;</code></pre>
 <div class="tbl"><table>
 <thead><tr><th scope="col">Paramètre du script</th><th scope="col">Rôle</th></tr></thead>
 <tbody>
@@ -142,7 +142,7 @@ for (const s of resultats) {
 <tr><td><code>reponse.suivante()</code></td><td>Promise&lt;Réponse&gt;</td><td>Page suivante, présente seulement s’il reste des résultats.</td></tr>
 </tbody></table></div>
 <h3>Gérer les erreurs</h3>
-<pre class="cb"><code>try {
+<pre class="cb" tabindex="0"><code>try {
   const r = await TrucsAFaire.sorties({ commune: "Nevers", dep: "58" });
 } catch (e) {
   if (e instanceof TrucsAFaire.Erreur) {
@@ -164,11 +164,11 @@ for (const s of resultats) {
 </form>
 <h3><code>TrucsAFaire.Liste</code></h3>
 <div class="demo" id="demo-liste" aria-live="polite"></div>
-<pre class="cb"><code id="demo-code-l"></code></pre>
+<pre class="cb" tabindex="0"><code id="demo-code-l"></code></pre>
 <h3><code>TrucsAFaire.Carte</code></h3>
 <p>Fond Plan IGN ou photo satellite, points regroupés, fiche au clic. La carte (MapLibre) n’est chargée que si vous l’utilisez.</p>
 <div class="demo demo-map" id="demo-carte"></div>
-<pre class="cb"><code id="demo-code-c"></code></pre>
+<pre class="cb" tabindex="0"><code id="demo-code-c"></code></pre>
 <h3>Options des widgets</h3>
 <div class="tbl"><table class="ref">
 <thead><tr><th scope="col">Option</th><th scope="col">Valeurs</th><th scope="col">Rôle</th></tr></thead>
@@ -227,7 +227,7 @@ for s in r.json()["resultats"]:
     print(s["debut"], s["titre"], s["commune"])</code></pre>
 </div>
 <h3>Réponse</h3>
-<pre class="cb"><code>{
+<pre class="cb" tabindex="0"><code>{
   "total": 37,
   "page": 1,
   "limite": 20,
@@ -430,7 +430,13 @@ for s in r.json()["resultats"]:
       (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function () { b.textContent = "Copié ✓"; }, function () {
         var r = document.createRange(); r.selectNodeContents(code); var s = getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = "Ctrl+C"; });
       setTimeout(function () { b.textContent = "Copier"; }, 1600); };
-    box.querySelector(".tabs-bar").append(b);
+    var bar = box.querySelector(".tabs-bar");
+    if (bar.getAttribute("role") === "tablist") {  // le bouton Copier n'est pas un onglet : les onglets passent dans leur propre liste
+      var tl = document.createElement("div"); tl.setAttribute("role", "tablist"); tl.setAttribute("aria-label", bar.getAttribute("aria-label") || "Onglets"); tl.style.display = "contents";
+      [].slice.call(bar.querySelectorAll("[role=tab]")).forEach(function (t) { tl.append(t); });
+      bar.removeAttribute("role"); bar.removeAttribute("aria-label"); bar.prepend(tl);
+    }
+    bar.append(b);
   });
 
   /* ---- Sommaire : section courante surlignée ---- */

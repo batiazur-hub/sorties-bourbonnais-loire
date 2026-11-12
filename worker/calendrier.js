@@ -111,6 +111,23 @@ export async function calendrier(req, url, p, outils) {
   const d = demande(url.searchParams);
   if (d.erreur) return new Response(JSON.stringify({ erreur: d.erreur, message: "Indiquez une zone : lat, lon et r (km), ou dep=03,58." }),
     { status: 400, headers: Object.assign({ "Content-Type": "application/json; charset=utf-8" }, ouvert) });
+  // Cache partagé : l'adresse est publique et relue par tous les calendriers ; une même demande n'est calculée
+  // qu'une fois par heure (protège le serveur contre les appels en boucle). Position arrondie à 1 km pour la clé.
+  const cle = new URL("https://cache.trucsafaire.fr" + p);
+  cle.searchParams.set("t", d.types.slice().sort().join(","));
+  if (d.pos) { cle.searchParams.set("lat", d.pos.lat.toFixed(2)); cle.searchParams.set("lon", d.pos.lon.toFixed(2)); cle.searchParams.set("r", String(d.pos.r)); }
+  if (d.deps.length) cle.searchParams.set("dep", d.deps.slice().sort().join(","));
+  if (d.mot) cle.searchParams.set("q", d.mot);
+  if (d.nom) cle.searchParams.set("nom", d.nom);
+  const cache = typeof caches !== "undefined" ? caches.default : null;
+  if (cache) { const r = await cache.match(cle.toString()); if (r) return r; }
+  if (d.pos) { d.pos.lat = +d.pos.lat.toFixed(2); d.pos.lon = +d.pos.lon.toFixed(2); }
+  const rep = await construire(p, d, outils, ouvert);
+  if (cache && rep.ok && outils.attendre) outils.attendre(cache.put(cle.toString(), rep.clone()));
+  return rep;
+}
+
+async function construire(p, d, outils, ouvert) {
   const E = await selection(d, outils);
   if (p === "/calendrier/apercu") {
     const parType = {}; E.forEach(e => { parType[e.cat] = (parType[e.cat] || 0) + 1; });

@@ -70,7 +70,7 @@ export function courriel(compte, items, sem, liens) {
 <span style="display:block;font:14px/1.4 Arial,sans-serif;color:#4D5470">${esc(e.lieu && e.lieu !== e.w ? e.lieu + ", " + e.w : e.w)}${e.g ? " · <b style=\"color:#0B7A5E\">Gratuit</b>" : ""}</span></a></td></tr>`;
   }).join("\n");
   const titre = items.length ? `${items.length} truc${items.length > 1 ? "s" : ""} à faire autour de ${esc(c.nom)}` : `Semaine calme autour de ${esc(c.nom)}`;
-  const html = `<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Le Truc de la semaine</title></head>
+  const html = `<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><meta http-equiv="Content-Security-Policy" content="script-src 'none'; object-src 'none'"><title>Le Truc de la semaine</title></head>
 <body style="margin:0;background:#F1F3F8">
 <div style="display:none;max-height:0;overflow:hidden">${titre} : brocantes, fêtes, concerts, expos…</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F1F3F8"><tr><td align="center" style="padding:24px 12px">

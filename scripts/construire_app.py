@@ -44,6 +44,8 @@ def site():
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <title>Trucs à faire · Les sorties près de chez vous</title>
 <meta name="description" content="{DESC}">
 <link rel="canonical" href="{SITE}">

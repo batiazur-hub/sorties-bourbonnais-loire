@@ -1,0 +1,10 @@
+# Réglages de gitleaks (recherche de secrets), utilisé par .github/workflows/securite.yml
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Exemples de documentation et données publiques"
+# exemples de la page API : « VOTRE_CLE » n'est pas une vraie clé
+regexes = ['''VOTRE_CLE''', '''dlc_…''', '''dlc_\.\.\.''']
+# données ouvertes publiées (DATAtourisme, OpenStreetMap…) et bibliothèques tierces
+paths = ['''^data/''', '''^vendor/''', '''^src/.*\.json$''']

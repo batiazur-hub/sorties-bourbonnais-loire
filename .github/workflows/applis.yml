@@ -55,7 +55,7 @@ jobs:
         with: { name: "android-${{ env.VERSION_NAME }}", path: sortie/, retention-days: 30 }
       - name: Envoi sur Google Play (test interne)
         if: github.event_name == 'workflow_dispatch' && inputs.publier && env.ANDROID_KEYSTORE_PATH != ''
-        uses: r0adkll/upload-google-play@v1
+        uses: r0adkll/upload-google-play@e738b9dd8f2476ea806d921b64aacd24f34515a5  # v1.1.5 (version figée : action externe)
         with:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_JSON }}
           packageName: fr.trucsafaire.app
@@ -120,7 +120,7 @@ jobs:
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules && sudo udevadm trigger --name-match=kvm
           sudo apt-get install -y -qq imagemagick >/dev/null
-      - uses: reactivecircus/android-emulator-runner@v2
+      - uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d  # v2.38.0 (version figée : action externe)
         with:
           api-level: 34
           arch: x86_64

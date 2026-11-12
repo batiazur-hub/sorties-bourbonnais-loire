@@ -21,7 +21,7 @@ enabled = true
 crons = ["17 3 * * 1", "*/15 5-9 * * 4"]
 
 [vars]
-ORIGINS = "https://trucsafaire.fr,https://www.trucsafaire.fr,https://batiazur-hub.github.io"
+ORIGINS = "https://trucsafaire.fr,https://www.trucsafaire.fr,https://batiazur-hub.github.io,https://localhost,capacitor://localhost"  # les deux dernières : applis Android et iPhone
 SITE_URL = "https://trucsafaire.fr/"
 MAIL_FROM = "bonjour@trucsafaire.fr"
 # Adresse publique de ce serveur (liens de désinscription dans les e-mails envoyés par la tâche planifiée)

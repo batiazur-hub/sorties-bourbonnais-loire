@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Trucs à faire</string>
+    <string name="title_activity_main">Trucs à faire</string>
+    <string name="package_name">fr.trucsafaire.app</string>
+    <string name="custom_url_scheme">fr.trucsafaire.app</string>
+</resources>

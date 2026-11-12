@@ -963,8 +963,12 @@ const CFG=Object.assign({
   tiles:"auto",          // "ign" (Plan IGN, Géoplateforme), "osm", "none" ou "auto" (IGN hors aperçu Claude)
   theme:null,            // ex. {accent:"#0a6ebd", head:"#0b2e4f", font:"Montserrat, sans-serif", radius:"8px"}
   inheritFont:false,     // true : reprend la police du site hôte
-  apiUrl:null            // adresse du serveur des propositions (Cloudflare Worker), ex. "https://trucs-a-faire.xxx.workers.dev"
+  apiUrl:null,           // adresse du serveur des propositions (Cloudflare Worker), ex. "https://trucs-a-faire.xxx.workers.dev"
+  natif:false,           // true dans les applis Android et iPhone (pas de service worker ni d'invitation à installer)
+  siteUrl:null,          // adresse publique de l'agenda pour les liens partagés (applis : https://trucsafaire.fr/)
+  onIcs:null             // applis : function(texte, nomDeFichier) pour ouvrir un .ics avec l'agenda du téléphone
 },window.SORTIES_CONFIG||{});
+const pageUrl=()=>CFG.siteUrl||location.href.split("#")[0];
 const ROOT=document.getElementById("sbl");
 const inViewer=!!window.claude;
 
@@ -1624,7 +1628,7 @@ function sheet(e){
   const up=()=>{const r=$("sbl-r").value;$("sbl-g").href=gUrl(e,r);$("sbl-o").href=oUrl(e,r);
     $("sbl-h").textContent=inViewer?"Google et Outlook gardent votre rappel habituel. Le rappel choisi est noté dans l’événement.":"Le fichier .ics règle le rappel choisi sur iPhone, Android et Mac."};
   $("sbl-r").onchange=up;up();
-  const ib=$("sbl-i");if(ib)ib.onclick=()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([ics(e,$("sbl-r").value)],{type:"text/calendar"}));a.download=e.id+".ics";document.body.append(a);a.click();a.remove();toast("Événement prêt à ouvrir dans votre agenda")};
+  const ib=$("sbl-i");if(ib)ib.onclick=()=>{if(CFG.onIcs)return void CFG.onIcs(ics(e,$("sbl-r").value),e.id+".ics");const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([ics(e,$("sbl-r").value)],{type:"text/calendar"}));a.download=e.id+".ics";document.body.append(a);a.click();a.remove();toast("Événement prêt à ouvrir dans votre agenda")};
   const close=()=>{h.textContent="";document.removeEventListener("keydown",esc);back&&back.focus()};
   const esc=ev=>{if(ev.key==="Escape")close()};document.addEventListener("keydown",esc);
   $("sbl-x").onclick=close;$("sbl-veil").onclick=ev=>{if(ev.target.id==="sbl-veil")close()};$("sbl-x").focus();
@@ -2135,7 +2139,7 @@ function toggleFav(e){
   if(isFav(e.id)){FAV=FAV.filter(x=>x!==e.id);toast("Truc retiré")}
   else{if(accOn()&&!ACC.c&&FAV.length>=FAV_LIBRE){openCompte("fav",e);return}
     FAV.push(e.id);toast(ACC.c||!accOn()?"Truc gardé !":"Truc gardé ! ("+FAV.length+"/"+FAV_LIBRE+" sans compte)")}
-  accSave();favSync();favBtns()}
+  accSave();favSync();favBtns();document.dispatchEvent(new CustomEvent("sbl:fav",{detail:{e,on:isFav(e.id)}}))}
 function favBtn(e,label){const b=document.createElement("button");b.type="button";b.className="sbl-fav"+(label?" wl":"");b.dataset.fav=e.id;
   b.innerHTML='<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>'+(label?'<span class="l"></span>':"");
   b.onclick=ev=>{ev.stopPropagation();toggleFav(e)};setTimeout(favBtns);return b}
@@ -2309,7 +2313,7 @@ async function ouvrirOrg(slug){
   el.querySelector(".stt b").textContent=sorties.length;el.querySelector(".stt span").textContent=sorties.length>1?"trucs à venir":"truc à venir";
   const ev=el.querySelector(".ev");if(!sorties.length)ev.innerHTML='<p class="sbl-acm">Pas de truc à venir pour l’instant.</p>';
   sorties.forEach(e=>ev.append(evRow(e,e.S)));
-  $("op-sh").onclick=()=>{const u=location.href.split("#")[0]+"#org="+slug;if(navigator.share)navigator.share({title:o.nom+" · Trucs à faire",url:u}).catch(()=>{});else navigator.clipboard.writeText(u).then(()=>toast("Lien copié"),()=>{})};
+  $("op-sh").onclick=()=>{const u=pageUrl()+"#org="+slug;if(navigator.share)navigator.share({title:o.nom+" · Trucs à faire",url:u}).catch(()=>{});else navigator.clipboard.writeText(u).then(()=>toast("Lien copié"),()=>{})};
 }
 function blocOrg(e){const o=orgDe(e);if(!o)return null;const b=document.createElement("button");b.type="button";b.className="sbl-orgb";
   b.append(avatar(o,40));const tx=document.createElement("span");tx.className="tx";tx.innerHTML="<b></b><small></small>";tx.querySelector("b").textContent=o.nom;
@@ -2326,7 +2330,7 @@ function espaceOrg(box){
   tx.querySelector("b").textContent=o.nom;tx.querySelector("small").textContent=o.verifie?"Page vérifiée":"Pastille vérifiée avec l’offre Truc & Co";top.append(tx);box.append(top);
   const bt=document.createElement("div");bt.className="sbl-btns";bt.innerHTML='<button type="button" class="sbl-btn go" id="eo-p">Publier un truc</button><button type="button" class="sbl-btn" id="eo-v">Voir ma page</button><button type="button" class="sbl-btn" id="eo-m">Modifier</button><button type="button" class="sbl-btn" id="eo-w">Code pour mon site</button>';box.append(bt);
   $("eo-p").onclick=()=>proposeForm(st.day||"",{org:true});$("eo-v").onclick=()=>ouvrirOrg(o.slug);$("eo-m").onclick=()=>formOrg();
-  $("eo-w").onclick=()=>{const u=location.href.split("#")[0]+"#integre&org="+o.slug,code='<iframe src="'+u+'" title="Nos trucs à faire" style="width:100%;height:720px;border:0;border-radius:16px" loading="lazy"></iframe>';
+  $("eo-w").onclick=()=>{const u=pageUrl()+"#integre&org="+o.slug,code='<iframe src="'+u+'" title="Nos trucs à faire" style="width:100%;height:720px;border:0;border-radius:16px" loading="lazy"></iframe>';
     const M=modal('<div class="top"><div><div class="kind">Sur votre site</div><h2>Nos prochains trucs</h2></div><button class="cl" data-close aria-label="Fermer">✕</button></div><p class="sbl-acl">Collez ce code dans votre site (bloc « HTML personnalisé ») : vos sorties s’y affichent et se mettent à jour toutes seules. Affiches et badge : <a href="kit.html">kit de communication</a>.</p><textarea class="sbl-in" id="eo-code" rows="4" readonly></textarea><div class="sbl-btns"><button class="sbl-btn go" type="button" id="eo-cp">Copier le code</button></div>');
     $("eo-code").value=code;$("eo-cp").onclick=()=>navigator.clipboard.writeText(code).then(()=>toast("Code copié"),()=>$("eo-code").select())};
   const l=document.createElement("div");l.className="sbl-acfav";box.append(l);
@@ -2383,7 +2387,7 @@ function initQuick(){const box=$("sbl-qk");if(!box||KIOSK)return;
   $("sbl-q").addEventListener("input",()=>{if(!QK.setting){QK.near=null;QK.w="";QK.free=false;QK.fam=false;qkSync()}});qkSync()}
 
 /* ---------- Partager une sortie (lien direct) et la signaler ---------- */
-const lienSortie=e=>location.href.split("#")[0]+"#dep="+e.z+"&sortie="+encodeURIComponent(e.id);
+const lienSortie=e=>pageUrl()+"#dep="+e.z+"&sortie="+encodeURIComponent(e.id);
 function partager(e){const u=lienSortie(e),t=e.t+" · "+when(e)+" · "+e.w;
   if(navigator.share)navigator.share({title:e.t,text:t,url:u}).catch(()=>{});
   else{const M=modal('<div class="top"><div><div class="kind">Partager</div><h2>Envoyer ce truc</h2></div><button class="cl" data-close aria-label="Fermer">✕</button></div><div class="sbl-shr"></div><div class="sbl-f"><label for="sh-u">Lien direct</label><input class="sbl-in" id="sh-u" readonly></div><div class="sbl-btns"><button class="sbl-btn go" type="button" id="sh-c">Copier le lien</button></div>');
@@ -2438,6 +2442,7 @@ function borneVeille(){if(!KIOSK)return;let tm,idx=0,rot;const el=document.creat
 /* ---------- Application installable : hors ligne et bouton « Installer l'appli » ---------- */
 let INSTALL=null;
 function appli(){
+  if(CFG.natif)return;
   if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost")&&!ROOT.classList.contains("embed"))
     navigator.serviceWorker.register("sw.js").catch(()=>{});
   const b=$("sbl-inst");if(!b||KIOSK)return;

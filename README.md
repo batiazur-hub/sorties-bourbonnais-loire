@@ -27,6 +27,7 @@ scripts/
   horaires.py            horaires d'ouverture OpenStreetMap par carreaux (chaque jour)
   qualite_donnees.py     corrections communes : communes, positions, dates, identifiants uniques
   verifier.py            contrôle qualité bloquant (données, liens, pages à jour, secrets)
+app/                     applis Android et iPhone (Capacitor) : voir app/LISEZMOI.md
 worker/                  serveur Cloudflare : propositions des visiteurs, espace éditeur, API à clés
 tests/                   tests du serveur (node --test) et audit mobile (Playwright)
 .github/workflows/       mises à jour automatiques et contrôles

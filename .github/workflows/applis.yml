@@ -1,0 +1,108 @@
+name: Applis Android et iPhone
+# Construit les applis à chaque modification de l'agenda ou des applis, et sur demande (onglet Actions → « Run workflow »).
+# Sans secrets : appli Android de test (APK à installer) et vérification que l'appli iPhone se construit.
+# Avec les secrets décrits dans app/LISEZMOI.md : appli Android signée pour Google Play (AAB) et envoi de l'appli iPhone
+# sur TestFlight ; « Run workflow » avec « publier » coché l'envoie aussi en test interne sur Google Play.
+on:
+  push:
+    branches: [main, applis]
+    paths: ["app/**", "src/**", "index.html", "*.html", "config.js", "scripts/construire_applis.py", ".github/workflows/applis.yml"]
+  workflow_dispatch:
+    inputs:
+      publier:
+        description: "Envoyer sur Google Play (test interne) et TestFlight"
+        type: boolean
+        default: false
+permissions:
+  contents: read
+concurrency: { group: "applis-${{ github.ref }}", cancel-in-progress: true }
+env:
+  VERSION_NAME: "1.0.${{ github.run_number }}"
+  VERSION_CODE: "${{ github.run_number }}"
+jobs:
+  android:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - uses: actions/setup-node@v4
+        with: { node-version: "22", cache: npm, cache-dependency-path: app/package-lock.json }
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "21", cache: gradle }
+      - name: Contenu de l'appli
+        working-directory: app
+        run: npm ci && npm run preparer -- android
+      - name: Clé de signature (si le secret existe)
+        env: { KS: "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" }
+        run: |
+          if [ -n "$KS" ]; then echo "$KS" | base64 -d > "$RUNNER_TEMP/publication.jks"; echo "ANDROID_KEYSTORE_PATH=$RUNNER_TEMP/publication.jks" >> "$GITHUB_ENV"; echo "Signature : clé de publication"
+          else echo "Signature : aucune clé, appli de test seulement"; fi
+      - name: Construction
+        working-directory: app/android
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          chmod +x gradlew
+          if [ -n "$ANDROID_KEYSTORE_PATH" ]; then ./gradlew --no-daemon assembleRelease bundleRelease
+          else ./gradlew --no-daemon assembleDebug; fi
+          mkdir -p ../../sortie && find app/build/outputs \( -name "*.apk" -o -name "*.aab" \) -exec cp {} ../../sortie/ \;
+          cd ../../sortie && for f in *; do mv "$f" "trucs-a-faire-$VERSION_NAME-$f"; done; ls -la
+      - uses: actions/upload-artifact@v4
+        with: { name: "android-${{ env.VERSION_NAME }}", path: sortie/, retention-days: 30 }
+      - name: Envoi sur Google Play (test interne)
+        if: github.event_name == 'workflow_dispatch' && inputs.publier && env.ANDROID_KEYSTORE_PATH != ''
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_JSON }}
+          packageName: fr.trucsafaire.app
+          releaseFiles: sortie/*.aab
+          track: internal
+          status: draft
+
+  iphone:
+    runs-on: macos-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "22", cache: npm, cache-dependency-path: app/package-lock.json }
+      - name: Contenu de l'appli
+        working-directory: app
+        run: npm ci && npm run preparer -- ios
+      - name: Construction de contrôle (simulateur, sans signature)
+        working-directory: app/ios/App
+        run: |
+          xcodebuild -version
+          xcodebuild -project App.xcodeproj -scheme App -configuration Debug -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build -quiet
+      - name: Archive signée et envoi sur TestFlight (si les secrets Apple existent)
+        working-directory: app/ios/App
+        env:
+          TEAM: ${{ secrets.APPLE_TEAM_ID }}
+          KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ISSUER: ${{ secrets.ASC_ISSUER_ID }}
+          KEY_P8: ${{ secrets.ASC_KEY_P8_BASE64 }}
+          PUBLIER: ${{ github.event_name == 'workflow_dispatch' && inputs.publier }}
+        run: |
+          if [ -z "$TEAM" ] || [ -z "$KEY_P8" ]; then echo "Secrets Apple absents : pas d'archive signée (voir app/LISEZMOI.md)"; exit 0; fi
+          K="$RUNNER_TEMP/AuthKey_$KEY_ID.p8"; echo "$KEY_P8" | base64 -d > "$K"
+          AUTH=(-allowProvisioningUpdates -authenticationKeyPath "$K" -authenticationKeyID "$KEY_ID" -authenticationKeyIssuerID "$ISSUER")
+          xcodebuild -project App.xcodeproj -scheme App -configuration Release -destination 'generic/platform=iOS' \
+            -archivePath "$RUNNER_TEMP/App.xcarchive" DEVELOPMENT_TEAM="$TEAM" CODE_SIGN_STYLE=Automatic \
+            MARKETING_VERSION="$VERSION_NAME" CURRENT_PROJECT_VERSION="$VERSION_CODE" "${AUTH[@]}" archive -quiet
+          DEST=export; [ "$PUBLIER" = "true" ] && DEST=upload
+          cat > "$RUNNER_TEMP/export.plist" <<EOF
+          <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0"><dict><key>method</key><string>app-store-connect</string><key>teamID</key><string>$TEAM</string>
+          <key>destination</key><string>$DEST</string><key>signingStyle</key><string>automatic</string></dict></plist>
+          EOF
+          xcodebuild -exportArchive -archivePath "$RUNNER_TEMP/App.xcarchive" -exportOptionsPlist "$RUNNER_TEMP/export.plist" \
+            -exportPath "$GITHUB_WORKSPACE/sortie" "${AUTH[@]}"
+          [ "$DEST" = upload ] && echo "Envoyée sur TestFlight" || echo "Archive prête (non envoyée)"
+      - uses: actions/upload-artifact@v4
+        if: hashFiles('sortie/*.ipa') != ''
+        with: { name: "iphone-${{ env.VERSION_NAME }}", path: sortie/*.ipa, retention-days: 30 }

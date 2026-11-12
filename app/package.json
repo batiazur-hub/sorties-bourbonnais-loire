@@ -1,0 +1,25 @@
+{
+  "name": "trucs-a-faire-applis",
+  "private": true,
+  "description": "Applis Android et iPhone de Trucs à faire (Capacitor). Voir app/LISEZMOI.md.",
+  "scripts": {
+    "preparer": "python3 ../scripts/construire_applis.py && cap sync",
+    "icones": "capacitor-assets generate --iconBackgroundColor '#2546D8' --iconBackgroundColorDark '#0e1226' --splashBackgroundColor '#ffffff' --splashBackgroundColorDark '#0e1226'"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.6.0",
+    "@capacitor/app": "^8.1.2",
+    "@capacitor/browser": "^8.0.5",
+    "@capacitor/core": "^8.6.0",
+    "@capacitor/filesystem": "^8.1.5",
+    "@capacitor/ios": "^8.6.0",
+    "@capacitor/local-notifications": "^8.3.1",
+    "@capacitor/share": "^8.0.3",
+    "@capacitor/splash-screen": "^8.0.2",
+    "@capacitor/status-bar": "^8.0.4"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^4.0.0",
+    "@capacitor/cli": "^8.6.0"
+  }
+}

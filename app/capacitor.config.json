@@ -1,0 +1,12 @@
+{
+  "appId": "fr.trucsafaire.app",
+  "appName": "Trucs à faire",
+  "webDir": "www",
+  "server": { "androidScheme": "https", "iosScheme": "capacitor" },
+  "android": { "allowMixedContent": false },
+  "ios": { "contentInset": "never", "scrollEnabled": true },
+  "plugins": {
+    "SplashScreen": { "launchShowDuration": 600, "launchAutoHide": true, "backgroundColor": "#ffffff", "showSpinner": false },
+    "LocalNotifications": { "smallIcon": "ic_stat_notif", "iconColor": "#2546D8" }
+  }
+}

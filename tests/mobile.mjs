@@ -8,6 +8,7 @@ const browsers={chromium:await chromium.launch()};
 if(!LOCAL){try{browsers.webkit=await webkit.launch()}catch(e){console.log('WebKit indisponible, les iPhone passent par Chromium')}}
 const report=[];
 async function audit(p,label){
+  await p.waitForTimeout(450);  // fin des animations (onglet actif qui s'élargit) avant de mesurer
   const r=await p.evaluate(()=>{
     const vw=innerWidth,vh=innerHeight,out={overlap:[],overflowX:document.documentElement.scrollWidth>vw+1?document.documentElement.scrollWidth:0,clipped:[],tiny:[],smallTap:[]};
     const vis=el=>{const s=getComputedStyle(el);if(s.visibility==='hidden'||s.display==='none'||+s.opacity===0)return false;const r=el.getBoundingClientRect();return r.width>0&&r.height>0&&r.bottom>0&&r.top<vh&&r.right>0&&r.left<vw};
@@ -28,7 +29,7 @@ async function audit(p,label){
     document.querySelectorAll('body *').forEach(el=>{if(!vis(el))return;const s=getComputedStyle(el);const r=el.getBoundingClientRect();
       if(r.right>vw+2&&!el.closest('.sbl-rail,.sbl-qk,.sbl-mh .mc,.maplibregl-map,.tbl,.sbl-tabs,.seg,.api pre,.api-nav,.tabs-bar,.dlc-map'))out.clipped.push('déborde: '+(el.id||el.className||el.tagName)+' '+Math.round(r.right));
       if(!el.closest('svg')&&[...el.childNodes].some(x=>x.nodeType===3&&x.textContent.trim())){const fs=parseFloat(s.fontSize);if(fs<11.5)out.tiny.push((el.className||el.tagName)+'='+fs);
-        if(!el.matches('.vh,.sr-only,.sbl-vh')&&(s.overflow==='hidden'||s.overflowX==='hidden')&&s.textOverflow!=='ellipsis'&&el.scrollWidth>el.clientWidth+2)out.clipped.push('coupé: '+(el.className||el.tagName)+' «'+el.textContent.trim().slice(0,30)+'»')}
+        if(!el.matches('.vh,.sr-only,.sbl-vh')&&!(r.width<=1&&r.height<=1)&&/* masqué visuellement pour les lecteurs d'écran */(s.overflow==='hidden'||s.overflowX==='hidden')&&s.textOverflow!=='ellipsis'&&el.scrollWidth>el.clientWidth+2)out.clipped.push('coupé: '+(el.className||el.tagName)+' «'+el.textContent.trim().slice(0,30)+'»')}
       if(el.matches('button,a,input,select,[role=tab]')&&!el.closest('p,li,dd,label,.sbl-fine')){const af=getComputedStyle(el,'::after'),g=af.content!=='none'&&af.position==='absolute'?Math.max(0,-parseFloat(af.top)||0):0;if(r.height+2*g<24||r.width+2*g<24)out.smallTap.push((el.id||el.className||el.tagName)+' '+Math.round(r.width)+'x'+Math.round(r.height))}});
     out.overlap=[...new Set(out.overlap)].slice(0,12);out.clipped=[...new Set(out.clipped)].slice(0,10);out.tiny=[...new Set(out.tiny)].slice(0,8);out.smallTap=[...new Set(out.smallTap)].slice(0,10);return out});
   report.push({label,...r});

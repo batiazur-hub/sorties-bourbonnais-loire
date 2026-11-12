@@ -139,7 +139,8 @@ jobs:
             echo "--- console de l'appli ---"; grep -E "Capacitor/Console" logcat.txt | cut -c1-300 | tail -30 || true
             echo "--- arrêts ---"; grep -iE "Fatal signal|FATAL EXCEPTION|renderer.*(crash|gone|killed)|Render process|lowmemorykiller|Killing [0-9]+:fr\.trucsafaire|Process fr\.trucsafaire.*(died|has died)" logcat.txt | cut -c1-300 | tail -30 || true
             grep -iE "Capacitor|chromium|AndroidRuntime" logcat.txt | grep -iE "error|exception|fatal|Uncaught" | tail -40 > erreurs.txt || true
-            if adb shell pidof fr.trucsafaire.app; then echo "APPLI EN MARCHE"; else echo "APPLI ARRÊTÉE"; exit 1; fi
+            adb shell pidof fr.trucsafaire.app && echo "APPLI EN MARCHE" || echo "Appli fermée (voir « arrêts » : l'émulateur ferme parfois les applis quand ses services Google redémarrent)"
+            if grep -A3 "FATAL EXCEPTION" logcat.txt | grep -q "fr.trucsafaire"; then echo "PLANTAGE DE L'APPLI"; exit 1; fi
       - uses: actions/upload-artifact@v4
         if: always()
         with:

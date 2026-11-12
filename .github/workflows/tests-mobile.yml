@@ -7,7 +7,7 @@ permissions:
   contents: write
 jobs:
   mobile:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04  # Playwright ne gère pas encore Ubuntu 26.04 (ubuntu-latest)
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4

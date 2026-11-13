@@ -36,6 +36,13 @@ NAV = [("index.html", "Accueil"), ("plan-du-site.html", "Plan du site"), ("que-f
        ("intelligence-artificielle.html", "Intelligence artificielle"), ("accessibilite.html", "Accessibilité"), ("integrer.html", "Intégrer l’agenda"), ("api.html", "API"), ("offres.html", "Choisissez votre truc"), ("kit.html", "Kit de communication")]
 
 TETE = {}
+# Dans l'appli iPhone (« TrucsAFaireApp » dans l'identifiant du navigateur) : pas d'offres payantes ni de CGV
+# (règle 3.1.1 d'Apple : pas d'achat hors App Store) ; la page des offres renvoie vers l'agenda.
+DANS_APPLI = ('<script>if(/TrucsAFaireApp/.test(navigator.userAgent)){'
+              'if(/\\/(offres|cgv)\\.html$/.test(location.pathname))location.replace("index.html");'
+              'document.write(\'<style>a[href$="offres.html"],a[href$="cgv.html"]{display:none!important}</style>\')}</script>')
+
+
 def page(fichier, titre, intro, corps):
     nav = "".join(f'<a href="{h}"' + (' aria-current="page"' if h == fichier else "") + f">{t}</a>" for h, t in NAV[1:])
     return f"""<!doctype html>
@@ -49,6 +56,7 @@ def page(fichier, titre, intro, corps):
 <link rel="apple-touch-icon" href="marque/apple-touch-icon-180.png">
 <link rel="stylesheet" href="fonts/trucs.css">
 <link rel="stylesheet" href="pages.css">{TETE.get(fichier, "")}
+{DANS_APPLI}
 </head>
 <body>
 <a class="skip" href="#contenu">Aller au contenu</a>

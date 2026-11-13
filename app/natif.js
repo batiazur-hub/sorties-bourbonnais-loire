@@ -13,6 +13,11 @@
   // l'agenda lit l'adresse (#dep=…&sortie=…) au démarrage : on la change puis on recharge la page embarquée
   function ouvrirAdresse(h) { location.hash = h || ""; location.reload(); }
 
+  /* ---------- Offres payantes : absentes des applis (achat hors boutique interdit, règle 3.1.1 d'Apple) ---------- */
+  var cache = document.createElement("style");
+  cache.textContent = 'a[href$="offres.html"],a[href$="cgv.html"]{display:none!important}';
+  (document.head || document.documentElement).appendChild(cache);
+
   /* ---------- Réglages de l'agenda (lus par index.html au démarrage) ---------- */
   window.SORTIES_CONFIG = Object.assign(window.SORTIES_CONFIG || {}, {
     natif: true,

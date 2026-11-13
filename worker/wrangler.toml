@@ -28,6 +28,8 @@ SITE_URL = "https://trucsafaire.fr/"
 SITE_URL_CATHOS = "https://trucsdecathos.fr/"
 # Facultatif, une fois le domaine vérifié chez Brevo : MAIL_FROM_CATHOS = "bonjour@trucsdecathos.fr"
 MAIL_FROM = "bonjour@trucsafaire.fr"
+# Compte de démonstration pour la vérification des applis (Apple, Google) : aucun e-mail, code fixe = secret DEMO_CODE
+DEMO_EMAIL = "verification@trucsafaire.fr"
 # Adresse publique de ce serveur (liens de désinscription dans les e-mails envoyés par la tâche planifiée)
 API_URL = "https://api.trucsafaire.fr"
 # Nombre d'e-mails par exécution (offre gratuite Cloudflare : 50 requêtes sortantes au plus par exécution)

@@ -3,6 +3,8 @@
    POST /compte/lien        { email, prefs?, newsletter?, cgu, site?, cathos? } → envoie un lien de connexion (réponse identique que le compte existe ou non)
                             site : "taf" (défaut) ou "cathos" : le lien arrive sur ce site-là (compte commun aux deux)
    POST /compte/connexion   { jeton }                            → { session, compte }   (jeton à usage unique, valable 30 min)
+   POST /compte/code        { email, code }                      → { session, compte }   (code à 6 chiffres de l'e-mail, pour les applis :
+                            le lien ouvre le site, pas l'appli ; 5 essais au plus par code, valable 30 min)
    GET  /compte                                                   → profil           (en-tête Authorization: Bearer <session>)
    POST /compte             { prefs?, newsletter?, fav?, cathos? } → profil mis à jour (cathos : { prefs, fav } de Trucs de cathos)
    GET  /compte/export                                            → toutes les données du compte (droit à la portabilité)
@@ -15,7 +17,9 @@
    Les jetons ne sont jamais stockés en clair : seule leur empreinte SHA-256 l'est.
    Chaque session porte la « génération » du compte : supprimer le compte ou « se déconnecter partout » invalide toutes les sessions.
    Secrets : BREVO_KEY (envoi des e-mails, prestataire français, données hébergées dans l'UE), SIGNATURE_KEY (liens signés, obligatoire).
-   Variables : MAIL_FROM (expéditeur, ex. bonjour@trucsafaire.fr), SITE_URL (adresse du site, pour les liens). */
+   Variables : MAIL_FROM (expéditeur, ex. bonjour@trucsafaire.fr), SITE_URL (adresse du site, pour les liens).
+   Compte de démonstration pour la vérification des boutiques d'applis (Apple, Google) : variables DEMO_EMAIL et DEMO_CODE
+   (secret). Pour cette adresse seulement, aucun e-mail ne part et DEMO_CODE remplace le code envoyé. */
 
 import { motRefuse, egal, limite, agenda, majAgenda, publier, retirer } from "./commun.js";
 
@@ -29,6 +33,8 @@ const enc = new TextEncoder();
 const hex = b => [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, "0")).join("");
 export const empreinte = async s => hex(await crypto.subtle.digest("SHA-256", enc.encode(String(s))));
 const aleatoire = n => hex(crypto.getRandomValues(new Uint8Array(n)));
+const code6 = () => String(crypto.getRandomValues(new Uint32Array(1))[0] % 1000000).padStart(6, "0");
+const estDemo = (env, email) => !!(env.DEMO_EMAIL && env.DEMO_CODE && email === String(env.DEMO_EMAIL).toLowerCase());
 const maintenant = () => new Date().toISOString();
 const t = (v, n) => String(v == null ? "" : v).replace(/[\u0000-\u001f<>]/g, " ").trim().slice(0, n);
 export const emailValide = e => /^[^\s@"<>,;]{1,64}@[^\s@"<>,;]{1,180}\.[a-z]{2,24}$/i.test(e);
@@ -128,7 +134,7 @@ function consentir(c, actif, source) {
 }
 
 
-async function envoyerLien(env, email, lien, nouveau, site = "taf") {
+async function envoyerLien(env, email, lien, nouveau, site = "taf", code = "") {
   const S = SITES[site], cathos = site === "cathos";
   const sujet = cathos ? (nouveau ? "Bienvenue sur Trucs de cathos : confirmez votre compte" : "Votre lien de connexion à Trucs de cathos")
     : nouveau ? "Bienvenue chez les Trucophiles : confirmez votre compte" : "Votre lien pour retrouver vos trucs";
@@ -138,9 +144,10 @@ async function envoyerLien(env, email, lien, nouveau, site = "taf") {
 <div style="max-width:520px;margin:0 auto;padding:32px 20px"><p style="font-size:22px;font-weight:700;margin:0 0 18px;color:${S.couleur}">${cathos ? "trucs de cathos" : "trucs à faire"}</p>
 <div style="background:#fff;border-radius:18px;padding:28px"><p style="font-size:16px;line-height:1.5;margin:0 0 22px">${intro}</p>
 <p style="margin:0 0 22px"><a href="${lien}" style="display:inline-block;background:${S.couleur};color:#fff;text-decoration:none;font-weight:700;padding:14px 24px;border-radius:999px">${nouveau ? "Confirmer mon compte" : "Me connecter"}</a></p>
-<p style="font-size:13px;color:#4d5470;line-height:1.5;margin:0">Ce lien est valable ${JETON_MIN} minutes et ne sert qu’une fois. Si vous n’êtes pas à l’origine de cette demande, ignorez cet e-mail : aucun compte ne sera créé.</p></div>
+${code ? `<p style="font-size:14px;line-height:1.5;margin:0 0 6px">Dans l’appli, saisissez plutôt ce code :</p><p style="font-size:28px;font-weight:700;letter-spacing:6px;margin:0 0 22px">${code.slice(0, 3)} ${code.slice(3)}</p>` : ""}
+<p style="font-size:13px;color:#4d5470;line-height:1.5;margin:0">Ce lien${code ? " et ce code sont valables" : " est valable"} ${JETON_MIN} minutes et ne ${code ? "servent" : "sert"} qu’une fois. Si vous n’êtes pas à l’origine de cette demande, ignorez cet e-mail : aucun compte ne sera créé.</p></div>
 <p style="font-size:12px;color:#4d5470;margin:18px 4px 0">${S.nom} · Saryn Digital (Clément Monteiro EI)</p></div></body></html>`;
-  const txt = `${intro}\n\n${lien}\n\nCe lien est valable ${JETON_MIN} minutes et ne sert qu’une fois. Si vous n’êtes pas à l’origine de cette demande, ignorez cet e-mail.`;
+  const txt = `${intro}\n\n${lien}\n\n${code ? "Dans l’appli, saisissez plutôt ce code : " + code + "\n\n" : ""}Ce lien est valable ${JETON_MIN} minutes et ne sert qu’une fois. Si vous n’êtes pas à l’origine de cette demande, ignorez cet e-mail.`;
   const r = await fetch("https://api.brevo.com/v3/smtp/email", { method: "POST",
     headers: { "api-key": env.BREVO_KEY, "Content-Type": "application/json", "Accept": "application/json" },
     body: JSON.stringify({ sender: { name: S.nom, email: (cathos && env.MAIL_FROM_CATHOS) || env.MAIL_FROM || "bonjour@trucsafaire.fr" }, to: [{ email }], subject: sujet, htmlContent: html, textContent: txt, tags: ["connexion", site] }) });
@@ -177,6 +184,27 @@ function page(titre, texte, env, statut, suite) {
   return new Response(`<!doctype html><html lang="fr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>${titre}</title>
 <body style="font-family:system-ui,sans-serif;max-width:520px;margin:12vh auto;padding:0 20px;color:#141a33"><h1 style="font-size:1.5rem">${titre}</h1><p>${texte}</p>${suite || ""}
 <p><a href="${siteUrl(env)}" style="color:#2546d8">Retour aux sorties</a></p></body></html>`, { status: statut || 200, headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store" } });
+}
+
+/* Ouvre une session à partir d'une fiche de connexion (lien ou code) : crée le compte s'il n'existe pas */
+async function ouvrirSession(env, j) {
+  let c = await env.DLC.get("cpt:" + j.id, "json");
+  if (!c) {
+    c = { id: j.id, email: j.email, cree: maintenant(), offre: "trucophile", prefs: j.prefs || prefsPropres(), fav: j.fav || [], cgu: { date: maintenant(), version: "cgu-2026-10" }, sessions: [], gen: aleatoire(6), apps: [] };
+    consentir(c, j.newsletter, "inscription");  // double opt-in : actif seulement après clic sur le lien reçu par e-mail
+  } else {
+    c.fav = favPropres((c.fav || []).concat(j.fav || []));
+    if (j.newsletter) consentir(c, true, "formulaire de connexion");
+  }
+  const site = siteDe(j.site); avecApp(c, site);
+  if (j.cathos) { const a = cathosPropre(null, c.cathos); c.cathos = { prefs: a.prefs.commune ? a.prefs : j.cathos.prefs, fav: favPropres(a.fav.concat(j.cathos.fav)) }; }
+  const session = aleatoire(32), hs = await empreinte(session);
+  await env.DLC.put("ses:" + hs, JSON.stringify({ id: c.id, gen: c.gen || "", cree: maintenant() }), { expirationTtl: SESSION_JOURS * 86400 });
+  c.sessions = (c.sessions || []).concat([hs]);
+  while (c.sessions.length > 10) await env.DLC.delete("ses:" + c.sessions.shift());  // 10 appareils au plus : la plus ancienne session est fermée
+  c.vu = maintenant().slice(0, 10);
+  await enregistrer(env, c);
+  return { ok: true, session, nouveau: !!j.nouveau, compte: vuePublique(c) };
 }
 
 /* Renvoie une réponse si la route concerne les comptes, sinon null */
@@ -223,14 +251,46 @@ export async function comptes(req, env, url, p, cors, json, outils) {
     const fiche = { email, id, nouveau: !existe, site, newsletter: b.newsletter === true, cree: maintenant() };
     if (site === "cathos") Object.assign(fiche, { cathos: cathosPropre(b.cathos), newsletter: false });  // newsletter : Trucs à faire seulement
     else Object.assign(fiche, { prefs: prefsPropres(b.prefs), fav: favPropres(b.fav) });
-    await env.DLC.put("jet:" + await empreinte(jeton), JSON.stringify(fiche), { expirationTtl: JETON_MIN * 60 });
+    const kjet = "jet:" + await empreinte(jeton);
+    await env.DLC.put(kjet, JSON.stringify(fiche), { expirationTtl: JETON_MIN * 60 });
+    const code = code6();  // le jeton n'est jamais stocké en clair : le code renvoie à son empreinte
+    await env.DLC.put("cod:" + id, JSON.stringify({ kj: kjet, code: await empreinte(id + ":" + code), essais: 0 }), { expirationTtl: JETON_MIN * 60 });
+    if (estDemo(env, email)) return json({ ok: true }, 200, cors);  // compte de démonstration : code fixe, aucun e-mail
     const lien = SITES[site].url(env) + "#connexion=" + jeton;
     if (env.BREVO_KEY) {
-      try { await envoyerLien(env, email, lien, !existe, site); } catch { return json({ erreur: "envoi_impossible", message: "L’e-mail n’a pas pu partir. Réessayez dans un instant." }, 502, cors); }
+      try { await envoyerLien(env, email, lien, !existe, site, code); } catch { return json({ erreur: "envoi_impossible", message: "L’e-mail n’a pas pu partir. Réessayez dans un instant." }, 502, cors); }
       return json({ ok: true }, 200, cors);
     }
-    if (env.MODE_TEST === "1" && /^(localhost|127\.0\.0\.1|[a-z0-9.-]+\.test)$/.test(url.hostname)) return json({ ok: true, lien }, 200, cors);  // tests automatiques, jamais en ligne
+    if (env.MODE_TEST === "1" && /^(localhost|127\.0\.0\.1|[a-z0-9.-]+\.test)$/.test(url.hostname)) return json({ ok: true, lien, code }, 200, cors);  // tests automatiques, jamais en ligne
     return json({ erreur: "envoi_indisponible", message: "L’envoi des e-mails n’est pas encore configuré." }, 503, cors);
+  }
+
+  if (req.method === "POST" && p === "/compte/code") {
+    let b; try { b = await req.json(); } catch { return json({ erreur: "format" }, 400, cors); }
+    const email = t(b.email, 200).toLowerCase(), code = String(b.code || "").replace(/\D/g, "");
+    if (!emailValide(email) || code.length !== 6) return json({ erreur: "code_invalide", message: "Saisissez les 6 chiffres reçus par e-mail." }, 400, cors);
+    const ip = req.headers.get("CF-Connecting-IP") || "?", id = (await empreinte(email)).slice(0, 24);
+    if (!limite("rlk:" + ip, 20, 3600)) return json({ erreur: "trop_de_demandes", message: "Trop d’essais. Réessayez dans une heure." }, 429, cors);
+    let j = null;
+    if (estDemo(env, email) && egal(code, String(env.DEMO_CODE))) {
+      const existe = !!(await env.DLC.get("cpt:" + id));
+      j = { email, id, nouveau: !existe, site: "taf", newsletter: false, prefs: prefsPropres(), fav: [], cree: maintenant() };
+      await env.DLC.delete("cod:" + id);
+    } else {
+      const kc = "cod:" + id, cc = await env.DLC.get(kc, "json");
+      if (!cc) return json({ erreur: "lien_expire", message: "Ce code a fait son temps. Demandez-en un nouveau." }, 400, cors);
+      if (!egal(cc.code, await empreinte(id + ":" + code))) {
+        cc.essais = (cc.essais || 0) + 1;
+        if (cc.essais >= 5) { await env.DLC.delete(kc); await env.DLC.delete(cc.kj); return json({ erreur: "lien_expire", message: "Trop d’essais : ce code ne marche plus. Demandez-en un nouveau." }, 400, cors); }
+        await env.DLC.put(kc, JSON.stringify(cc), { expirationTtl: JETON_MIN * 60 });
+        return json({ erreur: "code_faux", message: "Ce code ne correspond pas. Vérifiez les 6 chiffres." }, 400, cors);
+      }
+      await env.DLC.delete(kc);
+      const kj = cc.kj; j = await env.DLC.get(kj, "json");
+      if (!j) return json({ erreur: "lien_expire", message: "Ce code a fait son temps. Demandez-en un nouveau." }, 400, cors);
+      await env.DLC.delete(kj);
+    }
+    return json(await ouvrirSession(env, j), 200, cors);
   }
 
   if (req.method === "POST" && p === "/compte/connexion") {
@@ -239,24 +299,8 @@ export async function comptes(req, env, url, p, cors, json, outils) {
     if (!/^[0-9a-f]{64}$/.test(jeton)) return json({ erreur: "lien_invalide" }, 400, cors);
     const kj = "jet:" + await empreinte(jeton), j = await env.DLC.get(kj, "json");
     if (!j) return json({ erreur: "lien_expire", message: "Ce lien a fait son temps (il a expiré ou a déjà servi). On vous en renvoie un ?" }, 400, cors);
-    await env.DLC.delete(kj);
-    let c = await env.DLC.get("cpt:" + j.id, "json");
-    if (!c) {
-      c = { id: j.id, email: j.email, cree: maintenant(), offre: "trucophile", prefs: j.prefs || prefsPropres(), fav: j.fav || [], cgu: { date: maintenant(), version: "cgu-2026-10" }, sessions: [], gen: aleatoire(6), apps: [] };
-      consentir(c, j.newsletter, "inscription");  // double opt-in : actif seulement après clic sur le lien reçu par e-mail
-    } else {
-      c.fav = favPropres((c.fav || []).concat(j.fav || []));
-      if (j.newsletter) consentir(c, true, "formulaire de connexion");
-    }
-    const site = siteDe(j.site); avecApp(c, site);
-    if (j.cathos) { const a = cathosPropre(null, c.cathos); c.cathos = { prefs: a.prefs.commune ? a.prefs : j.cathos.prefs, fav: favPropres(a.fav.concat(j.cathos.fav)) }; }
-    const session = aleatoire(32), hs = await empreinte(session);
-    await env.DLC.put("ses:" + hs, JSON.stringify({ id: c.id, gen: c.gen || "", cree: maintenant() }), { expirationTtl: SESSION_JOURS * 86400 });
-    c.sessions = (c.sessions || []).concat([hs]);
-    while (c.sessions.length > 10) await env.DLC.delete("ses:" + c.sessions.shift());  // 10 appareils au plus : la plus ancienne session est fermée
-    c.vu = maintenant().slice(0, 10);
-    await enregistrer(env, c);
-    return json({ ok: true, session, nouveau: !!j.nouveau, compte: vuePublique(c) }, 200, cors);
+    await env.DLC.delete(kj); await env.DLC.delete("cod:" + j.id);
+    return json(await ouvrirSession(env, j), 200, cors);
   }
 
   const s = await compteDeSession(req, env);

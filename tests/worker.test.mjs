@@ -291,9 +291,9 @@ test("/compte/lien : même réponse que l'adresse ait un compte ou non", async (
   const e = envC(); await inscrire(e, "deja@exemple.fr");
   const a = await appel(e, "/compte/lien", { headers: jsonH, body: { email: "deja@exemple.fr" } });
   const b = await appel(e, "/compte/lien", { headers: jsonH, body: { email: "inconnu@exemple.fr" } });
-  assert.equal(a.statut, b.statut); assert.equal(Object.keys(a.j).filter(k => k !== "lien").join(), Object.keys(b.j).join());
+  assert.equal(a.statut, b.statut); assert.equal(Object.keys(a.j).filter(k => k !== "lien" && k !== "code").join(), Object.keys(b.j).join());
   const hors = Object.assign(envC(), {}); const r = await w.fetch(new Request("https://api.trucsafaire.fr/compte/lien", { method: "POST", headers: jsonH, body: JSON.stringify({ email: "z@exemple.fr", cgu: true }) }), hors, {});
-  assert.ok(!(await r.json()).lien, "MODE_TEST sans effet hors d'une adresse de test");
+  { const rj = await r.json(); assert.ok(!rj.lien && !rj.code, "MODE_TEST sans effet hors d’une adresse de test"); }
 });
 
 test("sessions : aucune ne survit à la suppression du compte, « se déconnecter partout »", async () => {
@@ -533,4 +533,39 @@ test("Trucs de cathos : proposition, validation par l'éditeur, agenda public", 
   assert.equal((await appel(e, "/admin/cathos", { headers: admin })).j.propositions.length, 0);
   await appel(e, "/admin/cathos/retirer", { headers: admin, body: { id: p.id } });
   assert.deepEqual((await appel(e, "/cathos/agenda")).j, []);
+});
+
+test("comptes : connexion par code à 6 chiffres (applis), 5 essais au plus, usage unique", async () => {
+  const e = envC();
+  const r = await appel(e, "/compte/lien", { headers: jsonH, body: { email: "app@exemple.fr", cgu: true } });
+  assert.match(r.j.code, /^\d{6}$/);
+  assert.ok(![...e.DLC.m.values()].some(v => String(v).includes(r.j.code)), "code jamais stocké en clair");
+  const faux = r.j.code === "000000" ? "111111" : "000000";
+  assert.equal((await appel(e, "/compte/code", { headers: jsonH, body: { email: "app@exemple.fr", code: faux } })).j.erreur, "code_faux");
+  const c = (await appel(e, "/compte/code", { headers: jsonH, body: { email: "App@Exemple.fr", code: r.j.code.slice(0, 3) + " " + r.j.code.slice(3) } })).j;
+  assert.equal(c.nouveau, true); assert.equal(c.compte.email, "app@exemple.fr"); assert.match(c.session, /^[0-9a-f]{64}$/);
+  assert.equal((await appel(e, "/compte/code", { headers: jsonH, body: { email: "app@exemple.fr", code: r.j.code } })).j.erreur, "lien_expire");
+  // le lien ne sert plus non plus
+  assert.equal((await appel(e, "/compte/connexion", { headers: jsonH, body: { jeton: r.j.lien.split("#connexion=")[1] } })).j.erreur, "lien_expire");
+  // 5 mauvais essais : le code est grillé
+  const r2 = await appel(e, "/compte/lien", { headers: jsonH, body: { email: "app2@exemple.fr", cgu: true } });
+  const f2 = r2.j.code === "000000" ? "111111" : "000000";
+  for (let i = 0; i < 4; i++) assert.equal((await appel(e, "/compte/code", { headers: jsonH, body: { email: "app2@exemple.fr", code: f2 } })).j.erreur, "code_faux");
+  assert.equal((await appel(e, "/compte/code", { headers: jsonH, body: { email: "app2@exemple.fr", code: f2 } })).j.erreur, "lien_expire");
+  assert.equal((await appel(e, "/compte/code", { headers: jsonH, body: { email: "app2@exemple.fr", code: r2.j.code } })).j.erreur, "lien_expire");
+});
+
+test("comptes : compte de démonstration (vérification Apple) sans e-mail, recréé après suppression", async () => {
+  const e = Object.assign(envC(), { DEMO_EMAIL: "verification@trucsafaire.fr", DEMO_CODE: "246810" });
+  const r = await appel(e, "/compte/lien", { headers: jsonH, body: { email: "verification@trucsafaire.fr", cgu: true } });
+  assert.deepEqual(r.j, { ok: true }, "aucun lien ni code renvoyé, aucun e-mail");
+  assert.equal((await appel(e, "/compte/code", { headers: jsonH, body: { email: "verification@trucsafaire.fr", code: "135791" } })).j.erreur, "code_faux");
+  const c = (await appel(e, "/compte/code", { headers: jsonH, body: { email: "verification@trucsafaire.fr", code: "246 810" } })).j;
+  assert.equal(c.nouveau, true);
+  const auth = { Authorization: "Bearer " + c.session, "Content-Type": "application/json" };
+  assert.equal((await appel(e, "/compte/supprimer", { headers: auth, body: {} })).j.ok, true);
+  const c2 = (await appel(e, "/compte/code", { headers: jsonH, body: { email: "verification@trucsafaire.fr", code: "246810" } })).j;
+  assert.equal(c2.nouveau, true, "le compte de démonstration se recrée après suppression");
+  // sans DEMO_CODE configuré, le code fixe ne marche pas
+  assert.notEqual((await appel(envC(), "/compte/code", { headers: jsonH, body: { email: "verification@trucsafaire.fr", code: "246810" } })).j.ok, true);
 });

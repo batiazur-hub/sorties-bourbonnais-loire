@@ -2,7 +2,7 @@ name: Déploiement du serveur (Cloudflare Worker)
 # Publie le dossier worker/ sur Cloudflare à chaque modification, après les tests.
 # Prérequis (une fois), dans Settings → Secrets and variables → Actions du dépôt :
 #   - CLOUDFLARE_API_TOKEN : jeton Cloudflare créé avec le modèle « Edit Cloudflare Workers » (obligatoire) ;
-#   - ADMIN_TOKEN, BREVO_KEY, SIGNATURE_KEY : secrets du serveur (voir worker/LISEZMOI.md).
+#   - ADMIN_TOKEN, BREVO_KEY, SIGNATURE_KEY, DEMO_CODE : secrets du serveur (voir worker/LISEZMOI.md).
 #     Chacun n'est envoyé à Cloudflare que s'il est renseigné ; un secret absent reste tel quel côté Cloudflare.
 on:
   push:
@@ -41,8 +41,9 @@ jobs:
           ADMIN_TOKEN: ${{ secrets.ADMIN_TOKEN }}
           BREVO_KEY: ${{ secrets.BREVO_KEY }}
           SIGNATURE_KEY: ${{ secrets.SIGNATURE_KEY }}
+          DEMO_CODE: ${{ secrets.DEMO_CODE }}
         run: |
-          for n in ADMIN_TOKEN BREVO_KEY SIGNATURE_KEY; do
+          for n in ADMIN_TOKEN BREVO_KEY SIGNATURE_KEY DEMO_CODE; do
             v="${!n}"
             if [ -n "$v" ]; then printf '%s' "$v" | npx --yes wrangler@4.151.0 secret put "$n" >/dev/null && echo "$n : envoyé"; else echo "$n : non renseigné, inchangé"; fi
           done

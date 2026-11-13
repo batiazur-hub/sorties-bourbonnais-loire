@@ -2337,9 +2337,9 @@ function openCompte(raison,e){
       '<fieldset class="sbl-chips"><legend>Ce qui m’intéresse <span class="opt">(facultatif)</span></legend>'+Object.keys(CATS).filter(k=>k!=="pal").map(k=>'<label><input type="checkbox" name="ac-c" value="'+k+'"'+(cats.has(k)?" checked":"")+'><span>'+icon(k,15)+CATS[k][1]+'</span></label>').join("")+'</fieldset>'+
       '<label class="sbl-nl"><input type="checkbox" id="ac-nl"><span>'+CONSENT_NL+'</span></label>')+
     '<p class="sbl-err" id="ac-err" role="alert"></p>'+
-    '<div class="sbl-btns"><button class="sbl-btn go" type="submit" id="ac-go">'+(login?"Recevoir mon lien de connexion":"Rejoindre les Trucophiles")+'</button></div>'+
+    '<div class="sbl-btns"><button class="sbl-btn go" type="submit" id="ac-go">'+(login?(CFG.natif?"Recevoir mon code de connexion":"Recevoir mon lien de connexion"):"Rejoindre les Trucophiles")+'</button></div>'+
     (login?'':'<p class="sbl-acm">En créant un compte, vous acceptez les <a href="cgu.html" target="_blank" rel="noopener">conditions d’utilisation</a>. Vos données servent uniquement à votre compte, ne sont jamais revendues et peuvent être supprimées en un clic : <a href="confidentialite.html" target="_blank" rel="noopener">confidentialité</a>.</p>')+
-    (login?'':'<p class="sbl-acm alt"><a href="offres.html">Voir toutes les offres</a> · organisateurs, professionnels</p>')+
+    (login||CFG.natif?'':'<p class="sbl-acm alt"><a href="offres.html">Voir toutes les offres</a> · organisateurs, professionnels</p>')+
     '<p class="sbl-acm alt"><button type="button" class="lnk" id="ac-sw">'+(login?"Pas encore de compte ? Rejoindre les Trucophiles":"Déjà un compte ? Retrouver mes trucs")+'</button></p></form>');
   $("ac-h").textContent=R[0]+(raison==="alerte"&&e?" sorties « "+CATS[e.cat][1].toLowerCase()+" »":"");$("ac-p").textContent=R[1];
   $("ac-sw").onclick=()=>openCompte(login?"def":"login",e);
@@ -2356,16 +2356,26 @@ function openCompte(raison,e){
     go.disabled=true;go.textContent="Envoi…";
     try{await accCall("/compte/lien",body);
       M.el.querySelector(".sbl-sheet").innerHTML='<div class="top"><div><div class="kind">Plus qu’une étape</div><h2>Regardez vos e-mails</h2></div><button class="cl" type="button" data-close aria-label="Fermer"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>'+
-        '<div class="sbl-acok">'+icon("mail",36)+'<p>Un lien vient de partir à <b></b>. Ouvrez-le sur cet appareil pour '+(login?"vous connecter":"activer votre compte")+'. Il est valable 30 minutes.</p><p class="sbl-acm">Rien reçu ? Regardez dans les indésirables, ou réessayez dans quelques minutes.</p></div>'+
-        '<div class="sbl-btns"><button class="sbl-btn go" type="button" data-close>Compris</button></div>';
-      M.el.querySelector(".sbl-acok b").textContent=email;M.el.querySelectorAll("[data-close]").forEach(b=>b.onclick=M.close);lsSet("sbl-nudge",String(Date.now()+864e5*30))}
-    catch(x){go.disabled=false;go.textContent=login?"Recevoir mon lien de connexion":"Rejoindre les Trucophiles";const j=x.j||{};
+        '<div class="sbl-acok">'+icon("mail",36)+'<p>Un e-mail vient de partir à <b></b>. '+(CFG.natif?"Saisissez ici le code à 6 chiffres qu’il contient":"Ouvrez le lien qu’il contient sur cet appareil, ou saisissez ici son code à 6 chiffres")+' pour '+(login?"vous connecter":"activer votre compte")+'. Valable 30 minutes.</p></div>'+
+        '<form id="ac-cf" novalidate><div class="sbl-f"><label for="ac-code">Code reçu par e-mail</label><input class="sbl-in" id="ac-code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="7" pattern="[0-9 ]*" placeholder="123 456" style="font-size:1.4rem;letter-spacing:.3em;text-align:center"></div>'+
+        '<p class="sbl-err" id="ac-cerr" role="alert"></p>'+
+        '<div class="sbl-btns"><button class="sbl-btn go" type="submit" id="ac-cgo">'+(login?"Me connecter":"Activer mon compte")+'</button></div></form>'+
+        '<p class="sbl-acm">Rien reçu ? Regardez dans les indésirables, ou réessayez dans quelques minutes.</p>';
+      M.el.querySelector(".sbl-acok b").textContent=email;M.el.querySelectorAll("[data-close]").forEach(b=>b.onclick=M.close);lsSet("sbl-nudge",String(Date.now()+864e5*30));
+      setTimeout(()=>{const ci=$("ac-code");if(ci)ci.focus()},50);
+      $("ac-cf").onsubmit=async ev2=>{ev2.preventDefault();const ce=$("ac-cerr"),cg=$("ac-cgo"),code=$("ac-code").value.replace(/\D/g,"");ce.textContent="";
+        if(code.length!==6){ce.textContent="Saisissez les 6 chiffres reçus par e-mail.";$("ac-code").focus();return}
+        cg.disabled=true;cg.textContent="Vérification…";
+        try{const j=await accCall("/compte/code",{email,code});M.close();connecte(j)}
+        catch(x){cg.disabled=false;cg.textContent=login?"Me connecter":"Activer mon compte";const jj=x.j||{};ce.textContent=jj.message||"Impossible de joindre le serveur. Réessayez dans un instant."}}}
+    catch(x){go.disabled=false;go.textContent=login?(CFG.natif?"Recevoir mon code de connexion":"Recevoir mon lien de connexion"):"Rejoindre les Trucophiles";const j=x.j||{};
       err.textContent=j.erreur==="apercu"?"Version de développement : le formulaire fonctionne, mais l’e-mail ne partira qu’une fois le serveur en ligne.":j.message||(j.erreur==="email_invalide"?"Vérifiez l’adresse e-mail.":"Impossible de joindre le serveur. Réessayez dans un instant.")}};
 }
+function connecte(j){ACC.tok=j.session;ACC.c=j.compte;
+  FAV=[...new Set(FAV.concat(j.compte.fav||[]))];accSave();favSync();accUI();favBtns();
+  toast(j.nouveau?"Bienvenue chez les Trucophiles !":"Content de vous revoir !");if(j.nouveau)monCompte(true)}
 async function connexion(jeton){
-  try{const j=await accCall("/compte/connexion",{jeton});ACC.tok=j.session;ACC.c=j.compte;
-    FAV=[...new Set(FAV.concat(j.compte.fav||[]))];accSave();favSync();accUI();favBtns();
-    toast(j.nouveau?"Bienvenue chez les Trucophiles !":"Content de vous revoir !");if(j.nouveau)monCompte(true)}
+  try{connecte(await accCall("/compte/connexion",{jeton}))}
   catch(x){toast((x.j&&x.j.message)||"Ce lien a fait son temps. Demandez-en un nouveau.");openCompte("login")}}
 function monCompte(bienvenue){
   if(!ACC.c)return openCompte("def");
@@ -2381,7 +2391,7 @@ function monCompte(bienvenue){
       '<p class="sbl-acm"><button type="button" class="lnk" id="mc-nlx">Voir un exemple de « Le Truc de la semaine »</button></p>'+
       '<p class="sbl-err" id="mc-err" role="alert"></p><div class="sbl-btns"><button class="sbl-btn go" type="submit">Enregistrer</button></div></form>'+
     '<h3 class="sbl-ach">Mon espace organisateur</h3><div id="mc-org"></div>'+
-    '<h3 class="sbl-ach">Aller plus loin</h3><p class="sbl-acm">Vous organisez des sorties ? <a href="offres.html">Découvrez Faiseur de trucs et Truc &amp; Co</a>. Affiches et QR codes : <a href="kit.html">le kit de communication</a>.</p>'+
+    '<h3 class="sbl-ach">Aller plus loin</h3><p class="sbl-acm">'+(CFG.natif?'':'Vous organisez des sorties ? <a href="offres.html">Découvrez Faiseur de trucs et Truc &amp; Co</a>. ')+'Affiches et QR codes : <a href="kit.html">le kit de communication</a>.</p>'+
     '<h3 class="sbl-ach">Mes données</h3><div class="sbl-btns"><button class="sbl-btn" type="button" id="mc-x">Télécharger mes données</button><button class="sbl-btn" type="button" id="mc-o">Se déconnecter</button><button class="sbl-btn" type="button" id="mc-p">Se déconnecter partout</button><button class="sbl-btn dz" type="button" id="mc-d">Supprimer mon compte</button></div>');
   $("mc-e").textContent="Connecté avec "+c.email+(bienvenue?". Vos favoris sont maintenant enregistrés sur tous vos appareils.":"");
   if(p.commune)$("mc-w").value=p.commune.nom;
@@ -2410,7 +2420,7 @@ function monCompte(bienvenue){
 }
 
 /* Les boutons d'incitation mènent à la page des offres (cartes Trucophile, Faiseur de trucs, Truc Pro, Truc & Co) */
-function versOffres(){location.href="offres.html"}
+function versOffres(){if(CFG.natif)return openCompte("def");location.href="offres.html"}  // applis : pas de page des offres payantes (règle 3.1.1 d’Apple)
 /* Incitations : discrètes, jamais plus d'une à la fois, et on respecte le « non merci » */
 function nudgeOk(){return accOn()&&!ACC.c&&+(lsGet("sbl-nudge")||0)<Date.now()}
 function nudgeStop(jours){lsSet("sbl-nudge",String(Date.now()+864e5*jours))}

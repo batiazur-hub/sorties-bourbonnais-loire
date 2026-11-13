@@ -14,11 +14,13 @@ WWW = os.path.join(RACINE, "app", "www")
 DOSSIERS = ("fonts", "vendor", "marque")
 FICHIERS = ("config.js", "dlc.js", "pages.css")
 BALISE = '<script src="natif.js"></script>'
+# Offres payantes et CGV : pas dans les applis tant que l'achat ne passe pas par les boutiques (règle 3.1.1 d'Apple)
+SANS_APPLI = {"offres.html", "cgv.html"}
 
 
 def main():
     pages = [f for f in subprocess.run(["git", "ls-files", "*.html"], cwd=RACINE, capture_output=True, text=True,
-                                       check=True).stdout.split() if "/" not in f]
+                                       check=True).stdout.split() if "/" not in f and f not in SANS_APPLI]
     if "index.html" not in pages:
         sys.exit("index.html introuvable")
     shutil.rmtree(WWW, ignore_errors=True)

@@ -28,7 +28,7 @@ export function evenementPropre(b, id) {
 }
 const complet = x => x.t.length >= 4 && x.type && x.s && x.w && isFinite(x.lat) && isFinite(x.lon) && Math.abs(x.lat) <= 90 && Math.abs(x.lon) <= 180;
 
-async function agendaCathos(env) { return (await env.DLC.get("cathos-agenda", "json")) || []; }
+export async function agendaCathos(env) { return (await env.DLC.get("cathos-agenda", "json")) || []; }
 async function majAgendaCathos(env, ajout, retrait) {
   const ids = new Set((retrait || []).concat((ajout || []).map(e => e.id))), a = auj();
   const out = (await agendaCathos(env)).filter(e => !ids.has(e.id) && (e.e || e.s) >= a).concat(ajout || []).sort((x, y) => (x.s + x.h < y.s + y.h ? -1 : 1));

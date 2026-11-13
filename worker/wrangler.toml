@@ -19,7 +19,7 @@ enabled = true
 # Suppression des comptes inactifs depuis 3 ans : chaque lundi à 3 h 17 UTC
 # « Le Truc de la semaine » : jeudi de 5 h à 9 h UTC, toutes les 15 minutes, par lots
 [triggers]
-crons = ["17 3 * * 1", "*/15 5-9 * * 4"]
+crons = ["17 3 * * 1", "*/15 5-9 * * 4", "*/20 10-11 * * 4"]  # le dernier : « La semaine des cathos »
 
 [vars]
 ORIGINS = "https://trucsafaire.fr,https://www.trucsafaire.fr,https://trucsdecathos.fr,https://www.trucsdecathos.fr,https://localhost,capacitor://localhost"  # les deux dernières : applis Android et iPhone

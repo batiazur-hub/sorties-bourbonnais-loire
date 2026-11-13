@@ -569,3 +569,39 @@ test("comptes : compte de démonstration (vérification Apple) sans e-mail, recr
   // sans DEMO_CODE configuré, le code fixe ne marche pas
   assert.notEqual((await appel(envC(), "/compte/code", { headers: jsonH, body: { email: "verification@trucsafaire.fr", code: "246810" } })).j.ok, true);
 });
+
+test("La semaine des cathos : consentement à part, sélection par famille, désinscription signée, envoi", async () => {
+  const lc = await import(path.join(RACINE, "worker/lettre-cathos.js")), nl = await import(path.join(RACINE, "worker/newsletter.js"));
+  const sem = nl.semaine(new Date("2099-06-04T06:00:00Z"));
+  const prefs = { commune: { nom: "Moulins", dep: "03", lat: 46.566, lon: 3.333 }, rayon: 20, familles: ["priere"] };
+  const ev = (id, type, s) => ({ id, t: "Rdv " + id, type, s, w: "Moulins", z: "03", lat: 46.57, lon: 3.33 });
+  const sel = lc.selectionCathos([ev("ado", "adoration", "2099-06-06"), ev("conf", "conference", "2099-06-06"), ev("vieux", "veillee", "2099-05-01")], prefs, sem);
+  assert.deepEqual(sel.map(e => e.id), ["ado"]);
+  const m = lc.courrielCathos(prefs, sel, sem, { site: "https://cathos.test/", stop: "https://api.test/newsletter/stop?c=x&s=y&site=cathos", prefs: "https://cathos.test/#compte" });
+  assert.match(m.sujet, /1 rendez-vous près de Moulins/); assert.ok(m.html.includes("#e=ado")); assert.ok(m.html.includes("Me désinscrire"));
+  // compte : la lettre des cathos ne touche pas à celle de Trucs à faire
+  const e = Object.assign(envC(), { NL_LOT: "5", API_URL: "https://api.test", DATA_URL_CATHOS: "https://cathos.test/data/" });
+  const a = await inscrire(e, "cathos@exemple.fr", { newsletter: true }), auth = { Authorization: "Bearer " + a.session, ...jsonH };
+  const r = await appel(e, "/compte", { headers: auth, body: { cathos: { prefs: { commune: prefs.commune, rayon: 20, familles: ["priere"] }, lettre: true } } });
+  assert.equal(r.j.compte.cathos.lettre, true); assert.equal(r.j.compte.newsletter, true);
+  const r2 = await appel(e, "/compte", { headers: auth, body: { cathos: { fav: ["x"] } } });
+  assert.equal(r2.j.compte.cathos.lettre, true, "changer les favoris garde le consentement");
+  const id = [...e.DLC.m.keys()].find(k => k.startsWith("cpt:")).slice(4);
+  assert.match((await appel(e, "/newsletter/stop?site=cathos&c=" + id + "&s=" + await signature(e, id))).t, /invalide/, "la signature de Trucs à faire ne vaut pas pour les cathos");
+  // envoi
+  e.BREVO_KEY = "k"; const envoyes = [], vrai = globalThis.fetch;
+  globalThis.fetch = async (u, o) => {
+    u = String(u);
+    if (u.includes("brevo")) { envoyes.push(JSON.parse(o.body)); return new Response("{}", { status: 201 }); }
+    if (u.endsWith("departements.json")) return new Response(JSON.stringify({ departements: [{ code: "03", lat: 46.4, lon: 3.2 }] }));
+    if (u.includes("cathos.test/data/dep/03.json")) { const d = nl.semaine(new Date()).du; return new Response(JSON.stringify([ev("ado", "adoration", d)])); }
+    return new Response("[]", { status: 404 });
+  };
+  try { assert.equal(await lc.envoyerLotCathos(e, new Date()), 1); assert.equal(await lc.envoyerLotCathos(e, new Date()), 0); }
+  finally { globalThis.fetch = vrai; }
+  assert.equal(envoyes[0].sender.name, "Trucs de cathos"); assert.match(envoyes[0].headers["List-Unsubscribe"], /site=cathos/);
+  const stop = "/newsletter/stop?site=cathos&c=" + id + "&s=" + await signature(e, id, "stop-cathos");
+  await appel(e, stop, { method: "POST" });
+  const apres = (await appel(e, "/compte", { headers: auth })).j.compte;
+  assert.equal(apres.cathos.lettre, false); assert.equal(apres.newsletter, true, "Trucs à faire : inchangé");
+});

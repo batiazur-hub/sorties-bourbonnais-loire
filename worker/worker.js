@@ -24,6 +24,7 @@
 
 import { comptes, purgerInactifs, verifierOrg, suspendreOrg, supprimerOrgAdmin, signatureValide } from "./comptes.js";
 import { envoyerLot, pourCompte, semaine } from "./newsletter.js";
+import { envoyerLotCathos } from "./lettre-cathos.js";
 import { calendrier } from "./calendrier.js";
 import { cathos } from "./cathos.js";
 import { motRefuse, egal, limite, epuise, tout, agenda, publier, retirer, lienSur, imageSure, sortiePropre, securiser } from "./commun.js";
@@ -208,7 +209,10 @@ async function api(req, env, url, p, ctx) {
 
 export default {
   /* Tâches planifiées (wrangler.toml) : purge hebdomadaire des comptes inactifs ; « Le Truc de la semaine » le jeudi matin */
-  async scheduled(evt, env, ctx) { ctx.waitUntil(String(evt.cron || "").endsWith(" 4") ? envoyerLot(env) : purgerInactifs(env)); },
+  async scheduled(evt, env, ctx) {
+    const cr = String(evt.cron || "");
+    ctx.waitUntil(cr.startsWith("*/20") ? envoyerLotCathos(env) : cr.endsWith(" 4") ? envoyerLot(env) : purgerInactifs(env));
+  },
   async fetch(req, env, ctx) {
     try { return securiser(await traiter(req, env, ctx)); }
     catch (e) {  // jamais de page d'erreur HTML sans CORS : le site affiche un message propre

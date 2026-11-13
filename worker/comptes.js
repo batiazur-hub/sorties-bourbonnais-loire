@@ -24,6 +24,7 @@
 import { motRefuse, egal, limite, agenda, majAgenda, publier, retirer } from "./commun.js";
 
 export const VERSION_CONSENTEMENT = "newsletter-v2-2026-10";
+export const VERSION_CONSENTEMENT_CATHOS = "semaine-cathos-v1-2026-11";
 export const TEXTE_CONSENTEMENT = "Oui, je veux recevoir « Le Truc de la semaine » : chaque semaine par e-mail, une sélection des sorties autour de chez moi, selon mes préférences. Désinscription en un clic dans chaque e-mail.";
 const CATS = ["brocante", "fete", "spectacle", "culture", "famille", "sport", "pal"];
 const SESSION_JOURS = 90, JETON_MIN = 30, INACTIF_ANS = 3;
@@ -60,6 +61,7 @@ export function prefsCathosPropres(p, anc) {
 }
 function cathosPropre(v, anc) {
   const a = anc || {}, r = { prefs: a.prefs || prefsCathosPropres(), fav: a.fav || [] };
+  if (a.lettre) r.lettre = a.lettre;  // consentement à « La semaine des cathos » : ne change que par consentirCathos()
   if (!v || typeof v !== "object") return r;
   if (v.prefs !== undefined) r.prefs = prefsCathosPropres(v.prefs, r.prefs);
   if (v.fav !== undefined) r.fav = favPropres(v.fav);
@@ -97,7 +99,7 @@ const favPropres = f => [...new Set((Array.isArray(f) ? f : []).map(x => t(x, 80
 function vuePublique(c) {
   return { email: c.email, cree: c.cree, offre: c.offre || "trucophile", prefs: c.prefs, fav: c.fav || [],
            newsletter: !!(c.newsletter && c.newsletter.actif), org: c.org || null,
-           apps: c.apps || ["taf"], cathos: cathosPropre(null, c.cathos) };
+           apps: c.apps || ["taf"], cathos: (({ lettre, ...x }) => Object.assign(x, { lettre: !!(lettre && lettre.actif) }))(cathosPropre(null, c.cathos)) };
 }
 
 /* ---------- Profils organisateurs (Faiseur de trucs) ----------
@@ -125,6 +127,13 @@ function sortieOrg(b, o, id) {
   for (const k of ["u", "b", "img", "lieu", "d"]) if (!e[k]) delete e[k];
   if (!e.lieu) e.lieu = e.w;
   return e;
+}
+/* Consentement à « La semaine des cathos », distinct de celui de Trucs à faire (deux services, deux accords) */
+function consentirCathos(c, actif, source) {
+  const k = cathosPropre(null, c.cathos), avant = !!(k.lettre && k.lettre.actif);
+  if (avant === !!actif) return;
+  k.lettre = { actif: !!actif, date: maintenant(), version: VERSION_CONSENTEMENT_CATHOS, source }; c.cathos = k;
+  c.consentements = (c.consentements || []).concat([{ date: k.lettre.date, action: actif ? "accord" : "retrait", version: VERSION_CONSENTEMENT_CATHOS, source, service: "cathos" }]).slice(-30);
 }
 function consentir(c, actif, source) {
   const avant = !!(c.newsletter && c.newsletter.actif);
@@ -197,7 +206,7 @@ async function ouvrirSession(env, j) {
     if (j.newsletter) consentir(c, true, "formulaire de connexion");
   }
   const site = siteDe(j.site); avecApp(c, site);
-  if (j.cathos) { const a = cathosPropre(null, c.cathos); c.cathos = { prefs: a.prefs.commune ? a.prefs : j.cathos.prefs, fav: favPropres(a.fav.concat(j.cathos.fav)) }; }
+  if (j.cathos) { const a = cathosPropre(null, c.cathos); c.cathos = Object.assign(a, { prefs: a.prefs.commune ? a.prefs : j.cathos.prefs, fav: favPropres(a.fav.concat(j.cathos.fav)) }); }
   const session = aleatoire(32), hs = await empreinte(session);
   await env.DLC.put("ses:" + hs, JSON.stringify({ id: c.id, gen: c.gen || "", cree: maintenant() }), { expirationTtl: SESSION_JOURS * 86400 });
   c.sessions = (c.sessions || []).concat([hs]);
@@ -212,13 +221,15 @@ export async function comptes(req, env, url, p, cors, json, outils) {
   if (p === "/newsletter/stop") {
     if (!env.SIGNATURE_KEY) return page("Service indisponible", "La désinscription par lien est momentanément indisponible. Désinscrivez-vous depuis « Mon compte ».", env, 503);
     const id = t(url.searchParams.get("c"), 40), sig = t(url.searchParams.get("s"), 64);
-    const c = await signatureValide(env, id, sig) && await env.DLC.get("cpt:" + id, "json");
+    const cath = url.searchParams.get("site") === "cathos", nom = cath ? "« La semaine des cathos »" : "« Le Truc de la semaine »";
+    const c = await signatureValide(env, id, sig, cath ? "stop-cathos" : "stop") && await env.DLC.get("cpt:" + id, "json");
     if (!c) return page("Lien invalide", "Ce lien de désinscription n’est pas valide. Vous pouvez aussi vous désinscrire depuis « Mon compte ».", env, 400);
     if (req.method !== "POST")  // GET : confirmation (les antivirus de messagerie ouvrent les liens tout seuls)
-      return page("Se désinscrire ?", "Vous ne recevrez plus « Le Truc de la semaine ». Votre compte et vos favoris sont conservés.", env, 200,
+      return page("Se désinscrire ?", "Vous ne recevrez plus " + nom + ". Votre compte et vos favoris sont conservés.", env, 200,
         `<form method="post"><button style="font:inherit;font-weight:700;background:#2546d8;color:#fff;border:0;border-radius:999px;padding:12px 22px;cursor:pointer">Me désinscrire</button></form>`);
-    consentir(c, false, "lien de désinscription"); await enregistrer(env, c);
-    return page("Vous êtes désinscrit", "Vous ne recevrez plus « Le Truc de la semaine ». Votre compte et vos favoris sont conservés.", env);
+    if (cath) consentirCathos(c, false, "lien de désinscription"); else consentir(c, false, "lien de désinscription");
+    await enregistrer(env, c);
+    return page("Vous êtes désinscrit", "Vous ne recevrez plus " + nom + ". Votre compte et vos favoris sont conservés.", env);
   }
   if (req.method === "GET" && p === "/orgs") {
     return new Response((await env.DLC.get("orgs")) || "[]", { headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "public, max-age=300", ...cors } });
@@ -331,7 +342,8 @@ export async function comptes(req, env, url, p, cors, json, outils) {
     if (b.prefs !== undefined) c.prefs = prefsPropres(b.prefs, c.prefs);
     if (b.fav !== undefined) c.fav = favPropres(b.fav);
     if (b.newsletter !== undefined) consentir(c, b.newsletter === true, "Mon compte");
-    if (b.cathos !== undefined) { c.cathos = cathosPropre(b.cathos, c.cathos); avecApp(c, "cathos"); }
+    if (b.cathos !== undefined) { c.cathos = cathosPropre(b.cathos, c.cathos); avecApp(c, "cathos");
+      if (b.cathos && b.cathos.lettre !== undefined) consentirCathos(c, b.cathos.lettre === true, "Mon compte (Trucs de cathos)"); }
     c.vu = jour; await enregistrer(env, c);
     return json({ ok: true, compte: vuePublique(c) }, 200, cors);
   }
